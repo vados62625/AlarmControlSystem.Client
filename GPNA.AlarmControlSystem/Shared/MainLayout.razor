@@ -1,19 +1,59 @@
 ﻿@inherits LayoutComponentBase
 
-<PageTitle>GPNA.AlarmControlSystem</PageTitle>
+<div class="page @theme">
+    <header>        
+        <span class="logo @theme"></span>
+        <span class="app-name">СУС</span>
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+        <ul class="top-menu">
+            <li class="top-menu_item">
+                <NavLink class="top-menu_link" href="" Match="NavLinkMatch.All">
+                    Мониторинг Аварий
+                </NavLink>
+            </li>
+            <li class="top-menu_item">
+                <NavLink class="top-menu_link" href="reports">
+                    Отчеты
+                </NavLink>
+            </li>
+        </ul>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        <div class="header-right-side">
+            <span @onclick="ChangeTheme"  class="theme-toggler @theme"></span>
+            
+            <LoginDisplay />
+        </div>
+    </header>
+
+    <div class="main">
+        <div class="top-row px-4 auth">
+            
+
         </div>
 
-        <article class="content px-4">
+        <div class="content px-4">
             @Body
-        </article>
-    </main>
+        </div>
+    </div>
 </div>
+
+
+@code {
+
+    bool darkTheme = false;
+    string theme = "light-theme";
+
+    void ChangeTheme()
+    {
+        darkTheme = !darkTheme;
+        if (darkTheme == true)
+        {
+            theme = "dark-theme";
+        }
+        else
+        {
+            theme = "light-theme";
+        }
+    }
+
+}
