@@ -1,70 +1,85 @@
+
+
 .page {
-    position: relative;
     display: flex;
+    overflow: hidden;
     flex-direction: column;
 }
 
-main {
-    flex: 1;
+.logo {
+    margin: 0 24px 0 18px;
+    background-image: url(img/HeaderLogo.svg);
+    height: 60px;
+    width: 180px;
 }
 
-.sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
-}
+    .logo.dark-theme {
+        background-image: url(img/HeaderLogoDarkTheme.svg);
+    }
 
-.top-row {
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #d6d5d5;
-    justify-content: flex-end;
-    height: 3.5rem;
+header {
     display: flex;
+    height: 60px;
+    width: auto;
+    left: 0;
+    right: 0;
+    top: 0px;
+    border-bottom: 1px solid var(--color-bg-border);
+    align-items: center;
+    color: #002033;
+    background-color: var(--color-bg-default);
+}
+
+.app-name {
+    color: var(--color-typo-primary);
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 120%;
+}
+
+.header-right-side {
+    display: flex;
+    gap: 20px;
+    position: absolute;
+    right: 18px;
     align-items: center;
 }
 
-    .top-row ::deep a, .top-row .btn-link {
-        white-space: nowrap;
-        margin-left: 1.5rem;
-    }
-
-    .top-row a:first-child {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-@media (max-width: 640.98px) {
-    .top-row:not(.auth) {
-        display: none;
-    }
-
-    .top-row.auth {
-        justify-content: space-between;
-    }
-
-    .top-row a, .top-row .btn-link {
-        margin-left: 0;
-    }
+.theme-toggler {
+    height: 36px;
+    width: 36px;
+    cursor: pointer;
+    background-size:cover;
 }
 
-@media (min-width: 641px) {
-    .page {
-        flex-direction: row;
+    .theme-toggler.light-theme {
+        background-image: url(img/ButtonLightTheme.svg);
     }
 
-    .sidebar {
-        width: 250px;
-        height: 100vh;
-        position: sticky;
-        top: 0;
+    .theme-toggler.dark-theme {
+        background-image: url(img/ButtonDarkTheme.svg);
     }
 
-    .top-row {
-        position: sticky;
-        top: 0;
-        z-index: 1;
+    .top-menu {
+        display: flex;
+        gap: 16px;
+        list-style: none;
+        margin: 0;
     }
 
-    .top-row, article {
-        padding-left: 2rem !important;
-        padding-right: 1.5rem !important;
-    }
+.top-menu_item {
+    display: flex;
+    height: 60px;
+    line-height: 60px;
 }
+
+.top-menu_link.active {
+    border-bottom: 2px solid #0078D2;
+}
+
+.main {
+    background-color: var(--color-bg-default);
+    color:var(--color-typo-default);
+}
+
