@@ -4,6 +4,7 @@
 
 @using GPNA.AlarmControlSystem.Data
 @inject WeatherForecastService ForecastService
+@inject emseventsContext Test
 
 <h1>Weather forecast</h1>
 
@@ -44,5 +45,6 @@ else
     protected override async Task OnInitializedAsync()
     {
         forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+        var testList = Test.Events.ToList();
     }
 }
