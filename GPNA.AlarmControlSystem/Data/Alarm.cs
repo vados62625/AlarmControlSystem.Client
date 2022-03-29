@@ -7,24 +7,32 @@
         public string Time => DateTime.Date.ToString("T");        
         public string? ConditionName { get; set; }
         public string? Source { get; set; }
+
+        public string? Name
+        {
+            get
+            {
+                return Source + "_" + ConditionName;
+            }
+        }
         public string? Description { get;set;}
 
-        public int Priority 
+        public string? Priority 
         {
             get
             {
                 if (ConditionName == "PVLL")
-                    return 1;
+                    return "Критичный";
                 if (ConditionName == "PVLO" || ConditionName == "RSLO")
-                    return 2;
+                    return "Высокий";
                 if (ConditionName == "PVHI")
-                    return 3;
+                    return "Низкий";
                 if (ConditionName == "PVHH")
-                    return 4;
+                    return "Высокий";
                 if (ConditionName == "ALARM")
-                    return 5;
+                    return "Низкий";
                 else
-                    return 0;
+                    return "0";
             }
         }
     }
