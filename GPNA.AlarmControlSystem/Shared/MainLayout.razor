@@ -1,4 +1,6 @@
-﻿@inherits LayoutComponentBase
+﻿@using GPNA.AlarmControlSystem.Data.AlarmControlSystem
+@inherits LayoutComponentBase
+@inject IUiRestService UiRestService 
 
 <div class="page @theme">
     <header>        
@@ -48,8 +50,13 @@
     bool darkTheme = false;
     string theme = "light-theme";
 
-    void ChangeTheme()
+    async void ChangeTheme()
     {
+
+
+        var tags = UiRestService.GetAllTag();
+
+
         darkTheme = !darkTheme;
         if (darkTheme == true)
         {

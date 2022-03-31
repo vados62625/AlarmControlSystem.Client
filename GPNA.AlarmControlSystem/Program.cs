@@ -1,5 +1,6 @@
 using GPNA.AlarmControlSystem;
 using GPNA.AlarmControlSystem.Data;
+using GPNA.AlarmControlSystem.Data.AlarmControlSystem;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -8,8 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>(); // TODO удалить 
-builder.Services.AddSingleton<emseventsContext>();
+builder.Services.AddSingleton<AlarmControlSystemContext>();
+builder.Services.AddTransient<IUiRestService, UiRestService>();
+
 
 var app = builder.Build();
 

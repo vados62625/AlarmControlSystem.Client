@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace GPNA.AlarmControlSystem
+namespace GPNA.AlarmControlSystem.Data.Ems
 {
     public partial class emseventsContext : DbContext
     {

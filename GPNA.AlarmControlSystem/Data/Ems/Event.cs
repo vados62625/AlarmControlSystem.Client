@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GPNA.AlarmControlSystem
+namespace GPNA.AlarmControlSystem.Data.Ems
 {
     public partial class Event
     {
