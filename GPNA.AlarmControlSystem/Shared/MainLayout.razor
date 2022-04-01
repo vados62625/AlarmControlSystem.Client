@@ -50,13 +50,8 @@
     bool darkTheme = false;
     string theme = "light-theme";
 
-    async void ChangeTheme()
+    void ChangeTheme()
     {
-
-
-        var tags = UiRestService.GetAllTag();
-
-
         darkTheme = !darkTheme;
         if (darkTheme == true)
         {

@@ -1,34 +1,71 @@
 ﻿@page "/tagtable"
-
+@using Data.AlarmControlSystem
+@inject IUiRestService UiRestService 
 
 <h3>Таблица переменных</h3>
+
+<input type="text" id="myInput" @onkeyup="SearchTag" @bind="input" placeholder="Search for names..">
 
 <div class="table-responsive">
     <table class="table table-striped table-bordered">
     <thead class="thead-light">
         <tr>
                 <th>Позиция по ГП</th>
-                <th>ItemName</th>
-                <th>Class</th>
+                <th>TagName</th>
                 <th>Описание</th>
-                <th>Еденица измерения</th>
-                <th>Состояние</th>
+                <th>Ед. изм.</th>              
                 <th>Приоритет</th>
                 <th>Уставка</th>
                 <th>Шкала</th>
-                <th>Дублируется ли сигнализация (ТАГ)</th>
-                <th>Воздействие</th>
+                @*<th>Дублируется ли сигнализация (ТАГ)</th>               
                 <th>Потенциальные последствия</th>
                 <th>Действия Полевого оператора</th>
                 <th>Действия Оператора АРМ</th>
-                <th>Действия Оператора АРМ</th>
-                <th>Сколько времени на реакцию</th>
+                <th>Уровень усиления</th>
+                <th>Сколько времени на реакцию</th>*@
             </tr>
     </thead>
+    <tbody>
+            @foreach(var c in AlarmsTagTable)
+            {
+                if(c!=null)
+                if (c.TagName.ToUpper().IndexOf(input.ToUpper()) > -1)
+                {
+                    <tr class="item-table">
+                        <td>@c.Position</td>
+                    <td>@(c.TagName + "_" + c.State)</td>
+                    <td>@c.Description</td>
+                    <td>@c.Unit</td>
+                    <td>@c.Priority</td>
+                    <td>@c.AlarmLimit</td>
+                    <td>@c.Scale</td>
+                    @*<td>@c.Consequence</td>
+                    <td>@c.ActionFieldOperator</td>
+                    <td>@c.ActionFieldArm</td>
+                    <td>@c.Inform</td>
+                    <td>@c.ReactionTime</td>*@                    
+                </tr>
+                }
+
+            }
+        </tbody>
     </table>
 </div>
 
+
 @code {
+    List<Tag> AlarmsTagTable;
+    string input = "";
+
+    void SearchTag()
+    {        
+        ShouldRender();
+    }
 
 
+    protected override void OnInitialized()
+    {
+        AlarmsTagTable = UiRestService.GetAllTag();    
+    }
 }
+
