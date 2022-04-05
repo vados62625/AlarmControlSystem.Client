@@ -34,7 +34,7 @@
             {
                 @if(c.Priority == Priority || Priority == "0")
                 {
-                <tr class="item-table">
+                @*<tr class="item-table">
                     <td>@DateTime.Now.Date.ToString("d")</td>
                     <td>@DateTime.Now.ToString("t")</td>
                     <td>@c.Name</td>
@@ -44,7 +44,8 @@
                     <td><input type="text"/></td>
                     <td style="text-align: center;"><input type="checkbox" /></td>
                     <td>1</td>
-                </tr>
+                </tr>*@
+                <EventOnMonitor Tag=c></EventOnMonitor>
                 }
                
             }
