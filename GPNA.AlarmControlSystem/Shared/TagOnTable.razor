@@ -1,0 +1,35 @@
+﻿@using Data.AlarmControlSystem
+
+    <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">
+        <td>@Tag.Position</td>
+        <td>@(Tag.TagName + "_" + Tag.State)</td>
+        <td>@Tag.Description</td>
+        <td>@Tag.Unit</td>
+        <td>@Tag.Priority</td>
+        <td>@Math.Round(Convert.ToDecimal(Tag.AlarmLimit),2)</td>
+        <td>@Tag.Scale</td>                          
+    </tr>
+                        
+    @if (displayMore)
+    {
+    <tr>
+        <td colspan="7" class="p-5 m-5">           
+                <p><b>Потенциальные последствия: </b> @Tag.Consequence</p>
+                <p><b>Действия Полевого оператора: </b>@Tag.ActionFieldOperator</p>
+                <p><b>Действия Оператора АРМ: </b>@Tag.ActionFieldArm</p>
+                <p><b>Уровень усиления: </b>@Tag.Inform</p>
+                <p><b>Время на реакцию: </b>@Tag.ReactionTime</p>
+        </td>                        
+    </tr>
+    }
+@code
+{
+    [Parameter] public Tag Tag { get; set; }
+
+    bool displayMore = false;
+
+    void ShowMoreattributes()
+    {
+        displayMore = !displayMore;
+    }
+}
