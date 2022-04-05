@@ -3,8 +3,11 @@
 @using System.Text.Json;
 
 <div class="choice-group">
-    <img style="height:30px" src=img/Choicegroup.svg/>
-    <img style="height:30px" src=img/Datepicker.svg/>
+    <a style="margin-left:20px;">C :</a>
+        <input  type="datetime-local" @bind="From" @bind:format="yyyy-MM-ddTHH:mm">
+        <a>По :</a>
+        <input  type="datetime-local" @bind="To" @bind:format="yyyy-MM-ddTHH:mm">
+    
 </div>
 
 <div class="table-responsive">
@@ -60,6 +63,8 @@
 
     List<Alarm> Alarms;
     string? Priority = "0";
+    static DateTime From = new DateTime(2021, 01, 01, 00, 00, 00);
+    static DateTime To = new DateTime(2021, 01, 30, 00, 00, 00);
 
     void SelectPriority()
     {
@@ -68,6 +73,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        To = DateTime.Now.Date;
+        From = To.AddDays(-1);
         Alarms = new List<Alarm>
         {
             
