@@ -1,428 +1,642 @@
 ﻿@page "/"
 @using Data
 @using System.Text.Json;
+@using ChartJs.Blazor.LineChart
 
-<div class="choice-group">
+<div style="display:flex; justify-content:center;">
+    <h3>@Title</h3>
+    
     <a style="margin-left:20px;">C :</a>
         <input  type="datetime-local" @bind="From" @bind:format="yyyy-MM-ddTHH:mm">
         <a>По :</a>
         <input  type="datetime-local" @bind="To" @bind:format="yyyy-MM-ddTHH:mm">
     
+    
+</div>
+<div style="display:flex; justify-content:center;gap:20px;margin-top:10px;">
+    <div style="background:#ECF1F4; padding:10px; color:#002033; box-shadow: 0px 2px 2px rgba(0, 32, 51, 0.02), 0px 2px 8px rgba(0, 32, 51, 0.16);
+border-radius: 4px;"> 
+        <h4>Всего сигнализаций</h4>
+        <h5>400</h5>
+    </div>
+    <div style="background:#ECF1F4; padding:10px; color:#002033;box-shadow: 0px 2px 2px rgba(0, 32, 51, 0.02), 0px 2px 8px rgba(0, 32, 51, 0.16);
+border-radius: 4px;"> 
+        <h4>УПНГ</h4>
+        <h5>100</h5>
+    </div>
+    <div style="background:#ECF1F4; padding:10px; color:#002033;box-shadow: 0px 2px 2px rgba(0, 32, 51, 0.02), 0px 2px 8px rgba(0, 32, 51, 0.16);
+border-radius: 4px;"> 
+        <h4>БМУПН</h4>
+        <h5>200</h5>
+    </div>
+    <div style="background:#ECF1F4; padding:10px; color:#002033;box-shadow: 0px 2px 2px rgba(0, 32, 51, 0.02), 0px 2px 8px rgba(0, 32, 51, 0.16);
+border-radius: 4px;"> 
+        <h4>Скважины</h4>
+        <h5>200</h5>
+    </div>
+    <div style="background:#ECF1F4; padding:10px; color:#002033;box-shadow: 0px 2px 2px rgba(0, 32, 51, 0.02), 0px 2px 8px rgba(0, 32, 51, 0.16);
+border-radius: 4px;"> 
+        <h4>АРМ 4</h4>
+        <h5>200</h5>
+    </div>
+</div>
+<div>
+
+    <h3>Количество аварий за 24 часа</h3>
+    <Chart Config="_config" Height="45" ></Chart>
+        
+    
+    <h3>Количество аварий на АРМе</h3>
+    <select>        
+        <option value="УПНГ">УПНГ</option>
+        <option value="БМУПН">БМУПН</option>
+        <option value="Скважины">Скважины</option>
+        <option value="АРМ 4">АРМ 4</option>
+    </select>
+    <Chart Config="_config2" Height="45"></Chart>
 </div>
 
-<div class="table-responsive">
-    <table class="table table-striped table-bordered">
-        <thead class="thead-light">
-            <tr>
-                <th>Дата последней</th>
-                <th>Время последней</th>
-                <th>Таг</th>
-                <th>Описание</th>
-                <th>Приоритет 
-                    <select @bind="@Priority">
-                        <option value="0">All</option>
-                        <option value="Критичный">Критичный</option>
-                        <option value="Высокий">Высокий</option>
-                        <option value="Низкий">Низкий</option>@*
-                        <option value="1">Информационный</option>*@
-                </select></th>
-                <th>Уставка/Значение</th>
-                <th>Комментарий</th>
-                <th>Тест</th>
-                <th>Количество повторений за смену</th>
-            </tr>            
-        </thead>
-        <tbody>
-            @foreach(var c in Alarms)
-            {
-                @if(c.Priority == Priority || Priority == "0")
-                {
-                @*<tr class="item-table">
-                    <td>@DateTime.Now.Date.ToString("d")</td>
-                    <td>@DateTime.Now.ToString("t")</td>
-                    <td>@c.Name</td>
-                    <td>@c.Description</td>
-                    <td>@c.Priority</td>
-                    <td>50 / 55</td>
-                    <td><input type="text"/></td>
-                    <td style="text-align: center;"><input type="checkbox" /></td>
-                    <td>1</td>
-                </tr>*@
-                <EventOnMonitor Tag=c></EventOnMonitor>
-                }
-               
-            }
-            
-            
-            
-        </tbody>
-    </table>
-</div>
+
 
 @code {
+    [Parameter] public string? Title { get; set; }
 
-    List<Alarm> Alarms;
-    string? Priority = "0";
     static DateTime From = new DateTime(2021, 01, 01, 00, 00, 00);
     static DateTime To = new DateTime(2021, 01, 30, 00, 00, 00);
 
+    private LineConfig? _config;
+    private LineConfig? _config2;
+    LineDataset<double?>? Dataset;
+    List<double?> num = new List<double?>();
+    List<string> numTime = new List<string>();
+    List<string> numTime2 = new List<string>();
+
     void SelectPriority()
     {
-        
+
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnParametersSet()
     {
+        var rand = new Random();
+        for (int i = 0;i<24;i++)
+        {
+            num.Add(rand.Next(15));
+            numTime.Add(DateTime.Now.AddHours(-24).AddHours(i).ToString("t") );
+        }
+
+        Dataset = new LineDataset<double?>(num)
+            {
+                BorderColor = "#1A7B9B",
+                Fill = FillingMode.Disabled,
+                Label = "УПНГ"
+            };
+
+        _config?.Data.Datasets.Add(Dataset);
+
+        num.Clear();
+
+        for (int i = 0;i<24;i++)
+        {
+            num.Add(rand.Next(15));
+            
+        }
+
+        Dataset = new LineDataset<double?>(num)
+            {
+                BorderColor = "#22C38E",
+                Fill = FillingMode.Disabled,
+                Label = "БМУПН"
+            };
+        _config?.Data.Datasets.Add(Dataset);
+
+        num.Clear();
+
+        for (int i = 0;i<24;i++)
+        {
+            num.Add(rand.Next(15));
+            
+        }
+
+        Dataset = new LineDataset<double?>(num)
+            {
+                BorderColor = "#F2C94C",
+                Fill = FillingMode.Disabled,
+                Label = "Скважины"
+            };
+        _config?.Data.Datasets.Add(Dataset);
+        
+        num.Clear();
+
+        for (int i = 0;i<24;i++)
+        {
+            num.Add(rand.Next(15));
+            
+        }
+
+        Dataset = new LineDataset<double?>(num)
+            {
+                BorderColor = "#EB6D00",
+                Fill = FillingMode.Disabled,
+                Label = "АРМ 4"
+            };
+        _config?.Data.Datasets.Add(Dataset);
+        
+        for (int i = 0;i<24;i++)
+        {
+            num.Add(rand.Next(10));
+            numTime2.Add(DateTime.Now.AddHours(-24).AddHours(i).ToString("t") );
+        }
+
+        Dataset = new LineDataset<double?>(num)
+            {
+                BorderColor = "#EB6D00",
+                Fill = FillingMode.Disabled,
+                Label = "Критичный"
+            };
+        _config2?.Data.Datasets.Add(Dataset);
+
+        num.Clear();
+        
+        
+        for (int i = 0;i<24;i++)
+        {
+            num.Add(rand.Next(10));            
+        }
+
+        Dataset = new LineDataset<double?>(num)
+            {
+                BorderColor = "#1A7B9B",
+                Fill = FillingMode.Disabled,
+                Label = "Высокий"
+            };
+        _config2?.Data.Datasets.Add(Dataset);
+        
+        num.Clear();
+        
+        for (int i = 0;i<24;i++)
+        {
+            num.Add(rand.Next(10));            
+        }
+
+        Dataset = new LineDataset<double?>(num)
+            {
+                BorderColor = "#22C38E",
+                Fill = FillingMode.Disabled,
+                Label = "Низкий"
+            };
+        _config2?.Data.Datasets.Add(Dataset);
+
+
+        foreach (string a in numTime2)
+        {
+            _config?.Data.Labels.Add(a);
+            _config2?.Data.Labels.Add(a);
+        }
+        
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+
+        _config = new LineConfig
+        {
+            Options = new LineOptions
+            {
+                Responsive = true,
+
+                Title = new OptionsTitle
+                {
+                    Display = false
+                },
+                Legend = new Legend
+                {
+                    Display = true,
+                    Position = Position.Right
+                },
+                Tooltips = new Tooltips
+                {
+                    Mode = InteractionMode.Index,
+                    Intersect = false,
+                    BodyFontSize = 14,
+                    BackgroundColor = "#fff",
+                    BodyFontColor = "#11273B",
+                    BorderWidth = 1,
+                    BorderColor = "#97B2C4",
+                    DisplayColors = false,
+                    TitleFontColor = "#11273B",
+                    TitleFontSize = 16
+                },                
+                Hover = new Hover
+                {
+                    Mode = InteractionMode.Nearest,
+                    Intersect = true
+                },
+            }
+        };
+
+        _config2 = new LineConfig
+        {
+            Options = new LineOptions
+            {
+                Responsive = true,
+
+                Title = new OptionsTitle
+                {
+                    Display = false
+                },
+                Legend = new Legend
+                {
+                    Display = true,
+                    Position = Position.Right
+                },
+                Tooltips = new Tooltips
+                {
+                    Mode = InteractionMode.Index,
+                    Intersect = false,
+                    BodyFontSize = 14,
+                    BackgroundColor = "#fff",
+                    BodyFontColor = "#11273B",
+                    BorderWidth = 1,
+                    BorderColor = "#97B2C4",
+                    DisplayColors = false,
+                    TitleFontColor = "#11273B",
+                    TitleFontSize = 16
+                },
+
+                Scales = new Scales
+                {
+                    YAxes = new List<CartesianAxis>
+                    {
+                        new LinearCartesianAxis
+                        {
+                            Ticks= new LinearCartesianTicks
+                            {
+
+                            }
+                        }
+                    },
+                },
+                Hover = new Hover
+                {
+                    Mode = InteractionMode.Nearest,
+                    Intersect = true
+                },
+            }
+        };
+        
+
         To = DateTime.Now.Date;
         From = To.AddDays(-1);
-        Alarms = new List<Alarm>
-        {
+    //    Alarms = new List<Alarm>
+    //    {
             
-            new Alarm {
-            ConditionName= "PVLO",
-            Description= "20Н-2/1. Перепад давления на фильтре",
-            Source= "20_1_PDIT_5"
-        },
-        new Alarm {
-            ConditionName= "PVLO",
-            Description= "20Н-2/1. Давление в трубопроводе приемном",
-            Source= "20_1_PIT_13"
-        },
-        new Alarm {
-            ConditionName= "PVLL",
-            Description= "20Н-2/1. Давление в трубопроводе приемном",
-            Source= "20_1_PIT_13"
-        },
-        new Alarm {
-            ConditionName= "PVLO",
-            Description= "20Н-2/1. Давление в трубопроводе напорном",
-            Source= "20_1_PIT_15"
-        },
-        new Alarm {
-            ConditionName= "PVLL",
-            Description= "20Н-2/1. Давление в трубопроводе напорном",
-            Source= "20_1_PIT_15"
-        },
-        new Alarm {
-            ConditionName= "PVLO",
-            Description= "20Н-2/2. Перепад давления на фильтре",
-            Source= "20_1_PDIT_6"
-        },
-        new Alarm {
-            ConditionName= "PVLO",
-            Description= "20Н-2/2. Давление в трубопроводе приемном",
-            Source= "20_1_PIT_16"
-        },
-        new Alarm {
-            ConditionName= "PVLL",
-            Description= "20Н-2/2. Давление в трубопроводе приемном",
-            Source= "20_1_PIT_16"
-        },
-        new Alarm {
-            ConditionName= "PVLO",
-            Description= "20Н-2/2. Давление в трубопроводе напорном",
-            Source= "20_1_PIT_17"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Насос НПф-1-1. Высокий уровень утечек_Ключ деблокации",
-            Source= "8_2_LS_1_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Сепаратор факельный Сф-2. Аварийно-высокий уровень жидкости_Ключ деблокации",
-            Source= "8_2_LISA_001_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Площадка слива метанола из автоцистерны. Загазованность_Ключ деблокации",
-            Source= "212_AIZA_005_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Площадка слива метанола из автоцистерны. Загазованность_Ключ деблокации",
-            Source= "212_AIZA_006_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "PVLL",
-            Description= "20Н-2/2. Давление в трубопроводе напорном",
-            Source= "20_1_PIT_17"
-        },
-        new Alarm {
-            ConditionName= "PVLO",
-            Description= "20Н-2/3. Перепад давления на фильтре",
-            Source= "20_1_PDIT_7"
-        },
-        new Alarm {
-            ConditionName= "PVLO",
-            Description= "20Н-2/3. Давление в трубопроводе приемном",
-            Source= "20_1_PIT_18"
-        },
-        new Alarm {
-            ConditionName= "PVLL",
-            Description= "20Н-2/3. Давление в трубопроводе приемном",
-            Source= "20_1_PIT_18"
-        },
-        new Alarm {
-            ConditionName= "PVLO",
-            Description= "20Н-2/3. Давление в трубопроводе напорном",
-            Source= "20_1_PIT_19"
-        },
-        new Alarm {
-            ConditionName= "PVLL",
-            Description= "20Н-2/3. Давление в трубопроводе напорном",
-            Source= "20_1_PIT_19"
-        },
-        new Alarm {
-            ConditionName= "PVLO",
-            Description= "20Н-2/4. Перепад давления на фильтре",
-            Source= "20_1_PDIT_8"
-        },
-        new Alarm {
-            ConditionName= "PVLO",
-            Description= "20Н-2/4. Давление в трубопроводе приемном",
-            Source= "20_1_PIT_20"
-        },
-        new Alarm {
-            ConditionName= "PVLL",
-            Description= "20Н-2/4. Давление в трубопроводе приемном",
-            Source= "20_1_PIT_20"
-        },
-        new Alarm {
-            ConditionName= "PVLO",
-            Description= "20Н-2/4. Давление в трубопроводе напорном",
-            Source= "20_1_PIT_21"
-        },
-        new Alarm {
-            ConditionName= "PVLL",
-            Description= "20Н-2/4. Давление в трубопроводе напорном",
-            Source= "20_1_PIT_21"
-        },
-        new Alarm {
-            ConditionName= "PVLL",
-            Description= "Уровень масла в маслобаке БМ 1",
-            Source= "20_1_LIT_1"
-        },
-        new Alarm {
-            ConditionName= "PVLL",
-            Description= "Уровень масла в маслобаке БМ 2",
-            Source= "20_1_LIT_2"
-        },
-        new Alarm {
-            ConditionName= "PVLO",
-            Description= "Перепад давления на фильтре масла",
-            Source= "20_1_PDIT_10"
-        },
-        new Alarm {
-            ConditionName= "PVLO",
-            Description= "Давление масла в трубопроводе масла",
-            Source= "20_1_PIT_23"
-        },
-        new Alarm {
-            ConditionName= "PVLL",
-            Description= "Давление масла в трубопроводе масла",
-            Source= "20_1_PIT_23"
-        },
-        new Alarm {
-            ConditionName= "RSLO",
-            Description= "Температура масла",
-            Source= "20_1_TT_46"
-        },
-        new Alarm {
-            ConditionName= "PVLO",
-            Description= "Температура масла",
-            Source= "20_1_TT_46"
-        },
-        new Alarm {
-            ConditionName= "PVLL",
-            Description= "Температура масла",
-            Source= "20_1_TT_46"
-        },
-        new Alarm {
-            ConditionName= "RSLO",
-            Description= "Температура масла в маслобаке БМ 1",
-            Source= "20_1_TT_47"
-        },
-        new Alarm {
-            ConditionName= "PVLO",
-            Description= "Температура масла в маслобаке БМ 1",
-            Source= "20_1_TT_47"
-        },
-        new Alarm {
-            ConditionName= "PVLL",
-            Description= "Температура масла в маслобаке БМ 1",
-            Source= "20_1_TT_47"
-        },
-        new Alarm {
-            ConditionName= "RSLO",
-            Description= "Температура масла в маслобаке БМ 2",
-            Source= "20_1_TT_48"
-        },
-        new Alarm {
-            ConditionName= "PVLO",
-            Description= "Температура масла в маслобаке БМ 2",
-            Source= "20_1_TT_48"
-        },
-        new Alarm {
-            ConditionName= "PVLL",
-            Description= "Температура масла в маслобаке БМ 2",
-            Source= "20_1_TT_48"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Площадка слива метанола из автоцистерны. Загазованность_Ключ деблокации",
-            Source= "212_AIZA_007_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "PVLO",
-            Description= "НА1. Перепад давления на фильтре",
-            Source= "20_1_PDIT_1"
-        },
-        new Alarm {
-            ConditionName= "PVLO",
-            Description= "НА1. Давление в трубопроводе приемном",
-            Source= "20_1_PIT_1"
-        },
-        new Alarm {
-            ConditionName= "PVLL",
-            Description= "НА1. Давление в трубопроводе приемном",
-            Source= "20_1_PIT_1"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Трубопровод метанола на подачу в газопровод внешнего транспорта. Расход_Ключ деблокации",
-            Source= "212_FI_003_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Трубопровод метанола на подачу к входным сооружениям подготовки ПГ. Расход_Ключ деблокации",
-            Source= "212_FI_004_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Емкость Ем-1-1. Уровень жидкости_Ключ деблокации",
-            Source= "212_LISA_001_1_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Емкость Ем-1-2. Уровень жидкости_Ключ деблокации",
-            Source= "212_LISA_002_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Емкость Ем-1-3. Уровень жидкости_Ключ деблокации",
-            Source= "212_LISA_003_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Емкость Ем-1-1. Давление_Ключ деблокации",
-            Source= "212_PIA_001_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Емкость Ем-1-2. Давление_Ключ деблокации",
-            Source= "212_PIA_002_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Трубопровод азота. Давление перед клапаном-регулятора_Ключ деблокации",
-            Source= "212_PI_007_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Емкость Ем-1-1. Температура_Ключ деблокации",
-            Source= "212_TI_001_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Емкость Ем-1-2. Температура_Ключ деблокации",
-            Source= "212_TI_002_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Емкость Ем-1-3. Температура_Ключ деблокации",
-            Source= "212_TI_003_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Емкость Ем-1-3. Давление_Ключ деблокации",
-            Source= "212_PIA_003_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Емкость Ем-1-4. Уровень жидкости_Ключ деблокации",
-            Source= "212_LISA_004_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Емкость Ем-1-4. Температура_Ключ деблокации",
-            Source= "212_TI_004_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Емкость Ем-1-4. Давление_Ключ деблокации",
-            Source= "212_PIA_004_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Емкость Ем-1-5. Уровень жидкости_Ключ деблокации",
-            Source= "212_LISA_005_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Емкость Ем-1-5. Температура_Ключ деблокации",
-            Source= "212_TI_005_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Емкость Ем-1-5. Давление_Ключ деблокации",
-            Source= "212_PIA_005_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Емкость Ем-1-6. Уровень жидкости_Ключ деблокации",
-            Source= "212_LISA_006_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Емкость Ем-1-6. Температура_Ключ деблокации",
-            Source= "212_TI_006_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Емкость Ем-1-6. Давление_Ключ деблокации",
-            Source= "212_PIA_006_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Гидрозатвор ГЗ-1. Уровень жидкости_Ключ деблокации",
-            Source= "212_LISA_007_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Гидрозатвор ГЗ-1. Температура_Ключ деблокации",
-            Source= "212_TI_007_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Гидрозатвор ГЗ-1. Давление_Ключ деблокации",
-            Source= "212_PIA_008_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Дренажная емкость ДЕ-6. Уровень_Ключ деблокации",
-            Source= "212_LISA_008_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Дренажная емкость ДЕ-6. Температура_Ключ деблокации",
-            Source= "212_TI_008_BLKKEY"
-        },
-        new Alarm {
-            ConditionName= "ALARM",
-            Description= "Дренажная емкость ДЕ-7. Уровень_Ключ деблокации",
-            Source= "212_LISA_001_BLKKEY"
-        }
-        };
+    //        new Alarm {
+    //        ConditionName= "PVLO",
+    //        Description= "20Н-2/1. Перепад давления на фильтре",
+    //        Source= "20_1_PDIT_5"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLO",
+    //        Description= "20Н-2/1. Давление в трубопроводе приемном",
+    //        Source= "20_1_PIT_13"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLL",
+    //        Description= "20Н-2/1. Давление в трубопроводе приемном",
+    //        Source= "20_1_PIT_13"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLO",
+    //        Description= "20Н-2/1. Давление в трубопроводе напорном",
+    //        Source= "20_1_PIT_15"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLL",
+    //        Description= "20Н-2/1. Давление в трубопроводе напорном",
+    //        Source= "20_1_PIT_15"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLO",
+    //        Description= "20Н-2/2. Перепад давления на фильтре",
+    //        Source= "20_1_PDIT_6"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLO",
+    //        Description= "20Н-2/2. Давление в трубопроводе приемном",
+    //        Source= "20_1_PIT_16"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLL",
+    //        Description= "20Н-2/2. Давление в трубопроводе приемном",
+    //        Source= "20_1_PIT_16"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLO",
+    //        Description= "20Н-2/2. Давление в трубопроводе напорном",
+    //        Source= "20_1_PIT_17"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Насос НПф-1-1. Высокий уровень утечек_Ключ деблокации",
+    //        Source= "8_2_LS_1_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Сепаратор факельный Сф-2. Аварийно-высокий уровень жидкости_Ключ деблокации",
+    //        Source= "8_2_LISA_001_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Площадка слива метанола из автоцистерны. Загазованность_Ключ деблокации",
+    //        Source= "212_AIZA_005_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Площадка слива метанола из автоцистерны. Загазованность_Ключ деблокации",
+    //        Source= "212_AIZA_006_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLL",
+    //        Description= "20Н-2/2. Давление в трубопроводе напорном",
+    //        Source= "20_1_PIT_17"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLO",
+    //        Description= "20Н-2/3. Перепад давления на фильтре",
+    //        Source= "20_1_PDIT_7"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLO",
+    //        Description= "20Н-2/3. Давление в трубопроводе приемном",
+    //        Source= "20_1_PIT_18"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLL",
+    //        Description= "20Н-2/3. Давление в трубопроводе приемном",
+    //        Source= "20_1_PIT_18"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLO",
+    //        Description= "20Н-2/3. Давление в трубопроводе напорном",
+    //        Source= "20_1_PIT_19"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLL",
+    //        Description= "20Н-2/3. Давление в трубопроводе напорном",
+    //        Source= "20_1_PIT_19"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLO",
+    //        Description= "20Н-2/4. Перепад давления на фильтре",
+    //        Source= "20_1_PDIT_8"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLO",
+    //        Description= "20Н-2/4. Давление в трубопроводе приемном",
+    //        Source= "20_1_PIT_20"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLL",
+    //        Description= "20Н-2/4. Давление в трубопроводе приемном",
+    //        Source= "20_1_PIT_20"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLO",
+    //        Description= "20Н-2/4. Давление в трубопроводе напорном",
+    //        Source= "20_1_PIT_21"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLL",
+    //        Description= "20Н-2/4. Давление в трубопроводе напорном",
+    //        Source= "20_1_PIT_21"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLL",
+    //        Description= "Уровень масла в маслобаке БМ 1",
+    //        Source= "20_1_LIT_1"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLL",
+    //        Description= "Уровень масла в маслобаке БМ 2",
+    //        Source= "20_1_LIT_2"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLO",
+    //        Description= "Перепад давления на фильтре масла",
+    //        Source= "20_1_PDIT_10"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLO",
+    //        Description= "Давление масла в трубопроводе масла",
+    //        Source= "20_1_PIT_23"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLL",
+    //        Description= "Давление масла в трубопроводе масла",
+    //        Source= "20_1_PIT_23"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "RSLO",
+    //        Description= "Температура масла",
+    //        Source= "20_1_TT_46"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLO",
+    //        Description= "Температура масла",
+    //        Source= "20_1_TT_46"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLL",
+    //        Description= "Температура масла",
+    //        Source= "20_1_TT_46"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "RSLO",
+    //        Description= "Температура масла в маслобаке БМ 1",
+    //        Source= "20_1_TT_47"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLO",
+    //        Description= "Температура масла в маслобаке БМ 1",
+    //        Source= "20_1_TT_47"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLL",
+    //        Description= "Температура масла в маслобаке БМ 1",
+    //        Source= "20_1_TT_47"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "RSLO",
+    //        Description= "Температура масла в маслобаке БМ 2",
+    //        Source= "20_1_TT_48"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLO",
+    //        Description= "Температура масла в маслобаке БМ 2",
+    //        Source= "20_1_TT_48"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLL",
+    //        Description= "Температура масла в маслобаке БМ 2",
+    //        Source= "20_1_TT_48"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Площадка слива метанола из автоцистерны. Загазованность_Ключ деблокации",
+    //        Source= "212_AIZA_007_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLO",
+    //        Description= "НА1. Перепад давления на фильтре",
+    //        Source= "20_1_PDIT_1"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLO",
+    //        Description= "НА1. Давление в трубопроводе приемном",
+    //        Source= "20_1_PIT_1"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "PVLL",
+    //        Description= "НА1. Давление в трубопроводе приемном",
+    //        Source= "20_1_PIT_1"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Трубопровод метанола на подачу в газопровод внешнего транспорта. Расход_Ключ деблокации",
+    //        Source= "212_FI_003_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Трубопровод метанола на подачу к входным сооружениям подготовки ПГ. Расход_Ключ деблокации",
+    //        Source= "212_FI_004_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Емкость Ем-1-1. Уровень жидкости_Ключ деблокации",
+    //        Source= "212_LISA_001_1_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Емкость Ем-1-2. Уровень жидкости_Ключ деблокации",
+    //        Source= "212_LISA_002_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Емкость Ем-1-3. Уровень жидкости_Ключ деблокации",
+    //        Source= "212_LISA_003_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Емкость Ем-1-1. Давление_Ключ деблокации",
+    //        Source= "212_PIA_001_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Емкость Ем-1-2. Давление_Ключ деблокации",
+    //        Source= "212_PIA_002_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Трубопровод азота. Давление перед клапаном-регулятора_Ключ деблокации",
+    //        Source= "212_PI_007_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Емкость Ем-1-1. Температура_Ключ деблокации",
+    //        Source= "212_TI_001_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Емкость Ем-1-2. Температура_Ключ деблокации",
+    //        Source= "212_TI_002_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Емкость Ем-1-3. Температура_Ключ деблокации",
+    //        Source= "212_TI_003_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Емкость Ем-1-3. Давление_Ключ деблокации",
+    //        Source= "212_PIA_003_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Емкость Ем-1-4. Уровень жидкости_Ключ деблокации",
+    //        Source= "212_LISA_004_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Емкость Ем-1-4. Температура_Ключ деблокации",
+    //        Source= "212_TI_004_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Емкость Ем-1-4. Давление_Ключ деблокации",
+    //        Source= "212_PIA_004_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Емкость Ем-1-5. Уровень жидкости_Ключ деблокации",
+    //        Source= "212_LISA_005_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Емкость Ем-1-5. Температура_Ключ деблокации",
+    //        Source= "212_TI_005_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Емкость Ем-1-5. Давление_Ключ деблокации",
+    //        Source= "212_PIA_005_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Емкость Ем-1-6. Уровень жидкости_Ключ деблокации",
+    //        Source= "212_LISA_006_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Емкость Ем-1-6. Температура_Ключ деблокации",
+    //        Source= "212_TI_006_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Емкость Ем-1-6. Давление_Ключ деблокации",
+    //        Source= "212_PIA_006_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Гидрозатвор ГЗ-1. Уровень жидкости_Ключ деблокации",
+    //        Source= "212_LISA_007_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Гидрозатвор ГЗ-1. Температура_Ключ деблокации",
+    //        Source= "212_TI_007_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Гидрозатвор ГЗ-1. Давление_Ключ деблокации",
+    //        Source= "212_PIA_008_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Дренажная емкость ДЕ-6. Уровень_Ключ деблокации",
+    //        Source= "212_LISA_008_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Дренажная емкость ДЕ-6. Температура_Ключ деблокации",
+    //        Source= "212_TI_008_BLKKEY"
+    //    },
+    //    new Alarm {
+    //        ConditionName= "ALARM",
+    //        Description= "Дренажная емкость ДЕ-7. Уровень_Ключ деблокации",
+    //        Source= "212_LISA_001_BLKKEY"
+    //    }
+    //    };
     }
 }

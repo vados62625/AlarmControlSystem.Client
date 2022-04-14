@@ -43,7 +43,9 @@
     --color-typo-link-hover: #6FA5C8;
 }
 
-
+.page .dark-theme {
+    color: var(--color-typo-primary);
+}
 
 html, body {
     font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -99,8 +101,9 @@ a, .btn-link {
 .choice-group {
     display: flex;
     flex-direction: row;
-    margin-bottom: 16px;
-    gap: 16px;
+    margin: 0 0 0px 16px;
+    gap: 16px;    
+    align-items:center;
 }
 
 

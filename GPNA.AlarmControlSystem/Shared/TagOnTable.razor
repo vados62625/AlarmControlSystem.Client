@@ -6,8 +6,15 @@
         <td>@Tag.Description</td>
         <td>@Tag.Unit</td>
         <td>@Tag.Priority</td>
+    @if (Tag.AlarmLimit > 100)
+    {
+        <td style="background-color:#EB5757;" title="Несовпадение с входящими авариями">@Math.Round(Convert.ToDecimal(Tag.AlarmLimit),2)</td>
+    }
+    else
+    {
         <td>@Math.Round(Convert.ToDecimal(Tag.AlarmLimit),2)</td>
-        <td>@Tag.Scale</td>                          
+    }
+
     </tr>
                         
     @if (displayMore)
