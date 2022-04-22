@@ -1,5 +1,108 @@
 ﻿@page "/reports"
 
-<h1>Отчеты</h1>
 
-Список отчетов.
+
+<div style="">
+    <h3>@Title</h3>
+    
+    <a style="margin-left:20px;">C :</a>
+        <input  type="datetime-local" @bind="From" @bind:format="yyyy-MM-ddTHH:mm">
+        <a>По :</a>
+        <input  type="datetime-local" @bind="To" @bind:format="yyyy-MM-ddTHH:mm">
+    
+    <img src="/img/examples/ReportItem1.png"/>
+</div>
+
+
+
+<div>
+    <h4>Количество сигнализаций за 24 часа</h4>
+    <div style="height:340px;">
+        <Chart1 Id = "chart1"
+        Data1="@num1" Label1="УПНГ" 
+        Data2="@num2" Label2="БМУПН" 
+        Data3="@num3" Label3="Скважины"
+        Data4="@num4" Label4="АРМ 4"
+        Data5="@num5"
+        Labels=@numTime> 
+    </Chart1>
+    </div>
+    
+        
+    <div style="display:flex;gap:20px;">
+        <h4>Количество сигнализаций на АРМе</h4>
+        <select >        
+            <option value="УПНГ">УПНГ</option>
+            <option value="БМУПН">БМУПН</option>
+            <option value="Скважины">Скважины</option>
+            <option value="АРМ 4">АРМ 4</option>
+        </select>
+    </div>
+    
+    <div style="height:340px;">
+        <Chart2 Id = "chart2"
+        Data1="@num1"  
+        Data2="@num2"  
+        Data3="@num3"
+        Labels=@numTime> 
+    </Chart2>
+    </div>
+
+</div>
+
+
+
+@code {
+    [Parameter] public string? Title { get; set; }
+
+    static DateTime From = new DateTime(2021, 01, 01, 00, 00, 00);
+    static DateTime To = new DateTime(2021, 01, 30, 00, 00, 00);
+    
+    string[] num1 = new string[25];
+    string[] num2 = new string[25];
+    string[] num3 = new string[25];
+    string[] num4 = new string[25];
+    string[] num5 = new string[25];
+    string[] num6 = new string[25];
+    string[] num7 = new string[25];
+    string[] num8 = new string[25];
+    string[] numTime = new string[25];
+    
+
+    void SelectPriority()
+    {
+
+    }
+
+    protected override void OnParametersSet()
+    {
+        var rand = new Random();
+       
+        for (int i = 0;i<25;i++)
+        {
+            
+            numTime[i] = (DateTime.Now.AddHours(-24).AddHours(i).ToString("t") );
+
+            num1[i]=rand.Next(15).ToString();
+            num2[i]=rand.Next(15).ToString();
+            num3[i]=rand.Next(15).ToString();
+            num4[i]=rand.Next(15).ToString();
+            num5[i]="12";
+
+            num6[i]=rand.Next(15).ToString();
+            num7[i]=rand.Next(15).ToString();
+            num8[i]=rand.Next(15).ToString();
+        }
+
+        
+                      
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    { 
+        To = DateTime.Now.Date;
+        From = To.AddDays(-1);
+    
+    }
+}

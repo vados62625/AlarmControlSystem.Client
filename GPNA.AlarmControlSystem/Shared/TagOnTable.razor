@@ -4,11 +4,11 @@
         <td>@Tag.Position</td>
         <td>@(Tag.TagName + "_" + Tag.State)</td>
         <td>@Tag.Description</td>
-        <td>@Tag.Unit</td>
+        @*<td>@Tag.Unit</td>*@
         <td>@Tag.Priority</td>
     @if (Tag.AlarmLimit > 100)
     {
-        <td style="background-color:#EB5757;" title="Несовпадение с входящими авариями">@Math.Round(Convert.ToDecimal(Tag.AlarmLimit),2)</td>
+        <td style="background-color:#EB5757;" title="Несовпадение с вх. сигн.">@Math.Round(Convert.ToDecimal(Tag.AlarmLimit),2) / @Math.Round(Convert.ToDecimal(Tag.AlarmLimit*0.8),2)</td>
     }
     else
     {

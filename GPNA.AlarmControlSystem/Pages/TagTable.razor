@@ -13,7 +13,7 @@
                 <th>Позиция по ГП</th>
                 <th>TagName</th>
                 <th>Описание</th>
-                <th>Ед. изм.</th>              
+                @*<th>Ед. изм.</th>*@              
                 <th>Приоритет</th>
                 <th>Уставка</th>
                 @*<th>Шкала</th>
@@ -30,10 +30,8 @@
             {
                 if(c!=null)
                 if (c.TagName.ToUpper().IndexOf(input.ToUpper()) > -1)
-                {
-                    
-                        <TagOnTable Tag="@c"/>
-                        
+                {                    
+                        <TagOnTable Tag="@c"/>                        
                 }
 
             }
