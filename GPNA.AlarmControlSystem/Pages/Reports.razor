@@ -16,13 +16,13 @@
 
 
 <div>
-    <h4>Количество сигнализаций за 24 часа</h4>
+    <h4>Количество сигнализаций за неделю</h4>
     <div style="height:340px;">
         <Chart1 Id = "chart1"
         Data1="@num1" Label1="УПНГ" 
         Data2="@num2" Label2="БМУПН" 
         Data3="@num3" Label3="Скважины"
-        Data4="@num4" Label4="АРМ 4"
+        Data4="@num4" Label4="Энергетика"
         Data5="@num5"
         Labels=@numTime> 
     </Chart1>
@@ -35,7 +35,7 @@
             <option value="УПНГ">УПНГ</option>
             <option value="БМУПН">БМУПН</option>
             <option value="Скважины">Скважины</option>
-            <option value="АРМ 4">АРМ 4</option>
+            <option value="Энергетика">Энергетика</option>
         </select>
     </div>
     
@@ -58,15 +58,15 @@
     static DateTime From = new DateTime(2021, 01, 01, 00, 00, 00);
     static DateTime To = new DateTime(2021, 01, 30, 00, 00, 00);
     
-    string[] num1 = new string[25];
-    string[] num2 = new string[25];
-    string[] num3 = new string[25];
-    string[] num4 = new string[25];
-    string[] num5 = new string[25];
-    string[] num6 = new string[25];
-    string[] num7 = new string[25];
-    string[] num8 = new string[25];
-    string[] numTime = new string[25];
+    string[] num1 = new string[168];
+    string[] num2 = new string[168];
+    string[] num3 = new string[168];
+    string[] num4 = new string[168];
+    string[] num5 = new string[168];
+    string[] num6 = new string[168];
+    string[] num7 = new string[168];
+    string[] num8 = new string[168];
+    string[] numTime = new string[168];
     
 
     void SelectPriority()
@@ -78,10 +78,10 @@
     {
         var rand = new Random();
        
-        for (int i = 0;i<25;i++)
+        for (int i = 0;i<168;i++)
         {
             
-            numTime[i] = (DateTime.Now.AddHours(-24).AddHours(i).ToString("t") );
+            numTime[i] = (DateTime.Now.AddHours(-168).AddHours(i).ToString("M")+" " + DateTime.Now.AddHours(-168).AddHours(i).ToString("t"));
 
             num1[i]=rand.Next(15).ToString();
             num2[i]=rand.Next(15).ToString();
