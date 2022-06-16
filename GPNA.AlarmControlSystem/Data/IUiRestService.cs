@@ -5,5 +5,7 @@ namespace GPNA.AlarmControlSystem.Data
     public interface IUiRestService
     {
         List<Tag> GetAllTag();
+
+        Task GetBranch();
     }
 }

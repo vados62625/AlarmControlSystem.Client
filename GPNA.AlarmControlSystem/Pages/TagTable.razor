@@ -52,9 +52,12 @@
     }
 
 
-    protected override void OnInitialized()
+    protected override async Task OnParametersSetAsync()
     {
+
         AlarmsTagTable = UiRestService.GetAllTag();    
+
+        await UiRestService.GetBranch();  
     }
 }
 
