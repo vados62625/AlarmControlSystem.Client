@@ -1,4 +1,4 @@
-﻿@using Data.AlarmControlSystem
+﻿@using GPNA.ACSAPI.Repositories.Models
 
     <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">
         <td>@Tag.Position</td>
@@ -6,7 +6,7 @@
         <td>@Tag.Description</td>
         @*<td>@Tag.Unit</td>*@
         <td>@Tag.Priority</td>
-    @if (Tag.AlarmLimit > 100)
+@*    @if (Tag.AlarmLimit > 100)
     {
         <td style="background-color:#EB5757;" title="Несовпадение с вх. сигн.">@Math.Round(Convert.ToDecimal(Tag.AlarmLimit),2) / @Math.Round(Convert.ToDecimal(Tag.AlarmLimit*0.8),2)</td>
     }
@@ -15,6 +15,8 @@
         <td>@Math.Round(Convert.ToDecimal(Tag.AlarmLimit),2)</td>
     }
     <td></td>
+    }*@
+
     </tr>
                         
     @if (displayMore)
@@ -23,7 +25,7 @@
         <td colspan="7" class="p-5 m-5">           
                 <p><b>Потенциальные последствия: </b> @Tag.Consequence</p>
                 <p><b>Действия Полевого оператора: </b>@Tag.ActionFieldOperator</p>
-                <p><b>Действия Оператора АРМ: </b>@Tag.ActionFieldArm</p>
+                @*<p><b>Действия Оператора АРМ: </b>@Tag.ActionFieldArm</p>*@
                 <p><b>Уровень усиления: </b>@Tag.Inform</p>
                 <p><b>Время на реакцию: </b>@Tag.ReactionTime</p>
         </td>                        

@@ -1,6 +1,7 @@
 ﻿@page "/tagtable"
-@using Data.AlarmControlSystem
-@inject IUiRestService UiRestService 
+@using GPNA.AlarmControlSystem.LocalDbStorage.Data.Interfaces
+@using GPNA.ACSAPI.Repositories.Models
+@inject IRestService RestService 
 
 <h3>Таблица переменных</h3>
 
@@ -51,9 +52,16 @@
         ShouldRender();
     }
 
-    protected override void OnInitialized()
+
+    protected override async Task OnParametersSetAsync()
     {
-        AlarmsTagTable = UiRestService.GetAllTag();    
+
+        var tags = await RestService.GetAllTag();
+
+	    AlarmsTagTable = new List<Tag>(tags);
+
+
+	//await UiRestService.GetBranch();  
     }
 }
 
