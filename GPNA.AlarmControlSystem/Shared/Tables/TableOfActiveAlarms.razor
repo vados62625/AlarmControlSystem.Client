@@ -1,0 +1,43 @@
+﻿
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">        
+        <thead class="thead-light">
+            <tr>
+                <th>Дата последней сигнализации</th>
+                <th>Время последней сигнализации</th>
+                <th>Таг</th>
+                <th>Описание</th>
+                <th>Приоритет 
+                    <select @bind="@Priority">
+                        <option value="0">Все</option>
+                        <option value="Критичный">Критичный</option>
+                        <option value="Высокий">Высокий</option>
+                        <option value="Низкий">Низкий</option>
+                    </select>
+                </th>
+                <th>Уставка/Значение</th>
+                @*<th>Комментарий</th>*@
+                <th>Тест</th>
+                <th>Количество повторений за смену</th>
+            </tr>            
+        </thead>
+        <tbody>
+            @if (Body == null)
+            {
+                <tr>
+                    <td colspan="8">N/A</td>
+                </tr>
+            }
+            else
+            {
+                @Body
+            }
+            
+            
+        </tbody>        
+    </table>
+</div>
+@code {
+     [Parameter] public RenderFragment? Body { get; set;}
+     string? Priority = "0";
+}
