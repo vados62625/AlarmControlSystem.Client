@@ -42,13 +42,15 @@
     [Parameter]
     public string? Label4 { get; set; }
 
+    public async Task Update()
+    {
+        await OnAfterRenderAsync(false);
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-
-
         var config = new
         {
-
             Type = ChartType.Line.ToString().ToLower(),
             Options = new
             {

@@ -4,31 +4,27 @@
         <span class="login-display__initials">@initials</span>
         <span class="login-display__username">@user</span>
     </div>
-    
-    
 @*</AuthorizeView>*@
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 @code
 {
-    string user = "User";
-    string initials = "US";
+    string? user = "User";
+    string? initials = "N/A";
 
-    //protected override async Task OnParametersSetAsync()
-    //{
-    //    var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-    //    user = authState.User.Identity.Name; //Получаем полное имя с доменом так
+    protected override async Task OnParametersSetAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        user = authState?.User?.Identity?.Name; //Получаем полное имя с доменом так
 
+        if (user != null)
+        {
+            var numberSlash = user.IndexOf("\\"); // Находим "\" для удаления домена
+            user = user.Remove(0, (numberSlash + 1)); //Удаляем все до "\"
 
-    //    if (user != null)
-    //    {
-
-    //        var numberSlash = user.IndexOf("\\"); // Находим "\" для удаления домена
-    //        user = user.Remove(0, (numberSlash + 1)); //Удаляем все до "\"
-
-    //        initials = user[0].ToString() + user[user.Length - 2].ToString();           //Берем первый символ и предпоследний. Первую букву фамилии и имени
-    //        initials = initials.ToUpper();
-    //    }
-    //}
+            initials = user[0].ToString() + user[user.Length - 2].ToString();           //Берем первый символ и предпоследний. Первую букву фамилии и имени
+            initials = initials.ToUpper();
+        }
+    }
 }

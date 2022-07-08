@@ -80,7 +80,8 @@ header {
 
 .main {
     background-color: var(--color-bg-default);
-    color:var(--color-typo-default);
+    color: var(--color-typo-default);
+    min-height: calc(100vh - 60px);
 }
 
 .sub-menu {

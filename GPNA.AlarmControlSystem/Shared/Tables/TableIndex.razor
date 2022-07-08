@@ -1,0 +1,80 @@
+﻿<div style="min-width:530px;">
+        <h3 style="margin-top:50px;text-align: center;">@Title</h3>
+        <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>@From.ToString("M") - @To.ToString("M")</th>
+                    <th>Пн</th>
+                    <th>Вт</th>
+                    <th>Ср</th>              
+                    <th>Чт</th>
+                    <th>Пт</th> 
+                    <th>Сб</th>
+                    <th>Вс</th> 
+                </tr>
+            </thead>            
+            <tbody>
+                <tr>
+                    <th>УПНГ</th>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <th>БМУПН</th>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <th>Скважины</th>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <th>Энергетика</th>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                </tr>            
+             </tbody>
+        </table>
+    </div>
+    </div>
+
+@code {
+    [Parameter] public string? Title { get; set; }
+
+    DateTime From = new();
+    DateTime To = new();
+
+    
+
+    protected override void OnInitialized()
+    { 
+        From = DateTime.Now.AddDays(-((int) DateTime.Now.DayOfWeek)-6);
+        To = DateTime.Now.AddDays(-((int) DateTime.Now.DayOfWeek));
+
+        //Получить список всех аварий Входящих/Активных/Подавленных за промежуток From - To 
+        
+        //
+    }
+}

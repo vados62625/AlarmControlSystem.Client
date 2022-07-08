@@ -16,6 +16,7 @@
                 @*<th>Ед. изм.</th>*@              
                 <th>Приоритет</th>
                 <th>Уставка</th>
+                <th>Несоответствия</th>
                 @*<th>Шкала</th>
                 <th>Дублируется ли сигнализация (ТАГ)</th>               
                 <th>Потенциальные последствия</th>
@@ -28,7 +29,7 @@
     <tbody>
             @foreach(var c in AlarmsTagTable)
             {
-                if(c!=null)
+                if(c!=null && c.TagName!=null)
                 if (c.TagName.ToUpper().IndexOf(input.ToUpper()) > -1)
                 {                    
                         <TagOnTable Tag="@c"/>                        
@@ -41,7 +42,7 @@
 
 
 @code {
-    List<Tag> AlarmsTagTable;
+    List<Tag> AlarmsTagTable=new();
 
     string input = "";    
 

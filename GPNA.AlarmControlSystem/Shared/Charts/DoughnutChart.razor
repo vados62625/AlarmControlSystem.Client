@@ -1,6 +1,6 @@
 ﻿@inject IJSRuntime JSRuntime
  
-<canvas id="@Id"></canvas>
+<canvas id="@Id" style="z-index:1;color: var(--color-typo-default)"></canvas>
  
 @code {
     public enum ChartType
@@ -63,7 +63,7 @@
                 },
                 Scales = new
                 {
-                    
+
                 },
                 Plugins = new
                 {
@@ -72,7 +72,6 @@
                     {
 
                         Intersect = false,
-
                         BackgroundColor = "#fff",
                         BodyColor = "#11273B",
                         BorderWidth = 1,
@@ -84,8 +83,13 @@
                     },
                     Legend = new
                     {
+                        Labels = new
+                        {
+                            Color = "#97B2C4"
+                            
+                        },
                         Display = true,
-                        Position = "top"
+                        Position = "top",
                     },
                 },
             },
