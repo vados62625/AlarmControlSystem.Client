@@ -1,8 +1,10 @@
 ﻿namespace GPNA.ACSAPI.Repositories.Base
 {
-    public partial class EntityBase
+    public class EntityBase
     {
-        public long Id { get; set; }
-
+        /// <summary>
+        /// Id
+        /// </summary>
+        public int Id { get; set; }
     }
 }

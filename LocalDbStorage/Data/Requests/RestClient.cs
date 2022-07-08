@@ -27,7 +27,7 @@ namespace GPNA.AlarmControlSystem.LocalDbStorage.Data.Requests
             }
             catch (Exception e)
             {
-
+                Console.WriteLine(e);
             }
             return new T[0];
         }
@@ -42,7 +42,7 @@ namespace GPNA.AlarmControlSystem.LocalDbStorage.Data.Requests
             }
             catch (Exception e)
             {
-
+                Console.WriteLine(e);
             }
             return default;
         }
@@ -56,8 +56,35 @@ namespace GPNA.AlarmControlSystem.LocalDbStorage.Data.Requests
             }
             catch (Exception e)
             {
-
+                Console.WriteLine(e);
             }
+        }
+
+        public async Task Put<T>(string uri, T identificator)
+        {
+            try
+            {
+                var client = _clientFactory.CreateClient(nameof(RestClient));
+                await client.Put(uri, identificator);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        public async Task Delete(string uri)
+        {
+            try
+            {
+                var client = _clientFactory.CreateClient(nameof(RestClient));
+                await client.Delete(uri);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
         }
     }
 }

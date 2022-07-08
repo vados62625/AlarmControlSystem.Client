@@ -1,31 +1,30 @@
+using System.Configuration;
 using GPNA.AlarmControlSystem;
-using GPNA.AlarmControlSystem.Config;
 using GPNA.AlarmControlSystem.Data;
-using GPNA.AlarmControlSystem.Data.AlarmControlSystem;
 using GPNA.AlarmControlSystem.LocalDbStorage.Data.Interfaces;
 using GPNA.AlarmControlSystem.LocalDbStorage.Data.Requests;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
+    .Build();
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-//builder.Configure<ConnectionConfig>(Configuration.GetSection("ConnectionConfig"));
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-
-
 builder.Services.AddTransient<IRestClient, RestClient>();
-builder.Services.AddTransient<IRestService, RestService>();
-builder.Services.AddHttpClient<RestClient>(c => c.BaseAddress = new System.Uri("https://192.168.15.227:7010/"));
-builder.Services.AddHttpClient<RestClient>(c => c.Timeout = TimeSpan.FromMilliseconds(10000));
+builder.Services.AddHttpClient<RestClient>(c =>
+{
+    var uri = configuration["HttpClientConfig:BaseAddress"];
+    var timeOut = configuration["HttpClientConfig:Timeout"];
 
-builder.Services.AddSingleton<AlarmControlSystemContext>();
-builder.Services.AddTransient<IUiRestService, UiRestService>();
+    c.BaseAddress = new System.Uri(uri);
+    c.Timeout = TimeSpan.FromMilliseconds(10000);
+});
+builder.Services.AddTransient<IRestService, RestService>();
 
 var app = builder.Build();
 
@@ -37,7 +36,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 

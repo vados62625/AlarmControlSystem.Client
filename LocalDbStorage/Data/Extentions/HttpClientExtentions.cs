@@ -18,7 +18,6 @@ namespace LocalDbStorage.Data.Extentions
             };
         public static async Task<T[]> GetAll<T>(this HttpClient client, string uri)
         {
-           
             try
             {
                 client.DefaultRequestHeaders.Accept.Clear();
@@ -35,7 +34,7 @@ namespace LocalDbStorage.Data.Extentions
             }
             catch (Exception e)
             {
-                ;
+                Console.WriteLine(e);
             }
             return new T[0];
         }
@@ -57,19 +56,42 @@ namespace LocalDbStorage.Data.Extentions
 
         public static async Task Post<T>(this HttpClient client, string uri, T identificator)
         {
-
-            //var dto = new GenericDto<T[]>
-            //{
-            //    Payload = identificators.ToArray()
-            //};
-
             var jsonSer = JsonSerializer.Serialize(identificator);
             var httpContent = new StringContent(jsonSer, Encoding.UTF8, "application/json");
 
             client.DefaultRequestHeaders.Accept.Clear();
 
-            await client.PostAsync($"/api/msgp/RealTimeValue/getid", httpContent);
+            await client.PostAsync(uri, httpContent);
+        }
 
+        public static async Task Put<T>(this HttpClient client, string uri, T identificator)
+        {
+            try
+            {
+                var jsonSer = JsonSerializer.Serialize(identificator);
+                var httpContent = new StringContent(jsonSer, Encoding.UTF8, "application/json");
+
+                client.DefaultRequestHeaders.Accept.Clear();
+
+                var message = await client.PutAsync(uri, httpContent);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        public static async Task Delete(this HttpClient client, string uri)
+        {
+            try
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                var response = await client.DeleteAsync(uri);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
     }
 }

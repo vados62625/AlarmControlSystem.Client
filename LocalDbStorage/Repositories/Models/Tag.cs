@@ -1,25 +1,74 @@
 ﻿using GPNA.ACSAPI.Repositories.Base;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace GPNA.ACSAPI.Repositories.Models
 {
-
-    public partial class Tag : ParentEntityBase
+    /// <summary>
+    /// Теги
+    /// </summary>
+    public partial class Tag : EntityBase
     {
-        public string Position { get; set; } = null!;
-        public string TagName { get; set; } = null!;
-        public string Description { get; set; } = null!;
-        public string Unit { get; set; } = null!;
-        public string State { get; set; } = null!;
-        public string Priority { get; set; } = null!;
-        public float AlarmLimit { get; set; }
-        public float Scale { get; set; }
-        public string Consequence { get; set; } = null!;
-        public string ActionFieldOperator { get; set; } = null!;
-        public string ActionFieldArm { get; set; } = null!;
-        public string Inform { get; set; } = null!;
-        public string ReactionTime { get; set; } = null!;
+        /// <summary>
+        /// Позиция
+        /// </summary>
+        public string? Position { get; set; }
+
+        /// <summary>
+        /// Имя тега
+        /// </summary>
+        public string TagName { get; set; }
+
+        /// <summary>
+        /// Описание 
+        /// </summary>
+        public string? Description { get; set; }
+        /// <summary>
+        /// ед. измерения 
+        /// </summary>
+        public string? Unit { get; set; }
+
+        /// <summary>
+        /// Состояние
+        /// </summary>
+        public string? State { get; set; }
+
+        /// <summary>
+        /// Приоритет
+        /// </summary>
+        public string? Priority { get; set; }
+
+        /// <summary>
+        /// Предел
+        /// </summary>
+        public string? AlarmLimit { get; set; }
+
+        /// <summary>
+        /// Шкала
+        /// </summary>
+        public string? Scale { get; set; }
+
+        /// <summary>
+        /// Последствие
+        /// </summary>
+        public string? Consequence { get; set; }
+
+        /// <summary>
+        /// Действие полевого оператора
+        /// </summary>
+        public string? ActionFieldOperator { get; set; }
+
+        /// <summary>
+        /// Действие оператора АРМ
+        /// </summary>
+        public string? ActionArmOperator { get; set; }
+
+        /// <summary>
+        /// Информация
+        /// </summary>
+        public string? Inform { get; set; }
+
+        /// <summary>
+        /// Время на реакцию
+        /// </summary>
+        public string? ReactionTime { get; set; }
     }
 }
