@@ -7,49 +7,48 @@
 
 <input type="text" id="myInput" @onkeypress="SearchTag" @bind="input" placeholder="Search for names..">
 
-<div class="table-responsive">
-    <table class="table table-striped table-bordered">
-    <thead class="thead-light">
-        <tr>
-                <th>Позиция по ГП</th>
-                <th>TagName</th>
-                <th>Описание</th>
-                @*<th>Ед. изм.</th>*@              
-                <th>Приоритет</th>
-                <th>Уставка</th>
-                <th>Несоответствия</th>
-                @*<th>Шкала</th>
-                <th>Дублируется ли сигнализация (ТАГ)</th>               
-                <th>Потенциальные последствия</th>
-                <th>Действия Полевого оператора</th>
-                <th>Действия Оператора АРМ</th>
-                <th>Уровень усиления</th>
-                <th>Сколько времени на реакцию</th>*@
-            </tr>
-    </thead>
-    <tbody>
-            @foreach(var c in AlarmsTagTable)
-            {
-                if(c!=null && c.TagName!=null)
-                if (c.TagName.ToUpper().IndexOf(input.ToUpper()) > -1)
-                {                    
-                        <TagOnTable Tag="@c"/>                        
-                }
+@if (AlarmsTagTable == null)
+{
+    <Loader/>
+}
+else
+{
+    <div class="table-responsive" style="margin-top:10px;height:780px;overflow-y:scroll;border-top: 0.5px solid rgba(0, 65, 102, 0.2);border-bottom: 0.5px solid rgba(0, 65, 102, 0.2);">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>Позиция по ГП</th>
+                    <th>TagName</th>
+                    <th>Описание</th>            
+                    <th>Приоритет</th>
+                    <th>Уставка</th>
+                    <th>Несоответствия</th>                    
+                </tr>
+            </thead>
+            <tbody>
+                <Virtualize Items="AlarmsTagTable">
+                    <ItemContent>
+                        <TagOnTable @key="context.Id" Tag="@context"/>
+                    </ItemContent>
+                    <Placeholder>
+                        <Loader/>
+                    </Placeholder>
+                </Virtualize>
+            </tbody>
+        </table>
+    </div>   
+}
 
-            }
-        </tbody>
-    </table>
-</div>
 
 
 @code {
-    List<Tag> AlarmsTagTable=new();
+    List<Tag>? AlarmsTagTable;
 
     string input = "";    
 
-    void SearchTag()
-    {        
-        ShouldRender();
+    async Task SearchTag()
+    {
+        await OnParametersSetAsync();
     }
 
 
@@ -57,11 +56,26 @@
     {
 
         var tags = await RestService.GetAllTag();
+        var alarmsTagTable = new List<Tag>(tags);
 
-	    AlarmsTagTable = new List<Tag>(tags);
-
-
-	//await UiRestService.GetBranch();  
+        if (input != "")
+        {
+            AlarmsTagTable = new();
+            foreach (var context in alarmsTagTable)
+            {
+                @if (context != null && context.TagName != null)
+                {
+                    if (context.TagName.ToUpper().IndexOf(input.ToUpper()) > -1)
+                    {
+                        AlarmsTagTable.Add(context);
+                    }                    
+                }
+            }
+        }
+        else 
+        {
+            AlarmsTagTable = alarmsTagTable;
+        }
+    
     }
 }
-
