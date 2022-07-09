@@ -1,4 +1,6 @@
-﻿    @*<tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">
+﻿    @using GPNA.ACSAPI.Repositories.Models
+
+@*<tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">
         <td>@Tag.Position</td>
         <td>@(Tag.TagName + "_" + Tag.State)</td>
         <td>@Tag.Description</td>
@@ -7,13 +9,13 @@
         <td>@Math.Round(Convert.ToDecimal(Tag.AlarmLimit),2)</td>
         <td>@Tag.Scale</td>                          
     </tr>*@
-    @if(Tag!=null && Tag.Name!=null)
+    @if(Tag!=null && Tag.TagName!=null)
     {
     <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">        
         <td>@DateTime.Now.Date.ToString("d")</td>
         <td>@DateTime.Now.ToString("t")</td>
             
-        @if (Tag.Name.EndsWith("LL") || Tag.Name.EndsWith("HH"))
+        @*@if (Tag.Description.EndsWith("LL") || Tag.Name.EndsWith("HH"))
         {
             <td>@Tag.Name.Substring(0,Tag.Name.Length - 2) <span style="color: #EB3333;font-weight:700;">@Tag.Name.Substring(Tag.Name.Length-2)</span></td>
         }
@@ -22,16 +24,46 @@
             <td>@Tag.Name.Substring(0,Tag.Name.Length - 2) <span style="color: #F38B01;font-weight:700;">@Tag.Name.Substring(Tag.Name.Length-2)</span></td>
         }
         else
-        {
-            <td>@Tag.Name</td>
-        } 
+        {*@
+            <td>@Tag.TagName</td>
+        @*}*@ 
         
-        <td>@(Tag.Description ??= "N/A")</td>
-        <td>@Tag.Priority</td>
-        <td>50 / 55</td>
+        @if (Tag.Description != null)
+        {
+            <td>@(Tag.Description ??= "N/A")</td>
+        }
+        else
+        {
+            <td>N/A</td>
+        }
+        @if (Tag.Priority != null)
+        {
+            <td>@(Tag.Priority)</td>
+        }
+        else
+        {
+            <td>N/A</td>
+        }
+
+        @if (Tag.AlarmLimit != null && Tag.Value!=null)
+        {
+            <td>@(Tag.AlarmLimit+" / "+Tag.Value)</td>
+        }
+        else 
+        {
+            <td>N/A</td>
+        }      
+        
         @*<td><a >Подробнее..</a></td>*@
-        <td style="text-align: center;"><input type="checkbox" /></td>
-        <td>1</td>            
+        @if (Tag.Test != null)
+        {
+             <td style="text-align: center;"><input type="checkbox" @bind="@Tag.Test" /></td>
+        }
+        else 
+        {
+            <td>N/A</td>
+        }       
+        <td>N/A</td>            
     </tr>
     }              
     @if (displayMore)
@@ -49,7 +81,7 @@
     }
 @code
 {
-    [Parameter] public Alarm? Tag { get; set; }
+    [Parameter] public IncomingAlarm? Tag { get; set; }
 
     bool displayMore = false;
 

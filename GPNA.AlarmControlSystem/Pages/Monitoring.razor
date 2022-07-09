@@ -1,5 +1,8 @@
 ﻿@page "/Arm/{armId:int}"
 @using System.Text.Json;
+@using GPNA.AlarmControlSystem.LocalDbStorage.Data.Interfaces
+@using GPNA.ACSAPI.Repositories.Models
+@inject IRestService RestService 
 
 <div style="display:flex; justify-content:center;">
     <h3>@Title</h3>
@@ -42,13 +45,21 @@
             </tr>            
         </thead>
         <tbody>
-            @foreach(var c in Alarms)
-            {
-                @if(c.Priority == Priority || Priority == "0")
+                @if(InputAlarms == null)
                 {
-                    <InputAlarm Tag=c/>
-                }               
-            }  
+                    <Loader/>
+                }
+                else
+                {
+                    @foreach(var c in InputAlarms)
+                    {
+                        @if(c.Priority == Priority || Priority == "0")
+                        {
+                            <InputAlarm Tag=c/>
+                        }               
+                    }  
+                }
+                
         </tbody>  
         }
 
@@ -75,14 +86,14 @@
             </tr>            
         </thead>
         <tbody>
-            @foreach(var c in Alarms)
+            @*@foreach(var c in Alarms)
             {
                 @if(c.Priority == Priority || Priority == "0")
                 {
                 <ActiveAlarm Tag=c/>
                 
                 }               
-            }  
+            }  *@
         </tbody>  
 }
 
@@ -108,13 +119,13 @@
             </tr>            
         </thead>
         <tbody>
-            @foreach(var c in Alarms)
+            @*@foreach(var c in Alarms)
             {
                 @if(c.Priority == Priority || Priority == "0")
                 {
                 <SuppressedAlarm Tag=c/>                
                 }               
-            }  
+            }*@  
         </tbody>  
 }
         
@@ -125,7 +136,7 @@
     [Parameter] public int ArmId { get; set; }
     [Parameter] public string? Title { get; set; }
     string? AlarmType = "Входящие";
-    List<Alarm> Alarms=new();
+    List<IncomingAlarm>? InputAlarms;
     string? Priority = "0";
     static DateTime From = new();
     static DateTime To = new();
@@ -154,13 +165,17 @@
 
         }
     }
-        
-    protected override void OnInitialized()    
+
+    protected override async Task OnInitializedAsync()    
     {  
         To = DateTime.Now.Date;
         From = To.AddDays(-1);
-    //    Alarms = new List<Alarm>
-    //    {            
+
+        var tags = await RestService.GetAllIncomingAlarm();
+
+        InputAlarms = new List<IncomingAlarm>(tags);;
+
+        //    {            
     //        new Alarm {
     //        ConditionName= "PVLO",
     //        Description= "20Н-2/1. Перепад давления на фильтре",
