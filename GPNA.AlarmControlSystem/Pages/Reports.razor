@@ -1,6 +1,8 @@
 ﻿@page "/reports"
 @inject IJSRuntime JSRuntime
-
+@using GPNA.AlarmControlSystem.LocalDbStorage.Data.Interfaces
+@using GPNA.ACSAPI.Repositories.Models
+@inject IRestService RestService 
 
 <div style="display:flex;align-items: center;    justify-content: space-evenly; ">
     <h3>@Title</h3>
@@ -59,7 +61,10 @@
 <div>
     <h4>Количество сигнализаций за неделю</h4>
     <div style="height:340px;">
-        <canvas id="chart1"></canvas>        
+        
+            <canvas id="chart1"></canvas>
+        
+                
     </div>    
         
     <div style="display:flex;gap:20px;">
@@ -73,12 +78,13 @@
     </div>
     
     <div style="height:340px;">
-        <Chart2  Id = "chart2"
-            Data1="@num1"  
-            Data2="@num2"  
-            Data3="@num3"
+          <Chart2  Id = "chart2"
+            Data1="@num6"  
+            Data2="@num7"  
+            Data3="@num8"
             Labels=@numTime> 
         </Chart2>
+       
     </div>
 
 </div>
@@ -94,42 +100,97 @@
     static DateTime To = new();
     [Parameter] public static int kpi { get; set; } = 12;
     static int inputKpi = 12;
+    
 
-
-    string[] num1 = new string[168];
-    string[] num2 = new string[168];
-    string[] num3 = new string[168];
-    string[] num4 = new string[168];
-    [Parameter] public string[] num5 { get; set; } = new string[168];
-    string[] num6 = new string[168];
-    string[] num7 = new string[168];
-    string[] num8 = new string[168];
+    int[] num1 = new int[168];
+    int[] num2 = new int[168];
+    int[] num3 = new int[168];
+    int[] num4 = new int[168];
+    [Parameter] public int[] num5 { get; set; } = new int[168];
+    int[] num6 = new int[168];
+    int[] num7 = new int[168];
+    int[] num8 = new int[168];
     string[] numTime = new string[168];
-    bool isRender = false;
+    [Parameter] public bool isRender  { get; set; }= false;
+
+    List<IncomingAlarm>? InputAlarms;
 
     void ChangeKpi()=>kpi = inputKpi;
 
+
     protected override async Task OnParametersSetAsync()
     {
-        var rand = new Random();
-
+        isRender = false;
         for (int i = 0;i<168;i++)
-        {            
-            numTime[i] = (From.AddHours(i).ToString("M")+" " + From.AddHours(-168).AddHours(i).AddMinutes(-DateTime.Now.Minute).ToString("t"));
+        {
+            numTime[i] = (From.AddHours(i).ToString("M")+" " + From.AddHours(-168).AddHours(i).ToString("t"));
 
-            num1[i]="0";
-            num2[i]="0";
-            num3[i]="0";
-            num4[i]="0";
-            num5[i]=kpi.ToString();
-            num6[i]="0";
-            num7[i]="0";
-            num8[i]="0";
-        }     
+            num1[i]=2;
+            num2[i]=0;
+            num3[i]=0;
+            num4[i]=0;
+            num5[i]=kpi;
+            num6[i]=0;
+            num7[i]=0;
+            num8[i]=0;
+        }  
+
+        var tags = await RestService.GetAllIncomingAlarm();
+
+        InputAlarms = new List<IncomingAlarm>(tags); 
+
+        
+        if (InputAlarms != null)
+        {
+            for (int i = 0, j = 0; i < InputAlarms.Count; )
+            {
+                if(j == 168)
+                {
+                    break;
+                }
+                if(InputAlarms[i].Date == From.AddHours(j).Date)
+                {
+                    if(InputAlarms[i].Date.Hour == From.AddHours(j).Date.Hour)
+                    {
+                        num1[i] += 1;
+
+                        if (InputAlarms[i].Priority == "Низкий")
+                        {
+                            num8[i] += 1;
+                        }
+                        if (InputAlarms[i].Priority == "Высокий")
+                        {
+                            num7[i] += 1;
+                        }
+                        if (InputAlarms[i].Priority == "Критический")
+                        {
+                            num6[i] += 1;
+                        }
+                        i += 1;
+                    }
+                    else
+                    {
+                        if(InputAlarms[i].Date > From.AddHours(j).Date)
+                        {
+                            j += 1;                            
+                        }
+                        else
+                        {
+                            i += 1;  
+                        }
+                    }
+                }
+                
+            }
+        }
+        
+
+           
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        
         var config = new
         {
             Type = "line",
