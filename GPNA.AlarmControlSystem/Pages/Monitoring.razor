@@ -54,10 +54,10 @@
                 {
                     @foreach(var c in InputAlarms)
                     {
-                        @if(c.Priority == Priority || (Priority == "0" && c.Priority!="Информационный"))
+@*                        @if(c.Priority == Priority || (Priority == "0" && c.Priority!="Информационный"))
                         {
                             <InputAlarm Tag=c/>
-                        }               
+                        }*@               
                     }  
                 }
                 
