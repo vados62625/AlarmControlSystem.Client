@@ -1,26 +1,35 @@
 ﻿@page "/"
 
 @using System.Text.Json;
+@using GPNA.AlarmControlSystem.LocalDbStorage.Data.Interfaces
+@using GPNA.ACSAPI.Repositories.Models
+@inject IRestService RestService 
 
-<div style="display:flex; justify-content:space-evenly;margin-top:50px;">
+@if (InputAlarms == null)
+{
+    <Loader/>
+}
+else
+{
+    <div style="display:flex; justify-content:space-evenly;margin-top:50px;">
     <div style="display:flex;flex-direction:column;align-content:center;">
         <h4>Количество сигнализаций за @DateTime.Now.AddDays(-1).ToString("M")</h4>
-        <div style="height:340px;display: flex;justify-content: center; align-items: center; max-width:420px;margin: auto;">
-            <DoughnutChart Id="donutChart1" Data1="@num1"/>
-            <h3 style="position: absolute;margin-top: 45px;font-size: 50px;" title="Среднее число входящих сигнализаций">N/A</h3>
+        <div style="height:340px;display: flex;justify-content: center; align-items: center; max-width:420px;margin: auto;position:relative;">
+            <DoughnutChart Id="donutChart1" Data1="@num1S"/>
+            <h3 style="position: absolute;    margin-top: 41px;    font-size: 50px;" title="Среднее число входящих сигнализаций">N/A</h3>
         </div>
     </div>
     <div style="display:flex;flex-direction:column;align-content:center;">
         <h4>Количество сигнализаций за @DateTime.Now.AddDays(-1).ToString("M") от разных датчиков</h4>
-        <div style="height:340px;display: flex;justify-content: center; align-items: center;max-width:420px;margin: auto;">
+        <div style="height:340px;display: flex;justify-content: center; align-items: center;max-width:420px;margin: auto; position:relative;">
             <DoughnutChart Id="donutChart2" Data1="@num2"/>
-            <h3 style="position: absolute;margin-top: 45px;font-size: 50px;" title="Среднее число входящих сигнализаций">N/A</h3>
+            <h3 style="position: absolute;   margin-top: 41px;    font-size: 50px;" title="Среднее число входящих сигнализаций">N/A</h3>
         </div>
     </div>
 </div>
 
 <div style="display:flex;gap:20px;justify-content: space-evenly;">
-    <TableIndex Title="Входящие сигнализации"></TableIndex>
+    <TableIndex Title="Входящие сигнализации" InputAlarms="InputAlarms"></TableIndex>
     <TableIndex Title="Активные сигнализации"></TableIndex>
     <TableIndex Title="Подавленные сигнализации"></TableIndex>
 </div>
@@ -31,6 +40,9 @@
 <h4>Подавленные сигнализации</h4>
 <TableOfActiveAlarms>
 </TableOfActiveAlarms>
+}
+
+
 
 @code {
     [Parameter] public string? Title { get; set; }
@@ -38,9 +50,13 @@
     static DateTime From = new();
     static DateTime To = new();
 
-    string[] num1 = new string[4];
+    int[] num1 = new int[4];
+    string[] num1S = new string[4];
     string[] num2 = new string[4];
 
+    int Srednee = 0;
+
+    List<IncomingAlarm>? InputAlarms;
 
     void SelectPriority()
     {
@@ -57,15 +73,59 @@
         //    num1[i]=rand.Next(150).ToString();
         //    num2[i]=rand.Next(150).ToString();
         //}        
-        num1[3] = "1";
+        //num1[0] = "15";
+        //num1[1] = "10";
+        //num1[2] = "5";
+        //num1[3] = "1";
         num2[3] = "1";
         StateHasChanged();
     }
 
-    protected override void OnInitialized()
-    { 
+
+    protected override async Task OnInitializedAsync()
+    {
+        InputAlarms = null;
         To = DateTime.Now.Date;
-        From = To.AddDays(-1);       
+        From = To.AddDays(-1);
+
+        num1[0] = 0;
+        num1[1] = 0;
+        num1[2] = 0;
+
+        var tags = await RestService.GetAllIncomingAlarm();
+
+        InputAlarms = new List<IncomingAlarm>(tags); 
+
+        if(InputAlarms!=null)
+            foreach(var c in InputAlarms)
+            {
+                if(c.Date.Date == To.AddDays(-1).Date && c.Priority!="Информационный" && c.Priority != "N/A")
+                {
+                    if (c.Priority == "Низкий")
+                    {
+                        num1[2] += 1;
+                    }
+                    if (c.Priority == "Высокий")
+                    {
+                        num1[1] += 1;
+                    }
+                    if (c.Priority == "Критический")
+                    {
+                        num1[0] += 1;
+                    }
+
+                }
+
+            }
+        
+
+        num1S[0] = num1[0].ToString();
+        num1S[1] = num1[1].ToString();
+        num1S[2] = num1[2].ToString();
+        if(num1S[0]=="0" && num1S[1]=="0" && num1S[2]=="0")
+            num1S[3] = "1";
+        else
+            num1S[3] = "0";
 
     }
 }

@@ -12,8 +12,8 @@
     @if(Tag!=null && Tag.TagName!=null)
     {
     <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">        
-        <td>@DateTime.Now.Date.ToString("d")</td>
-        <td>@DateTime.Now.ToString("t")</td>
+        <td>@Tag.Date.ToString("d")</td>
+        <td>@Tag.Date.ToString("t")</td>
             
         @*@if (Tag.Description.EndsWith("LL") || Tag.Name.EndsWith("HH"))
         {
@@ -36,6 +36,15 @@
         {
             <td>N/A</td>
         }
+        @if (Tag.AlarmLimit != null)
+        {
+            <td>@(Tag.AlarmLimit)</td>
+        }
+        else
+        {
+            <td>N/A</td>
+        }
+
         @if (Tag.Priority != null)
         {
             <td>@(Tag.Priority)</td>
@@ -49,11 +58,19 @@
         {
             <td>@(Tag.AlarmLimit+" / "+Tag.Value)</td>
         }
-        else 
+        else if(Tag.AlarmLimit != null)
         {
-            <td>N/A</td>
-        }      
-        
+            <td>@(Tag.AlarmLimit+" / N/A")</td>
+        } 
+        else if(Tag.Value != null)
+        {
+            <td>@("N/A / " + Tag.Value)</td>
+        }
+        else
+        {
+            <td>N/A / N/A</td>
+        }
+
         @*<td><a >Подробнее..</a></td>*@
         @if (Tag.Test != null)
         {
