@@ -17,7 +17,7 @@ namespace GPNA.ACSAPI.Repositories.Models
         /// <summary>
         /// Дата
         /// </summary>
-        public DateTime Date { get; set; }
+        public DateOnly Date { get; set; }
 
         /// <summary>
         /// Имя тега
@@ -30,9 +30,14 @@ namespace GPNA.ACSAPI.Repositories.Models
         public string? Description { get; set; }
 
         /// <summary>
+        /// Состояние
+        /// </summary>
+        public StateType State { get; set; }
+
+        /// <summary>
         /// Приоритет
         /// </summary>
-        public string? Priority { get; set; }
+        public PriorityType Priority { get; set; }
 
         /// <summary>
         /// Предел

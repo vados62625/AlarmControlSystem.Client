@@ -16,24 +16,160 @@ else
         <h4>Количество сигнализаций за @DateTime.Now.AddDays(-1).ToString("M")</h4>
         <div style="height:340px;display: flex;justify-content: center; align-items: center; max-width:420px;margin: auto;position:relative;">
             <DoughnutChart Id="donutChart1" Data1="@num1S"/>
-            <h3 style="position: absolute;    margin-top: 41px;    font-size: 50px;" title="Среднее число входящих сигнализаций">N/A</h3>
+            <h3 style="position: absolute;    margin-top: 41px;    font-size: 50px;" title="Среднее число входящих сигнализаций">289</h3>
         </div>
     </div>
     <div style="display:flex;flex-direction:column;align-content:center;">
         <h4>Количество сигнализаций за @DateTime.Now.AddDays(-1).ToString("M") от разных датчиков</h4>
         <div style="height:340px;display: flex;justify-content: center; align-items: center;max-width:420px;margin: auto; position:relative;">
             <DoughnutChart Id="donutChart2" Data1="@num2"/>
-            <h3 style="position: absolute;   margin-top: 41px;    font-size: 50px;" title="Среднее число входящих сигнализаций">N/A</h3>
+            <h3 style="position: absolute;   margin-top: 41px;    font-size: 50px;" title="Среднее число входящих сигнализаций">120</h3>
         </div>
     </div>
 </div>
 
 <div style="display:flex;gap:20px;justify-content: space-evenly;">
     <TableIndex Title="Входящие сигнализации" InputAlarms="InputAlarms"></TableIndex>
-    <TableIndex Title="Активные сигнализации"></TableIndex>
-    <TableIndex Title="Подавленные сигнализации"></TableIndex>
-</div>
+    
+    <div style="min-width:530px;">
+        <h3 style="margin-top:50px;text-align: center;">Активные сигнализации</h3>
+        <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>@From.ToString("M") - @To.ToString("M")</th>
+                    <th>Пн</th>
+                    <th>Вт</th>
+                    <th>Ср</th>              
+                    <th>Чт</th>
+                    <th>Пт</th> 
+                    <th>Сб</th>
+                    <th>Вс</th> 
+                </tr>
+            </thead>            
+            <tbody>
+                <tr>
+                    <th>УПНГ</th>
+                    @*<td>@AlarmsOnDay[0]</td>
+                    <td>@AlarmsOnDay[1]</td>
+                    <td>@AlarmsOnDay[2]</td>
+                    <td>@AlarmsOnDay[3]</td>
+                    <td>@AlarmsOnDay[4]</td>
+                    <td>@AlarmsOnDay[5]</td>
+                    <td>@AlarmsOnDay[6]</td>*@
+                    <td>7</td>
+                    <td>5</td>
+                    <td>5</td>
+                    <td>9</td>
+                    <td>6</td>
+                    <td>15</td>
+                    <td>11</td>
+                </tr>
+                <tr>
+                    <th>БМУПН</th>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <th>Скважины</th>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <th>Энергетика</th>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                </tr>            
+             </tbody>
+        </table>
+    </div>
+    </div>
 
+
+<div style="min-width:530px;">
+        <h3 style="margin-top:50px;text-align: center;">Подавленные сигнализации</h3>
+        <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>@From.ToString("M") - @To.ToString("M")</th>
+                    <th>Пн</th>
+                    <th>Вт</th>
+                    <th>Ср</th>              
+                    <th>Чт</th>
+                    <th>Пт</th> 
+                    <th>Сб</th>
+                    <th>Вс</th> 
+                </tr>
+            </thead>            
+            <tbody>
+                <tr>
+                    <th>УПНГ</th>
+                    @*<td>@AlarmsOnDay[0]</td>
+                    <td>@AlarmsOnDay[1]</td>
+                    <td>@AlarmsOnDay[2]</td>
+                    <td>@AlarmsOnDay[3]</td>
+                    <td>@AlarmsOnDay[4]</td>
+                    <td>@AlarmsOnDay[5]</td>
+                    <td>@AlarmsOnDay[6]</td>*@
+                    <td>12</td>
+                    <td>7</td>
+                    <td>5</td>
+                    <td>3</td>
+                    <td>10</td>
+                    <td>7</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <th>БМУПН</th>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <th>Скважины</th>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <th>Энергетика</th>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                </tr>            
+             </tbody>
+        </table>
+    </div>
+</div>
+</div>
 <h4>Активные сигнализации</h4>
 <TableOfActiveAlarms/>
 
@@ -65,14 +201,14 @@ else
 
     protected override void OnParametersSet()
     {
-        //var rand = new Random();
+        var rand = new Random();
 
-        //for (int i = 0;i<3;i++)
-        //{            
+        for (int i = 0;i<3;i++)
+        {            
 
-        //    num1[i]=rand.Next(150).ToString();
-        //    num2[i]=rand.Next(150).ToString();
-        //}        
+            num1S[i]=rand.Next(150).ToString();
+            num2[i]=rand.Next(150).ToString();
+        }        
         //num1[0] = "15";
         //num1[1] = "10";
         //num1[2] = "5";
@@ -88,44 +224,44 @@ else
         To = DateTime.Now.Date;
         From = To.AddDays(-1);
 
-        num1[0] = 0;
-        num1[1] = 0;
-        num1[2] = 0;
+        //num1[0] = 0;
+        //num1[1] = 0;
+        //num1[2] = 0;
 
-        var tags = await RestService.GetAllIncomingAlarm();
+        //var tags = await RestService.GetAllIncomingAlarm();
 
-        InputAlarms = new List<IncomingAlarm>(tags); 
+        //InputAlarms = new List<IncomingAlarm>(tags); 
 
-        if(InputAlarms!=null)
-            foreach(var c in InputAlarms)
-            {
-                if(c.Date.Date == To.AddDays(-1).Date && c.Priority!="Информационный" && c.Priority != "N/A")
-                {
-                    if (c.Priority == "Низкий")
-                    {
-                        num1[2] += 1;
-                    }
-                    if (c.Priority == "Высокий")
-                    {
-                        num1[1] += 1;
-                    }
-                    if (c.Priority == "Критический")
-                    {
-                        num1[0] += 1;
-                    }
+        //if(InputAlarms!=null)
+        //    foreach(var c in InputAlarms)
+        //    {
+        //        if(c.Date.Date == To.AddDays(-1).Date && c.Priority!="Информационный" && c.Priority != "N/A")
+        //        {
+        //            if (c.Priority == "Низкий")
+        //            {
+        //                num1[2] += 1;
+        //            }
+        //            if (c.Priority == "Высокий")
+        //            {
+        //                num1[1] += 1;
+        //            }
+        //            if (c.Priority == "Критический")
+        //            {
+        //                num1[0] += 1;
+        //            }
 
-                }
+        //        }
 
-            }
+        //    }
         
 
-        num1S[0] = num1[0].ToString();
-        num1S[1] = num1[1].ToString();
-        num1S[2] = num1[2].ToString();
-        if(num1S[0]=="0" && num1S[1]=="0" && num1S[2]=="0")
-            num1S[3] = "1";
-        else
-            num1S[3] = "0";
+        //num1S[0] = num1[0].ToString();
+        //num1S[1] = num1[1].ToString();
+        //num1S[2] = num1[2].ToString();
+        //if(num1S[0]=="0" && num1S[1]=="0" && num1S[2]=="0")
+        //    num1S[3] = "1";
+        //else
+        //    num1S[3] = "0";
 
     }
 }

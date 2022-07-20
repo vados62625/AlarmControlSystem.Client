@@ -21,6 +21,7 @@ namespace GPNA.ACSAPI.Repositories.Models
         /// Описание 
         /// </summary>
         public string? Description { get; set; }
+
         /// <summary>
         /// ед. измерения 
         /// </summary>
@@ -29,12 +30,12 @@ namespace GPNA.ACSAPI.Repositories.Models
         /// <summary>
         /// Состояние
         /// </summary>
-        public string? State { get; set; }
+        public StateType State { get; set; }
 
         /// <summary>
         /// Приоритет
         /// </summary>
-        public string? Priority { get; set; }
+        public PriorityType Priority { get; set; }
 
         /// <summary>
         /// Предел

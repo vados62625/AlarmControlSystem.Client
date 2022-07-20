@@ -38,9 +38,14 @@ namespace GPNA.ACSAPI.Repositories.Models
         public string? Description { get; set; }
 
         /// <summary>
+        /// Состояние
+        /// </summary>
+        public StateType State { get; set; }
+
+        /// <summary>
         /// Приоритет
         /// </summary>
-        public string? Priority { get; set; }
+        public PriorityType Priority { get; set; }
 
         /// <summary>
         /// Предел
