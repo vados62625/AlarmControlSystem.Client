@@ -31,6 +31,30 @@ namespace LocalDbStorage.Services
         public async Task<Dictionary<DateTime, int>> CountOfActiveAlarms(int idWorkStation, DateTime startDate, DateTime endDate)
         {
             var result = await _dataService.GetScopeActiveAlarm(idWorkStation, startDate, endDate);
+            
+            Dictionary<DateTime, int> _count = new Dictionary<DateTime, int>();
+
+            var test = endDate - startDate;
+            if (test.Days > 0)
+            {
+                for (int i = 0; i < test.Days; i++)
+                {
+                    TimeSpan ts = TimeSpan.FromDays(i);
+                    _count.Add(startDate + ts, 0);
+                }
+            }
+
+            foreach (var v in _count)
+            {
+                foreach (var s in result)
+                {
+                    if (s.StartDate <= v.Key && s.EndDate > v.Key)
+                    {
+                        var value = _count[v.Key];
+                        _count[v.Key] = value++;
+                    }
+                }
+            }
 
             return Count(result.Select(c => c.StartDate).ToList());
         }
