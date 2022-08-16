@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace GPNA.AlarmControlSystem.LocalDbStorage.Data.Interfaces
+namespace LocalDbStorage.Data.Interfaces
 {
     public interface IRestClient
     {

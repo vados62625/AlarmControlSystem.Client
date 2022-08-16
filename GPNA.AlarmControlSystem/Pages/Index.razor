@@ -1,8 +1,6 @@
 ﻿@page "/"
-
-@using System.Text.Json;
-@using GPNA.AlarmControlSystem.LocalDbStorage.Data.Interfaces
-@using GPNA.ACSAPI.Repositories.Models
+@using LocalDbStorage.Data.Interfaces
+@using LocalDbStorage.Repositories.Models
 @inject IRestService RestService 
 
 @if (InputAlarms == null)
@@ -183,6 +181,8 @@ else
 @code {
     [Parameter] public string? Title { get; set; }
 
+	[Inject] IUiService UiService { get; set; } = null!;
+
     static DateTime From = new();
     static DateTime To = new();
 
@@ -220,6 +220,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+	    var test = await UiService.CountOfIncomingAlarms(1, new DateTime(2021,12,4), new DateTime(2021, 12, 10));
+
         InputAlarms = null;
         To = DateTime.Now.Date;
         From = To.AddDays(-1);

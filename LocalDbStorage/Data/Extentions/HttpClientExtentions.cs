@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text;
@@ -16,6 +18,8 @@ namespace LocalDbStorage.Data.Extentions
             {
                 PropertyNameCaseInsensitive = true,
             };
+
+        private static readonly Random Rnd = new();
         public static async Task<T[]> GetAll<T>(this HttpClient client, string uri)
         {
             try
@@ -93,5 +97,62 @@ namespace LocalDbStorage.Data.Extentions
                 Console.WriteLine(e);
             }
         }
+
+        public static async Task<T> Get<T>(this HttpClient client, string uri, string requestId = "")
+        {
+            var httpreq = CreateRequest(HttpMethod.Get, uri, requestId);
+            return await GetResponse<T>(client, httpreq);
+        }
+
+        public static HttpRequestMessage CreateRequest(HttpMethod method, string uri, string? requestId)
+        {
+            var httpreq = new HttpRequestMessage(method, uri);
+            FillHeaders(httpreq.Headers, requestId);
+            return httpreq;
+        }
+
+        public static void FillHeaders(HttpHeaders headers, string? requestId)
+        {
+            if (string.IsNullOrEmpty(requestId))
+            {
+                requestId = GenerateRequestId();
+            }
+
+            headers.Add("Request-id", requestId);
+        }
+
+        public static string GenerateRequestId()
+        {
+            var rndBuff = new byte[8];
+            Rnd.NextBytes(rndBuff);
+            return Convert.ToBase64String(rndBuff);
+        }
+
+        public static async Task<T> GetResponse<T>(this HttpClient client, HttpRequestMessage request)
+        {
+            using var response = await client.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
+            {
+                //TODO
+            }
+
+            if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+            {
+                return default;
+            }
+
+            var content = await response.Content.ReadFromJsonAsync<T>();
+
+            return GuardNullContent(content);
+        }
+
+        private static T GuardNullContent<T>(T? content)
+        {
+            if (content == null)
+                throw new Exception($"Content cannot convert to type {typeof(T).Name}");
+
+            return content;
+        }
+
     }
 }

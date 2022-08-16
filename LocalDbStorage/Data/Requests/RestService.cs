@@ -1,8 +1,7 @@
-﻿using GPNA.ACSAPI.Repositories.Models;
-using GPNA.AlarmControlSystem.LocalDbStorage.Data.Interfaces;
+﻿using LocalDbStorage.Data.Interfaces;
+using LocalDbStorage.Repositories.Models;
 
-
-namespace GPNA.AlarmControlSystem.LocalDbStorage.Data.Requests
+namespace LocalDbStorage.Data.Requests
 {
 
     public class RestService : IRestService

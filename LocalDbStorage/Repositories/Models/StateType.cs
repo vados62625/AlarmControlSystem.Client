@@ -1,4 +1,4 @@
-﻿namespace GPNA.ACSAPI.Repositories.Models
+﻿namespace LocalDbStorage.Repositories.Models
 {
     public enum StateType
     {

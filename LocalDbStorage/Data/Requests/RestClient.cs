@@ -1,12 +1,12 @@
-﻿using GPNA.AlarmControlSystem.LocalDbStorage.Data.Interfaces;
-using LocalDbStorage.Data.Extentions;
+﻿using LocalDbStorage.Data.Extentions;
+using LocalDbStorage.Data.Interfaces;
 using System;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace GPNA.AlarmControlSystem.LocalDbStorage.Data.Requests
+namespace LocalDbStorage.Data.Requests
 {
     public class RestClient : IRestClient
     {

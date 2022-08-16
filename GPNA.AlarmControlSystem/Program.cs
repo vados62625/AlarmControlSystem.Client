@@ -1,8 +1,9 @@
 using System.Configuration;
 using GPNA.AlarmControlSystem;
 using GPNA.AlarmControlSystem.Data;
-using GPNA.AlarmControlSystem.LocalDbStorage.Data.Interfaces;
-using GPNA.AlarmControlSystem.LocalDbStorage.Data.Requests;
+using LocalDbStorage.Data.Interfaces;
+using LocalDbStorage.Data.Requests;
+using LocalDbStorage.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -24,6 +25,19 @@ builder.Services.AddHttpClient<RestClient>(c =>
     c.BaseAddress = new System.Uri(uri);
     c.Timeout = TimeSpan.FromMilliseconds(10000);
 });
+
+
+builder.Services.AddTransient<IDataService, DataService>();
+builder.Services.AddHttpClient<DataService>(c =>
+{
+    var uri = configuration["HttpClientConfig:BaseAddress"];
+    var timeOut = configuration["HttpClientConfig:Timeout"];
+
+    c.BaseAddress = new System.Uri(uri);
+    c.Timeout = TimeSpan.FromMilliseconds(10000);
+});
+builder.Services.AddTransient<IUiService, UiService>();
+
 builder.Services.AddTransient<IRestService, RestService>();
 
 var app = builder.Build();

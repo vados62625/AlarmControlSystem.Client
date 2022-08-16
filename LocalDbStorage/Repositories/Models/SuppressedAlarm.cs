@@ -1,8 +1,7 @@
-﻿
-using GPNA.ACSAPI.Repositories.Base;
+﻿using LocalDbStorage.Repositories.Base;
 using LocalDbStorage.Repositories.Models.Enum;
 
-namespace GPNA.ACSAPI.Repositories.Models;
+namespace LocalDbStorage.Repositories.Models;
 
 public class SuppressedAlarm : EntityBase
 {
