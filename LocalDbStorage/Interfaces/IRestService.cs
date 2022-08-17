@@ -1,9 +1,6 @@
 ﻿using LocalDbStorage.Repositories.Models;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace LocalDbStorage.Data.Interfaces
+namespace LocalDbStorage.Interfaces
 {
     public interface IRestService
     {

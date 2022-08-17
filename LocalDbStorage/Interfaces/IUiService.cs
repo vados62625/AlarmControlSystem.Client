@@ -1,4 +1,4 @@
-﻿namespace LocalDbStorage.Data.Interfaces;
+﻿namespace LocalDbStorage.Interfaces;
 
 public interface IUiService
 {

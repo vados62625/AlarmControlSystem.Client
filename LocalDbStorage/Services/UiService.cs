@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using AutoMapper;
-using LocalDbStorage.Data.Interfaces;
 using LocalDbStorage.Dto;
+using LocalDbStorage.Interfaces;
 using LocalDbStorage.Repositories.Models;
 
 namespace LocalDbStorage.Services
@@ -23,21 +23,21 @@ namespace LocalDbStorage.Services
 
         public async Task<Dictionary<DateTime, double>> CountOfIncomingAlarms(int idWorkStation, DateTime startDate, DateTime endDate)
         {
-            var result = await _dataService.GetScopeIncomingAlarm(idWorkStation, startDate, endDate);
+            var result = await ScopeIncomingAlarms(idWorkStation, startDate, endDate);
 
             return AverageCount(result.Select(c => c.Date).ToList());
         }
 
         public async Task<Dictionary<DateTime, int>> CountOfActiveAlarms(int idWorkStation, DateTime startDate, DateTime endDate)
         {
-            var result = await _dataService.GetScopeActiveAlarm(idWorkStation, startDate, endDate);
+            var result = await ScopeActiveAlarms(idWorkStation, startDate, endDate);
             
             Dictionary<DateTime, int> _count = new Dictionary<DateTime, int>();
 
             var test = endDate - startDate;
             if (test.Days > 0)
             {
-                for (int i = 0; i < test.Days; i++)
+                for (int i = 0; i <= test.Days; i++)
                 {
                     TimeSpan ts = TimeSpan.FromDays(i);
                     _count.Add(startDate + ts, 0);
@@ -48,10 +48,10 @@ namespace LocalDbStorage.Services
             {
                 foreach (var s in result)
                 {
-                    if (s.StartDate <= v.Key && s.EndDate > v.Key)
+                    if (s.StartDate >= v.Key && s.EndDate > v.Key)
                     {
                         var value = _count[v.Key];
-                        _count[v.Key] = value++;
+                        _count[v.Key] = ++value;
                     }
                 }
             }
@@ -61,9 +61,27 @@ namespace LocalDbStorage.Services
 
         public async Task<Dictionary<DateTime, int>> CountOfSuppressedAlarms(int idWorkStation, DateTime startDate, DateTime endDate)
         {
-            var result = await _dataService.GetScopeSuppressedAlarm(idWorkStation, startDate, endDate);
+            var result = await ScopeSuppressedAlarms(idWorkStation, startDate, endDate);
 
             return Count(result.Select(c => c.Date).ToList());
+        }
+
+        public async Task<List<IncomingAlarm>> ScopeIncomingAlarms(int idWorkStation, DateTime startDate,
+            DateTime endDate)
+        {
+            return await _dataService.GetScopeIncomingAlarm(idWorkStation, startDate, endDate);
+        }
+        
+        public async Task<List<ActiveAlarm>> ScopeActiveAlarms(int idWorkStation, DateTime startDate,
+            DateTime endDate)
+        {
+            return await _dataService.GetScopeActiveAlarm(idWorkStation, startDate, endDate);
+        }
+        
+        public async Task<List<SuppressedAlarm>> ScopeSuppressedAlarms(int idWorkStation, DateTime startDate,
+            DateTime endDate)
+        {
+            return await _dataService.GetScopeSuppressedAlarm(idWorkStation, startDate, endDate);
         }
 
 

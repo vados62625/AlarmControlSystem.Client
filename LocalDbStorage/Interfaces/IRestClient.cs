@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace LocalDbStorage.Data.Interfaces
+﻿namespace LocalDbStorage.Interfaces
 {
     public interface IRestClient
     {

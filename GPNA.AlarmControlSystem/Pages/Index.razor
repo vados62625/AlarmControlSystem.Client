@@ -1,6 +1,6 @@
 ﻿@page "/"
-@using LocalDbStorage.Data.Interfaces
 @using LocalDbStorage.Repositories.Models
+@using LocalDbStorage.Interfaces
 @inject IRestService RestService 
 
 @if (InputAlarms == null)
@@ -220,7 +220,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-	    var test = await UiService.CountOfIncomingAlarms(1, new DateTime(2021,12,4), new DateTime(2021, 12, 10));
+	    var test = await UiService.CountOfActiveAlarms(1, new DateTime(2021,12,4), new DateTime(2021, 12, 10));
 
         InputAlarms = null;
         To = DateTime.Now.Date;
