@@ -1,7 +1,6 @@
 ﻿@page "/"
 @using LocalDbStorage.Repositories.Models
 @using LocalDbStorage.Interfaces
-@inject IRestService RestService 
 
 @if (InputAlarms == null)
 {
@@ -182,6 +181,7 @@ else
     [Parameter] public string? Title { get; set; }
 
 	[Inject] IUiService UiService { get; set; } = null!;
+    [Inject] IDataService DataService { get; set; } = null!;
 
     static DateTime From = new();
     static DateTime To = new();
@@ -220,50 +220,50 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-	    var test = await UiService.CountOfActiveAlarms(1, new DateTime(2021,12,4), new DateTime(2021, 12, 10));
+	    //var test = await UiService.CountOfActiveAlarms(1, new DateTime(2021,12,4), new DateTime(2021, 12, 10));
 
         InputAlarms = null;
         To = DateTime.Now.Date;
         From = To.AddDays(-1);
 
-        //num1[0] = 0;
-        //num1[1] = 0;
-        //num1[2] = 0;
+        num1[0] = 0;
+        num1[1] = 0;
+        num1[2] = 0;
 
-        //var tags = await RestService.GetAllIncomingAlarm();
+        var tags = await DataService.GetAllIncomingAlarm();
 
-        //InputAlarms = new List<IncomingAlarm>(tags); 
+        InputAlarms = new List<IncomingAlarm>(tags); 
 
         if(InputAlarms!=null)
             foreach(var c in InputAlarms)
             {
-                //if(c.Date.Date == To.AddDays(-1).Date && c.Priority!="Информационный" && c.Priority != "N/A")
-                //{
-                //    if (c.Priority == "Низкий")
-                //    {
-                //        num1[2] += 1;
-                //    }
-                //    if (c.Priority == "Высокий")
-                //    {
-                //        num1[1] += 1;
-                //    }
-                //    if (c.Priority == "Критический")
-                //    {
-                //        num1[0] += 1;
-                //    }
+                if(c.Date.Date == To.AddDays(-1).Date && c.Priority != PriorityType.Information && c.Priority != PriorityType.None)
+                {
+                    if (c.Priority == PriorityType.Low)
+                    {
+                        num1[2] += 1;
+                    }
+                    if (c.Priority == PriorityType.High)
+                    {
+                        num1[1] += 1;
+                    }
+                    if (c.Priority == PriorityType.Urgent)
+                    {
+                        num1[0] += 1;
+                    }
 
-                //}
+                }
 
             }
         
 
-        //num1S[0] = num1[0].ToString();
-        //num1S[1] = num1[1].ToString();
-        //num1S[2] = num1[2].ToString();
-        //if(num1S[0]=="0" && num1S[1]=="0" && num1S[2]=="0")
-        //    num1S[3] = "1";
-        //else
-        //    num1S[3] = "0";
+        num1S[0] = num1[0].ToString();
+        num1S[1] = num1[1].ToString();
+        num1S[2] = num1[2].ToString();
+        if(num1S[0]=="0" && num1S[1]=="0" && num1S[2]=="0")
+            num1S[3] = "1";
+        else
+            num1S[3] = "0";
 
     }
 }
