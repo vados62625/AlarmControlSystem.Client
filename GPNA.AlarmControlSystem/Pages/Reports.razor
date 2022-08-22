@@ -2,7 +2,7 @@
 @using LocalDbStorage.Interfaces
 @using LocalDbStorage.Repositories.Models
 @inject IJSRuntime JSRuntime
-@inject IRestService RestService 
+@inject IIncomingAlarmService IncomingAlarmService
 
 
 <div style="display:flex;align-items: center;    justify-content: space-evenly; ">
@@ -136,7 +136,7 @@
             num8[i]=0;
         }  
 
-        var tags = await RestService.GetAllIncomingAlarm();
+	    var tags = await IncomingAlarmService.GetAllAlarms();
 
         InputAlarms = new List<IncomingAlarm>(tags); 
 

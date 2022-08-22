@@ -1,7 +1,7 @@
 ﻿@page "/Arm/{armId:int}"
 @using LocalDbStorage.Interfaces
 @using LocalDbStorage.Repositories.Models
-@inject IRestService RestService 
+@inject IIncomingAlarmService IncomingAlarmService
 
 
 <div style="display:flex; justify-content:center;">
@@ -172,7 +172,7 @@
         To = DateTime.Now.Date;
         From = To.AddDays(-1);
 
-        var tags = await RestService.GetAllIncomingAlarm();
+        var tags = await IncomingAlarmService.GetAllAlarms();
 
         InputAlarms = new List<IncomingAlarm>(tags);
 

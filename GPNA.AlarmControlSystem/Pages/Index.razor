@@ -180,10 +180,9 @@ else
 @code {
     [Parameter] public string? Title { get; set; }
 
-	[Inject] IUiService UiService { get; set; } = null!;
-    [Inject] IDataService DataService { get; set; } = null!;
+	[Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
 
-    static DateTime From = new();
+	static DateTime From = new();
     static DateTime To = new();
 
     int[] num1 = new int[4];
@@ -230,7 +229,7 @@ else
         num1[1] = 0;
         num1[2] = 0;
 
-        var tags = await DataService.GetAllIncomingAlarm();
+        var tags = await IncomingAlarmService.GetAllAlarms();
 
         InputAlarms = new List<IncomingAlarm>(tags); 
 

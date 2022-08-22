@@ -1,8 +1,11 @@
 ﻿@page "/tagtable"
 @using LocalDbStorage.Repositories.Models
+@using LocalDbStorage.Services
 @using LocalDbStorage.Interfaces
+@inject ITagService TagService
 
-@inject IRestService RestService 
+
+
 
 <h3>Таблица переменных</h3>
 
@@ -55,8 +58,9 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
+	 
+	    var tags = await TagService.GetAllTags();
 
-        var tags = await RestService.GetAllTag();
         var alarmsTagTable = new List<Tag>(tags);
 
         if (input != "")

@@ -1,4 +1,5 @@
 using System.Configuration;
+using System.Globalization;
 using GPNA.AlarmControlSystem;
 using GPNA.AlarmControlSystem.Data;
 using LocalDbStorage.Interfaces;
@@ -10,20 +11,38 @@ IConfiguration configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
     .Build();
 
+Int32 result;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddTransient<IDataService, DataService>();
-builder.Services.AddHttpClient<DataService>(c =>
-{
-    var uri = configuration["HttpClientConfig:BaseAddress"];
-    var timeOut = configuration["HttpClientConfig:Timeout"];
+builder.Services
+    .AddScoped<IActiveAlarmService, ActiveAlarmService>()
+    .AddScoped<IIncomingAlarmService, IncomingAlarmService>()
+    .AddScoped<ISuppressedAlarmService, SuppressedAlarmService>()
+    .AddScoped<ITagService, TagService>();
 
-    c.BaseAddress = new System.Uri(uri);
-    c.Timeout = TimeSpan.FromMilliseconds(10000);
+builder.Services.AddHttpClient<ActiveAlarmService>(client =>
+{
+    client.BaseAddress = new Uri(configuration["HttpClientConfig:BaseAddress"]);
 });
-builder.Services.AddTransient<IUiService, UiService>();
+
+builder.Services.AddHttpClient<IncomingAlarmService>(client =>
+{
+    client.BaseAddress = new Uri(configuration["HttpClientConfig:BaseAddress"]);
+});
+
+builder.Services.AddHttpClient<SuppressedAlarmService>(client =>
+{
+    client.BaseAddress = new Uri(configuration["HttpClientConfig:BaseAddress"]);
+});
+
+builder.Services.AddHttpClient<TagService>(client =>
+{
+    client.BaseAddress = new Uri(configuration["HttpClientConfig:BaseAddress"]);
+});
+
 
 var app = builder.Build();
 

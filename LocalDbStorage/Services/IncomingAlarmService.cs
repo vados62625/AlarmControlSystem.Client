@@ -1,10 +1,11 @@
 using LocalDbStorage.Extentions;
+using LocalDbStorage.Interfaces;
 using LocalDbStorage.Repositories.Models;
 using Microsoft.Extensions.Logging;
 
 namespace LocalDbStorage.Services;
 
-public class IncomingAlarmService
+public class IncomingAlarmService : IIncomingAlarmService
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<IncomingAlarmService> _log;
@@ -12,14 +13,14 @@ public class IncomingAlarmService
     
     public IncomingAlarmService(IHttpClientFactory httpClientFactory, ILogger<IncomingAlarmService> log)
     {
-        _httpClient = httpClientFactory.CreateClient(nameof(DataService));
+        _httpClient = httpClientFactory.CreateClient(nameof(IncomingAlarmService));
         _log = log;
     }
     /// <summary>
-    /// Получить все Входящие аварии
+    /// Получить все аварии
     /// </summary>
     /// <returns></returns>
-    public async Task<List<IncomingAlarm>> GetAllIncomingAlarm()
+    public async Task<List<IncomingAlarm>> GetAllAlarms()
     {
         var result = await _httpClient.Get<List<IncomingAlarm>>("/api/IncomingAlarm?itemsOnPage=0&page=1");
         return result;
@@ -32,15 +33,15 @@ public class IncomingAlarmService
     /// <param name="startDate"></param>
     /// <param name="endDate"></param>
     /// <returns></returns>
-    public async Task<List<IncomingAlarm>> GetScopeIncomingAlarm(int idWorkStation, DateTime startDate, DateTime endDate)
+    public async Task<List<IncomingAlarm>> GetScopeAlarms(int idWorkStation, DateTime startDate, DateTime endDate)
     {
         var result = await _httpClient.Get<List<IncomingAlarm>>($"/api/IncomingAlarm/ScopeByDatesAndIdWorkSt?idWorkStation={idWorkStation}&startDate={startDate:yyyy-MM-dd hh:mm:ss}&endDate={endDate:yyyy-MM-dd hh:mm:ss}") ?? new List<IncomingAlarm>();
         return result;
     }
     
-    public async Task<Dictionary<DateTime, double>> GetAverageIncomingAlarmsByDates(int idWorkStation, DateTime startDate, DateTime endDate)
+    public async Task<Dictionary<DateTime, double>> GetAverageAlarmsByDates(int idWorkStation, DateTime startDate, DateTime endDate)
     {
-        var result = await GetScopeIncomingAlarm(idWorkStation, startDate, endDate);
+        var result = await GetScopeAlarms(idWorkStation, startDate, endDate);
 
         Dictionary<DateTime, double> _count = new Dictionary<DateTime, double>();
 
