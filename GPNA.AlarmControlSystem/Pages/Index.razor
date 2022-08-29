@@ -219,7 +219,9 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-	    //var test = await UiService.CountOfActiveAlarms(1, new DateTime(2021,12,4), new DateTime(2021, 12, 10));
+	    await IncomingAlarmService.GetCountInDate();
+
+	    await IncomingAlarmService.GetCountInHour();
 
         InputAlarms = null;
         To = DateTime.Now.Date;

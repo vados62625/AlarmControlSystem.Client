@@ -25,7 +25,40 @@ public class IncomingAlarmService : IIncomingAlarmService
         var result = await _httpClient.Get<List<IncomingAlarm>>("/api/IncomingAlarm?itemsOnPage=0&page=1");
         return result;
     }
-    
+
+
+    public async Task GetCountInDate()
+    {
+        var alarms = await GetAllAlarms();
+
+        List<List<List<IncomingAlarm>>> list = new List<List<List<IncomingAlarm>>>();
+
+        var alarmsGroup = alarms.GroupBy(a => a.Date.Date)
+            .Select(g => g.ToList())
+            .ToList();
+
+        foreach (var test in alarmsGroup)
+        {
+         
+               var test2 = test.GroupBy(a => a.TagName)
+                .Select(g => g.ToList())
+                .ToList();
+               list.Add(test2);
+
+        }
+
+
+    }
+
+    public async Task GetCountInHour()
+    {
+        var alarms = await GetAllAlarms();
+
+        var alarmsGroup = alarms.GroupBy(a => a.Date.Date.Hour)
+            .Select(g => g.ToList())
+            .ToList();
+    }
+
     /// <summary>
     /// Возвращает все записи по Id рабочей станции за определенный период
     /// </summary>
@@ -57,4 +90,23 @@ public class IncomingAlarmService : IIncomingAlarmService
         return _count;
 
     }
+
+    //public async Task<Dictionary<DateTime, double>> GetAlarmsInHour(int idWorkStation, DateTime startDate, DateTime endDate)
+    //{
+    //    var result = await GetScopeAlarms(idWorkStation, startDate, endDate);
+
+    //    Dictionary<DateTime, double> _count = new Dictionary<DateTime, double>();
+
+    //    var groupDateTime = result.GroupBy(g => g.Date.Hour);
+
+    //    groupDateTime = groupDateTime.OrderBy(u => u.Key).ToList();
+
+    //    foreach (var g in groupDateTime)
+    //    {
+    //        _count.Add(g.Key, g.Count());
+    //    }
+
+    //    return _count;
+
+    //}
 }
