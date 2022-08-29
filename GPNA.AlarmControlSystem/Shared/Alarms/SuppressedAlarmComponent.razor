@@ -1,29 +1,29 @@
-﻿
+﻿@using GPNA.ACSAPI.Repositories.Models
 
-    @if(Tag!=null && Tag.Name!=null)
+
+    @if(Tag!=null && Tag.TagName!=null)
     {
     <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">        
-        <td>@DateTime.Now.Date.AddDays(-(new Random().Next(2))).ToString("d") @DateTime.Now.AddHours(-(new Random().Next(5))).AddMinutes(-(new Random().Next(60))).ToString("t")</td>
-        <td>@(new Random().Next(24))</td>           
+        <td>@Tag.Date.ToString("d")</td>
+        <td>@Tag.Date.ToString("t")</td>
+                  
             
-        @if (Tag.Name.EndsWith("LL") || Tag.Name.EndsWith("HH"))
+        @if (Tag.TagName.EndsWith("LL") || Tag.TagName.EndsWith("HH"))
         {
-            <td>@Tag.Name.Substring(0,Tag.Name.Length - 2) <span style="color: #EB3333;font-weight:700;">@Tag.Name.Substring(Tag.Name.Length-2)</span></td>
+            <td>@Tag.TagName.Substring(0,Tag.TagName.Length - 2)<span style="color: #EB3333;font-weight:700;">@Tag.TagName.Substring(Tag.TagName.Length-2)</span></td>
         }
-
-
-        else if (Tag.Name.EndsWith("LO") || Tag.Name.EndsWith("HI"))
+        else if (Tag.TagName.EndsWith("L") || Tag.TagName.EndsWith("H"))
         {
-            <td>@Tag.Name.Substring(0,Tag.Name.Length - 2) <span style="color: #F38B01;font-weight:700;">@Tag.Name.Substring(Tag.Name.Length-2)</span></td>
+            <td>@Tag.TagName.Substring(0,Tag.TagName.Length - 1)<span style="color: #F38B01;font-weight:700;">@Tag.TagName.Substring(Tag.TagName.Length-1)</span></td>
         }
         else
         {
-            <td>@Tag.Name</td>
+            <td>@Tag.TagName</td>
         } 
         
         <td>@(Tag.Description ??= "N/A")</td>
         <td>@Tag.Priority</td>
-        <td>50 / 55</td>
+        <td>@Tag.AlarmLimit / @Tag.Value</td>
         @*<td><a @onclick="ShowMoreattributes" style="cursor:pointer;">Подробнее..</a></td>
         <td><input type="text"/></td>*@           
     </tr>
@@ -38,7 +38,7 @@
     }
 @code
 {
-    [Parameter] public Alarm? Tag { get; set; }
+    [Parameter] public SuppressedAlarm? Tag { get; set; }
 
     bool displayMore = false;
 

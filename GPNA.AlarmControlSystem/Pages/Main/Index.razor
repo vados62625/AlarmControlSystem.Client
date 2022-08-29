@@ -3,6 +3,7 @@
 @using System.Text.Json;
 @using GPNA.AlarmControlSystem.LocalDbStorage.Data.Interfaces
 @using GPNA.ACSAPI.Repositories.Models
+@using GPNA.AlarmControlSystem.Pages.Main.Tables
 @inject IRestService RestService 
 
 @if (InputAlarms == null)
@@ -29,9 +30,12 @@ else
 </div>
 
 <div style="display:flex;gap:20px;justify-content: space-evenly;">
-    <TableIndex Title="Входящие сигнализации" InputAlarms="InputAlarms"></TableIndex>
-    
-    <div style="min-width:530px;">
+   
+    <TableIndex Title="Входящие сигнализации" IncomingAlarms="InputAlarms"></TableIndex>
+    <TableIndex Title="Активные сигнализации" IncomingAlarms="InputAlarms"></TableIndex>
+    <TableIndex Title="Подавленные сигнализации" IncomingAlarms="InputAlarms"></TableIndex>
+
+@*    <div style="min-width:530px;">
         <h3 style="margin-top:50px;text-align: center;">Активные сигнализации</h3>
         <div class="table-responsive">
         <table class="table table-striped table-bordered">
@@ -50,13 +54,6 @@ else
             <tbody>
                 <tr>
                     <th>УПНГ</th>
-                    @*<td>@AlarmsOnDay[0]</td>
-                    <td>@AlarmsOnDay[1]</td>
-                    <td>@AlarmsOnDay[2]</td>
-                    <td>@AlarmsOnDay[3]</td>
-                    <td>@AlarmsOnDay[4]</td>
-                    <td>@AlarmsOnDay[5]</td>
-                    <td>@AlarmsOnDay[6]</td>*@
                     <td>7</td>
                     <td>5</td>
                     <td>5</td>
@@ -120,13 +117,6 @@ else
             <tbody>
                 <tr>
                     <th>УПНГ</th>
-                    @*<td>@AlarmsOnDay[0]</td>
-                    <td>@AlarmsOnDay[1]</td>
-                    <td>@AlarmsOnDay[2]</td>
-                    <td>@AlarmsOnDay[3]</td>
-                    <td>@AlarmsOnDay[4]</td>
-                    <td>@AlarmsOnDay[5]</td>
-                    <td>@AlarmsOnDay[6]</td>*@
                     <td>12</td>
                     <td>7</td>
                     <td>5</td>
@@ -168,12 +158,13 @@ else
              </tbody>
         </table>
     </div>
+</div>*@
+
 </div>
-</div>
-<h4>Активные сигнализации</h4>
+<h4>Активные сигнализации (Просроченные)</h4>
 <TableOfActiveAlarms/>
 
-<h4>Подавленные сигнализации</h4>
+<h4>Подавленные сигнализации (Просроченные)</h4>
 <TableOfActiveAlarms>
 </TableOfActiveAlarms>
 }
@@ -192,7 +183,7 @@ else
 
     int Srednee = 0;
 
-    List<IncomingAlarm>? InputAlarms;
+    public IncomingAlarm[]? InputAlarms;
 
     void SelectPriority()
     {
@@ -220,7 +211,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        InputAlarms = null;
+        InputAlarms = await RestService.GetAllIncomingAlarm();
         To = DateTime.Now.Date;
         From = To.AddDays(-1);
 

@@ -1,0 +1,70 @@
+﻿@using GPNA.ACSAPI.Repositories.Models
+@using GPNA.AlarmControlSystem.LocalDbStorage.Data.Interfaces
+@inject IRestService RestService 
+
+<thead class="thead-light">
+    <tr>
+        <th>Дата последней сигнализации</th>
+        <th>Время последней сигнализации</th>
+        <th>Таг</th>
+        <th>Описание</th>
+        <th>Приоритет 
+            <select @bind="@Priority" @onabort="OnParametersSet">
+                <option value="5">Все</option>
+                <option value="4">Критический</option>
+                <option value="3">Высокий</option>
+                <option value="2">Низкий</option>
+            </select>
+        </th>
+        <th>Уставка/Значение</th>
+@*        <th>Тест</th>*@
+@*        <th>Количество повторений за смену</th>    *@        
+    </tr>            
+</thead>
+<tbody>
+    @if(Alarms == null)
+    {
+        <Loader/>
+    }
+    else
+    {
+        <Virtualize Items="Alarms">        
+            <ItemContent>
+                <SuppressedAlarmComponent @key="context.Id" Tag="@context"/>
+            </ItemContent>        
+            <Placeholder>
+                <Loader/>
+            </Placeholder>
+        </Virtualize>
+    }
+</tbody>  
+
+
+@code {
+
+    [Parameter] public List<SuppressedAlarm>? Alarms { get; set; }
+
+    [Parameter] public int? Priority { get; set; } = 5;
+
+    protected override async Task OnInitializedAsync()    
+    {
+        var incomingAlarms= await RestService.GetAllSuppressedAlarm();
+        Alarms = new List<SuppressedAlarm>(incomingAlarms.OrderByDescending(c => c.Date));        
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (Priority != 5)
+        {
+            var alarms = new List<SuppressedAlarm>();
+            foreach (var item in Alarms ?? new List<SuppressedAlarm>())
+            {
+                if (Convert.ToInt32(item.Priority) == Priority)
+                {
+                    alarms.Add(item);
+                }
+            }
+            Alarms = alarms;
+        }
+    }
+}
