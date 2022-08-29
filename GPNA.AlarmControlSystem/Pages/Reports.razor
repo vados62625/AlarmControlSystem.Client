@@ -1,8 +1,9 @@
 ﻿@page "/reports"
+@using LocalDbStorage.Interfaces
+@using LocalDbStorage.Repositories.Models
 @inject IJSRuntime JSRuntime
-@using GPNA.AlarmControlSystem.LocalDbStorage.Data.Interfaces
-@using GPNA.ACSAPI.Repositories.Models
-@inject IRestService RestService 
+@inject IIncomingAlarmService IncomingAlarmService
+
 
 <div style="display:flex;align-items: center;    justify-content: space-evenly; ">
     <h3>@Title</h3>
@@ -78,12 +79,12 @@
     </div>
     
     <div style="height:340px;">
-          <Chart2  Id = "chart2"
+@*          <Chart2  Id = "chart2"
             Data1="@num6"  
             Data2="@num7"  
             Data3="@num8"
             Labels=@numTime> 
-        </Chart2>
+        </Chart2>*@
        
     </div>
 
@@ -135,7 +136,7 @@
             num8[i]=0;
         }  
 
-        var tags = await RestService.GetAllIncomingAlarm();
+	    var tags = await IncomingAlarmService.GetAllAlarms();
 
         InputAlarms = new List<IncomingAlarm>(tags); 
 

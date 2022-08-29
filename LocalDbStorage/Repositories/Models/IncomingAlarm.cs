@@ -1,9 +1,7 @@
-﻿
-
-using GPNA.ACSAPI.Repositories.Base;
+﻿using LocalDbStorage.Repositories.Base;
 using LocalDbStorage.Repositories.Models.Enum;
 
-namespace GPNA.ACSAPI.Repositories.Models;
+namespace LocalDbStorage.Repositories.Models;
 
 /// <summary>
 /// Входящие аварии
@@ -60,10 +58,10 @@ public class IncomingAlarm : EntityBase
     /// </summary>
     public bool Test { get; set; }
 
-    /// <summary>
-    /// Количество
-    /// </summary>
-    public int? Count { get; set; }
+    ///// <summary>
+    ///// Количество
+    ///// </summary>
+    //public int? Count { get; set; }
 
     public virtual WorkStation? WorkStation { get; set; }
 

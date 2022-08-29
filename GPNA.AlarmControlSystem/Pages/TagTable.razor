@@ -1,7 +1,11 @@
 ﻿@page "/tagtable"
-@using GPNA.AlarmControlSystem.LocalDbStorage.Data.Interfaces
-@using GPNA.ACSAPI.Repositories.Models
-@inject IRestService RestService 
+@using LocalDbStorage.Repositories.Models
+@using LocalDbStorage.Services
+@using LocalDbStorage.Interfaces
+@inject ITagService TagService
+
+
+
 
 <h3>Таблица переменных</h3>
 
@@ -54,8 +58,9 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
+	 
+	    var tags = await TagService.GetAllTags();
 
-        var tags = await RestService.GetAllTag();
         var alarmsTagTable = new List<Tag>(tags);
 
         if (input != "")

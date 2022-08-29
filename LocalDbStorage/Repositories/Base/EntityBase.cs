@@ -1,4 +1,4 @@
-﻿namespace GPNA.ACSAPI.Repositories.Base
+﻿namespace LocalDbStorage.Repositories.Base
 {
     public class EntityBase
     {
