@@ -1,6 +1,5 @@
 ﻿@using GPNA.ACSAPI.Repositories.Models
-@using GPNA.AlarmControlSystem.LocalDbStorage.Data.Interfaces
-@inject IRestService RestService 
+@using LocalDbStorage.Interfaces
 
 <thead class="thead-light">
     <tr>
@@ -41,6 +40,7 @@
 
 
 @code {
+    [Inject] ISuppressedAlarmService SuppressedAlarmService { get; set; } = default!;
 
     [Parameter] public List<SuppressedAlarm>? Alarms { get; set; }
 
@@ -48,8 +48,8 @@
 
     protected override async Task OnInitializedAsync()    
     {
-        var incomingAlarms= await RestService.GetAllSuppressedAlarm();
-        Alarms = new List<SuppressedAlarm>(incomingAlarms.OrderByDescending(c => c.Date));        
+        var suppressedAlarm = await SuppressedAlarmService.GetAllAlarms();
+        Alarms = new List<SuppressedAlarm>(suppressedAlarm.OrderByDescending(c => c.Date));        
     }
 
     protected override void OnParametersSet()
