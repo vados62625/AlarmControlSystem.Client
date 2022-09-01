@@ -3,8 +3,6 @@
 @using LocalDbStorage.Interfaces
 
 @using System.Text.Json;
-@using GPNA.AlarmControlSystem.LocalDbStorage.Data.Interfaces
-@using GPNA.ACSAPI.Repositories.Models
 @using GPNA.AlarmControlSystem.Pages.Main.Tables
 
 @if (InputAlarms == null)
@@ -88,9 +86,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-	    await IncomingAlarmService.GetCountInDate();
 
-	    await IncomingAlarmService.GetCountInHour();
 
         InputAlarms = null;
         To = DateTime.Now.Date;
@@ -102,7 +98,7 @@ else
 
         var tags = await IncomingAlarmService.GetAllAlarms();
 
-        InputAlarms = new List<IncomingAlarm>(tags); 
+        //InputAlarms = new List<IncomingAlarm>(tags); 
 
         if(InputAlarms!=null)
             foreach(var c in InputAlarms)

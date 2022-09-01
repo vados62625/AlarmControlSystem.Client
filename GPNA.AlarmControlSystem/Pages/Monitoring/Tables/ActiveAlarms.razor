@@ -1,6 +1,5 @@
-﻿@using GPNA.ACSAPI.Repositories.Models
-@using GPNA.AlarmControlSystem.LocalDbStorage.Data.Interfaces
-@inject IRestService RestService 
+﻿@using LocalDbStorage.Repositories.Models
+
 
 
 <thead class="thead-light">
@@ -47,8 +46,8 @@
 
     protected override async Task OnInitializedAsync()    
     {
-        var activeAlarms= await RestService.GetAllActiveAlarm();
-        Alarms = new List<ActiveAlarm>(activeAlarms.OrderByDescending(c => c.StartDate));        
+        //var activeAlarms= await RestService.GetAllActiveAlarm();
+        //Alarms = new List<ActiveAlarm>(activeAlarms.OrderByDescending(c => c.StartDate));        
     }
 
     protected override void OnParametersSet()
