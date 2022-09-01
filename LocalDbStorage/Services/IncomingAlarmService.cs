@@ -51,6 +51,7 @@ public class IncomingAlarmService : IIncomingAlarmService
 
         var tm = first.Date;
         var oneH = new TimeSpan(1,0,0);
+
         while (tm < last)
         {
             var list = alarms.FindAll(c => c.Date > tm & c.Date < tm + oneH);
