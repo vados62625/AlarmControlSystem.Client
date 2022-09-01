@@ -21,7 +21,8 @@ public interface IIncomingAlarmService
 
     Task<Dictionary<DateTime, double>> GetAverageAlarmsByDates(int idWorkStation, DateTime startDate, DateTime endDate);
 
-    Task GetCountInDate();
+    Task<List<List<IncomingAlarm>>> GetCountInDate(int idWorkStation, DateTime startDate, DateTime endDate);
 
-    Task GetCountInHour();
+    Task<Dictionary<DateTime, List<IncomingAlarm>>> GetCountInHour(int idWorkStation, DateTime startDate,
+        DateTime endDate);
 }

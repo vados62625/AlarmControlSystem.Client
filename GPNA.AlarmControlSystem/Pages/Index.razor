@@ -219,11 +219,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-	    await IncomingAlarmService.GetCountInDate();
 
-	    await IncomingAlarmService.GetCountInHour();
-
-        InputAlarms = null;
+	    InputAlarms = null;
         To = DateTime.Now.Date;
         From = To.AddDays(-1);
 

@@ -1,3 +1,4 @@
+using LocalDbStorage.Dto;
 using LocalDbStorage.Extentions;
 using LocalDbStorage.Interfaces;
 using LocalDbStorage.Repositories.Models;
@@ -26,37 +27,41 @@ public class IncomingAlarmService : IIncomingAlarmService
         return result;
     }
 
-
-    public async Task GetCountInDate()
+    public async Task<List<List<IncomingAlarm>>> GetCountInDate(int idWorkStation, DateTime startDate, DateTime endDate)
     {
-        var alarms = await GetAllAlarms();
+        var alarms = await GetScopeAlarms(idWorkStation, startDate, endDate);
 
-        List<List<List<IncomingAlarm>>> list = new List<List<List<IncomingAlarm>>>();
-
-        var alarmsGroup = alarms.GroupBy(a => a.Date.Date)
-            .Select(g => g.ToList())
+        List<List<IncomingAlarm>> groups = alarms.GroupBy(c => new { c.Date.Date, c.TagName })
+            .Select(group => group.ToList())
             .ToList();
 
-        foreach (var test in alarmsGroup)
+        return groups;
+    }
+
+    public async Task<Dictionary<DateTime, List<IncomingAlarm>>> GetCountInHour(int idWorkStation, DateTime startDate, DateTime endDate)
+    {
+        var alarms = await GetScopeAlarms(idWorkStation, startDate, endDate);
+
+        var dictionary = new Dictionary<DateTime, List<IncomingAlarm>>();
+
+        var test = alarms.OrderBy(c => c.Date).ToList();
+
+        var first = test.First().Date;
+        var last = test.Last().Date;
+
+        var tm = first.Date;
+        var oneH = new TimeSpan(1,0,0);
+        while (tm < last)
         {
-         
-               var test2 = test.GroupBy(a => a.TagName)
-                .Select(g => g.ToList())
-                .ToList();
-               list.Add(test2);
+            var list = alarms.FindAll(c => c.Date > tm & c.Date < tm + oneH);
+            tm += oneH;
+
+            if(list.Count > 0)
+                dictionary.TryAdd(tm, list);
 
         }
 
-
-    }
-
-    public async Task GetCountInHour()
-    {
-        var alarms = await GetAllAlarms();
-
-        var alarmsGroup = alarms.GroupBy(a => a.Date.Date.Hour)
-            .Select(g => g.ToList())
-            .ToList();
+        return dictionary;
     }
 
     /// <summary>
