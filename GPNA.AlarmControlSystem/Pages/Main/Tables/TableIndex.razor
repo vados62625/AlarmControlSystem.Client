@@ -21,13 +21,20 @@
             <tbody>
                 <tr>
                     <th>УПНГ</th>
-                    <td>@AlarmsOnDay[0]</td>
+                    @*<td>@AlarmsOnDay[0]</td>
                     <td>@AlarmsOnDay[1]</td>
                     <td>@AlarmsOnDay[2]</td>
                     <td>@AlarmsOnDay[3]</td>
                     <td>@AlarmsOnDay[4]</td>
                     <td>@AlarmsOnDay[5]</td>
-                    <td>@AlarmsOnDay[6]</td>
+                    <td>@AlarmsOnDay[6]</td>*@
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
                 </tr>
                 <tr>
                     <th>БМУПН</th>
@@ -65,8 +72,11 @@
     </div>
 
 @code {
+    [Inject]
+    protected IRestService RestService { get; set; } = default!;
+
     [Parameter] public string? Title { get; set; }
-    [Parameter] public List<IncomingAlarm>? InputAlarms { get; set; }
+    [Parameter] public IncomingAlarm[]? IncomingAlarms { get; set; }
     public List<int> AlarmsOnDay = new List<int>(7);
 
     DateTime From = new();
@@ -74,12 +84,15 @@
 
 
 
-    protected override void OnInitialized()
-    { 
-        From = DateTime.Now.AddDays(-((int) DateTime.Now.DayOfWeek)-6);
-        To = DateTime.Now.AddDays(-((int) DateTime.Now.DayOfWeek));
+    protected override async Task OnInitializedAsync()    
+    {
+        //From = DateTime.Now.AddDays(-((int) DateTime.Now.DayOfWeek)-6);
+        //To = DateTime.Now.AddDays(-((int) DateTime.Now.DayOfWeek));
+
 
         //Получить список всех аварий Входящих/Активных/Подавленных за промежуток From - To 
+        IncomingAlarms = await RestService.GetAllIncomingAlarm();
+
         AlarmsOnDay.Add(0);
         AlarmsOnDay.Add(0);
         AlarmsOnDay.Add(0);
@@ -88,41 +101,41 @@
         AlarmsOnDay.Add(0);
         AlarmsOnDay.Add(0);
         //
-        if(InputAlarms!=null)
-            foreach(var c in InputAlarms)
-            {
-                //if(c.Priority!="Информационный" && c.Priority != "N/A")
-                //{
-                //    if (c.Date.Date == From.Date)
-                //    {
-                //        AlarmsOnDay[0] += 1;
-                //    }
-                //    if (c.Date.Date == From.AddDays(1).Date)
-                //    {
-                //        AlarmsOnDay[1] += 1;
-                //    }
-                //    if (c.Date.Date == From.AddDays(2).Date)
-                //    {
-                //        AlarmsOnDay[2] += 1;
-                //    }
-                //    if (c.Date.Date == From.AddDays(3).Date)
-                //    {
-                //        AlarmsOnDay[3] += 1;
-                //    }
-                //    if (c.Date.Date == From.AddDays(4).Date)
-                //    {
-                //        AlarmsOnDay[4] += 1;
-                //    }
-                //    if (c.Date.Date == From.AddDays(5).Date)
-                //    {
-                //        AlarmsOnDay[5] += 1;
-                //    }
-                //    if (c.Date.Date == From.AddDays(6).Date)
-                //    {
-                //        AlarmsOnDay[6] += 1;
-                //    }
-                //}
+        //if(InputAlarms!=null)
+        //    foreach(var c in InputAlarms)
+        //    {
+        //        if(c.Priority!="Информационный" && c.Priority != "N/A")
+        //        {
+        //            if (c.Date.Date == From.Date)
+        //            {
+        //                AlarmsOnDay[0] += 1;
+        //            }
+        //            if (c.Date.Date == From.AddDays(1).Date)
+        //            {
+        //                AlarmsOnDay[1] += 1;
+        //            }
+        //            if (c.Date.Date == From.AddDays(2).Date)
+        //            {
+        //                AlarmsOnDay[2] += 1;
+        //            }
+        //            if (c.Date.Date == From.AddDays(3).Date)
+        //            {
+        //                AlarmsOnDay[3] += 1;
+        //            }
+        //            if (c.Date.Date == From.AddDays(4).Date)
+        //            {
+        //                AlarmsOnDay[4] += 1;
+        //            }
+        //            if (c.Date.Date == From.AddDays(5).Date)
+        //            {
+        //                AlarmsOnDay[5] += 1;
+        //            }
+        //            if (c.Date.Date == From.AddDays(6).Date)
+        //            {
+        //                AlarmsOnDay[6] += 1;
+        //            }
+        //        }
                 
-            }
+        //    }
     }
 }

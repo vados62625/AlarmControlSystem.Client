@@ -1,0 +1,139 @@
+﻿@page "/"
+@using LocalDbStorage.Repositories.Models
+@using LocalDbStorage.Interfaces
+
+@using System.Text.Json;
+@using GPNA.AlarmControlSystem.LocalDbStorage.Data.Interfaces
+@using GPNA.ACSAPI.Repositories.Models
+@using GPNA.AlarmControlSystem.Pages.Main.Tables
+
+@if (InputAlarms == null)
+{
+    <Loader/>
+}
+else
+{
+    <div style="display:flex; justify-content:space-evenly;margin-top:50px;">
+    <div style="display:flex;flex-direction:column;align-content:center;">
+        <h4>Количество сигнализаций за @DateTime.Now.AddDays(-1).ToString("M")</h4>
+        <div style="height:340px;display: flex;justify-content: center; align-items: center; max-width:420px;margin: auto;position:relative;">
+            <DoughnutChart Id="donutChart1" Data1="@num1S"/>
+            <h3 style="position: absolute;    margin-top: 41px;    font-size: 50px;" title="Среднее число входящих сигнализаций">289</h3>
+        </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-content:center;">
+        <h4>Количество сигнализаций за @DateTime.Now.AddDays(-1).ToString("M") от разных датчиков</h4>
+        <div style="height:340px;display: flex;justify-content: center; align-items: center;max-width:420px;margin: auto; position:relative;">
+            <DoughnutChart Id="donutChart2" Data1="@num2"/>
+            <h3 style="position: absolute;   margin-top: 41px;    font-size: 50px;" title="Среднее число входящих сигнализаций">120</h3>
+        </div>
+    </div>
+</div>
+
+<div style="display:flex;gap:20px;justify-content: space-evenly;">   
+    <TableIndex Title="Входящие сигнализации" IncomingAlarms="InputAlarms"></TableIndex>
+    <TableIndex Title="Активные сигнализации" IncomingAlarms="InputAlarms"></TableIndex>
+    <TableIndex Title="Подавленные сигнализации" IncomingAlarms="InputAlarms"></TableIndex>
+</div>
+
+<h4>Активные сигнализации (Просроченные)</h4>
+<TableOfActiveAlarms/>
+
+<h4>Подавленные сигнализации (Просроченные)</h4>
+<TableOfActiveAlarms>
+</TableOfActiveAlarms>
+}
+
+
+
+@code {
+    [Parameter] public string? Title { get; set; }
+
+	[Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
+
+	static DateTime From = new();
+    static DateTime To = new();
+
+    int[] num1 = new int[4];
+    string[] num1S = new string[4];
+    string[] num2 = new string[4];
+
+    int Srednee = 0;
+
+    public IncomingAlarm[]? InputAlarms;
+
+    void SelectPriority()
+    {
+
+    }
+
+    protected override void OnParametersSet()
+    {
+        var rand = new Random();
+
+        for (int i = 0;i<3;i++)
+        {            
+
+            num1S[i]=rand.Next(150).ToString();
+            num2[i]=rand.Next(150).ToString();
+        }        
+        //num1[0] = "15";
+        //num1[1] = "10";
+        //num1[2] = "5";
+        //num1[3] = "1";
+        num2[3] = "1";
+        StateHasChanged();
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+	    await IncomingAlarmService.GetCountInDate();
+
+	    await IncomingAlarmService.GetCountInHour();
+
+        InputAlarms = null;
+        To = DateTime.Now.Date;
+        From = To.AddDays(-1);
+
+        num1[0] = 0;
+        num1[1] = 0;
+        num1[2] = 0;
+
+        var tags = await IncomingAlarmService.GetAllAlarms();
+
+        InputAlarms = new List<IncomingAlarm>(tags); 
+
+        if(InputAlarms!=null)
+            foreach(var c in InputAlarms)
+            {
+                if(c.Date.Date == To.AddDays(-1).Date && c.Priority != PriorityType.Information && c.Priority != PriorityType.None)
+                {
+                    if (c.Priority == PriorityType.Low)
+                    {
+                        num1[2] += 1;
+                    }
+                    if (c.Priority == PriorityType.High)
+                    {
+                        num1[1] += 1;
+                    }
+                    if (c.Priority == PriorityType.Urgent)
+                    {
+                        num1[0] += 1;
+                    }
+
+                }
+
+            }
+        
+
+        num1S[0] = num1[0].ToString();
+        num1S[1] = num1[1].ToString();
+        num1S[2] = num1[2].ToString();
+        if(num1S[0]=="0" && num1S[1]=="0" && num1S[2]=="0")
+            num1S[3] = "1";
+        else
+            num1S[3] = "0";
+
+    }
+}
