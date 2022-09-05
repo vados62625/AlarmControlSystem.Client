@@ -27,7 +27,7 @@ public class IncomingAlarmService : IIncomingAlarmService
         return result;
     }
 
-    public async Task<List<List<IncomingAlarm>>> GetCountInDate(int idWorkStation, DateTime startDate, DateTime endDate)
+    public async Task<List<List<IncomingAlarm>>> GetAlarmsPerDate(int idWorkStation, DateTime startDate, DateTime endDate)
     {
         var alarms = await GetScopeAlarms(idWorkStation, startDate, endDate);
 
@@ -94,7 +94,6 @@ public class IncomingAlarmService : IIncomingAlarmService
         }
 
         return _count;
-
     }
 
     //public async Task<Dictionary<DateTime, double>> GetAlarmsInHour(int idWorkStation, DateTime startDate, DateTime endDate)
