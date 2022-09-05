@@ -86,7 +86,10 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+	    var fromDate = new DateTime(2021, 12, 04);
+	    var toDate = new DateTime(2021, 12, 10);
 
+	    var test = await IncomingAlarmService.GetAverageAlarmsByDates(1, fromDate, toDate);
 
         InputAlarms = null;
         To = DateTime.Now.Date;
