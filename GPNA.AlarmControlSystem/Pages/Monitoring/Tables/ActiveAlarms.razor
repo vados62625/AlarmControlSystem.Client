@@ -1,5 +1,6 @@
-﻿@using LocalDbStorage.Repositories.Models
-
+﻿@using LocalDbStorage.Interfaces
+@using LocalDbStorage.Repositories.Models
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms
 
 
 <thead class="thead-light">
@@ -8,7 +9,7 @@
         <th>Дата окончания сигнализации</th>
         <th>Длительность (в часах)</th>
         <th>Таг</th>
-        <th>Описание</th>
+        <th colspan=4>Описание</th>
         <th>Приоритет 
             <select @bind="@Priority" @onabort="OnParametersSet">
                 <option value="5">Все</option>
@@ -27,42 +28,43 @@
     }
     else
     {
-        <Virtualize Items="Alarms">        
-            <ItemContent>
+        <Virtualize Items="Alarms" OverscanCount="10">        
+           
                 <ActiveAlarmComponent @key="context.Id" Tag="@context"/>
-            </ItemContent>        
-            <Placeholder>
-                <Loader/>
-            </Placeholder>
+            
         </Virtualize>
     }
 </tbody>
 
 @code {
+    [Inject] IActiveAlarmService ActiveAlarmService { get; set; } = default!;
 
     [Parameter] public List<ActiveAlarm>? Alarms { get; set; }
 
     [Parameter] public int? Priority { get; set; } = 5;
 
+    [CascadingParameter(Name = "From")] public DateTime From { get; set; }
+    [CascadingParameter(Name = "To")] public DateTime To { get; set; }
+
     protected override async Task OnInitializedAsync()    
     {
-        //var activeAlarms= await RestService.GetAllActiveAlarm();
-        //Alarms = new List<ActiveAlarm>(activeAlarms.OrderByDescending(c => c.StartDate));        
+        var activeAlarms= await ActiveAlarmService.GetScopeAlarms(1, From, To);
+        Alarms = activeAlarms;
     }
 
     protected override void OnParametersSet()
     {
-        if (Priority != 5)
-        {
-            var alarms = new List<ActiveAlarm>();
-            foreach (var item in Alarms ?? new List<ActiveAlarm>())
-            {
-                if (Convert.ToInt32(item.Priority) == Priority)
-                {
-                    alarms.Add(item);
-                }
-            }
-            Alarms = alarms;
-        }
+        //if (Priority != 5)
+        //{
+        //    var alarms = new List<ActiveAlarm>();
+        //    foreach (var item in Alarms ?? new List<ActiveAlarm>())
+        //    {
+        //        if (Convert.ToInt32(item.Priority) == Priority)
+        //        {
+        //            alarms.Add(item);
+        //        }
+        //    }
+        //    Alarms = alarms;
+        //}
     }
 }

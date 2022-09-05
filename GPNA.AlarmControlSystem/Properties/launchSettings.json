@@ -1,21 +1,21 @@
 {
-    "iisSettings": {
-        "windowsAuthentication": true,
-        "anonymousAuthentication": false,
-        "iisExpress": {
-            "applicationUrl": "http://localhost:5798",
-            "sslPort": 44307
-        }
-    },
+  "iisSettings": {
+    "windowsAuthentication": true,
+    "anonymousAuthentication": false,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:5798",
+      "sslPort": 44307
+    }
+  },
   "profiles": {
     "GPNA.AlarmControlSystem": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:5015",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "applicationUrl": "http://localhost:5005",
+      "dotnetRunMessages": true
     },
     "IIS Express": {
       "commandName": "IISExpress",

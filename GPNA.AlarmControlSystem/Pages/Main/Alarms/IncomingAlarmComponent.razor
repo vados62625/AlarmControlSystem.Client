@@ -1,22 +1,14 @@
-﻿@using Microsoft.AspNetCore.Components
+﻿@using LocalDbStorage.Interfaces
+@using Microsoft.AspNetCore.Components
 @using LocalDbStorage.Repositories.Models
 
 
-@*<tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">
-        <td>@Tag.Position</td>
-        <td>@(Tag.TagName + "_" + Tag.State)</td>
-        <td>@Tag.Description</td>
-        <td>@Tag.Unit</td>
-        <td>@Tag.Priority</td>
-        <td>@Math.Round(Convert.ToDecimal(Tag.AlarmLimit),2)</td>
-        <td>@Tag.Scale</td>                          
-    </tr>*@
-    @if(Tag!=null && Tag.TagName!=null)
-    {
+@if(Tag!=null && Tag.TagName!=null)
+{
     <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">        
         <td>@Tag.Date.ToString("d")</td>
         <td>@Tag.Date.ToString("t")</td>
-            
+        
         @if (Tag.TagName.EndsWith("LL") || Tag.TagName.EndsWith("HH"))
         {
             <td>@Tag.TagName.Substring(0,Tag.TagName.Length - 2)<span style="color: #EB3333;font-weight:700;">@Tag.TagName.Substring(Tag.TagName.Length-2)</span></td>
@@ -29,22 +21,14 @@
         {
             <td>@Tag.TagName</td>
         } 
-        
+    
         @if (Tag.Description != null)
         {
-            <td>@(Tag.Description ??= "N/A")</td>
+            <td colspan=4>@(Tag.Description ??= "N/A")</td>
         }
         else
         {
-            <td>N/A</td>
-        }
-        @if (Tag.AlarmLimit != null)
-        {
-            <td>@(Tag.AlarmLimit)</td>
-        }
-        else
-        {
-            <td>N/A</td>
+            <td colspan=4>N/A</td>
         }
 
         @if (Tag.Priority != null)
@@ -72,8 +56,6 @@
         {
             <td>N/A / N/A</td>
         }
-
-        @*<td><a >Подробнее..</a></td>*@
         @if (Tag.Test != null)
         {
              <td style="text-align: center;"><input type="checkbox" @bind="@Tag.Test" /></td>
@@ -82,27 +64,35 @@
         {
             <td>N/A</td>
         }       
-        @*<td>@Tag.Count</td>      *@      
-    </tr>
-    }              
-    @if (displayMore)
-    {
+        <td>@List.Count</td>            
+    </tr>                 
+@if (displayMore)
+{
     <tr>
-        <td colspan="9" class="p-0 m-0">           
-                @*<p><b>Потенциальные последствия: </b> @Tag.Consequence</p>
-                <p><b>Действия Полевого оператора: </b>@Tag.ActionFieldOperator</p>
-                <p><b>Действия Оператора АРМ: </b>@Tag.ActionFieldArm</p>
-                <p><b>Уровень усиления: </b>@Tag.Inform</p>
-                <p><b>Время на реакцию: </b>@Tag.ReactionTime</p>*@
-                <input type="text" style="width:100%;">
+        <td colspan="11" class="p-1 m-1">
+            <input type="text" style="width:90%;margin-right:5px;" @bind="Tag.Comment"><button class="btn-success" @onclick="SaveComment">Сохранить</button>
         </td>                        
     </tr>
-    }
+}
+} 
 @code
 {
+    [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
+
+    [Parameter] public List<IncomingAlarm>? List { get; set; } = new();
     [Parameter] public IncomingAlarm? Tag { get; set; }
 
     bool displayMore = false;
+
+    protected override void OnInitialized()    
+    {
+        Tag = List[List.Count - 1];
+    }
+
+    void SaveComment()
+    {
+        
+    }
 
     void ShowMoreattributes()
     {

@@ -3,7 +3,8 @@
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Tables
 @using LocalDbStorage.Repositories.Models
 
-
+<CascadingValue Name="From" Value="@From">
+<CascadingValue Name="To" Value="@To">
 <div style="display:flex; justify-content:center;">
     <h3>@Title</h3>
     <div class="choice-group">
@@ -13,18 +14,18 @@
         <option value="Подавленные">Подавленные</option>
     </select>
     <a style="margin-left:20px;">C :</a>
-        <input  type="datetime-local" @bind="From" @bind:format="yyyy-MM-ddTHH:mm">
+        <input  type="datetime-local" @bind="From" >
         <a>По :</a>
-        <input  type="datetime-local" @bind="To" @bind:format="yyyy-MM-ddTHH:mm">
+        <input  type="datetime-local" @bind="To" >
     
     </div>
 </div>
 
-<div class="table-responsive" style="margin-top:10px;height:780px;overflow-y:scroll;border-top: 0.5px solid rgba(0, 65, 102, 0.2);border-bottom: 0.5px solid rgba(0, 65, 102, 0.2);">
+<div class="table-responsive" style="margin-top:10px;height:780px;overflow-y:auto;border-top: 0.5px solid rgba(0, 65, 102, 0.2);border-bottom: 0.5px solid rgba(0, 65, 102, 0.2);">
     <table class="table table-striped table-bordered">
         @if (AlarmType == "Входящие")
         {
-            <IncomingAlarms/>
+           <IncomingAlarms />
         }
 
         @if (AlarmType == "Активные")
@@ -39,15 +40,21 @@
         
     </table>
 </div>
+</CascadingValue>
+</CascadingValue>
+
 
 @code {
     [Parameter] public int ArmId { get; set; }
     [Parameter] public string? Title { get; set; }
-    string? AlarmType = "Входящие";
-    List<IncomingAlarm>? IncomingAlarms;
+    
+    [Parameter] public static DateTime From { get; set; } = new DateTime(2021, 12, 03);
+    [Parameter] public static DateTime To { get; set; } = new DateTime(2021, 12, 10);
+    
+    string? AlarmType = "Входящие";    
     string? Priority = "0";
-    static DateTime From = new();
-    static DateTime To = new();
+
+    
 
     void SelectPriority()
     {
@@ -72,12 +79,5 @@
                 break;
 
         }
-    }
-
-    protected override async Task OnInitializedAsync()    
-    {  
-        To = DateTime.Now.Date;
-        From = To.AddDays(-1);
-        
     }
 }

@@ -5,6 +5,8 @@
 @using System.Text.Json;
 @using GPNA.AlarmControlSystem.Pages.Main.Tables
 
+<CascadingValue Name="From" Value="@From">
+<CascadingValue Name="To" Value="@To">
 @if (InputAlarms == null)
 {
     <Loader/>
@@ -28,20 +30,23 @@ else
     </div>
 </div>
 
-<div style="display:flex;gap:20px;justify-content: space-evenly;">   
-    <TableIndex Title="Входящие сигнализации" IncomingAlarms="InputAlarms"></TableIndex>
-    <TableIndex Title="Активные сигнализации" IncomingAlarms="InputAlarms"></TableIndex>
-    <TableIndex Title="Подавленные сигнализации" IncomingAlarms="InputAlarms"></TableIndex>
+<div style="display:flex;gap:20px;justify-content: space-evenly;">
+    <IncomingAlarms/>
+    <ActiveAlarms/>
+    <SuppressedAlarms/>
+    @*<TableIndex Title="Активные сигнализации" IncomingAlarms="InputAlarms"></TableIndex>
+    <TableIndex Title="Подавленные сигнализации" IncomingAlarms="InputAlarms"></TableIndex>*@
 </div>
 
-<h4>Активные сигнализации (Просроченные)</h4>
-<TableOfActiveAlarms/>
 
-<h4>Подавленные сигнализации (Просроченные)</h4>
-<TableOfActiveAlarms>
-</TableOfActiveAlarms>
+    <h4>Активные сигнализации (Просроченные)</h4>
+    <ActiveAlarmsOverdue/>
+    <h4>Подавленные сигнализации (Просроченные)</h4>
+    <SuppressedAlarmsOverdue/>    
+
 }
-
+</CascadingValue>
+</CascadingValue>
 
 
 @code {
@@ -49,8 +54,8 @@ else
 
 	[Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
 
-	static DateTime From = new();
-    static DateTime To = new();
+	[Parameter] public static DateTime From { get; set; } = new DateTime(2021, 12, 13);
+    [Parameter] public static DateTime To { get; set; } = new DateTime(2021, 12, 19);
 
     int[] num1 = new int[4];
     string[] num1S = new string[4];
@@ -58,7 +63,7 @@ else
 
     int Srednee = 0;
 
-    public IncomingAlarm[]? InputAlarms;
+    public List<List<IncomingAlarm>>? InputAlarms;
 
     void SelectPriority()
     {
@@ -72,7 +77,7 @@ else
         for (int i = 0;i<3;i++)
         {            
 
-            num1S[i]=rand.Next(150).ToString();
+            //num1S[i]=rand.Next(150).ToString();
             num2[i]=rand.Next(150).ToString();
         }        
         //num1[0] = "15";
@@ -86,37 +91,35 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-
-
         InputAlarms = null;
-        To = DateTime.Now.Date;
-        From = To.AddDays(-1);
 
         num1[0] = 0;
         num1[1] = 0;
         num1[2] = 0;
 
-        var tags = await IncomingAlarmService.GetAllAlarms();
+        var tags = await IncomingAlarmService.GetCountInDate(1,To.AddDays(-1),To);
 
-        //InputAlarms = new List<IncomingAlarm>(tags); 
+        InputAlarms = tags; 
 
         if(InputAlarms!=null)
             foreach(var c in InputAlarms)
             {
-                if(c.Date.Date == To.AddDays(-1).Date && c.Priority != PriorityType.Information && c.Priority != PriorityType.None)
+                if(c[0].Date.Date == To.AddDays(-1).Date && c[0].Priority != PriorityType.Information && c[0].Priority != PriorityType.None)
                 {
-                    if (c.Priority == PriorityType.Low)
+                    if (c[0].Priority == PriorityType.Low)
                     {
                         num1[2] += 1;
                     }
-                    if (c.Priority == PriorityType.High)
+                    if (c[0].Priority == PriorityType.High)
                     {
                         num1[1] += 1;
                     }
-                    if (c.Priority == PriorityType.Urgent)
+                    if (c[0].Priority == PriorityType.Urgent)
                     {
                         num1[0] += 1;
                     }
+
+
 
                 }
 

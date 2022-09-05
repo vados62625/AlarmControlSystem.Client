@@ -1,13 +1,15 @@
-﻿@using LocalDbStorage.Repositories.Models
-
+﻿@using LocalDbStorage.Interfaces
+@using LocalDbStorage.Repositories.Models
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Tables
+@using LocalDbStorage.Services
 
 <thead class="thead-light">
     <tr>
         <th>Дата последней сигнализации</th>
         <th>Время последней сигнализации</th>
         <th>Таг</th>
-        <th>Описание</th>
-        @*<th>Предел</th>*@
+        <th colspan=4>Описание</th>
         <th>Приоритет 
             <select @bind="@Priority" @onabort="OnParametersSet">
                 <option value="5">Все</option>
@@ -17,7 +19,6 @@
             </select>
         </th>
         <th>Уставка/Значение</th>
-        @*<th>Комментарий</th>*@
         <th>Тест</th>
         <th>Количество повторений за смену</th>
     </tr>            
@@ -30,43 +31,42 @@
     }
     else
     {
-        <Virtualize Items="Alarms">        
-            <ItemContent>
-                <IncomingAlarmComponent @key="context.Id" Tag="@context"/>
-            </ItemContent>        
-            <Placeholder>
-                <Loader/>
-            </Placeholder>
+        <Virtualize Items="Alarms">            
+                <IncomingAlarmComponent @key="context[context.Count-1].Id" List="@context"/>            
         </Virtualize>
     }
         
 </tbody>
 
 @code {
+    [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
 
-    [Parameter] public List<IncomingAlarm>? Alarms { get; set; }
+    [Parameter] public List<List<IncomingAlarm>>? Alarms { get; set; }
 
     [Parameter] public int? Priority { get; set; } = 5;
 
+    [CascadingParameter(Name = "From")] public DateTime From { get; set; }
+    [CascadingParameter(Name = "To")] public DateTime To { get; set; }
+
     protected override async Task OnInitializedAsync()    
     {
-        //var incomingAlarms= await RestService.GetAllIncomingAlarm();
-        //Alarms = new List<IncomingAlarm>(incomingAlarms.OrderByDescending(c => c.Date));        
+        var incomingAlarms= await IncomingAlarmService.GetCountInDate(1, From, To);
+        Alarms = incomingAlarms;        
     }
 
     protected override void OnParametersSet()
     {
-        if (Priority != 5)
-        {
-            var alarms = new List<IncomingAlarm>();
-            foreach (var item in Alarms ?? new List<IncomingAlarm>())
-            {
-                if (Convert.ToInt32(item.Priority) == Priority)
-                {
-                    alarms.Add(item);
-                }
-            }
-            Alarms = alarms;
-        }
+        //if (Priority != 5)
+        //{
+        //    var alarms = new List<IncomingAlarm>();
+        //    foreach (var item in Alarms ?? new List<IncomingAlarm>())
+        //    {
+        //        if (Convert.ToInt32(item.Priority) == Priority)
+        //        {
+        //            alarms.Add(item);
+        //        }
+        //    }
+        //    Alarms = alarms;
+        //}
     }
 }

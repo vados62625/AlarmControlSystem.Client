@@ -1,10 +1,12 @@
-﻿@using LocalDbStorage.Repositories.Models
-
+﻿@using LocalDbStorage.Interfaces
+@using LocalDbStorage.Repositories.Models
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms
 
 <thead class="thead-light">
     <tr>
         <th>Дата последней сигнализации</th>
         <th>Время последней сигнализации</th>
+        <th>Длительность (в часах)</th>
         <th>Таг</th>
         <th>Описание</th>
         <th>Приоритет 
@@ -15,9 +17,7 @@
                 <option value="2">Низкий</option>
             </select>
         </th>
-        <th>Уставка/Значение</th>
-@*        <th>Тест</th>*@
-@*        <th>Количество повторений за смену</th>    *@        
+        <th>Уставка/Значение</th>      
     </tr>            
 </thead>
 <tbody>
@@ -40,30 +40,34 @@
 
 
 @code {
+    [Inject] ISuppressedAlarmService SuppressedAlarmService { get; set; } = null!;
 
     [Parameter] public List<SuppressedAlarm>? Alarms { get; set; }
 
     [Parameter] public int? Priority { get; set; } = 5;
 
+    [CascadingParameter(Name = "From")] public DateTime From { get; set; }
+    [CascadingParameter(Name = "To")] public DateTime To { get; set; }
+
     protected override async Task OnInitializedAsync()    
     {
-        //var incomingAlarms= await RestService.GetAllSuppressedAlarm();
-        //Alarms = new List<SuppressedAlarm>(incomingAlarms.OrderByDescending(c => c.Date));        
+        var suppressedAlarms= await SuppressedAlarmService.GetScopeAlarms(1, From, To);
+        Alarms = suppressedAlarms;
     }
 
     protected override void OnParametersSet()
     {
-        if (Priority != 5)
-        {
-            var alarms = new List<SuppressedAlarm>();
-            foreach (var item in Alarms ?? new List<SuppressedAlarm>())
-            {
-                if (Convert.ToInt32(item.Priority) == Priority)
-                {
-                    alarms.Add(item);
-                }
-            }
-            Alarms = alarms;
-        }
+        //if (Priority != 5)
+        //{
+        //    var alarms = new List<SuppressedAlarm>();
+        //    foreach (var item in Alarms ?? new List<SuppressedAlarm>())
+        //    {
+        //        if (Convert.ToInt32(item.Priority) == Priority)
+        //        {
+        //            alarms.Add(item);
+        //        }
+        //    }
+        //    Alarms = alarms;
+        //}
     }
 }

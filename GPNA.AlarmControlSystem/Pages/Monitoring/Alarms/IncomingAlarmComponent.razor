@@ -1,0 +1,101 @@
+﻿@using LocalDbStorage.Interfaces
+@using Microsoft.AspNetCore.Components
+@using LocalDbStorage.Repositories.Models
+
+
+@if(Tag!=null && Tag.TagName!=null)
+{
+    <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">        
+        <td>@Tag.Date.ToString("d")</td>
+        <td>@Tag.Date.ToString("t")</td>
+        
+        @if (Tag.TagName.EndsWith("LL") || Tag.TagName.EndsWith("HH"))
+        {
+            <td>@Tag.TagName.Substring(0,Tag.TagName.Length - 2)<span style="color: #EB3333;font-weight:700;">@Tag.TagName.Substring(Tag.TagName.Length-2)</span></td>
+        }
+        else if (Tag.TagName.EndsWith("L") || Tag.TagName.EndsWith("H"))
+        {
+            <td>@Tag.TagName.Substring(0,Tag.TagName.Length - 1)<span style="color: #F38B01;font-weight:700;">@Tag.TagName.Substring(Tag.TagName.Length-1)</span></td>
+        }
+        else
+        {
+            <td>@Tag.TagName</td>
+        } 
+    
+        @if (Tag.Description != null)
+        {
+            <td colspan=4>@(Tag.Description ??= "N/A")</td>
+        }
+        else
+        {
+            <td colspan=4>N/A</td>
+        }
+
+        @if (Tag.Priority != null)
+        {
+            <td>@(Tag.Priority)</td>
+        }
+        else
+        {
+            <td>N/A</td>
+        }
+
+        @if (Tag.AlarmLimit != null && Tag.Value!=null)
+        {
+            <td>@(Tag.AlarmLimit+" / "+Tag.Value)</td>
+        }
+        else if(Tag.AlarmLimit != null)
+        {
+            <td>@(Tag.AlarmLimit+" / N/A")</td>
+        } 
+        else if(Tag.Value != null)
+        {
+            <td>@("N/A / " + Tag.Value)</td>
+        }
+        else
+        {
+            <td>N/A / N/A</td>
+        }
+        @if (Tag.Test != null)
+        {
+             <td style="text-align: center;"><input type="checkbox" @bind="@Tag.Test" /></td>
+        }
+        else 
+        {
+            <td>N/A</td>
+        }       
+        <td>@List.Count</td>            
+    </tr>                 
+@if (displayMore)
+{
+    <tr>
+        <td colspan="11" class="p-1 m-1">
+            <input type="text" style="width:90%;margin-right:5px;" @bind="Tag.Comment"><button class="btn-success" @onclick="SaveComment">Сохранить</button>
+        </td>                        
+    </tr>
+}
+} 
+@code
+{
+    [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
+
+    [Parameter] public List<IncomingAlarm>? List { get; set; } = new();
+    [Parameter] public IncomingAlarm? Tag { get; set; }
+
+    bool displayMore = false;
+
+    protected override void OnInitialized()    
+    {
+        Tag = List[List.Count - 1];
+    }
+
+    void SaveComment()
+    {
+        
+    }
+
+    void ShowMoreattributes()
+    {
+        displayMore = !displayMore;
+    }
+}

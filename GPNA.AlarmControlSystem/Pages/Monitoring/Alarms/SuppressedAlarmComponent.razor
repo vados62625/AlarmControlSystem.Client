@@ -1,0 +1,64 @@
+﻿@using LocalDbStorage.Repositories.Models
+
+
+
+@if(Tag!=null && Tag.TagName!=null)
+{
+    <tr class="item-table @styleTr" @onclick="ShowMoreattributes" style="cursor:pointer;">        
+        <td>@Tag.Date.ToString("d")</td>
+        <td>@Tag.Date.ToString("t")</td>                  
+        <td>@(Tag!=null && Tag.Duration!=null ? Tag.Duration.Value.TotalHours.ToString("N") : "N/A")</td>
+        @if (Tag.TagName.EndsWith("LL") || Tag.TagName.EndsWith("HH"))
+        {
+            <td>@Tag.TagName.Substring(0,Tag.TagName.Length - 2)<span style="color: #EB3333;font-weight:700;">@Tag.TagName.Substring(Tag.TagName.Length-2)</span></td>
+        }
+        else if (Tag.TagName.EndsWith("L") || Tag.TagName.EndsWith("H"))
+        {
+            <td>@Tag.TagName.Substring(0,Tag.TagName.Length - 1)<span style="color: #F38B01;font-weight:700;">@Tag.TagName.Substring(Tag.TagName.Length-1)</span></td>
+        }
+        else
+        {
+            <td>@Tag.TagName</td>
+        } 
+    
+        <td>@(Tag.Description ??= "N/A")</td>
+        <td>@Tag.Priority</td>
+        <td>@Tag.AlarmLimit / @Tag.Value</td>         
+    </tr>
+             
+    @if (displayMore)
+    {
+    <tr>
+        <td colspan="10" class="p-1 m-1">
+            <input type="text" style="width:90%;margin-right:5px;" @bind="Tag.Comment"><button class="btn-success" @onclick="SaveComment">Сохранить</button>
+        </td>                        
+    </tr>
+    }
+} 
+@code
+{
+    [Parameter] public SuppressedAlarm? Tag { get; set; }
+
+    bool displayMore = false;
+    string styleTr = "";
+
+    protected override void OnInitialized()
+    {
+        if (Tag!=null)
+        if (Tag.Duration!=null && Tag.Duration.Value.TotalHours > 720)
+        {
+            styleTr = "item-table--alert";
+            
+        }
+    }
+
+    void ShowMoreattributes()
+    {
+        displayMore = !displayMore;
+    }
+
+    void SaveComment()
+    {
+        
+    }
+}
