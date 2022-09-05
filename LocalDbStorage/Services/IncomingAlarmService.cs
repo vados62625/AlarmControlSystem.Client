@@ -84,7 +84,7 @@ public class IncomingAlarmService : IIncomingAlarmService
 
         Dictionary<DateTime, double> _count = new Dictionary<DateTime, double>();
 
-        var groupDateTime = result.GroupBy(g => g.Date);
+        var groupDateTime = result.GroupBy(g => g.Date.Date);
 
         groupDateTime = groupDateTime.OrderBy(u => u.Key).ToList();
 

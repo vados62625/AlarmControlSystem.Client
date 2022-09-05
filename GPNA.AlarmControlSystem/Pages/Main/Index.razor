@@ -97,7 +97,7 @@ else
         num1[1] = 0;
         num1[2] = 0;
 
-        var tags = await IncomingAlarmService.GetCountInDate(1,To.AddDays(-1),To);
+        var tags = await IncomingAlarmService.GetAlarmsPerDate(1,To.AddDays(-1),To);
 
         InputAlarms = tags; 
 
