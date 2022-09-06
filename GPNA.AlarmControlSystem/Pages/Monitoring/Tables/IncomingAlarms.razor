@@ -50,7 +50,7 @@
 
     protected override async Task OnInitializedAsync()    
     {
-        var incomingAlarms= await IncomingAlarmService.GetCountInDate(1, From, To);
+        var incomingAlarms= await IncomingAlarmService.GetAlarmsPerDate(1, From, To);
         Alarms = incomingAlarms;        
     }
 

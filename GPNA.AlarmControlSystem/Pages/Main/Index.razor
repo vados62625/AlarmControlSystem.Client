@@ -4,6 +4,7 @@
 
 @using System.Text.Json;
 @using GPNA.AlarmControlSystem.Pages.Main.Tables
+@using GPNA.AlarmControlSystem.Pages.Main.Charts
 
 <CascadingValue Name="From" Value="@From">
 <CascadingValue Name="To" Value="@To">
@@ -13,19 +14,19 @@
 }
 else
 {
-    <div style="display:flex; justify-content:space-evenly;margin-top:50px;">
+<div style="display:flex; justify-content:space-evenly;margin-top:50px;">
     <div style="display:flex;flex-direction:column;align-content:center;">
         <h4>Количество сигнализаций за @DateTime.Now.AddDays(-1).ToString("M")</h4>
         <div style="height:340px;display: flex;justify-content: center; align-items: center; max-width:420px;margin: auto;position:relative;">
-            <DoughnutChart Id="donutChart1" Data1="@num1S"/>
-            <h3 style="position: absolute;    margin-top: 41px;    font-size: 50px;" title="Среднее число входящих сигнализаций">289</h3>
+            <DoughnutChart Id="donutChart1" Data1="@CountDayPriority"/>
+            <p style="position: absolute; margin-top: 50px; font-size: 50px;" title="Среднее число входящих сигнализаций">@CountDay</p>
         </div>
     </div>
     <div style="display:flex;flex-direction:column;align-content:center;">
         <h4>Количество сигнализаций за @DateTime.Now.AddDays(-1).ToString("M") от разных датчиков</h4>
         <div style="height:340px;display: flex;justify-content: center; align-items: center;max-width:420px;margin: auto; position:relative;">
-            <DoughnutChart Id="donutChart2" Data1="@num2"/>
-            <h3 style="position: absolute;   margin-top: 41px;    font-size: 50px;" title="Среднее число входящих сигнализаций">120</h3>
+            <DoughnutChart Id="donutChart2" Data1="@CountSensorsDayPriority"/>
+            <p style="position: absolute;   margin-top: 50px; font-size: 50px;" title="Среднее число входящих сигнализаций">@CountSensorsDay</p>
         </div>
     </div>
 </div>
@@ -34,15 +35,12 @@ else
     <IncomingAlarms/>
     <ActiveAlarms/>
     <SuppressedAlarms/>
-    @*<TableIndex Title="Активные сигнализации" IncomingAlarms="InputAlarms"></TableIndex>
-    <TableIndex Title="Подавленные сигнализации" IncomingAlarms="InputAlarms"></TableIndex>*@
 </div>
 
-
-    <h4>Активные сигнализации (Просроченные)</h4>
-    <ActiveAlarmsOverdue/>
-    <h4>Подавленные сигнализации (Просроченные)</h4>
-    <SuppressedAlarmsOverdue/>    
+<h4>Активные сигнализации (Просроченные)</h4>
+<ActiveAlarmsOverdue/>
+<h4>Подавленные сигнализации (Просроченные)</h4>
+<SuppressedAlarmsOverdue/>    
 
 }
 </CascadingValue>
@@ -52,16 +50,16 @@ else
 @code {
     [Parameter] public string? Title { get; set; }
 
-	[Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
+    [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
 
-	[Parameter] public static DateTime From { get; set; } = new DateTime(2021, 12, 13);
+    [Parameter] public static DateTime From { get; set; } = new DateTime(2021, 12, 13);
     [Parameter] public static DateTime To { get; set; } = new DateTime(2021, 12, 19);
 
-    int[] num1 = new int[4];
-    string[] num1S = new string[4];
-    string[] num2 = new string[4];
+    string[] CountDayPriority = new string[3];
+    string[] CountSensorsDayPriority = new string[3];
 
-    int Srednee = 0;
+    int CountDay = 0;
+    int CountSensorsDay = 0;
 
     public List<List<IncomingAlarm>>? InputAlarms;
 
@@ -72,32 +70,18 @@ else
 
     protected override void OnParametersSet()
     {
-        var rand = new Random();
 
-        for (int i = 0;i<3;i++)
-        {            
-
-            //num1S[i]=rand.Next(150).ToString();
-            num2[i]=rand.Next(150).ToString();
-        }        
-        //num1[0] = "15";
-        //num1[1] = "10";
-        //num1[2] = "5";
-        //num1[3] = "1";
-        num2[3] = "1";
-        StateHasChanged();
     }
 
 
     protected override async Task OnInitializedAsync()
     {
         InputAlarms = null;
-
-        num1[0] = 0;
-        num1[1] = 0;
-        num1[2] = 0;
-
-        var tags = await IncomingAlarmService.GetCountInDate(1,To.AddDays(-1),To);
+        CountDayPriority = new string[3];
+        CountSensorsDayPriority = new string[3];
+        int[] countDayPriority = new int[3];
+        int[] countSensorsDayPriority = new int[3];
+        var tags = await IncomingAlarmService.GetAlarmsPerDate(1,To.AddDays(-1),To);
 
         InputAlarms = tags; 
 
@@ -108,31 +92,31 @@ else
                 {
                     if (c[0].Priority == PriorityType.Low)
                     {
-                        num1[2] += 1;
+                        countDayPriority[2] += c.Count;
+                        countSensorsDayPriority[2] += 1;
                     }
                     if (c[0].Priority == PriorityType.High)
                     {
-                        num1[1] += 1;
+                        countDayPriority[1] += c.Count;
+                        countSensorsDayPriority[1] += 1;
                     }
                     if (c[0].Priority == PriorityType.Urgent)
                     {
-                        num1[0] += 1;
+                        countDayPriority[0] += c.Count;
+                        countSensorsDayPriority[0] += 1;
                     }
 
-
-
+                    CountDay += c.Count;
+                    CountSensorsDay += 1;
                 }
+            }       
 
-            }
+        CountDayPriority[0] = countDayPriority[0].ToString();
+        CountDayPriority[1] = countDayPriority[1].ToString();
+        CountDayPriority[2] = countDayPriority[2].ToString();
         
-
-        num1S[0] = num1[0].ToString();
-        num1S[1] = num1[1].ToString();
-        num1S[2] = num1[2].ToString();
-        if(num1S[0]=="0" && num1S[1]=="0" && num1S[2]=="0")
-            num1S[3] = "1";
-        else
-            num1S[3] = "0";
-
+        CountSensorsDayPriority[0] = countSensorsDayPriority[0].ToString();
+        CountSensorsDayPriority[1] = countSensorsDayPriority[1].ToString();
+        CountSensorsDayPriority[2] = countSensorsDayPriority[2].ToString();
     }
 }
