@@ -119,6 +119,9 @@ else
 	    //await TagService.UpdateTag(tag, tag.Id); // изменить
 	    //await TagService.DeleteTag(tag, tag.Id); // удалить
 
+	    var from = new DateTime(2021, 12, 13);
+	    var to = new DateTime(2021, 12, 19);
+	    var testActive = await ActiveAlarmService.CountOfActiveAlarms(1, from, to);
         
 
 
