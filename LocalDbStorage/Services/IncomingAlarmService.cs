@@ -27,6 +27,22 @@ public class IncomingAlarmService : IIncomingAlarmService
         return result;
     }
 
+    /// <summary>
+    /// Изменить запись в БД
+    /// </summary>
+    /// <returns></returns>
+    public async Task UpdateAlarm(IncomingAlarm incomingAlarm, int id)
+    {
+        try
+        {
+            await _httpClient.Put<IncomingAlarm>($"/api/IncomingAlarm/{id}", incomingAlarm);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
     public async Task<List<List<IncomingAlarm>>> GetAlarmsPerDate(int idWorkStation, DateTime startDate, DateTime endDate)
     {
         var alarms = await GetScopeAlarms(idWorkStation, startDate, endDate);

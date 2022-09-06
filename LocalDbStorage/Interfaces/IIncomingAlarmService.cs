@@ -11,6 +11,12 @@ public interface IIncomingAlarmService
     Task<List<IncomingAlarm>> GetAllAlarms();
 
     /// <summary>
+    /// Изменить запись в БД
+    /// </summary>
+    /// <returns></returns>
+    Task UpdateAlarm(IncomingAlarm incomingAlarm, int id);
+
+    /// <summary>
     /// Возвращает все записи по Id рабочей станции за определенный период
     /// </summary>
     /// <param name="idWorkStation"></param>

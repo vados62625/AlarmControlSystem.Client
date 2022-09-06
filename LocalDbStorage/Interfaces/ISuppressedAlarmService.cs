@@ -11,6 +11,12 @@ public interface ISuppressedAlarmService
     Task<List<SuppressedAlarm>> GetAllAlarms();
 
     /// <summary>
+    /// Изменить запись в БД
+    /// </summary>
+    /// <returns></returns>
+    Task UpdateAlarm(SuppressedAlarm suppressedAlarm, int id);
+
+    /// <summary>
     /// Возвращает все записи по Id рабочей станции за определенный период
     /// </summary>
     /// <param name="idWorkStation"></param>

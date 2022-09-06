@@ -11,6 +11,12 @@ public interface IActiveAlarmService
     Task<List<ActiveAlarm>> GetAllAlarms();
 
     /// <summary>
+    /// Изменить запись в БД
+    /// </summary>
+    /// <returns></returns>
+    Task UpdateAlarm(ActiveAlarm activeAlarm, int id);
+
+    /// <summary>
     /// Возвращает все записи по Id рабочей станции за определенный период
     /// </summary>
     /// <param name="idWorkStation"></param>

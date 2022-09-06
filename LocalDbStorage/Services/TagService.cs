@@ -32,7 +32,14 @@ public class TagService : ITagService
     /// <returns></returns>
     public async Task AddTag(Tag tag)
     {
-        await _httpClient.Post<Tag>("/api/Tag", tag);
+        try
+        {
+            await _httpClient.Post<Tag>("/api/Tag", tag);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
     }
 
     /// <summary>
@@ -41,7 +48,14 @@ public class TagService : ITagService
     /// <returns></returns>
     public async Task UpdateTag(Tag tag, int id)
     {
-        await _httpClient.Put<Tag>($"/api/Tag/{id}", tag);
+        try
+        {
+            await _httpClient.Put<Tag>($"/api/Tag/{id}", tag);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
     }
 
     /// <summary>
@@ -50,6 +64,13 @@ public class TagService : ITagService
     /// <returns></returns>
     public async Task DeleteTag(Tag tag, int id)
     {
-        await _httpClient.Delete<Tag>($"/api/Tag/{id}");
+        try
+        {
+            await _httpClient.Delete<Tag>($"/api/Tag/{id}");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
     }
 }
