@@ -5,6 +5,7 @@
 @using System.Text.Json;
 @using GPNA.AlarmControlSystem.Pages.Main.Tables
 @using GPNA.AlarmControlSystem.Pages.Main.Charts
+@using LocalDbStorage.Services
 
 <CascadingValue Name="From" Value="@From">
 <CascadingValue Name="To" Value="@To">
@@ -50,7 +51,10 @@ else
 @code {
     [Parameter] public string? Title { get; set; }
 
-    [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
+	[Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
+	[Inject] IActiveAlarmService ActiveAlarmService { get; set; } = null!;
+	[Inject] ISuppressedAlarmService SuppressedAlarmService { get; set; } = null!;
+	[Inject] ITagService TagService { get; set; } = null!;
 
     [Parameter] public static DateTime From { get; set; } = new DateTime(2021, 12, 13);
     [Parameter] public static DateTime To { get; set; } = new DateTime(2021, 12, 19);
@@ -76,6 +80,34 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+	    //var listActive = await ActiveAlarmService.GetAllAlarms();
+	    //var alarmActive = listActive.FirstOrDefault(c => c.Id == 1);
+	    //alarmActive.Comment = "test2";
+	    //await ActiveAlarmService.UpdateAlarm(alarmActive, alarmActive.Id);
+
+	    //var listIncoming = await IncomingAlarmService.GetAllAlarms();
+	    //var alarmIncoming = listIncoming.FirstOrDefault(c => c.Id == 16428);
+	    //alarmIncoming.Comment = "test2";
+	    //await IncomingAlarmService.UpdateAlarm(alarmIncoming, alarmIncoming.Id);
+
+	    //var listSuppressed = await SuppressedAlarmService.GetAllAlarms();
+	    //var alarmSuppressed = listSuppressed.FirstOrDefault(c => c.Id == 1);
+	    //alarmSuppressed.Comment = "test2";
+	    //await SuppressedAlarmService.UpdateAlarm(alarmSuppressed, alarmSuppressed.Id);
+
+	    //var listTag = await TagService.GetAllTags(); // получить все
+	    //var tag = listTag.FirstOrDefault(c => c.Id == 1);
+	    //tag.Id = 9999;
+	    //await TagService.AddTag(tag); // добавить новый
+	    //tag.Inform = "test";
+	    //await TagService.UpdateTag(tag, tag.Id); // изменить
+	    //await TagService.DeleteTag(tag, tag.Id); // удалить
+
+        
+
+
+
+
         InputAlarms = null;
         CountDayPriority = new string[3];
         CountSensorsDayPriority = new string[3];

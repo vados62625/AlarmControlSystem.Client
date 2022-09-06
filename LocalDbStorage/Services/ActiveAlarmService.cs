@@ -28,6 +28,22 @@ public class ActiveAlarmService : IActiveAlarmService
     }
 
     /// <summary>
+    /// Изменить запись в БД
+    /// </summary>
+    /// <returns></returns>
+    public async Task UpdateAlarm(ActiveAlarm activeAlarm, int id)
+    {
+        try
+        {
+            await _httpClient.Put<ActiveAlarm>($"/api/ActiveAlarm/{id}", activeAlarm);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    /// <summary>
     /// Возвращает все записи по Id рабочей станции за определенный период
     /// </summary>
     /// <param name="idWorkStation"></param>

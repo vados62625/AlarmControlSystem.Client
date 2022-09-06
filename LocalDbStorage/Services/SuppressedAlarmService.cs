@@ -28,6 +28,22 @@ public class SuppressedAlarmService : ISuppressedAlarmService
     }
 
     /// <summary>
+    /// Изменить запись в БД
+    /// </summary>
+    /// <returns></returns>
+    public async Task UpdateAlarm(SuppressedAlarm suppressedAlarm, int id)
+    {
+        try
+        {
+            await _httpClient.Put<SuppressedAlarm>($"/api/SuppressedAlarm/{id}", suppressedAlarm);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    /// <summary>
     /// Возвращает все записи по Id рабочей станции за определенный период
     /// </summary>
     /// <param name="idWorkStation"></param>
