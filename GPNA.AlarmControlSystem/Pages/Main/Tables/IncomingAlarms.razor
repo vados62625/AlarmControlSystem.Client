@@ -20,13 +20,26 @@
             <tbody>
                 <tr>
                     <th colspan=2>УПНГ</th>
-                    @*<td>@AlarmsOnDay[0]</td>
-                    <td>@AlarmsOnDay[1]</td>
-                    <td>@AlarmsOnDay[2]</td>
-                    <td>@AlarmsOnDay[3]</td>
-                    <td>@AlarmsOnDay[4]</td>
-                    <td>@AlarmsOnDay[5]</td>
-                    <td>@AlarmsOnDay[6]</td> *@                   
+                    @if (AlarmsOnDay != null && AlarmsOnDay.Count > 0)
+                    {
+                        <td>@AlarmsOnDay[0].ToString()</td>
+                        <td>@AlarmsOnDay[1].ToString()</td>
+                        <td>@AlarmsOnDay[2].ToString()</td>
+                        <td>@AlarmsOnDay[3].ToString()</td>
+                        <td>@AlarmsOnDay[4].ToString()</td>
+                        <td>@AlarmsOnDay[5].ToString()</td>
+                        <td>@AlarmsOnDay[6].ToString()</td>
+                    }
+                    else
+                    {
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                    }                  
                 </tr>
                 <tr>
                     <th colspan=2>БМУПН</th>
@@ -72,7 +85,7 @@
     [CascadingParameter(Name = "From")] public DateTime From { get; set; }
     [CascadingParameter(Name = "To")] public DateTime To { get; set; }
 
-    public List<int> AlarmsOnDay = new List<int>(7);
+    public List<double> AlarmsOnDay = new List<double>(7);
 
 
 
@@ -82,14 +95,15 @@
 
 
         //Получить список всех аварий Входящих/Активных/Подавленных за промежуток From - To        
-        var incomingAlarms= await IncomingAlarmService.GetCountInHour(1, From, To);
-
-        AlarmsOnDay.Add(0);
-        AlarmsOnDay.Add(0);
-        AlarmsOnDay.Add(0);
-        AlarmsOnDay.Add(0);
-        AlarmsOnDay.Add(0);
-        AlarmsOnDay.Add(0);
-        AlarmsOnDay.Add(0);
+        var incomingAlarms= await IncomingAlarmService.GetAverageAlarmsByDates(1, From, To);
+        int i = 0;
+        foreach(var alarm in incomingAlarms)
+        {
+            if (From.AddDays(i).Date == alarm.Key.Date)
+            {
+                AlarmsOnDay.Add(alarm.Value);
+                i++;
+            }
+        }
     }
 }

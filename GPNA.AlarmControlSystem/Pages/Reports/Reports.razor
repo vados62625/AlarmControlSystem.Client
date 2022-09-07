@@ -1,17 +1,17 @@
 ﻿@page "/reports"
+@using GPNA.AlarmControlSystem.Pages.Reports.Charts
 @using LocalDbStorage.Interfaces
 @using LocalDbStorage.Repositories.Models
 @inject IJSRuntime JSRuntime
-@inject IIncomingAlarmService IncomingAlarmService
 
 
 <div style="display:flex;align-items: center;    justify-content: space-evenly; ">
     <h3>@Title</h3>
     <div>
         <a style="margin-left:20px;">C :</a>
-        <input  type="datetime-local" @bind="From" @bind:format="yyyy-MM-ddTHH:mm">
+        <input  type="datetime-local" @bind="From" >
         <a>По :</a>
-        <input  type="datetime-local" @bind="To" @bind:format="yyyy-MM-ddTHH:mm">
+        <input  type="datetime-local" @bind="To">
     </div>
     
     
@@ -93,15 +93,16 @@
 
 
 @code {
+    [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
     [Parameter] public string? Title { get; set; }
+    [Parameter] public static DateTime From { get; set; } = new DateTime(2021, 12, 13);
+    [Parameter] public static DateTime To { get; set; } = new DateTime(2021, 12, 19);
 
     Chart1 Chart1 = new();
 
-    static DateTime From = new();
-    static DateTime To = new();
     [Parameter] public static int kpi { get; set; } = 12;
     static int inputKpi = 12;
-    
+
 
     int[] num1 = new int[168];
     int[] num2 = new int[168];
@@ -118,6 +119,20 @@
 
     void ChangeKpi()=>kpi = inputKpi;
 
+
+    protected override async Task OnInitializedAsync()
+    {
+        isRender = false;
+        var incomingAlarms= await IncomingAlarmService.GetCountInHour(1, From, To);
+        int i = 0;
+
+        foreach( var alarmsOnHour in incomingAlarms)
+        {
+            numTime[i] = (alarmsOnHour.Key.ToString("M")+" " + alarmsOnHour.Key.ToString("t"));
+            num1[i] = alarmsOnHour.Value.Count;
+            i++;
+        }
+    }
 
     protected override async Task OnParametersSetAsync()
     {

@@ -66,7 +66,7 @@
         }       
         <td>@List.Count</td>            
     </tr>                 
-@if (displayMore)
+@if (displayMore || Tag.Comment!=null)
 {
     <tr>
         <td colspan="11" class="p-1 m-1">
@@ -89,9 +89,9 @@
         Tag = List[List.Count - 1];
     }
 
-    void SaveComment()
+    private async Task SaveComment()
     {
-        
+        await IncomingAlarmService.UpdateAlarm(Tag, Tag.Id);
     }
 
     void ShowMoreattributes()

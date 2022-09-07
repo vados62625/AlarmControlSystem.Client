@@ -1,4 +1,5 @@
-﻿@using LocalDbStorage.Repositories.Models
+﻿@using LocalDbStorage.Interfaces
+@using LocalDbStorage.Repositories.Models
 
 
 
@@ -21,12 +22,12 @@
             <td>@Tag.TagName</td>
         } 
     
-        <td>@(Tag.Description ??= "N/A")</td>
+        <td colspan="4">@(Tag.Description ??= "N/A")</td>
         <td>@Tag.Priority</td>
         <td>@Tag.AlarmLimit / @Tag.Value</td>         
     </tr>
              
-    @if (displayMore)
+    @if (displayMore || Tag.Comment!=null)
     {
     <tr>
         <td colspan="10" class="p-1 m-1">
@@ -37,6 +38,7 @@
 } 
 @code
 {
+    [Inject] ISuppressedAlarmService SuppressedAlarmService { get; set; } = null!;
     [Parameter] public SuppressedAlarm? Tag { get; set; }
 
     bool displayMore = false;
@@ -57,8 +59,8 @@
         displayMore = !displayMore;
     }
 
-    void SaveComment()
+    private async Task SaveComment()
     {
-        
+        await SuppressedAlarmService.UpdateAlarm(Tag, Tag.Id);
     }
 }
