@@ -58,7 +58,7 @@ public class ActiveAlarmService : IActiveAlarmService
 
     public async Task<Dictionary<DateTime, int>> CountOfActiveAlarms(int idWorkStation, DateTime startDate, DateTime endDate)
     {
-        var result = await GetScopeAlarms(idWorkStation, startDate, endDate);
+        var result = await GetAllAlarms();
 
         Dictionary<DateTime, int> _count = new Dictionary<DateTime, int>();
 
@@ -72,19 +72,13 @@ public class ActiveAlarmService : IActiveAlarmService
             }
         }
 
-        foreach (var v in _count)
+        foreach (var s in _count)
         {
-            foreach (var s in result)
-            {
-                if (s.StartDate >= v.Key && s.EndDate > v.Key)
-                {
-                    var value = _count[v.Key];
-                    _count[v.Key] = ++value;
-                }
-            }
+            var d = result.FindAll(c => c.StartDate <= s.Key && c.EndDate >= s.Key);
+            _count[s.Key] = d.Count;
         }
 
-        return Count(result.Select(c => c.StartDate).ToList());
+        return _count;
     }
 
     private Dictionary<DateTime, int> Count(List<DateTime> list)
