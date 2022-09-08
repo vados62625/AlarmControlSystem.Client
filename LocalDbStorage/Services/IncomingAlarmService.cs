@@ -56,11 +56,16 @@ public class IncomingAlarmService : IIncomingAlarmService
 
     public async Task<Dictionary<DateTime, List<IncomingAlarm>>> GetCountInHour(int idWorkStation, DateTime startDate, DateTime endDate)
     {
+        
         var alarms = await GetScopeAlarms(idWorkStation, startDate, endDate);
 
         var dictionary = new Dictionary<DateTime, List<IncomingAlarm>>();
 
         var test = alarms.OrderBy(c => c.Date).ToList();
+
+        if (test.Count == 0)
+            return dictionary;
+
 
         var first = test.First().Date;
         var last = test.Last().Date;
