@@ -61,12 +61,33 @@
 
 <div>
     <h4>Количество сигнализаций за неделю</h4>
-    <div style="height:340px;">
-        
-            <canvas id="chart1"></canvas>
-        
-                
-    </div>    
+    @if (!isRender)
+        {
+            <div style="display:block;height:340px;">
+                <div style="top: 140px; position: relative;">
+                    <Loader />
+                </div>
+            </div>
+        }
+        else
+        {
+            if (numTime.Count() > 0)
+            {   
+                 <div style="height:340px;">
+                   <Chart1 Id="Chart1" 
+                        Data1="@Arm1"
+                        Data5="@Kpi"
+                        Labels="@numTime"/>
+                </div> 
+            }
+            else
+            {
+                <div style="display:block;height:340px;">
+                    <p style="padding: 0; top: 140px; position: relative;">Данные отсутствуют.</p>
+                </div>
+            }
+        }    
+      
         
     <div style="display:flex;gap:20px;">
         <h4>Количество сигнализаций на АРМе</h4>
@@ -77,16 +98,36 @@
             <option value="Энергетика">Энергетика</option>
         </select>
     </div>
-    
-    <div style="height:340px;">
-@*          <Chart2  Id = "chart2"
-            Data1="@num6"  
-            Data2="@num7"  
-            Data3="@num8"
-            Labels=@numTime> 
-        </Chart2>*@
-       
-    </div>
+    @if (!isRender)
+        {
+            <div style="display:block;height:340px;">
+                <div style="top: 140px; position: relative;">
+                    <Loader />
+                </div>
+            </div>
+        }
+        else
+        {
+            if (numTime.Count() > 0)
+            {   
+                <div style="height:340px;">
+                    <Chart2  Id = "chart2"
+                        Data1="@Arm1Low"
+                        Data2="@Arm1High"  
+                        Data3="@Arm1Urgent"
+                        Data4="@Arm1Info"
+                        Labels=@numTime>
+                    </Chart2>     
+                </div>
+            }
+            else
+            {
+                <div style="display:block;height:340px;">
+                    <p style="padding: 0; top: 140px; position: relative;">Данные отсутствуют.</p>
+                </div>
+            }
+        }    
+   
 
 </div>
 
@@ -95,6 +136,7 @@
 @code {
     [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
     [Parameter] public string? Title { get; set; }
+
     [Parameter] public static DateTime From { get; set; } = new DateTime(2021, 12, 13);
     [Parameter] public static DateTime To { get; set; } = new DateTime(2021, 12, 19);
 
@@ -104,20 +146,20 @@
     static int inputKpi = 12;
 
 
-    int[] num1 = new int[168];
-    int[] num2 = new int[168];
-    int[] num3 = new int[168];
-    int[] num4 = new int[168];
-    [Parameter] public int[] num5 { get; set; } = new int[168];
-    int[] num6 = new int[168];
-    int[] num7 = new int[168];
-    int[] num8 = new int[168];
-    string[] numTime = new string[168];
+    int[] Arm1, Arm2, Arm3, Arm4;
+    [Parameter] public int[] Kpi { get; set; } = new int[168];
+    int[] Arm1Low,Arm1High,Arm1Urgent,Arm1Info;
+    string[] numTime;
     [Parameter] public bool isRender  { get; set; }= false;
 
     List<IncomingAlarm>? InputAlarms;
 
-    void ChangeKpi()=>kpi = inputKpi;
+    async void ChangeKpi()
+    {
+        isRender = false;
+        kpi = inputKpi;
+        await OnInitializedAsync();
+    }
 
 
     protected override async Task OnInitializedAsync()
@@ -125,162 +167,34 @@
         isRender = false;
         var incomingAlarms= await IncomingAlarmService.GetCountInHour(1, From, To);
         int i = 0;
+        Arm1 = new int[incomingAlarms.Count];
+        Kpi = new int[incomingAlarms.Count];
+        numTime = new string[incomingAlarms.Count];
+        Arm1Low = new int[incomingAlarms.Count];
+        Arm1High = new int[incomingAlarms.Count];
+        Arm1Urgent = new int[incomingAlarms.Count];
+        Arm1Info= new int[incomingAlarms.Count];
 
-        foreach( var alarmsOnHour in incomingAlarms)
+        foreach(var alarmsOnHour in incomingAlarms)
         {
             numTime[i] = (alarmsOnHour.Key.ToString("M")+" " + alarmsOnHour.Key.ToString("t"));
-            num1[i] = alarmsOnHour.Value.Count;
+            Arm1[i] = alarmsOnHour.Value.Count;
+            Kpi[i] = kpi;
+
+            foreach (var alarm in alarmsOnHour.Value)
+            {
+                if (alarm.Priority == PriorityType.Low)
+                    Arm1Low[i] += 1;
+                else if (alarm.Priority == PriorityType.High)
+                    Arm1High[i] += 1;
+                else if (alarm.Priority == PriorityType.Urgent)
+                    Arm1Urgent[i] += 1;
+                else
+                    Arm1Info[i] += 1;
+            }
             i++;
         }
-    }
 
-    protected override async Task OnParametersSetAsync()
-    {
-        isRender = false;
-        for (int i = 0;i<168;i++)
-        {
-            numTime[i] = (From.AddHours(i).ToString("M")+" " + From.AddHours(-168).AddHours(i).ToString("t"));
-
-            num1[i]=2;
-            num2[i]=0;
-            num3[i]=0;
-            num4[i]=0;
-            num5[i]=kpi;
-            num6[i]=0;
-            num7[i]=0;
-            num8[i]=0;
-        }  
-
-	    var tags = await IncomingAlarmService.GetAllAlarms();
-
-        InputAlarms = new List<IncomingAlarm>(tags); 
-
-        
-        if (InputAlarms != null)
-        {
-            for (int i = 0, j = 0; i < InputAlarms.Count; )
-            {
-                if(j == 168)
-                {
-                    break;
-                }
-                if(InputAlarms[i].Date == From.AddHours(j).Date)
-                {
-                    //if(InputAlarms[i].Date.Hour == From.AddHours(j).Date.Hour)
-                    //{
-                    //    num1[i] += 1;
-
-                    //    if (InputAlarms[i].Priority == "Низкий")
-                    //    {
-                    //        num8[i] += 1;
-                    //    }
-                    //    if (InputAlarms[i].Priority == "Высокий")
-                    //    {
-                    //        num7[i] += 1;
-                    //    }
-                    //    if (InputAlarms[i].Priority == "Критический")
-                    //    {
-                    //        num6[i] += 1;
-                    //    }
-                    //    i += 1;
-                    //}
-                    //else
-                    //{
-                    //    if(InputAlarms[i].Date > From.AddHours(j).Date)
-                    //    {
-                    //        j += 1;                            
-                    //    }
-                    //    else
-                    //    {
-                    //        i += 1;  
-                    //    }
-                    //}
-                }
-                
-            }
-        }
-        
-
-           
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        
-        var config = new
-        {
-            Type = "line",
-            Options = new
-            {
-                Responsive = true,
-                MaintainAspectRatio = false,
-
-                Interaction = new
-                {
-                    Mode = "index"
-                },
-                Scales = new
-                {
-                    y = new
-                    {
-                        Display = true
-                    },
-                    x = new
-                    {
-                        Display = true,
-                        Ticks = new
-                        {
-                            maxRotation = 25
-                        }
-
-                    }
-                },
-                Plugins = new
-                {
-
-                    Tooltip = new
-                    {
-
-                        Intersect = false,
-
-                        BackgroundColor = "#fff",
-                        BodyColor = "#11273B",
-                        BorderWidth = 1,
-                        BorderColor = "#97B2C4",
-                        DisplayColors = true,
-                        TitleColor = "#11273B",
-                        TitleFont = new
-                        {Size ="16"}
-                    },
-                    Legend = new
-                    {
-                        Display = true,
-                        Position = "top"
-                    },
-                },
-            },
-            Data = new
-            {
-                Datasets = new[]
-                {
-                    new { Data = num1, BackgroundColor= "#56B9F2", BorderColor = "#56B9F2", BorderWidth = "2",PointRadius="0",Label = "УПНГ", borderDash = new []{0, 0}},
-                    new { Data = num2, BackgroundColor= "#20B55F", BorderColor = "#20B55F", BorderWidth = "2",PointRadius="0",Label = "БМУПН", borderDash = new []{0, 0}},
-                    new { Data = num3, BackgroundColor= "#B556FF", BorderColor = "#B556FF", BorderWidth = "2",PointRadius="0",Label = "УПНГ", borderDash = new []{0, 0}},
-                    new { Data = num4, BackgroundColor= "#F2C94C", BorderColor = "#F2C94C", BorderWidth = "2",PointRadius="0",Label = "УПНГ", borderDash = new []{0, 0}},
-                    new { Data = num5, BackgroundColor= "#EB3333", BorderColor = "#EB3333", BorderWidth = "2",PointRadius="0",Label = "KPI", borderDash = new []{5, 5}}
-                },
-                Labels = numTime
-            }
-        };
-
-        if(firstRender)
-            await JSRuntime.InvokeVoidAsync("setup3", "chart1", config);
-        
-    }
-
-    protected override void OnInitialized()
-    { 
-        To = DateTime.Now.Date;
-        From = To.AddDays(-6);    
+        isRender = true;
     }
 }

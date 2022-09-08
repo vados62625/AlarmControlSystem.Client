@@ -1,8 +1,18 @@
 ﻿@inject IJSRuntime JSRuntime
- 
-<canvas id="@Id"></canvas>
+
+@if (!IsEnableRenderChart)
+{
+     <Loader />
+}
+else
+{
+   <canvas id="@Id"></canvas> 
+}
+
  
 @code {
+    bool IsEnableRenderChart = false;
+
     public enum ChartType
     {
         Pie,
@@ -17,18 +27,18 @@
     public ChartType? Type { get; set; }
 
     [Parameter]
-    public string[]? Data1 { get; set; }
+    public int[]? Data1 { get; set; }
 
     [Parameter]
-    public string[]? Data2 { get; set; }
+    public int[]? Data2 { get; set; }
 
     [Parameter]
-    public string[]? Data3 { get; set; }
+    public int[]? Data3 { get; set; }
 
     [Parameter]
-    public string[]? Data4 { get; set; }    
+    public int[]? Data4 { get; set; }    
     [Parameter]
-    public string[]? Data5 { get; set; }  
+    public int[]? Data5 { get; set; }  
 
     [Parameter]
     public string[]? Labels { get; set; }
@@ -49,9 +59,11 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        IsEnableRenderChart = false;
+
         var config = new
         {
-            Type = ChartType.Line.ToString().ToLower(),
+            Type = "line",
             Options = new
             {
                 Responsive = true,
@@ -101,23 +113,23 @@
                     },
                 },
             },
-
             Data = new
             {
                 Datasets = new[]
                 {
-                    new { Data = Data1, BackgroundColor= "#56B9F2", BorderColor = "#56B9F2", BorderWidth = "2",PointRadius="0",Label = Label1, borderDash = new []{0, 0} },
-                    new { Data = Data2, BackgroundColor= "#20B55F", BorderColor = "#20B55F", BorderWidth = "2",PointRadius="0",Label = Label2, borderDash = new []{0, 0}},
-                    new { Data = Data3, BackgroundColor= "#B556FF", BorderColor = "#B556FF", BorderWidth = "2",PointRadius="0",Label = Label3, borderDash = new []{0, 0}},
-                    new { Data = Data4, BackgroundColor= "#F2C94C", BorderColor = "#F2C94C", BorderWidth = "2",PointRadius="0",Label = Label4, borderDash = new []{0, 0}},
+                    new { Data = Data1, BackgroundColor= "#56B9F2", BorderColor = "#56B9F2", BorderWidth = "2",PointRadius="0",Label = "УПНГ", borderDash = new []{0, 0}},
+                    new { Data = Data2, BackgroundColor= "#20B55F", BorderColor = "#20B55F", BorderWidth = "2",PointRadius="0",Label = "БМУПН", borderDash = new []{0, 0}},
+                    new { Data = Data3, BackgroundColor= "#B556FF", BorderColor = "#B556FF", BorderWidth = "2",PointRadius="0",Label = "Скважины", borderDash = new []{0, 0}},
+                    new { Data = Data4, BackgroundColor= "#F2C94C", BorderColor = "#F2C94C", BorderWidth = "2",PointRadius="0",Label = "Энергетика", borderDash = new []{0, 0}},
                     new { Data = Data5, BackgroundColor= "#EB3333", BorderColor = "#EB3333", BorderWidth = "2",PointRadius="0",Label = "KPI", borderDash = new []{5, 5}}
                 },
                 Labels = Labels
             }
         };
-
-        if(firstRender)
-            await JSRuntime.InvokeVoidAsync("setup", Id!, config);
+        IsEnableRenderChart = true;
+        StateHasChanged();
+        if (firstRender)
+            await JSRuntime.InvokeVoidAsync("setup3", Id, config);
     }
 }
 
