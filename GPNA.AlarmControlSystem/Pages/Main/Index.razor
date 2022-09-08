@@ -108,9 +108,9 @@ else
 	    //var to = new DateTime(2021, 12, 19);
 	    //var testActive = await ActiveAlarmService.CountOfActiveAlarms(1, from, to);
 
-	    //var from = new DateTime(2021, 12, 13);
-	    //var to = new DateTime(2021, 12, 13, 21, 00, 00);
-	    //var testActive = await IncomingAlarmService.GetCountInHour(1, from, to);
+	    var from = new DateTime(2021, 12, 13, 00, 00, 00);
+	    var to = new DateTime(2021, 12, 13, 10, 00, 00);
+	    var testActive = await IncomingAlarmService.GetCountInHour(1, from, to);
         
 
 

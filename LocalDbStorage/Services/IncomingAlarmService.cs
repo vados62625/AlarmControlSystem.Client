@@ -56,8 +56,7 @@ public class IncomingAlarmService : IIncomingAlarmService
 
     public async Task<Dictionary<DateTime, List<IncomingAlarm>>> GetCountInHour(int idWorkStation, DateTime startDate, DateTime endDate)
     {
-        
-        var alarms = await GetAllAlarms();
+        var alarms = await GetScopeAlarms(idWorkStation, startDate, endDate);
 
         var dictionaryCount = new Dictionary<DateTime, List<IncomingAlarm>>();
 
@@ -88,7 +87,7 @@ public class IncomingAlarmService : IIncomingAlarmService
     /// <returns></returns>
     public async Task<List<IncomingAlarm>> GetScopeAlarms(int idWorkStation, DateTime startDate, DateTime endDate)
     {
-        var result = await _httpClient.Get<List<IncomingAlarm>>($"/api/IncomingAlarm/ScopeByDatesAndIdWorkSt?idWorkStation={idWorkStation}&startDate={startDate:yyyy-MM-dd hh:mm:ss}&endDate={endDate:yyyy-MM-dd hh:mm:ss}") ?? new List<IncomingAlarm>();
+        var result = await _httpClient.Get<List<IncomingAlarm>>($"/api/IncomingAlarm/ScopeByDatesAndIdWorkSt?idWorkStation={idWorkStation}&startDate={startDate:yyyy-MM-ddTHH:mm:ss}&endDate={endDate:yyyy-MM-ddTHH:mm:ss}");
         return result;
     }
     
