@@ -58,9 +58,30 @@ public class SuppressedAlarmService : ISuppressedAlarmService
 
     public async Task<Dictionary<DateTime, int>> CountOfSuppressedAlarms(int idWorkStation, DateTime startDate, DateTime endDate)
     {
-        var result = await GetScopeAlarms(idWorkStation, startDate, endDate);
+        var alarms = await GetScopeAlarms(idWorkStation, startDate, endDate);
 
-        return Count(result.Select(c => c.Date).ToList());
+        var dictionaryCount = new Dictionary<DateTime, int>();
+
+        if (alarms.Count == 0)
+            return dictionaryCount;
+
+        var _date = startDate;
+        var _endDate = endDate;
+        var oneDay = new TimeSpan(1,0,0,0);
+
+        while (_date <= _endDate)
+        {
+
+            var list = alarms.FindAll(c => c.Date > _date & c.Date < _date + oneDay);
+
+            dictionaryCount.TryAdd(_date, list.Count);
+
+            _date += oneDay;
+        }
+        return dictionaryCount;
+
+
+        //return Count(alarms.Select(c => c.Date).ToList());
     }
 
     private Dictionary<DateTime, int> Count(List<DateTime> list)
