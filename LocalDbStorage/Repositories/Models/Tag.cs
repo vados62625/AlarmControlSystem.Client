@@ -72,4 +72,9 @@ public partial class Tag : EntityBase
     /// Время на реакцию
     /// </summary>
     public string? ReactionTime { get; set; }
+
+    /// <summary>
+    /// Состояние проверки на валидность информации
+    /// </summary>
+    public Validate Validate { get; set; }
 }
