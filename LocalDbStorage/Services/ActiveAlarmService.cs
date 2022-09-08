@@ -52,7 +52,7 @@ public class ActiveAlarmService : IActiveAlarmService
     /// <returns></returns>
     public async Task<List<ActiveAlarm>> GetScopeAlarms(int idWorkStation, DateTime startDate, DateTime endDate)
     {
-        var result = await _httpClient.Get<List<ActiveAlarm>>($"/api/ActiveAlarm/ScopeByDatesAndIdWorkSt?idWorkStation={idWorkStation}&startDate={startDate:yyyy-MM-dd hh:mm:ss}&endDate={endDate:yyyy-MM-dd hh:mm:ss}") ?? new List<ActiveAlarm>();
+        var result = await _httpClient.Get<List<ActiveAlarm>>($"/api/ActiveAlarm/ScopeByDatesAndIdWorkSt?idWorkStation={idWorkStation}&startDate={startDate:yyyy-MM-ddTHH:mm:ss}&endDate={endDate:yyyy-MM-ddTHH:mm:ss}") ?? new List<ActiveAlarm>();
         return result;
     }
 
