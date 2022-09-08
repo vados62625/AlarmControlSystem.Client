@@ -51,8 +51,8 @@
         displayMore = !displayMore;
     }
 
-     void SaveComment()
+    private async Task SaveComment()
     {
-        
+        await ActiveAlarmService.UpdateAlarm(Tag, Tag.Id);
     }
 }

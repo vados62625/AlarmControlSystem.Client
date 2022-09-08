@@ -26,9 +26,9 @@
         <td>@Tag.Priority</td>
         <td>@Tag.AlarmLimit / @Tag.Value</td>       
     </tr>             
-@if (displayMore)
+@if (displayMore || Tag.Comment!=null)
 {
-    <tr>
+    <tr class="item-table @styleTr">
         <td colspan="10" class="p-1 m-1">
             <input type="text" style="width:90%;margin-right:5px;" @bind="Tag.Comment"><button class="btn-success" @onclick="SaveComment">Сохранить</button>
         </td>                        
@@ -60,8 +60,8 @@
         displayMore = !displayMore;
     }
 
-     void SaveComment()
+    private async Task SaveComment()
     {
-        
+        await ActiveAlarmService.UpdateAlarm(Tag, Tag.Id);
     }
 }

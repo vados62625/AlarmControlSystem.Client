@@ -17,14 +17,14 @@ else
 {
 <div style="display:flex; justify-content:space-evenly;margin-top:50px;">
     <div style="display:flex;flex-direction:column;align-content:center;">
-        <h4>Количество сигнализаций за @DateTime.Now.AddDays(-1).ToString("M")</h4>
+        <h4>Количество сигнализаций за @To.ToString("M")</h4>
         <div style="height:340px;display: flex;justify-content: center; align-items: center; max-width:420px;margin: auto;position:relative;">
             <DoughnutChart Id="donutChart1" Data1="@CountDayPriority"/>
             <p style="position: absolute; margin-top: 50px; font-size: 50px;" title="Среднее число входящих сигнализаций">@CountDay</p>
         </div>
     </div>
     <div style="display:flex;flex-direction:column;align-content:center;">
-        <h4>Количество сигнализаций за @DateTime.Now.AddDays(-1).ToString("M") от разных датчиков</h4>
+        <h4>Количество сигнализаций за @To.ToString("M") от разных датчиков</h4>
         <div style="height:340px;display: flex;justify-content: center; align-items: center;max-width:420px;margin: auto; position:relative;">
             <DoughnutChart Id="donutChart2" Data1="@CountSensorsDayPriority"/>
             <p style="position: absolute;   margin-top: 50px; font-size: 50px;" title="Среднее число входящих сигнализаций">@CountSensorsDay</p>

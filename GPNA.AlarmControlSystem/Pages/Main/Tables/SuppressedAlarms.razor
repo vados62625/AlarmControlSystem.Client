@@ -22,13 +22,13 @@
                     <th colspan=2>УПНГ</th>  
                     @if (AlarmsOnDay != null && AlarmsOnDay.Count > 0)
                     {
-                        <td>@(AlarmsOnDay[0]!=null ? AlarmsOnDay[0].ToString() : "N/A")</td>
-                        <td>@(AlarmsOnDay[1] != null ? AlarmsOnDay[1] : "N/A")</td>
-                        <td>@(AlarmsOnDay[2] != null ? AlarmsOnDay[2] : "N/A")</td>
-                        <td>@(AlarmsOnDay[3] != null ? AlarmsOnDay[3] : "N/A")</td>
-                        <td>@(AlarmsOnDay[4] != null ? AlarmsOnDay[4] : "N/A")</td>
-                        <td>@(AlarmsOnDay[5] != null ? AlarmsOnDay[5] : "N/A")</td>
-                        <td>@(AlarmsOnDay[6] != null ? AlarmsOnDay[6] : "N/A")</td>
+                        <td>@AlarmsOnDay[0].ToString()</td>
+                        <td>@AlarmsOnDay[1].ToString()</td>
+                        <td>@AlarmsOnDay[2].ToString()</td>
+                        <td>@AlarmsOnDay[3].ToString()</td>
+                        <td>@AlarmsOnDay[4].ToString()</td>
+                        <td>@AlarmsOnDay[5].ToString()</td>
+                        <td>@AlarmsOnDay[6].ToString()</td>
                     }
                     else
                     {
@@ -93,10 +93,6 @@
 
     protected override async Task OnInitializedAsync()    
     {
-
-
-        //Получить список всех аварий Входящих/Активных/Подавленных за промежуток From - To 
-        //IncomingAlarms = await RestService.GetAllIncomingAlarm();
         var suppressedAlarms= await SuppressedAlarmService.CountOfSuppressedAlarms(1, From, To);
         int i = 0;
         foreach (var count in suppressedAlarms)

@@ -48,13 +48,11 @@
     [Parameter] public int ArmId { get; set; }
     [Parameter] public string? Title { get; set; }
     
-    [Parameter] public static DateTime From { get; set; } = new DateTime(2021, 12, 03);
-    [Parameter] public static DateTime To { get; set; } = new DateTime(2021, 12, 10);
+    [Parameter] public static DateTime From { get; set; } = new DateTime(2021, 12, 13);
+    [Parameter] public static DateTime To { get; set; } = new DateTime(2021, 12, 19);
     
     string? AlarmType = "Входящие";    
     string? Priority = "0";
-
-    
 
     void SelectPriority()
     {
