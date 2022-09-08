@@ -57,8 +57,9 @@ else
 	[Inject] ISuppressedAlarmService SuppressedAlarmService { get; set; } = null!;
 	[Inject] ITagService TagService { get; set; } = null!;
 
-    [Parameter] public static DateTime From { get; set; } = new DateTime(2021, 12, 13);
-    [Parameter] public static DateTime To { get; set; } = new DateTime(2021, 12, 19);
+    [CascadingParameter(Name = "From")] public DateTime From { get; set; }
+    [CascadingParameter(Name = "To")] public DateTime To { get; set; }
+    
 
     string[] CountDayPriority = new string[3];
     string[] CountSensorsDayPriority = new string[3];
@@ -69,11 +70,6 @@ else
     public List<List<IncomingAlarm>>? InputAlarms;
 
     void SelectPriority()
-    {
-
-    }
-
-    protected override void OnParametersSet()
     {
 
     }
@@ -107,16 +103,7 @@ else
 	    //var from = new DateTime(2021, 12, 13);
 	    //var to = new DateTime(2021, 12, 19);
 	    //var testActive = await ActiveAlarmService.CountOfActiveAlarms(1, from, to);
-
-	    //var from = new DateTime(2021, 12, 13);
-	    //var to = new DateTime(2021, 12, 20);
-	    //var testActive = await SuppressedAlarmService.CountOfSuppressedAlarms(1, from, to);
-	    //var testActive = await IncomingAlarmService.GetCountInHour(1, from, to);
         
-
-
-
-
         InputAlarms = null;
         CountDayPriority = new string[3];
         CountSensorsDayPriority = new string[3];
@@ -129,7 +116,7 @@ else
         if(InputAlarms!=null)
             foreach(var c in InputAlarms)
             {
-                if(c[0].Date.Date == To.AddDays(-1).Date && c[0].Priority != PriorityType.Information && c[0].Priority != PriorityType.None)
+                if(c[0].Date.Date == To.Date && c[0].Priority != PriorityType.Information && c[0].Priority != PriorityType.None)
                 {
                     if (c[0].Priority == PriorityType.Low)
                     {
