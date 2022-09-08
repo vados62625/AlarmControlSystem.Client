@@ -95,7 +95,7 @@
 
 
         //Получить список всех аварий Входящих/Активных/Подавленных за промежуток From - To        
-        var incomingAlarms= await IncomingAlarmService.GetAverageAlarmsByDates(1, From, To);
+        var incomingAlarms= await IncomingAlarmService.GetAverageAlarmsByDates(1, From, To.AddDays(1));
         int i = 0;
         foreach(var alarm in incomingAlarms)
         {

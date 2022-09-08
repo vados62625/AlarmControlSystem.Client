@@ -57,8 +57,9 @@ else
 	[Inject] ISuppressedAlarmService SuppressedAlarmService { get; set; } = null!;
 	[Inject] ITagService TagService { get; set; } = null!;
 
-    [Parameter] public static DateTime From { get; set; } = new DateTime(2021, 12, 13);
-    [Parameter] public static DateTime To { get; set; } = new DateTime(2021, 12, 19);
+    [CascadingParameter(Name = "From")] public DateTime From { get; set; }
+    [CascadingParameter(Name = "To")] public DateTime To { get; set; }
+    
 
     string[] CountDayPriority = new string[3];
     string[] CountSensorsDayPriority = new string[3];
@@ -115,7 +116,7 @@ else
         if(InputAlarms!=null)
             foreach(var c in InputAlarms)
             {
-                if(c[0].Date.Date == To.AddDays(-1).Date && c[0].Priority != PriorityType.Information && c[0].Priority != PriorityType.None)
+                if(c[0].Date.Date == To.Date && c[0].Priority != PriorityType.Information && c[0].Priority != PriorityType.None)
                 {
                     if (c[0].Priority == PriorityType.Low)
                     {

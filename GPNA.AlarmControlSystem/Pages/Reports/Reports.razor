@@ -2,6 +2,7 @@
 @using GPNA.AlarmControlSystem.Pages.Reports.Charts
 @using LocalDbStorage.Interfaces
 @using LocalDbStorage.Repositories.Models
+@using LocalDbStorage.Repositories.Models.Enum
 @inject IJSRuntime JSRuntime
 
 
@@ -137,8 +138,8 @@
     [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
     [Parameter] public string? Title { get; set; }
 
-    [Parameter] public static DateTime From { get; set; } = new DateTime(2021, 12, 13);
-    [Parameter] public static DateTime To { get; set; } = new DateTime(2021, 12, 19);
+    [CascadingParameter(Name = "From")] public DateTime From { get; set; }
+    [CascadingParameter(Name = "To")] public DateTime To { get; set; }
 
     Chart1 Chart1 = new();
 
