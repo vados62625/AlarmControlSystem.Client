@@ -5,6 +5,7 @@
 @using System.Text.Json;
 @using GPNA.AlarmControlSystem.Pages.Main.Tables
 @using GPNA.AlarmControlSystem.Pages.Main.Charts
+@using LocalDbStorage.Repositories.Models.Enum
 @using LocalDbStorage.Services
 
 <CascadingValue Name="From" Value="@From">
@@ -107,9 +108,9 @@ else
 	    //var to = new DateTime(2021, 12, 19);
 	    //var testActive = await ActiveAlarmService.CountOfActiveAlarms(1, from, to);
 
-	    var from = new DateTime(2021, 12, 13);
-	    var to = new DateTime(2021, 12, 13, 11, 00, 00);
-	    var testActive = await IncomingAlarmService.GetCountInHour(1, from, to);
+	    //var from = new DateTime(2021, 12, 13);
+	    //var to = new DateTime(2021, 12, 13, 21, 00, 00);
+	    //var testActive = await IncomingAlarmService.GetCountInHour(1, from, to);
         
 
 

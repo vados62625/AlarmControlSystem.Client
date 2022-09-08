@@ -57,33 +57,26 @@ public class IncomingAlarmService : IIncomingAlarmService
     public async Task<Dictionary<DateTime, List<IncomingAlarm>>> GetCountInHour(int idWorkStation, DateTime startDate, DateTime endDate)
     {
         
-        var alarms = await GetScopeAlarms(idWorkStation, startDate, endDate);
+        var alarms = await GetAllAlarms();
 
-        var dictionary = new Dictionary<DateTime, List<IncomingAlarm>>();
+        var dictionaryCount = new Dictionary<DateTime, List<IncomingAlarm>>();
 
-        var test = alarms.OrderBy(c => c.Date).ToList();
+        if (alarms.Count == 0)
+            return dictionaryCount;
 
-        if (test.Count == 0)
-            return dictionary;
+        var _startDate = startDate;
+        var _endDate = endDate;
+        var oneHoure = new TimeSpan(1, 0, 0);
 
-
-        var first = test.First().Date;
-        var last = test.Last().Date;
-
-        var tm = first.Date;
-        var oneH = new TimeSpan(1,0,0);
-
-        while (tm < last)
+        while (_startDate < _endDate)
         {
-            var list = alarms.FindAll(c => c.Date > tm & c.Date < tm + oneH);
-            tm += oneH;
+         
+            var list = alarms.FindAll(c => c.Date > _startDate & c.Date < _startDate + oneHoure);
+            _startDate += oneHoure;
 
-            if(list.Count > 0)
-                dictionary.TryAdd(tm, list);
-
+            dictionaryCount.TryAdd(_startDate, list);
         }
-
-        return dictionary;
+        return dictionaryCount;
     }
 
     /// <summary>
