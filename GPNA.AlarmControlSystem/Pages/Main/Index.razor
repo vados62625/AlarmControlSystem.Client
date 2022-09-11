@@ -18,14 +18,14 @@ else
 {
 <div style="display:flex; justify-content:space-evenly;margin-top:50px;">
     <div style="display:flex;flex-direction:column;align-content:center;">
-        <h4>Количество сигнализаций за @To.ToString("M")</h4>
+        <h4>Количество сигнализаций за @DateTime.Now.AddDays(-1).ToString("M")</h4>
         <div style="height:340px;display: flex;justify-content: center; align-items: center; max-width:420px;margin: auto;position:relative;">
             <DoughnutChart Id="donutChart1" Data1="@CountDayPriority"/>
             <p style="position: absolute; margin-top: 50px; font-size: 50px;" title="Среднее число входящих сигнализаций">@CountDay</p>
         </div>
     </div>
     <div style="display:flex;flex-direction:column;align-content:center;">
-        <h4>Количество сигнализаций за @To.ToString("M") от разных датчиков</h4>
+        <h4>Количество сигнализаций за @DateTime.Now.AddDays(-1).ToString("M") от разных датчиков</h4>
         <div style="height:340px;display: flex;justify-content: center; align-items: center;max-width:420px;margin: auto; position:relative;">
             <DoughnutChart Id="donutChart2" Data1="@CountSensorsDayPriority"/>
             <p style="position: absolute;   margin-top: 50px; font-size: 50px;" title="Среднее число входящих сигнализаций">@CountSensorsDay</p>
@@ -52,14 +52,14 @@ else
 @code {
     [Parameter] public string? Title { get; set; }
 
-	[Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
-	[Inject] IActiveAlarmService ActiveAlarmService { get; set; } = null!;
-	[Inject] ISuppressedAlarmService SuppressedAlarmService { get; set; } = null!;
-	[Inject] ITagService TagService { get; set; } = null!;
+    [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
+    [Inject] IActiveAlarmService ActiveAlarmService { get; set; } = null!;
+    [Inject] ISuppressedAlarmService SuppressedAlarmService { get; set; } = null!;
+    [Inject] ITagService TagService { get; set; } = null!;
 
     [CascadingParameter(Name = "From")] public DateTime From { get; set; }
     [CascadingParameter(Name = "To")] public DateTime To { get; set; }
-    
+
 
     string[] CountDayPriority = new string[3];
     string[] CountSensorsDayPriority = new string[3];
@@ -74,42 +74,50 @@ else
 
     }
 
-
     protected override async Task OnInitializedAsync()
     {
-	    //var listActive = await ActiveAlarmService.GetAllAlarms();
-	    //var alarmActive = listActive.FirstOrDefault(c => c.Id == 1);
-	    //alarmActive.Comment = "test2";
-	    //await ActiveAlarmService.UpdateAlarm(alarmActive, alarmActive.Id);
+        //var listActive = await ActiveAlarmService.GetAllAlarms();
+        //var alarmActive = listActive.FirstOrDefault(c => c.Id == 1);
+        //alarmActive.Comment = "test2";
+        //await ActiveAlarmService.UpdateAlarm(alarmActive, alarmActive.Id);
 
-	    //var listIncoming = await IncomingAlarmService.GetAllAlarms();
-	    //var alarmIncoming = listIncoming.FirstOrDefault(c => c.Id == 16428);
-	    //alarmIncoming.Comment = "test2";
-	    //await IncomingAlarmService.UpdateAlarm(alarmIncoming, alarmIncoming.Id);
+        //var listIncoming = await IncomingAlarmService.GetAllAlarms();
+        //var alarmIncoming = listIncoming.FirstOrDefault(c => c.Id == 16428);
+        //alarmIncoming.Comment = "test2";
+        //await IncomingAlarmService.UpdateAlarm(alarmIncoming, alarmIncoming.Id);
 
-	    //var listSuppressed = await SuppressedAlarmService.GetAllAlarms();
-	    //var alarmSuppressed = listSuppressed.FirstOrDefault(c => c.Id == 1);
-	    //alarmSuppressed.Comment = "test2";
-	    //await SuppressedAlarmService.UpdateAlarm(alarmSuppressed, alarmSuppressed.Id);
+        //var listSuppressed = await SuppressedAlarmService.GetAllAlarms();
+        //var alarmSuppressed = listSuppressed.FirstOrDefault(c => c.Id == 1);
+        //alarmSuppressed.Comment = "test2";
+        //await SuppressedAlarmService.UpdateAlarm(alarmSuppressed, alarmSuppressed.Id);
 
-	    //var listTag = await TagService.GetAllTags(); // получить все
-	    //var tag = listTag.FirstOrDefault(c => c.Id == 1);
-	    //tag.Id = 9999;
-	    //await TagService.AddTag(tag); // добавить новый
-	    //tag.Inform = "test";
-	    //await TagService.UpdateTag(tag, tag.Id); // изменить
-	    //await TagService.DeleteTag(tag, tag.Id); // удалить
+        //var listTag = await TagService.GetAllTags(); // получить все
+        //var tag = listTag.FirstOrDefault(c => c.Id == 1);
+        //tag.Id = 9999;
+        //await TagService.AddTag(tag); // добавить новый
+        //tag.Inform = "test";
+        //await TagService.UpdateTag(tag, tag.Id); // изменить
+        //await TagService.DeleteTag(tag, tag.Id); // удалить
 
-	    //var from = new DateTime(2021, 12, 13);
-	    //var to = new DateTime(2021, 12, 19);
-	    //var testActive = await ActiveAlarmService.CountOfActiveAlarms(1, from, to);
+        //var from = new DateTime(2021, 12, 13);
+        //var to = new DateTime(2021, 12, 19);
+        //var testActive = await ActiveAlarmService.CountOfActiveAlarms(1, from, to);
+
+        var now = DateTime.Now;
+        var i = -(int)now.DayOfWeek;
+        To = now.AddDays(i);
+        To = new DateTime(To.Year , To.Month, To.Day, 23,59,59);
+        From = To.AddDays(-6);
+        From = new DateTime(From.Year , From.Month, From.Day, 0,0,0);
         
+
         InputAlarms = null;
         CountDayPriority = new string[3];
         CountSensorsDayPriority = new string[3];
         int[] countDayPriority = new int[3];
         int[] countSensorsDayPriority = new int[3];
-        var tags = await IncomingAlarmService.GetAlarmsPerDate(1,To.AddDays(-1),To);
+
+        var tags = await IncomingAlarmService.GetAlarmsPerDate(1,now.AddDays(-1),now);
 
         InputAlarms = tags; 
 

@@ -47,17 +47,34 @@
 @code {
     [Parameter] public int ArmId { get; set; }
     [Parameter] public string? Title { get; set; }
-    
+
 
     [CascadingParameter(Name = "From")] public DateTime From { get; set; }
     [CascadingParameter(Name = "To")] public DateTime To { get; set; }
-    
+
     string? AlarmType = "Входящие";    
     string? Priority = "0";
 
     void SelectPriority()
     {
 
+    }
+
+    protected override void OnInitialized()
+    {
+        To = DateTime.Now;
+        if (To.Hour > 7 &&  To.Hour < 20)
+        {
+            From = new DateTime(To.Year , To.Month, To.Day, 8,0,0);
+        }
+        else if (To.Hour >= 20)
+        {
+            From = new DateTime(To.Year , To.Month, To.Day, 20,0,0);
+        }
+        else
+        {
+            From = new DateTime(To.Year , To.Month, To.Day-1, 20,0,0);
+        }
     }
 
     protected override void OnParametersSet()

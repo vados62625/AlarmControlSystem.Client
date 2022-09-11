@@ -165,6 +165,12 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var now = DateTime.Now;
+        To = now.AddDays(-(int)now.DayOfWeek);
+        To = new DateTime(To.Year , To.Month, To.Day, 23,59,59);
+        From = To.AddDays(-6);
+        From = new DateTime(From.Year , From.Month, From.Day, 0,0,0);
+
         isRender = false;
         var incomingAlarms= await IncomingAlarmService.GetCountInHour(1, From, To);
         int i = 0;

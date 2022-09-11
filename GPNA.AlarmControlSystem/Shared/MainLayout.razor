@@ -1,7 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
-<CascadingValue Name="From" Value="@From">
-<CascadingValue Name="To" Value="@To">
+
 <div class="page @theme">
     <header>        
         <span class="logo @theme"></span>
@@ -81,12 +80,10 @@
         </div>
     </div>
 </div>
-</CascadingValue>
-</CascadingValue>
+
 
 @code {
-    [Parameter] public static DateTime From { get; set; } = new DateTime(2021, 12, 13);
-    [Parameter] public static DateTime To { get; set; } = new DateTime(2021, 12, 19, 23, 59, 59);
+
 
     bool darkTheme = false;
     string theme = "light-theme";
