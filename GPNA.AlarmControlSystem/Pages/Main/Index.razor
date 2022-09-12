@@ -104,12 +104,19 @@ else
 	    //var to = new DateTime(2021, 12, 19);
 	    //var testActive = await ActiveAlarmService.CountOfActiveAlarms(1, from, to);
         
+        var now = DateTime.Now;
+        var i = -(int)now.DayOfWeek;
+        To = now.AddDays(i);
+        To = new DateTime(To.Year , To.Month, To.Day, 23,59,59);
+        From = To.AddDays(-6);
+        From = new DateTime(From.Year , From.Month, From.Day, 0,0,0);
+
         InputAlarms = null;
         CountDayPriority = new string[3];
         CountSensorsDayPriority = new string[3];
         int[] countDayPriority = new int[3];
         int[] countSensorsDayPriority = new int[3];
-        var tags = await IncomingAlarmService.GetAlarmsPerDate(1,To.AddDays(-1),To);
+        var tags = await IncomingAlarmService.GetAlarmsPerDate(1,now.AddDays(-1),now);
 
         InputAlarms = tags; 
 
