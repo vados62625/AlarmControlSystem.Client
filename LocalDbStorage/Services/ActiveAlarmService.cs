@@ -52,8 +52,13 @@ public class ActiveAlarmService : IActiveAlarmService
     /// <returns></returns>
     public async Task<List<ActiveAlarm>> GetScopeAlarms(int idWorkStation, DateTime startDate, DateTime endDate)
     {
-        var result = await _httpClient.Get<List<ActiveAlarm>>($"/api/ActiveAlarm/ScopeByDatesAndIdWorkSt?idWorkStation={idWorkStation}&startDate={startDate:yyyy-MM-ddTHH:mm:ss}&endDate={endDate:yyyy-MM-ddTHH:mm:ss}") ?? new List<ActiveAlarm>();
+        var result = await GetAllAlarms();
+        result = result.Where(c => c.StartDate >= startDate && c.StartDate <= endDate).ToList();
         return result;
+
+        // TODO временно endDate в контроллере не используется
+        //var result = await _httpClient.Get<List<ActiveAlarm>>($"/api/ActiveAlarm/ScopeByDatesAndIdWorkSt?idWorkStation={idWorkStation}&startDate={startDate:yyyy-MM-ddTHH:mm:ss}&endDate={endDate:yyyy-MM-ddTHH:mm:ss}") ?? new List<ActiveAlarm>();
+        //return result;
     }
 
     public async Task<Dictionary<DateTime, int>> CountOfActiveAlarms(int idWorkStation, DateTime startDate, DateTime endDate)
@@ -74,7 +79,7 @@ public class ActiveAlarmService : IActiveAlarmService
 
         foreach (var s in _count)
         {
-            var d = result.FindAll(c => c.StartDate <= s.Key && c.EndDate >= s.Key);
+            var d = result.FindAll(c => c.StartDate.Date == s.Key);
             _count[s.Key] = d.Count;
         }
 
