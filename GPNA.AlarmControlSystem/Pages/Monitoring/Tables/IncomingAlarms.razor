@@ -48,14 +48,12 @@
     [CascadingParameter(Name = "From")] public DateTime From { get; set; }
     [CascadingParameter(Name = "To")] public DateTime To { get; set; }
 
-    protected override async Task OnInitializedAsync()    
-    {
-        var incomingAlarms= await IncomingAlarmService.GetAlarmsPerDate(1, From, To);
-        Alarms = incomingAlarms;        
-    }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
+        Alarms = null;
+        var incomingAlarms= await IncomingAlarmService.GetAlarmsPerDate(1, From, To);
+        Alarms = incomingAlarms;  
         //if (Priority != 5)
         //{
         //    var alarms = new List<IncomingAlarm>();
