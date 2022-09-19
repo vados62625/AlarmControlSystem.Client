@@ -7,7 +7,7 @@
 {
     <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">
         <td>@Tag.StartDate.ToString("d") @Tag.StartDate.ToString("t")</td>
-        <td>@Tag.EndDate.ToString("d") @Tag.EndDate.ToString("t")</td>
+  @*      <td>@Tag.EndDate.ToString("d") @Tag.EndDate.ToString("t")</td>*@
         <td>@(Tag.Duration.Value.TotalHours.ToString("N") ?? "N/A")</td>        
         @if (Tag.TagName.EndsWith("LL") || Tag.TagName.EndsWith("HH"))
         {
