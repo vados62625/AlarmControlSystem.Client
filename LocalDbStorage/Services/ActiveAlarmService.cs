@@ -67,10 +67,10 @@ public class ActiveAlarmService : IActiveAlarmService
 
         Dictionary<DateTime, int> _count = new Dictionary<DateTime, int>();
 
-        var test = endDate - startDate;
-        if (test.Days > 0)
+        var itemTimeSpan = endDate - startDate;
+        if (itemTimeSpan.Days > 0)
         {
-            for (int i = 0; i <= test.Days; i++)
+            for (int i = 0; i <= itemTimeSpan.Days; i++)
             {
                 TimeSpan ts = TimeSpan.FromDays(i);
                 _count.Add(startDate + ts, 0);

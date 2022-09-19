@@ -3,6 +3,7 @@ using LocalDbStorage.Extentions;
 using LocalDbStorage.Interfaces;
 using LocalDbStorage.Repositories.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
 
 namespace LocalDbStorage.Services;
 
@@ -97,14 +98,31 @@ public class IncomingAlarmService : IIncomingAlarmService
 
         Dictionary<DateTime, double> _count = new Dictionary<DateTime, double>();
 
-        var groupDateTime = result.GroupBy(g => g.Date.Date);
-
-        groupDateTime = groupDateTime.OrderBy(u => u.Key).ToList();
-
-        foreach (var g in groupDateTime)
+        var itemTimeSpan = endDate - startDate;
+        if (itemTimeSpan.Days > 0)
         {
-            _count.Add(g.Key, g.Count() / Day);
+            for (int i = 0; i <= itemTimeSpan.Days; i++)
+            {
+                TimeSpan ts = TimeSpan.FromDays(i);
+                var date = startDate + ts;
+                _count.Add(date.Date, 0);
+            }
         }
+
+        foreach (var s in _count)
+        {
+            var d = result.FindAll(c => c.Date.Date == s.Key);
+            _count[s.Key] = d.Count / Day;
+        }
+
+        //var groupDateTime = result.GroupBy(g => g.Date.Date);
+
+        //groupDateTime = groupDateTime.OrderBy(u => u.Key).ToList();
+
+        //foreach (var g in groupDateTime)
+        //{
+        //    _count[g.Key] = g.Count() / Day;
+        //}
 
         return _count;
     }
