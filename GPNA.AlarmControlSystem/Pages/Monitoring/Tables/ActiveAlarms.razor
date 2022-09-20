@@ -52,7 +52,8 @@
     {
         Alarms = null;
         var activeAlarms= await ActiveAlarmService.GetScopeAlarms(1, From, To);
-        Alarms = activeAlarms;
+        
+	    Alarms = activeAlarms.OrderBy(c => c.StartDate).ToList();
         //if (Priority != 5)
         //{
         //    var alarms = new List<ActiveAlarm>();

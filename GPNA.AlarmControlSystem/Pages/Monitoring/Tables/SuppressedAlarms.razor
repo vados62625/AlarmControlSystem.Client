@@ -53,7 +53,7 @@
     {
         Alarms = null;
         var suppressedAlarms= await SuppressedAlarmService.GetScopeAlarms(1, From, To);
-        Alarms = suppressedAlarms;
+        Alarms = suppressedAlarms.OrderBy(c => c.Date).ToList();
         //if (Priority != 5)
         //{
         //    var alarms = new List<SuppressedAlarm>();

@@ -111,7 +111,7 @@ public class IncomingAlarmService : IIncomingAlarmService
 
         foreach (var s in _count)
         {
-            var d = result.FindAll(c => c.Date.Date == s.Key);
+            var d = result.FindAll(c => c.Date.Date == s.Key.Date);
             _count[s.Key] = d.Count / Day;
         }
 

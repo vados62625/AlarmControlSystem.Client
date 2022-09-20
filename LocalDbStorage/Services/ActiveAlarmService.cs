@@ -79,7 +79,7 @@ public class ActiveAlarmService : IActiveAlarmService
 
         foreach (var s in _count)
         {
-            var d = result.FindAll(c => c.StartDate.Date == s.Key);
+            var d = result.FindAll(c => c.StartDate.Date == s.Key.Date);
             _count[s.Key] = d.Count;
         }
 

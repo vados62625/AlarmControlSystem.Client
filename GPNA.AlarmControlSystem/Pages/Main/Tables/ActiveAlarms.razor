@@ -94,7 +94,8 @@
     protected override async Task OnInitializedAsync()    
     {
         var activeAlarms= await ActiveAlarmService.CountOfActiveAlarms(1, From, To);
-        int i = 0;
+        
+	    int i = 0;
         foreach (var count in activeAlarms)
         {
             if(count.Key == From.AddDays(i))
