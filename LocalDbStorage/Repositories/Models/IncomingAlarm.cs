@@ -58,10 +58,10 @@ public class IncomingAlarm : EntityBase
     /// </summary>
     public bool Test { get; set; }
 
-    ///// <summary>
-    ///// Количество
-    ///// </summary>
-    //public int? Count { get; set; }
+    /// <summary>
+    /// Дата
+    /// </summary>
+    public DateTime[] Dates { get; set; }
 
     public virtual WorkStation? WorkStation { get; set; }
 
