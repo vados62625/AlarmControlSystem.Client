@@ -30,10 +30,8 @@
     }
     else
     {
-        <Virtualize Items="Alarms" OverscanCount="10">        
-           
-                <ActiveAlarmComponent @key="context.Id" Tag="@context"/>
-            
+        <Virtualize Items="Alarms" OverscanCount="10">           
+            <ActiveAlarmComponent @key="context.Id" Tag="@context"/>            
         </Virtualize>
     }
 </tbody>
@@ -54,7 +52,7 @@
         Alarms = null;
         var activeAlarms= await ActiveAlarmService.GetScopeAlarms(1, From, To);
         
-	    Alarms = activeAlarms.OrderBy(c => c.DateTime).ToList();
+	    Alarms = activeAlarms.OrderByDescending(c => c.StartDate).ToList();
         //if (Priority != 5)
         //{
         //    var alarms = new List<ActiveAlarm>();

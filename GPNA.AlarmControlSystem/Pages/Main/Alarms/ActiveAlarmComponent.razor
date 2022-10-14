@@ -7,8 +7,7 @@
 @if(Tag!=null && Tag.TagName!=null)
 {
     <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">
-        <td>@Tag.DateTime.ToString("d") @Tag.DateTime.ToString("t")</td>
-  @*      <td>@Tag.EndDate.ToString("d") @Tag.EndDate.ToString("t")</td>*@
+        <td>@Tag.StartDate.ToString("d") @Tag.StartDate.ToString("t")</td>
         <td>@(Tag.Duration.Value.TotalHours.ToString("N") ?? "N/A")</td>        
         @if (Tag.TagName.EndsWith("LL") || Tag.TagName.EndsWith("HH"))
         {
@@ -27,11 +26,11 @@
         <td>@Tag.Priority</td>
         <td>@Tag.AlarmLimit / @Tag.Value</td>       
     </tr>             
-@if (displayMore)
+@if (displayMore || (Tag.Comment!=null && Tag.Comment.Length>0))
 {
     <tr>
-        <td colspan="10" class="p-1 m-1">
-            <input type="text" style="width:90%;margin-right:5px;" @bind="Tag.Comment"><button class="btn-success" @onclick="SaveComment">Сохранить</button>
+        <td colspan="9" class="p-0 m-0">
+            <input type="text" style="margin:0;padding:5px 10px;width:100%" @bind="Tag.Comment" @bind:event="oninput" @onkeydown="SaveComment">
         </td>                        
     </tr>
 }
@@ -45,15 +44,18 @@
     bool displayMore = false;
 
 
-    
+
 
     void ShowMoreattributes()
     {
         displayMore = !displayMore;
     }
 
-    private async Task SaveComment()
+    private async Task SaveComment(KeyboardEventArgs e)
     {
-        await ActiveAlarmService.UpdateAlarm(Tag, Tag.Id);
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await ActiveAlarmService.UpdateAlarm(Tag, Tag.Id);
+        }
     }
 }

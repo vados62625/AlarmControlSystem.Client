@@ -16,3 +16,9 @@ window.setup3 = (id, config) => {
     config.options.scales.y = { min: 0};
     new Chart(ctx, config);
 }
+
+window.saveComment = (id) => {
+    var x = document.getElementById("snackbar");
+    x.className = "show";
+    setTimeout(function () { x.className = x.className.replace("show", ""); }, 2000);
+}

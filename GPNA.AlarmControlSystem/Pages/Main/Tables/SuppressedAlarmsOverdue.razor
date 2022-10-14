@@ -57,13 +57,16 @@
     protected override async Task OnInitializedAsync()    
     {
         var suppressedAlarms= await SuppressedAlarmService.GetScopeAlarms(1, From, To);
+
         foreach (var alarm in suppressedAlarms)
         {
             if (alarm!=null &&  (alarm.Duration!=null ? alarm.Duration.Value.TotalHours : 0)  > 720)
             {
                 Alarms.Add(alarm);
             }
-        }  
+        }
+        if (Alarms!=null)
+            Alarms = Alarms.OrderByDescending(c => c.Date).ToList();
     }
 
     protected override void OnParametersSet()

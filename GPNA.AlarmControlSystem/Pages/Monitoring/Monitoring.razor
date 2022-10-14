@@ -5,19 +5,21 @@
 
 <CascadingValue Name="From" Value="@From">
 <CascadingValue Name="To" Value="@To">
-<div style="display:flex; justify-content:center;">
+<div style="display:flex; margin-left:300px;">
     <h3>@Title</h3>
     <div class="choice-group">
-    <select @bind="@AlarmType">        
-        <option value="Входящие">Входящие</option>
-        <option value="Активные">Активные</option>
-        <option value="Подавленные">Подавленные</option>
-    </select>
-    <a style="margin-left:20px;">C :</a>
-        <input  type="datetime-local" @bind="From" >
-        <a>По :</a>
-        <input  type="datetime-local" @bind="To" >
-    
+        <select @bind="@AlarmType">        
+            <option value="Входящие">Входящие</option>
+            <option value="Активные">Активные</option>
+            <option value="Подавленные">Подавленные</option>
+        </select>
+        @if (AlarmType == "Входящие")
+        {           
+            <a style="margin-left:20px;">C :</a>
+            <input  type="datetime-local" @bind="From" >
+            <a>По :</a>
+            <input  type="datetime-local" @bind="To" >
+        }    
     </div>
 </div>
 

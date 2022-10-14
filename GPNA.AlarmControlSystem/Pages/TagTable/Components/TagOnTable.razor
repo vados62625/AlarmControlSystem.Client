@@ -2,18 +2,17 @@
 
 
     <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">
-        <td>@Tag.Position</td>
-        <td>@TagName</td>
-        <td>@Tag.Description</td>
+        <td colspan=2>@Tag.Position</td>
+        <td colspan=2>@TagName</td>
+        <td colspan=6>@Tag.Description</td>
         <td>@Tag.Priority</td>
         <td>@Tag.AlarmLimit</td>
-        <td></td> 
     </tr>
                         
     @if (displayMore)
     {
     <tr>
-        <td colspan="6" class="p-5 m-5">           
+        <td colspan="12" class="p-5 m-5">           
                 <p><b>Потенциальные последствия: </b> @Tag.Consequence</p>
                 <p><b>Действия Полевого оператора: </b>@Tag.ActionFieldOperator</p>
                 <p><b>Действия Оператора АРМ: </b>@Tag.ActionArmOperator</p>
@@ -31,9 +30,9 @@
 
     protected override void OnInitialized()
     {
-        if (Tag.AlarmLimit != null && Tag.AlarmLimit != "")
+        if (Tag.AlarmLimit != null && Tag.State != LocalDbStorage.Repositories.Models.Enum.StateType.none)
         {
-            TagName = Tag.TagName /*+ "_" + Tag.AlarmLimit*/;
+            TagName = Tag.TagName + "_" + Tag.State;
         }        
         else
             TagName = Tag.TagName;
