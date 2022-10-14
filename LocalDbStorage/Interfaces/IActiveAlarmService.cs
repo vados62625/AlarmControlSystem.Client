@@ -1,4 +1,5 @@
 using LocalDbStorage.Repositories.Models;
+using ActiveAlarmDto = LocalDbStorage.Dto.ActiveAlarmDto;
 
 namespace LocalDbStorage.Interfaces;
 
@@ -8,13 +9,15 @@ public interface IActiveAlarmService
     /// Получить все Активные аварии
     /// </summary>
     /// <returns></returns>
-    Task<List<ActiveAlarm>> GetAllAlarms();
+    Task<List<ActiveAlarmDto>> GetAllAlarms();
+
+    Task<List<ActiveAlarmDto>> GetAllActiveAlarms(int idWorkStation);
 
     /// <summary>
     /// Изменить запись в БД
     /// </summary>
     /// <returns></returns>
-    Task UpdateAlarm(ActiveAlarm activeAlarm, int id);
+    Task UpdateAlarm(ActiveAlarmDto activeAlarm, int id);
 
     /// <summary>
     /// Возвращает все записи по Id рабочей станции за определенный период
@@ -23,7 +26,7 @@ public interface IActiveAlarmService
     /// <param name="startDate"></param>
     /// <param name="endDate"></param>
     /// <returns></returns>
-    Task<List<ActiveAlarm>> GetScopeAlarms(int idWorkStation, DateTime startDate, DateTime endDate);
+    Task<List<ActiveAlarmDto>> GetScopeAlarms(int idWorkStation, DateTime startDate, DateTime endDate);
 
     Task<Dictionary<DateTime, int>> CountOfActiveAlarms(int idWorkStation, DateTime startDate, DateTime endDate);
 }

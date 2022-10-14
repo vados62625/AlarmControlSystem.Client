@@ -1,12 +1,13 @@
 ﻿@using LocalDbStorage.Interfaces
 @using Microsoft.AspNetCore.Components
 @using LocalDbStorage.Repositories.Models
+@using ActiveAlarmDto = LocalDbStorage.Dto.ActiveAlarmDto
 
 
 @if(Tag!=null && Tag.TagName!=null)
 {
     <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">
-        <td>@Tag.StartDate.ToString("d") @Tag.StartDate.ToString("t")</td>
+        <td>@Tag.DateTime.ToString("d") @Tag.DateTime.ToString("t")</td>
   @*      <td>@Tag.EndDate.ToString("d") @Tag.EndDate.ToString("t")</td>*@
         <td>@(Tag.Duration.Value.TotalHours.ToString("N") ?? "N/A")</td>        
         @if (Tag.TagName.EndsWith("LL") || Tag.TagName.EndsWith("HH"))
@@ -39,7 +40,7 @@
 {
     [Inject] IActiveAlarmService ActiveAlarmService { get; set; } = null!;
 
-    [Parameter] public ActiveAlarm? Tag { get; set; }
+    [Parameter] public ActiveAlarmDto? Tag { get; set; }
 
     bool displayMore = false;
 
