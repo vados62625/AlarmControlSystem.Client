@@ -2,6 +2,7 @@
 @using LocalDbStorage.Repositories.Models
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Tables
+@using LocalDbStorage.Repositories.Models.Enum
 @using LocalDbStorage.Services
 
 <thead class="thead-light">
@@ -18,9 +19,9 @@
                 <option value="2">Низкий</option>
             </select>
         </th>
-        <th>Уставка/Значение</th>
+        <th>Уставка/Значение</th>        
+        <th>Повторений за смену</th>
         <th>Тест</th>
-        <th>Количество повторений за смену</th>
     </tr>            
 </thead>
 <tbody>
@@ -53,7 +54,17 @@
     {
         Alarms = null;
         var incomingAlarms= await IncomingAlarmService.GetAlarmsPerDate(1, From, To);
-        Alarms = incomingAlarms;  
+        var from = new DateTime(From.Year, From.Month, From.Day, 8, 0, 0);
+
+        for (int i = 0; from<To; i++ )
+        {
+            var list = new List<IncomingAlarm>();
+            list.Add(new IncomingAlarm { Date = from, Description = "ПЕРЕСМЕНКА", Id=i,Priority=PriorityType.None });
+            incomingAlarms.Add(list);
+            from = from.AddHours(12);
+        }
+
+        Alarms = incomingAlarms.OrderByDescending(c => c[c.Count-1].Date).ToList();
         //if (Priority != 5)
         //{
         //    var alarms = new List<IncomingAlarm>();

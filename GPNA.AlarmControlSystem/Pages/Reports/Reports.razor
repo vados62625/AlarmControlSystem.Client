@@ -110,7 +110,7 @@
         else
         {
             if (numTime.Count() > 0)
-            {   
+            {
                 <div style="height:340px;">
                     <Chart2  Id = "chart2"
                         Data1="@Arm1Low"
@@ -159,7 +159,7 @@
     {
         isRender = false;
         kpi = inputKpi;
-        await OnInitializedAsync();
+        await OnParametersSetAsync();
     }
 
 
@@ -169,8 +169,12 @@
         To = now.AddDays(-(int)now.DayOfWeek);
         To = new DateTime(To.Year , To.Month, To.Day, 23,59,59);
         From = To.AddDays(-6);
-        From = new DateTime(From.Year , From.Month, From.Day, 0,0,0);
+        From = new DateTime(From.Year , From.Month, From.Day, 0,0,0);        
+    }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        
         isRender = false;
         var incomingAlarms= await IncomingAlarmService.GetCountInHour(1, From, To);
         int i = 0;

@@ -1,9 +1,9 @@
 ﻿@using LocalDbStorage.Interfaces
 @using Microsoft.AspNetCore.Components
 @using LocalDbStorage.Repositories.Models
+@inject IJSRuntime JSRuntime
 
-
-@if(Tag!=null && Tag.TagName!=null)
+@if(Tag!=null && Tag.TagName!=null && Tag.Description!="ПЕРЕСМЕНКА")
 {
     <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">        
         <td>@Tag.Date.ToString("d")</td>
@@ -56,6 +56,8 @@
         {
             <td>N/A / N/A</td>
         }
+              
+        <td style="text-align: right;">@List.Count</td>   
         @if (Tag.Test != null)
         {
              <td style="text-align: center;"><input type="checkbox" @bind="@Tag.Test" /></td>
@@ -63,18 +65,28 @@
         else 
         {
             <td>N/A</td>
-        }       
-        <td>@List.Count</td>            
+        } 
     </tr>                 
-@if (displayMore || Tag.Comment!=null)
+@if (displayMore || (Tag.Comment!=null && Tag.Comment.Length>0))
 {
     <tr>
-        <td colspan="11" class="p-1 m-1">
-            <input type="text" style="width:90%;margin-right:5px;" @bind="Tag.Comment"><button class="btn-success" @onclick="SaveComment">Сохранить</button>
+        <td colspan="11" class="p-0 m-0">
+            <input type="text" style="margin:0;padding:5px 10px;width:100%" @bind="Tag.Comment" @bind:event="oninput" @onkeydown="SaveComment">
         </td>                        
     </tr>
-}
+    }
 } 
+else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМЕНКА")
+{
+    <tr class="item-table">        
+        <td>@Tag.Date.ToString("d")</td>
+        <td>@Tag.Date.ToString("t")</td>    
+        @if (Tag.Description != null)
+        {
+            <td colspan=9 style="text-align:center;font-weight:700;letter-spacing:10px;">@(Tag.Description ??= "N/A")</td>
+        }        
+    </tr>   
+}
 @code
 {
     [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
@@ -89,9 +101,13 @@
         Tag = List[List.Count - 1];
     }
 
-    private async Task SaveComment()
+    private async Task SaveComment(KeyboardEventArgs e)
     {
-        await IncomingAlarmService.UpdateAlarm(Tag, Tag.Id);
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await IncomingAlarmService.UpdateAlarm(Tag, Tag.Id);
+            await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
+        }
     }
 
     void ShowMoreattributes()

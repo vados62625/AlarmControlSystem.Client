@@ -62,7 +62,9 @@
             {
                 Alarms.Add(alarm);
             }
-        }        
+        }     
+        if (Alarms!=null)
+            Alarms = Alarms.OrderByDescending(c => c.StartDate).ToList();
     }
 
     protected override void OnParametersSet()

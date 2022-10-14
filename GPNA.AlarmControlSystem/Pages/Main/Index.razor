@@ -25,7 +25,7 @@ else
         </div>
     </div>
     <div style="display:flex;flex-direction:column;align-content:center;">
-        <h4>Количество сигнализаций за @To.ToString("M") от разных датчиков</h4>
+        <h4>Количество уникальных сигнализаций за @To.ToString("M")</h4>
         <div style="height:340px;display: flex;justify-content: center; align-items: center;max-width:420px;margin: auto; position:relative;">
             <DoughnutChart Id="donutChart2" Data1="@CountSensorsDayPriority"/>
             <p style="position: absolute;   margin-top: 50px; font-size: 50px;" title="Среднее число входящих сигнализаций">@CountSensorsDay</p>
@@ -97,7 +97,7 @@ else
         int[] countSensorsDayPriority = new int[3];
         var tags = await IncomingAlarmService.GetAlarmsPerDate(1,From,To);
 
-        InputAlarms = tags; 
+        InputAlarms = tags;
 
         if(InputAlarms!=null)
             foreach(var c in InputAlarms)
