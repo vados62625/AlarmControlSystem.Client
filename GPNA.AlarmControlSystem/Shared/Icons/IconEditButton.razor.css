@@ -1,0 +1,16 @@
+﻿.icons-button {
+    color: white;
+    background: #24C38E;
+    border: 1px solid #24C38E;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.icons-button-img {
+    width: 16px;
+    background-image: url(img/icons/icon-edit-s.svg);
+    height: 16px;
+    position: absolute;
+}

@@ -1,0 +1,21 @@
+﻿<div class="icons-button"
+     @onclick="Click">
+    <span class="icons-button-tooltip">@Tooltip</span>
+    <span class="fa fa-search" aria-hidden="true"></span>
+</div>
+
+
+@code {
+    [Parameter]
+    public EventCallback<bool> ClickEvent { get; set; }
+
+    [Parameter]
+    public string Tooltip { get; set; }
+
+
+
+    private async Task Click()
+    {
+        await ClickEvent.InvokeAsync(true);
+    }
+}

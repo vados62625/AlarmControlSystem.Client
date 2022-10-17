@@ -1,18 +1,36 @@
-﻿@using LocalDbStorage.Repositories.Models
+﻿@using GPNA.AlarmControlSystem.Pages.TagTable.Modals
+@using GPNA.AlarmControlSystem.Shared.Icons
+@using LocalDbStorage.Repositories.Models
+@using LocalDbStorage.Services
 
 
     <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">
         <td colspan=2>@Tag.Position</td>
-        <td colspan=2>@TagName</td>
+
+        @if(Tag.AlarmLimit != null && Tag.State != LocalDbStorage.Repositories.Models.Enum.StateType.none)
+        {
+            <td colspan=2>@(Tag.TagName + "_" + Tag.State)</td>
+        }
+        else
+        {
+            <td colspan=2>@Tag.TagName</td>
+        }
+    
         <td colspan=6>@Tag.Description</td>
         <td>@Tag.Priority</td>
         <td>@Tag.AlarmLimit</td>
+        <td style="padding: 0; padding-top: 8px;">
+            <div style="display:flex; gap:8px; justify-content:center">
+                <IconEditButton Tooltip="Изменить" ClickEvent="ClickEditTag" />
+                <IconDeleteButton Tooltip="Удалить" ClickEvent="ClickDeleteTag" />                                    
+            </div>                                
+        </td>
     </tr>
                         
     @if (displayMore)
     {
     <tr>
-        <td colspan="12" class="p-5 m-5">           
+        <td colspan="13" class="p-4 m-4">           
                 <p><b>Потенциальные последствия: </b> @Tag.Consequence</p>
                 <p><b>Действия Полевого оператора: </b>@Tag.ActionFieldOperator</p>
                 <p><b>Действия Оператора АРМ: </b>@Tag.ActionArmOperator</p>
@@ -23,23 +41,28 @@
     }
 @code
 {
+    [Parameter]
+    public EventCallback<Tag> EditTag { get; set; }
+    [Parameter]
+    public EventCallback<Tag> DeleteTag { get; set; }
+
     [Parameter] public Tag Tag { get; set; }
-    string TagName;
 
     bool displayMore = false;
-
-    protected override void OnInitialized()
-    {
-        if (Tag.AlarmLimit != null && Tag.State != LocalDbStorage.Repositories.Models.Enum.StateType.none)
-        {
-            TagName = Tag.TagName + "_" + Tag.State;
-        }        
-        else
-            TagName = Tag.TagName;
-    }
 
     void ShowMoreattributes()
     {
         displayMore = !displayMore;
     }
+
+    private async Task ClickEditTag()
+    {
+        await EditTag.InvokeAsync(Tag);
+    }
+    private async Task ClickDeleteTag()
+    {
+        await DeleteTag.InvokeAsync(Tag);
+    }
+
+
 }

@@ -1,0 +1,16 @@
+﻿.icons-button {
+    color: white;
+    background: #FF4443;
+    border: 1px solid #FF4443;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.icons-button-img {
+    width: 16px;
+    background-image: url(img/icons/icon-trash-s.svg);
+    height: 16px;
+    position: absolute;
+}

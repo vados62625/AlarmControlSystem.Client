@@ -1,0 +1,97 @@
+﻿@using LocalDbStorage.Interfaces
+@using LocalDbStorage.Repositories.Models
+@using LocalDbStorage.Repositories.Models.Enum
+@using LocalDbStorage.Services
+
+<div class="simple-form">
+
+    <EditForm Model="@Tag" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <div class="form-group">
+            <label>TagName</label>
+            <InputText @bind-Value="Tag.TagName" class="form-control" />
+            <ValidationMessage For="@(() => Tag.TagName)" />
+        </div>
+        <div class="form-group">
+            <label>Описание</label>
+            <InputText @bind-Value="Tag.Description" class="form-control" />
+            <ValidationMessage For="@(() => Tag.Description)" />
+        </div>
+        <div class="form-group">
+            <label>Уставка</label>
+            <InputText @bind-Value="Tag.AlarmLimit" class="form-control" />
+            <ValidationMessage For="@(() => Tag.AlarmLimit)" />
+        </div>
+        <div class="form-group">
+            <label>Уставка</label>
+            <InputText @bind-Value="Tag.Position" class="form-control" />
+            <ValidationMessage For="@(() => Tag.Position)" />
+        </div>
+        <div class="form-group">
+            <label>Ед. изм.</label>
+            <InputText @bind-Value="Tag.Unit" class="form-control" />
+            <ValidationMessage For="@(() => Tag.Unit)" />
+        </div>
+        <div class="form-group">
+            <label>Состояние</label>
+            <InputSelect @bind-Value="Tag.State" class="form-control">
+                <option value=""></option>
+                @foreach (var state in Enum.GetValues(typeof(StateType)))
+                {
+                    <option value="@state">@state</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => Tag.State)" />
+        </div>
+        <div class="modal-button-group">
+            <button class="button button-primary" @onclick="Cancel">
+                <span class="fa fa-times"></span>
+                Отменить
+            </button>
+            <button class="button button-success">
+                @if (IsLoading) {
+                    <span class="spinner-border spinner-border-sm mr-1"></span>
+                }
+                else
+                {
+                    <span class="fa fa-check" aria-hidden="true"></span>
+                }
+                Сохранить
+            </button>
+        </div>
+        @if (!string.IsNullOrEmpty(Error)) {
+            <div class="alert alert-danger mt-3 mb-0">@Error</div>
+        }
+    </EditForm>
+
+</div>
+
+@code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;
+    [Inject]
+    protected ITagService TagService { get; set; } = default!;
+    [Inject]
+    protected ISpinnerService SpinnerService { get; set; } = default!;
+
+    [Parameter] public Tag Tag { get; set; }
+
+    private bool IsLoading { get; set; } = false;
+    private string Error { get; set; } = "";
+
+    public async void HandleValidSubmit() 
+    {
+        SpinnerService.Show();
+        await TagService.UpdateTag(Tag, Tag.Id);  
+        SpinnerService.Hide();        
+        IsLoading = false;
+        StateHasChanged();        
+
+        await ModalInstance.CloseAsync(ModalResult.Ok());
+    }
+
+    void Cancel()
+    {
+        ModalInstance.CancelAsync();
+    }
+
+}

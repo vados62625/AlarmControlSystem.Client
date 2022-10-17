@@ -4,6 +4,7 @@ using GPNA.AlarmControlSystem;
 using GPNA.AlarmControlSystem.Data;
 using LocalDbStorage.Interfaces;
 using LocalDbStorage.Services;
+using Blazored.Modal;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -18,6 +19,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services
+    .AddBlazoredModal()
+    .AddScoped<ISpinnerService, SpinnerService>()
     .AddScoped<IActiveAlarmService, ActiveAlarmService>()
     .AddScoped<IIncomingAlarmService, IncomingAlarmService>()
     .AddScoped<ISuppressedAlarmService, SuppressedAlarmService>()
