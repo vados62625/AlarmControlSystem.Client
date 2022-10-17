@@ -11,8 +11,6 @@ public interface IActiveAlarmService
     /// <returns></returns>
     Task<List<ActiveAlarmDto>> GetAllAlarms();
 
-    Task<List<ActiveAlarmDto>> GetAllActiveAlarms(int idWorkStation);
-
     /// <summary>
     /// Изменить запись в БД
     /// </summary>

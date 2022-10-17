@@ -65,7 +65,7 @@
             }
         }     
         if (Alarms!=null)
-            Alarms = Alarms.OrderByDescending(c => c.StartDate).ToList();
+            Alarms = Alarms.OrderByDescending(c => c.DateTime).ToList();
     }
 
     protected override void OnParametersSet()

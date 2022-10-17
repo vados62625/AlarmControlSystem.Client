@@ -1,13 +1,14 @@
 ﻿@using LocalDbStorage.Interfaces
 @using Microsoft.AspNetCore.Components
 @using LocalDbStorage.Repositories.Models
+@using LocalDbStorage.Dto
 @inject IJSRuntime JSRuntime
 
 @if(Tag!=null && Tag.TagName!=null && Tag.Description!="ПЕРЕСМЕНКА")
 {
     <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">        
-        <td>@Tag.Date.ToString("d")</td>
-        <td>@Tag.Date.ToString("t")</td>
+        <td>@Tag.DateTime.ToString("d")</td>
+        <td>@Tag.DateTime.ToString("t")</td>
         
         @if (Tag.TagName.EndsWith("LL") || Tag.TagName.EndsWith("HH"))
         {
@@ -79,8 +80,8 @@
 else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМЕНКА")
 {
     <tr class="item-table">        
-        <td>@Tag.Date.ToString("d")</td>
-        <td>@Tag.Date.ToString("t")</td>    
+        <td>@Tag.DateTime.ToString("d")</td>
+        <td>@Tag.DateTime.ToString("t")</td>    
         @if (Tag.Description != null)
         {
             <td colspan=9 style="text-align:center;font-weight:700;letter-spacing:10px;">@(Tag.Description ??= "N/A")</td>
@@ -91,8 +92,8 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
 {
     [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
 
-    [Parameter] public List<IncomingAlarm>? List { get; set; } = new();
-    [Parameter] public IncomingAlarm? Tag { get; set; }
+    [Parameter] public List<IncomingAlarmDto>? List { get; set; } = new();
+    [Parameter] public IncomingAlarmDto? Tag { get; set; }
 
     bool displayMore = false;
 

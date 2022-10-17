@@ -5,7 +5,7 @@ namespace LocalDbStorage.Dto;
 /// <summary>
 /// Активные сигнализации
 /// </summary>
-public partial class ActiveAlarmDto : DtoBase
+public partial class SuppressedAlarmDto : DtoBase
 {
 
     /// <summary>

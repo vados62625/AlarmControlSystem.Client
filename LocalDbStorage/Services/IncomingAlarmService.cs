@@ -1,7 +1,9 @@
+using AutoMapper;
 using LocalDbStorage.Dto;
 using LocalDbStorage.Extentions;
 using LocalDbStorage.Interfaces;
 using LocalDbStorage.Repositories.Models;
+using LocalDbStorage.Repositories.Models.Enum;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 
@@ -9,57 +11,77 @@ namespace LocalDbStorage.Services;
 
 public class IncomingAlarmService : IIncomingAlarmService
 {
-    private readonly HttpClient _httpClient;
     private readonly ILogger<IncomingAlarmService> _log;
+    private readonly IBufferAlarmService _bufferAlarmService;
+    private readonly Mapper _mapBufferToIncoming;
+    private readonly Mapper _mapIncomingToBuffer;
+    List<IncomingAlarmDto> _alarms = new List<IncomingAlarmDto>();
     public const int Day = 24;
     
-    public IncomingAlarmService(IHttpClientFactory httpClientFactory, ILogger<IncomingAlarmService> log)
+    public IncomingAlarmService(IBufferAlarmService bufferAlarmService, ILogger<IncomingAlarmService> log)
     {
-        _httpClient = httpClientFactory.CreateClient(nameof(IncomingAlarmService));
         _log = log;
+        _bufferAlarmService = bufferAlarmService;
+        _mapBufferToIncoming = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<BufferAlarm, IncomingAlarmDto>()));
+        _mapIncomingToBuffer = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<IncomingAlarmDto, BufferAlarm>()));
     }
+    
     /// <summary>
-    /// Получить все аварии
+    /// Получить все входящие аварии
     /// </summary>
     /// <returns></returns>
-    public async Task<List<IncomingAlarm>> GetAllAlarms()
+    public async Task<List<IncomingAlarmDto>> GetAllAlarms()
     {
-        var result = await _httpClient.Get<List<IncomingAlarm>>("/api/IncomingAlarm?itemsOnPage=0&page=1");
-        return result;
+        var bufferAlarms = await _bufferAlarmService.GetAllAlarms();
+// сортируем по имени тега 
+        var groupsOfTags = bufferAlarms
+            .GroupBy(u => u.TagName)
+            .Select(g => g.ToList())
+            .ToList();
+
+        // перебираем лист по тегу
+        foreach (var group in groupsOfTags)
+        {
+            var itemGroup = group.OrderBy(u => u.DateTime).ToList();
+
+            foreach (var bufferAlarm in itemGroup)
+            {
+                if (bufferAlarm.EventAlarm == (int)EventAlarm.Activation)
+                {
+                    var incomingAlarm = _mapBufferToIncoming.Map<BufferAlarm, IncomingAlarmDto>(bufferAlarm);
+                    _alarms.Add(incomingAlarm);
+                }
+            }
+        }
+        return _alarms;
     }
 
     /// <summary>
     /// Изменить запись в БД
     /// </summary>
     /// <returns></returns>
-    public async Task UpdateAlarm(IncomingAlarm incomingAlarm, int id)
+    public async Task UpdateAlarm(IncomingAlarmDto incomingAlarm, int id)
     {
-        try
-        {
-            await _httpClient.Put<IncomingAlarm>($"/api/IncomingAlarm/{id}", incomingAlarm);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
+        var bufferAlarm = _mapIncomingToBuffer.Map<IncomingAlarmDto, BufferAlarm>(incomingAlarm);
+        await _bufferAlarmService.UpdateAlarm(bufferAlarm, id);
     }
 
-    public async Task<List<List<IncomingAlarm>>> GetAlarmsPerDate(int idWorkStation, DateTime startDate, DateTime endDate)
+    public async Task<List<List<IncomingAlarmDto>>> GetAlarmsPerDate(int idWorkStation, DateTime startDate, DateTime endDate)
     {
         var alarms = await GetScopeAlarms(idWorkStation, startDate, endDate);
 
-        List<List<IncomingAlarm>> groups = alarms.GroupBy(c => new { c.Date.Date, c.TagName })
+        List<List<IncomingAlarmDto>> groups = alarms.GroupBy(c => new { c.DateTime.Date, c.TagName })
             .Select(group => group.ToList())
             .ToList();
 
         return groups;
     }
 
-    public async Task<Dictionary<DateTime, List<IncomingAlarm>>> GetCountInHour(int idWorkStation, DateTime startDate, DateTime endDate)
+    public async Task<Dictionary<DateTime, List<IncomingAlarmDto>>> GetCountInHour(int idWorkStation, DateTime startDate, DateTime endDate)
     {
         var alarms = await GetScopeAlarms(idWorkStation, startDate, endDate);
 
-        var dictionaryCount = new Dictionary<DateTime, List<IncomingAlarm>>();
+        var dictionaryCount = new Dictionary<DateTime, List<IncomingAlarmDto>>();
 
         if (alarms.Count == 0)
             return dictionaryCount;
@@ -71,7 +93,7 @@ public class IncomingAlarmService : IIncomingAlarmService
         while (_startDate < _endDate)
         {
          
-            var list = alarms.FindAll(c => c.Date > _startDate & c.Date < _startDate + oneHoure);
+            var list = alarms.FindAll(c => c.DateTime > _startDate & c.DateTime < _startDate + oneHoure);
             _startDate += oneHoure;
 
             dictionaryCount.TryAdd(_startDate, list);
@@ -86,9 +108,10 @@ public class IncomingAlarmService : IIncomingAlarmService
     /// <param name="startDate"></param>
     /// <param name="endDate"></param>
     /// <returns></returns>
-    public async Task<List<IncomingAlarm>> GetScopeAlarms(int idWorkStation, DateTime startDate, DateTime endDate)
+    public async Task<List<IncomingAlarmDto>> GetScopeAlarms(int idWorkStation, DateTime startDate, DateTime endDate)
     {
-        var result = await _httpClient.Get<List<IncomingAlarm>>($"/api/IncomingAlarm/ScopeByDatesAndIdWorkSt?idWorkStation={idWorkStation}&startDate={startDate:yyyy-MM-ddTHH:mm:ss}&endDate={endDate:yyyy-MM-ddTHH:mm:ss}");
+        var result = await GetAllAlarms();
+        result = result.Where(c => c.DateTime >= startDate && c.DateTime <= endDate).ToList();
         return result;
     }
     
@@ -111,7 +134,7 @@ public class IncomingAlarmService : IIncomingAlarmService
 
         foreach (var s in _count)
         {
-            var d = result.FindAll(c => c.Date.Date == s.Key.Date);
+            var d = result.FindAll(c => c.DateTime.Date == s.Key.Date);
             _count[s.Key] = d.Count / Day;
         }
 

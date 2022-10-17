@@ -2,6 +2,7 @@
 @using LocalDbStorage.Repositories.Models
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Tables
+@using LocalDbStorage.Dto
 @using LocalDbStorage.Repositories.Models.Enum
 @using LocalDbStorage.Services
 
@@ -42,7 +43,7 @@
 @code {
     [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
 
-    [Parameter] public List<List<IncomingAlarm>>? Alarms { get; set; }
+    [Parameter] public List<List<IncomingAlarmDto>>? Alarms { get; set; }
 
     [Parameter] public int? Priority { get; set; } = 5;
 
@@ -58,13 +59,13 @@
 
         for (int i = 0; from<To; i++ )
         {
-            var list = new List<IncomingAlarm>();
-            list.Add(new IncomingAlarm { Date = from, Description = "ПЕРЕСМЕНКА", Id=i,Priority=PriorityType.None });
+            var list = new List<IncomingAlarmDto>();
+            list.Add(new IncomingAlarmDto() { DateTime = from, Description = "ПЕРЕСМЕНКА", Id=i,Priority=PriorityType.None });
             incomingAlarms.Add(list);
             from = from.AddHours(12);
         }
 
-        Alarms = incomingAlarms.OrderByDescending(c => c[c.Count-1].Date).ToList();
+        Alarms = incomingAlarms.OrderByDescending(c => c[c.Count-1].DateTime).ToList();
         //if (Priority != 5)
         //{
         //    var alarms = new List<IncomingAlarm>();

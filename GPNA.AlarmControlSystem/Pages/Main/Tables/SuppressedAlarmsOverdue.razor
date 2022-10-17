@@ -1,6 +1,7 @@
 ﻿@using LocalDbStorage.Interfaces
 @using LocalDbStorage.Repositories.Models
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms
+@using LocalDbStorage.Dto
 
 <div class="table-responsive" style="margin-top:10px;border-top: 0.5px solid rgba(0, 65, 102, 0.2);border-bottom: 0.5px solid rgba(0, 65, 102, 0.2);">
     <table class="table table-striped table-bordered">
@@ -47,7 +48,7 @@
 @code {
     [Inject] ISuppressedAlarmService SuppressedAlarmService { get; set; } = null!;
 
-    [Parameter] public List<SuppressedAlarm>? Alarms { get; set; } = new();
+    [Parameter] public List<SuppressedAlarmDto>? Alarms { get; set; } = new();
 
     [Parameter] public int? Priority { get; set; } = 5;
 
@@ -66,7 +67,7 @@
             }
         }
         if (Alarms!=null)
-            Alarms = Alarms.OrderByDescending(c => c.Date).ToList();
+            Alarms = Alarms.OrderByDescending(c => c.DateTime).ToList();
     }
 
     protected override void OnParametersSet()

@@ -11,7 +11,7 @@ public class BufferAlarmService : IBufferAlarmService
     private readonly HttpClient _httpClient;
     private readonly ILogger<BufferAlarmService> _log;
     private IMemoryCache _memoryCache;
-
+    
     public BufferAlarmService(IHttpClientFactory httpClientFactory, ILogger<BufferAlarmService> log, IMemoryCache memoryCache)
     {
         _httpClient = httpClientFactory.CreateClient(nameof(BufferAlarmService));
@@ -37,7 +37,6 @@ public class BufferAlarmService : IBufferAlarmService
         return bufferAlarms;
     }
 
-
     /// <summary>
     /// Возвращает все записи по Id рабочей станции за определенный период
     /// </summary>
@@ -55,11 +54,11 @@ public class BufferAlarmService : IBufferAlarmService
     /// Изменить запись в БД
     /// </summary>
     /// <returns></returns>
-    public async Task UpdateAlarm(BufferAlarm activeAlarm, int id)
+    public async Task UpdateAlarm(BufferAlarm bufferAlarm, int id)
     {
         try
         {
-            await _httpClient.Put<BufferAlarm>($"/api/BufferAlarm/{id}", activeAlarm);
+            await _httpClient.Put<BufferAlarm>($"/api/BufferAlarm/{id}", bufferAlarm);
         }
         catch (Exception e)
         {
