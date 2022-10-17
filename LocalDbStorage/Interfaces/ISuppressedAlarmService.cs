@@ -15,7 +15,7 @@ public interface ISuppressedAlarmService
     /// Изменить запись в БД
     /// </summary>
     /// <returns></returns>
-    Task UpdateAlarm(SuppressedAlarmDto suppressedAlarm, int id);
+    Task UpdateAlarm(SuppressedAlarmDto suppressedAlarm);
 
     /// <summary>
     /// Возвращает все записи по Id рабочей станции за определенный период

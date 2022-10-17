@@ -15,7 +15,7 @@ public interface IActiveAlarmService
     /// Изменить запись в БД
     /// </summary>
     /// <returns></returns>
-    Task UpdateAlarm(ActiveAlarmDto activeAlarm, int id);
+    Task UpdateAlarm(ActiveAlarmDto activeAlarm);
 
     /// <summary>
     /// Возвращает все записи по Id рабочей станции за определенный период

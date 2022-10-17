@@ -23,5 +23,5 @@ public interface IBufferAlarmService
     /// Изменить запись в БД
     /// </summary>
     /// <returns></returns>
-    Task UpdateAlarm(BufferAlarm activeAlarm, int id);
+    Task UpdateAlarm(BufferAlarm activeAlarm);
 }

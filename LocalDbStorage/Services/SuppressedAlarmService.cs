@@ -67,10 +67,10 @@ public class SuppressedAlarmService : ISuppressedAlarmService
     /// Изменить запись в БД
     /// </summary>
     /// <returns></returns>
-    public async Task UpdateAlarm(SuppressedAlarmDto activeAlarm, int id)
+    public async Task UpdateAlarm(SuppressedAlarmDto activeAlarm)
     {
         var bufferAlarm = _mapSuppressedToBuffer.Map<SuppressedAlarmDto, BufferAlarm>(activeAlarm);
-        await _bufferAlarmService.UpdateAlarm(bufferAlarm, id);
+        await _bufferAlarmService.UpdateAlarm(bufferAlarm);
     }
 
     /// <summary>

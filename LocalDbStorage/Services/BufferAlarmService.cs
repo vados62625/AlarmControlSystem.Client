@@ -54,11 +54,11 @@ public class BufferAlarmService : IBufferAlarmService
     /// Изменить запись в БД
     /// </summary>
     /// <returns></returns>
-    public async Task UpdateAlarm(BufferAlarm bufferAlarm, int id)
+    public async Task UpdateAlarm(BufferAlarm bufferAlarm)
     {
         try
         {
-            await _httpClient.Put<BufferAlarm>($"/api/BufferAlarm/{id}", bufferAlarm);
+            await _httpClient.Put<BufferAlarm>($"/api/BufferAlarm/{bufferAlarm.Id}", bufferAlarm);
         }
         catch (Exception e)
         {

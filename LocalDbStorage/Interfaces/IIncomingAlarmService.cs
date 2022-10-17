@@ -15,7 +15,7 @@ public interface IIncomingAlarmService
     /// Изменить запись в БД
     /// </summary>
     /// <returns></returns>
-    Task UpdateAlarm(IncomingAlarmDto incomingAlarm, int id);
+    Task UpdateAlarm(IncomingAlarmDto incomingAlarm);
 
     /// <summary>
     /// Возвращает все записи по Id рабочей станции за определенный период

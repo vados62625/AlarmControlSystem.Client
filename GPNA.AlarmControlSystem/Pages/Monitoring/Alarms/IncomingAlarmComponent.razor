@@ -106,7 +106,7 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
-            await IncomingAlarmService.UpdateAlarm(Tag, Tag.Id);
+            await IncomingAlarmService.UpdateAlarm(Tag);
             await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
         }
     }

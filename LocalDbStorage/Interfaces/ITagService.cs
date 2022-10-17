@@ -20,11 +20,11 @@ public interface ITagService
     /// Изменить тег
     /// </summary>
     /// <returns></returns>
-    Task UpdateTag(Tag tag, int id);
+    Task UpdateTag(Tag tag);
 
     /// <summary>
     /// Удалить тег
     /// </summary>
     /// <returns></returns>
-    Task DeleteTag(Tag tag, int id);
+    Task DeleteTag(Tag tag);
 }

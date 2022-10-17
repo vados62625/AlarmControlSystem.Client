@@ -89,10 +89,10 @@ public class ActiveAlarmService : IActiveAlarmService
     /// Изменить запись в БД
     /// </summary>
     /// <returns></returns>
-    public async Task UpdateAlarm(ActiveAlarmDto activeAlarm, int id)
+    public async Task UpdateAlarm(ActiveAlarmDto activeAlarm)
     {
         var bufferAlarm = _mapActiveToBuffer.Map<ActiveAlarmDto, BufferAlarm>(activeAlarm);
-        await _bufferAlarmService.UpdateAlarm(bufferAlarm, id);
+        await _bufferAlarmService.UpdateAlarm(bufferAlarm);
     }
 
     /// <summary>

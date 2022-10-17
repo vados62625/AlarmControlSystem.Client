@@ -60,10 +60,10 @@ public class IncomingAlarmService : IIncomingAlarmService
     /// Изменить запись в БД
     /// </summary>
     /// <returns></returns>
-    public async Task UpdateAlarm(IncomingAlarmDto incomingAlarm, int id)
+    public async Task UpdateAlarm(IncomingAlarmDto incomingAlarm)
     {
         var bufferAlarm = _mapIncomingToBuffer.Map<IncomingAlarmDto, BufferAlarm>(incomingAlarm);
-        await _bufferAlarmService.UpdateAlarm(bufferAlarm, id);
+        await _bufferAlarmService.UpdateAlarm(bufferAlarm);
     }
 
     public async Task<List<List<IncomingAlarmDto>>> GetAlarmsPerDate(int idWorkStation, DateTime startDate, DateTime endDate)

@@ -46,11 +46,11 @@ public class TagService : ITagService
     /// Изменить тег
     /// </summary>
     /// <returns></returns>
-    public async Task UpdateTag(Tag tag, int id)
+    public async Task UpdateTag(Tag tag)
     {
         try
         {
-            await _httpClient.Put<Tag>($"/api/Tag/{id}", tag);
+            await _httpClient.Put<Tag>($"/api/Tag/{tag.Id}", tag);
         }
         catch (Exception e)
         {
@@ -62,11 +62,11 @@ public class TagService : ITagService
     /// Удалить тег
     /// </summary>
     /// <returns></returns>
-    public async Task DeleteTag(Tag tag, int id)
+    public async Task DeleteTag(Tag tag)
     {
         try
         {
-            await _httpClient.Delete<Tag>($"/api/Tag/{id}");
+            await _httpClient.Delete<Tag>($"/api/Tag/{tag.Id}");
         }
         catch (Exception e)
         {
