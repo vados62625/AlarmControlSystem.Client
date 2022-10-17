@@ -32,6 +32,8 @@ public class IncomingAlarmService : IIncomingAlarmService
     /// <returns></returns>
     public async Task<List<IncomingAlarmDto>> GetAllAlarms()
     {
+        _alarms.Clear();
+        
         var bufferAlarms = await _bufferAlarmService.GetAllAlarms();
 // сортируем по имени тега 
         var groupsOfTags = bufferAlarms
