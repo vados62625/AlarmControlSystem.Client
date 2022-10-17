@@ -1,13 +1,14 @@
 ﻿@using LocalDbStorage.Interfaces
 @using LocalDbStorage.Repositories.Models
+@using LocalDbStorage.Dto
 
 
 
 @if(Tag!=null && Tag.TagName!=null)
 {
     <tr class="item-table @styleTr" @onclick="ShowMoreattributes" style="cursor:pointer;">        
-        <td>@Tag.Date.ToString("d")</td>
-        <td>@Tag.Date.ToString("t")</td>                  
+        <td>@Tag.DateTime.ToString("d")</td>
+        <td>@Tag.DateTime.ToString("t")</td>                  
         <td>@(Tag!=null && Tag.Duration!=null ? Tag.Duration.Value.TotalHours.ToString("N") : "N/A")</td>
         @if (Tag.TagName.EndsWith("LL") || Tag.TagName.EndsWith("HH"))
         {
@@ -39,7 +40,7 @@
 @code
 {
     [Inject] ISuppressedAlarmService SuppressedAlarmService { get; set; } = null!;
-    [Parameter] public SuppressedAlarm? Tag { get; set; }
+    [Parameter] public SuppressedAlarmDto? Tag { get; set; }
 
     bool displayMore = false;
     string styleTr = "";
@@ -63,7 +64,7 @@
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
-            await SuppressedAlarmService.UpdateAlarm(Tag, Tag.Id);
+            await SuppressedAlarmService.UpdateAlarm(Tag);
         }
     }
 }

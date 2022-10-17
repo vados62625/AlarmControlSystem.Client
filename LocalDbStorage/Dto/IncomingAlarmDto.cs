@@ -7,28 +7,15 @@ namespace LocalDbStorage.Dto;
 /// <summary>
 /// Входящие аварии
 /// </summary>
-public class IncomingAlarmDto
+public class IncomingAlarmDto : DtoBase
 {
-    /// <summary>
-    /// Id рабочей станции
-    /// </summary>
-    public int IdWorkStation { get; set; }
-
-    /// <summary>
-    /// Имя тега
-    /// </summary>
-    public string TagName { get; set; }
-
     /// <summary>
     /// Дата
     /// </summary>
-    public DateTime Date { get; set; }
-
+    public DateTime EndDate { get; set; }
+    
     /// <summary>
-    /// Количество
+    /// Тест
     /// </summary>
-    public int? Count { get; set; }
-
-    public List<IncomingAlarm> IncomingAlarms { get; set; }
-
+    public bool Test { get; set; }
 }

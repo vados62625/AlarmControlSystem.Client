@@ -1,6 +1,7 @@
 ﻿@using LocalDbStorage.Interfaces
 @using LocalDbStorage.Repositories.Models
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms
+@using ActiveAlarmDto = LocalDbStorage.Dto.ActiveAlarmDto
 
 
 <thead class="thead-light">
@@ -38,7 +39,7 @@
 @code {
     [Inject] IActiveAlarmService ActiveAlarmService { get; set; } = default!;
 
-    [Parameter] public List<ActiveAlarm>? Alarms { get; set; }
+    [Parameter] public List<ActiveAlarmDto>? Alarms { get; set; }
 
     [Parameter] public int? Priority { get; set; } = 5;
 
@@ -51,7 +52,7 @@
         Alarms = null;
         var activeAlarms= await ActiveAlarmService.GetScopeAlarms(1, From, To);
         
-	    Alarms = activeAlarms.OrderByDescending(c => c.StartDate).ToList();
+	    Alarms = activeAlarms.OrderByDescending(c => c.DateTime).ToList();
         //if (Priority != 5)
         //{
         //    var alarms = new List<ActiveAlarm>();

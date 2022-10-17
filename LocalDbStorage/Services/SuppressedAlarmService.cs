@@ -1,46 +1,76 @@
+using AutoMapper;
+using LocalDbStorage.Dto;
 using LocalDbStorage.Extentions;
 using LocalDbStorage.Interfaces;
 using LocalDbStorage.Repositories.Models;
+using LocalDbStorage.Repositories.Models.Enum;
 using Microsoft.Extensions.Logging;
 
 namespace LocalDbStorage.Services;
 
 public class SuppressedAlarmService : ISuppressedAlarmService
 {
-    private readonly HttpClient _httpClient;
     private readonly ILogger<SuppressedAlarmService> _log;
+    private readonly IBufferAlarmService _bufferAlarmService;
+    private readonly Mapper _mapBufferToSuppressed;
+    private readonly Mapper _mapSuppressedToBuffer;
     public const int Day = 24;
+    List<SuppressedAlarmDto> _alarms = new List<SuppressedAlarmDto>();
     
-    public SuppressedAlarmService(IHttpClientFactory httpClientFactory, ILogger<SuppressedAlarmService> log)
+    public SuppressedAlarmService(IBufferAlarmService bufferAlarmService, ILogger<SuppressedAlarmService> log)
     {
-        _httpClient = httpClientFactory.CreateClient(nameof(SuppressedAlarmService));
         _log = log;
+        _bufferAlarmService = bufferAlarmService;
+        _mapBufferToSuppressed = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<BufferAlarm, SuppressedAlarmDto>()));
+        _mapSuppressedToBuffer = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<SuppressedAlarmDto, BufferAlarm>()));
     }
 
     /// <summary>
     /// Получить все Подавленные аварии
     /// </summary>
     /// <returns></returns>
-    public async Task<List<SuppressedAlarm>> GetAllAlarms()
+    public async Task<List<SuppressedAlarmDto>> GetAllAlarms()
     {
-        var result = await _httpClient.Get<List<SuppressedAlarm>>("/api/SuppressedAlarm?itemsOnPage=0&page=1");
-        return result;
+        var bufferAlarms = await _bufferAlarmService.GetAllAlarms();
+
+        // сортируем по имени тега 
+        var groupsOfTags = bufferAlarms
+            .GroupBy(u => u.TagName)
+            .Select(g => g.ToList())
+            .ToList();
+
+        // перебираем лист по тегу
+        foreach (var group in groupsOfTags)
+        {
+            var itemGroup = group.OrderBy(u => u.DateTime).ToList();
+
+            var activationEvent = itemGroup.FindLast(c => c.EventAlarm == EventAlarm.Activation);
+            var suppressionEvent = itemGroup.FindLast(c => c.EventAlarm == EventAlarm.Suppression);
+            var normalizationEvent = itemGroup.FindLast(c => c.EventAlarm == EventAlarm.Normalization);
+            
+            if (activationEvent != null && suppressionEvent != null && 
+                (suppressionEvent.DateTime > activationEvent.DateTime))
+            {
+                if (normalizationEvent != null && !(suppressionEvent.DateTime > normalizationEvent.DateTime)) { }
+                else
+                {
+                    var suppressedAlarm = _mapBufferToSuppressed.Map<BufferAlarm, SuppressedAlarmDto>(suppressionEvent);
+                    suppressedAlarm.Duration = DateTime.Now - suppressionEvent.DateTime;
+                    _alarms.Add(suppressedAlarm);
+                }
+            }
+        }
+        return _alarms;
     }
 
     /// <summary>
     /// Изменить запись в БД
     /// </summary>
     /// <returns></returns>
-    public async Task UpdateAlarm(SuppressedAlarm suppressedAlarm, int id)
+    public async Task UpdateAlarm(SuppressedAlarmDto activeAlarm)
     {
-        try
-        {
-            await _httpClient.Put<SuppressedAlarm>($"/api/SuppressedAlarm/{id}", suppressedAlarm);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
+        var bufferAlarm = _mapSuppressedToBuffer.Map<SuppressedAlarmDto, BufferAlarm>(activeAlarm);
+        await _bufferAlarmService.UpdateAlarm(bufferAlarm);
     }
 
     /// <summary>
@@ -50,9 +80,10 @@ public class SuppressedAlarmService : ISuppressedAlarmService
     /// <param name="startDate"></param>
     /// <param name="endDate"></param>
     /// <returns></returns>
-    public async Task<List<SuppressedAlarm>> GetScopeAlarms(int idWorkStation, DateTime startDate, DateTime endDate)
+    public async Task<List<SuppressedAlarmDto>> GetScopeAlarms(int idWorkStation, DateTime startDate, DateTime endDate)
     {
-        var result = await _httpClient.Get<List<SuppressedAlarm>>($"/api/SuppressedAlarm/ScopeByDatesAndIdWorkSt?idWorkStation={idWorkStation}&startDate={startDate:yyyy-MM-ddTHH:mm:ss}&endDate={endDate:yyyy-MM-ddTHH:mm:ss}") ?? new List<SuppressedAlarm>();
+        var result = await GetAllAlarms();
+        result = result.Where(c => c.DateTime >= startDate && c.DateTime <= endDate).ToList();
         return result;
     }
 
@@ -72,7 +103,7 @@ public class SuppressedAlarmService : ISuppressedAlarmService
         while (_date <= _endDate)
         {
 
-            var list = alarms.FindAll(c => c.Date > _date & c.Date < _date + oneDay);
+            var list = alarms.FindAll(c => c.DateTime > _date & c.DateTime < _date + oneDay);
 
             dictionaryCount.TryAdd(_date, list.Count);
 

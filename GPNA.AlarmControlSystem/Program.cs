@@ -21,10 +21,17 @@ builder.Services.AddServerSideBlazor();
 builder.Services
     .AddBlazoredModal()
     .AddScoped<ISpinnerService, SpinnerService>()
+    .AddScoped<IBufferAlarmService, BufferAlarmService>()
     .AddScoped<IActiveAlarmService, ActiveAlarmService>()
     .AddScoped<IIncomingAlarmService, IncomingAlarmService>()
     .AddScoped<ISuppressedAlarmService, SuppressedAlarmService>()
+    .AddScoped<IBufferAlarmService, BufferAlarmService>()
     .AddScoped<ITagService, TagService>();
+
+builder.Services.AddHttpClient<BufferAlarmService>(client =>
+{
+    client.BaseAddress = new Uri(configuration["HttpClientConfig:BaseAddress"]);
+});
 
 builder.Services.AddHttpClient<ActiveAlarmService>(client =>
 {
