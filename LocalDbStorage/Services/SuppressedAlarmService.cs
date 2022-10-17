@@ -31,6 +31,8 @@ public class SuppressedAlarmService : ISuppressedAlarmService
     /// <returns></returns>
     public async Task<List<SuppressedAlarmDto>> GetAllAlarms()
     {
+        _alarms.Clear();
+        
         var bufferAlarms = await _bufferAlarmService.GetAllAlarms();
 
         // сортируем по имени тега 
