@@ -59,6 +59,7 @@ public class BufferAlarmService : IBufferAlarmService
         try
         {
             await _httpClient.Put<BufferAlarm>($"/api/BufferAlarm/{bufferAlarm.Id}", bufferAlarm);
+            _memoryCache.Remove("BufferAlarms");
         }
         catch (Exception e)
         {
