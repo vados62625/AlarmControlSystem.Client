@@ -1,12 +1,12 @@
 ﻿@using LocalDbStorage.Interfaces
 @using Microsoft.AspNetCore.Components
 @using LocalDbStorage.Repositories.Models
-@using ActiveAlarmDto = LocalDbStorage.Dto.ActiveAlarmDto
+@using LocalDbStorage.Dto
 
 
 @if(Tag!=null && Tag.TagName!=null)
 {
-    <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">
+    <tr class="item-table" @onclick="ShowMoreAttributes" style="cursor:pointer;">
         <td>@Tag.DateTime.ToString("d") @Tag.DateTime.ToString("t")</td>
         <td>@(Tag.Duration.Value.TotalHours.ToString("N") ?? "N/A")</td>        
         @if (Tag.TagName.EndsWith("LL") || Tag.TagName.EndsWith("HH"))
@@ -26,27 +26,24 @@
         <td>@Tag.Priority</td>
         <td>@Tag.AlarmLimit / @Tag.Value</td>       
     </tr>             
-@if (displayMore || (Tag.Comment!=null && Tag.Comment.Length>0))
-{
-    <tr>
-        <td colspan="9" class="p-0 m-0">
-            <input type="text" style="margin:0;padding:5px 10px;width:100%" @bind="Tag.Comment" @bind:event="oninput" @onkeydown="SaveComment">
-        </td>                        
-    </tr>
-}
+    @if (displayMore || (Tag.Comment!=null && Tag.Comment.Length>0))
+    {
+        <tr>
+            <td colspan="9" class="p-0 m-0">
+                <input type="text" style="margin:0;padding:5px 10px;width:100%" @bind="Tag.Comment" @bind:event="oninput" @onkeydown="SaveComment">
+            </td>                        
+        </tr>
+    }
 } 
 @code
 {
     [Inject] IActiveAlarmService ActiveAlarmService { get; set; } = null!;
 
-    [Parameter] public ActiveAlarmDto? Tag { get; set; }
+    [Parameter] public ActiveAlarmDto? Tag { get; set; } = new ActiveAlarmDto();
 
     bool displayMore = false;
 
-
-
-
-    void ShowMoreattributes()
+    void ShowMoreAttributes()
     {
         displayMore = !displayMore;
     }

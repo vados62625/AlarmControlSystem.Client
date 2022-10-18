@@ -12,15 +12,15 @@
         
         @if (Tag.TagName.EndsWith("LL") || Tag.TagName.EndsWith("HH"))
         {
-            <td>@Tag.TagName.Substring(0,Tag.TagName.Length - 2)<span style="color: #EB3333;font-weight:700;">@Tag.TagName.Substring(Tag.TagName.Length-2)</span></td>
+            <td colspan=3>@Tag.TagName.Substring(0,Tag.TagName.Length - 2)<span style="color: #EB3333;font-weight:700;">@Tag.TagName.Substring(Tag.TagName.Length-2)</span></td>
         }
         else if (Tag.TagName.EndsWith("L") || Tag.TagName.EndsWith("H"))
         {
-            <td>@Tag.TagName.Substring(0,Tag.TagName.Length - 1)<span style="color: #F38B01;font-weight:700;">@Tag.TagName.Substring(Tag.TagName.Length-1)</span></td>
+            <td colspan=3>@Tag.TagName.Substring(0,Tag.TagName.Length - 1)<span style="color: #F38B01;font-weight:700;">@Tag.TagName.Substring(Tag.TagName.Length-1)</span></td>
         }
         else
         {
-            <td>@Tag.TagName</td>
+            <td colspan=3>@Tag.TagName</td>
         } 
     
         @if (Tag.Description != null)
@@ -71,7 +71,7 @@
 @if (displayMore || (Tag.Comment!=null && Tag.Comment.Length>0))
 {
     <tr>
-        <td colspan="11" class="p-0 m-0">
+        <td colspan="13" class="p-0 m-0">
             <input type="text" style="margin:0;padding:5px 10px;width:100%" @bind="Tag.Comment" @bind:event="oninput" @onkeydown="SaveComment">
         </td>                        
     </tr>
@@ -84,7 +84,7 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
         <td>@Tag.DateTime.ToString("t")</td>    
         @if (Tag.Description != null)
         {
-            <td colspan=9 style="text-align:center;font-weight:700;letter-spacing:10px;">@(Tag.Description ??= "N/A")</td>
+            <td colspan=11 style="text-align:center;font-weight:700;letter-spacing:10px;">@(Tag.Description ??= "N/A")</td>
         }        
     </tr>   
 }

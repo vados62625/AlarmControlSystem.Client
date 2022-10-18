@@ -2,6 +2,7 @@
 @using LocalDbStorage.Repositories.Models
 @using GPNA.AlarmControlSystem.Pages.Main.Alarms
 @using ActiveAlarmDto = LocalDbStorage.Dto.ActiveAlarmDto
+@using LocalDbStorage.Services
 
 <div class="table-responsive" style="margin-top:10px;border-top: 0.5px solid rgba(0, 65, 102, 0.2);border-bottom: 0.5px solid rgba(0, 65, 102, 0.2);">
         <table class="table table-striped table-bordered">
@@ -15,29 +16,27 @@
                     <th>Таг</th>
                     <th colspan=4>Описание</th>
                     <th>Приоритет 
-                        <select @bind="@Priority" @onabort="OnParametersSet">
+                        @*<select @bind="@Priority" @onabort="OnParametersSet">
                             <option value="5">Все</option>
                             <option value="4">Критический</option>
                             <option value="3">Высокий</option>
                             <option value="2">Низкий</option>
-                        </select>
+                        </select>*@
                     </th>
                     <th>Уставка/Значение</th>        
                 </tr>            
             </thead>
             <tbody>
-                @if(Alarms == null)
-                {
-                    <Loader/>
-                }
-                else
-                {
-                    <Virtualize Items="Alarms" OverscanCount="10">        
-           
-                            <ActiveAlarmComponent @key="context.Id" Tag="@context"/>
-            
-                    </Virtualize>
-                }
+            @if(Alarms == null)
+            {
+                <Loader/>
+            }
+            else
+            {
+                <Virtualize Items="Alarms" OverscanCount="10">    
+                    <ActiveAlarmComponent @key="context.Id" Tag="@context"/>              
+                </Virtualize>
+            }
             </tbody>
         </table>
     </div>
@@ -45,6 +44,8 @@
 
 @code {
     [Inject] IActiveAlarmService ActiveAlarmService { get; set; } = default!;
+    [Inject]
+    protected ISpinnerService SpinnerService { get; set; } = default!;
 
     [Parameter] public List<ActiveAlarmDto>? Alarms { get; set; } = new();
 
@@ -55,8 +56,8 @@
 
     protected override async Task OnInitializedAsync()    
     {
+        SpinnerService.Show();
         var activeAlarms= await ActiveAlarmService.GetScopeAlarms(1, From, To);
-	    activeAlarms.OrderBy(c => c.DateTime).ToList();
 	    foreach (var alarm in activeAlarms)
         {
             if (alarm!=null &&  (alarm.Duration!=null ? alarm.Duration.Value.TotalHours : 0)  > 72)
@@ -66,6 +67,8 @@
         }     
         if (Alarms!=null)
             Alarms = Alarms.OrderByDescending(c => c.DateTime).ToList();
+
+        SpinnerService.Hide();
     }
 
     protected override void OnParametersSet()

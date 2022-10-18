@@ -57,7 +57,7 @@ else
 	[Inject] IActiveAlarmService ActiveAlarmService { get; set; } = null!;
 	[Inject] ISuppressedAlarmService SuppressedAlarmService { get; set; } = null!;
 	[Inject] ITagService TagService { get; set; } = null!;
-
+    [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
     [CascadingParameter(Name = "From")] public DateTime From { get; set; }
     [CascadingParameter(Name = "To")] public DateTime To { get; set; }
     
@@ -88,7 +88,7 @@ else
      //   To = new DateTime(To.Year , To.Month, To.Day, 23,59,59);
      //   From = To.AddDays(-6);
      //   From = new DateTime(From.Year , From.Month, From.Day, 0,0,0);
-
+        SpinnerService.Show();
 	    To = DateTime.Now.AddDays(-1);
 	    From = DateTime.Now.AddDays(-8);
 
@@ -135,5 +135,7 @@ else
         CountSensorsDayPriority[0] = countSensorsDayPriority[0].ToString();
         CountSensorsDayPriority[1] = countSensorsDayPriority[1].ToString();
         CountSensorsDayPriority[2] = countSensorsDayPriority[2].ToString();
+
+        SpinnerService.Hide();
     }
 }
