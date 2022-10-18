@@ -1,4 +1,4 @@
-﻿namespace LocalDbStorage.Services
+﻿namespace GPNA.AlarmControlSystem.Services
 {
 
     public interface ISpinnerService

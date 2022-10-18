@@ -1,4 +1,4 @@
-﻿using LocalDbStorage.Services;
+﻿using GPNA.AlarmControlSystem.Services;
 using Microsoft.AspNetCore.Components;
 
 

@@ -187,7 +187,7 @@ h4 {
     height: 90px;
     flex-direction: column;
     align-items: center;
-    padding: 16px;
+    padding: 16px 4px;
     background: var(--color-bg-default);
     box-shadow: 0px 5px 8px rgba(0, 32, 51, 0.2);
     border-radius: 8px;

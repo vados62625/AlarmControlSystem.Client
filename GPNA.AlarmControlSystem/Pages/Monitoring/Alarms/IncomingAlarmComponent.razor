@@ -61,20 +61,20 @@
         <td style="text-align: right;">@List.Count</td>   
         @if (Tag.Test != null)
         {
-             <td style="text-align: center;"><input type="checkbox" @bind="@Tag.Test" /></td>
+             <td style="text-align: center;"><input type="checkbox" @bind="Tag.Test" @bind:event="oninput" @onkeydown="SaveComment" /></td>
         }
         else 
         {
             <td>N/A</td>
         } 
     </tr>                 
-@if (displayMore || (Tag.Comment!=null && Tag.Comment.Length>0))
-{
-    <tr>
-        <td colspan="13" class="p-0 m-0">
-            <input type="text" style="margin:0;padding:5px 10px;width:100%" @bind="Tag.Comment" @bind:event="oninput" @onkeydown="SaveComment">
-        </td>                        
-    </tr>
+    @if (displayMore || (Tag.Comment!=null && Tag.Comment.Length>0))
+    {
+        <tr>
+            <td colspan="13" class="p-0 m-0">
+                <input type="text" style="margin:0;padding:5px 10px;width:100%" @bind="Tag.Comment" @bind:event="oninput" @onkeydown="SaveComment">
+            </td>                        
+        </tr>
     }
 } 
 else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМЕНКА")

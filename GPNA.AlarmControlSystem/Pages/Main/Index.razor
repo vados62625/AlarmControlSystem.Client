@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using GPNA.AlarmControlSystem.Services
 @using LocalDbStorage.Repositories.Models
 @using LocalDbStorage.Interfaces
 
@@ -7,7 +8,6 @@
 @using GPNA.AlarmControlSystem.Pages.Main.Charts
 @using LocalDbStorage.Dto
 @using LocalDbStorage.Repositories.Models.Enum
-@using LocalDbStorage.Services
 
 <CascadingValue Name="From" Value="@From">
 <CascadingValue Name="To" Value="@To">

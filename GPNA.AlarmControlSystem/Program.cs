@@ -7,6 +7,7 @@ using LocalDbStorage.Services;
 using Blazored.Modal;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using GPNA.AlarmControlSystem.Services;
 
 IConfiguration configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")

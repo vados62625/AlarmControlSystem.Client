@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Components
 @using LocalDbStorage.Repositories.Models
 @using ActiveAlarmDto = LocalDbStorage.Dto.ActiveAlarmDto
-
+@inject IJSRuntime JSRuntime
 
 @if(Tag!=null && Tag.TagName!=null)
 {
@@ -27,14 +27,14 @@
         <td>@Tag.Priority</td>
         <td>@Tag.AlarmLimit / @Tag.Value</td>       
     </tr>             
-@if (displayMore || (Tag.Comment!=null && Tag.Comment.Length>0))
-{
-    <tr>
-        <td colspan="10" class="p-0 m-0">
-            <input type="text" style="margin:0;padding:5px 10px;width:100%" @bind="Tag.Comment" @bind:event="oninput" @onkeydown="SaveComment">
-        </td>                        
-    </tr>
-}
+    @if (displayMore || (Tag.Comment!=null && Tag.Comment.Length>0))
+    {
+        <tr>
+            <td colspan="10" class="p-0 m-0">
+                <input type="text" style="margin:0;padding:5px 10px;width:100%" @bind="Tag.Comment" @bind:event="oninput" @onkeydown="SaveComment">
+            </td>                        
+        </tr>
+    }
 } 
 @code
 {
@@ -66,6 +66,7 @@
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
             await ActiveAlarmService.UpdateAlarm(Tag);
+            await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
         }
     }
 }

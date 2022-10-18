@@ -19,14 +19,21 @@
     <div style="display:flex;gap:8px;">
         <div class="stat-box">
             <div class="stat-box__numbers">
-                <span>N/A</span>
+                <span>@GeneralCount</span>
                 <span style="color:#09B37B">+0%</span>
             </div>
             <span class="stat-box__desc">Общее количество сигнализаций</span>
         </div>
         <div class="stat-box">
             <div class="stat-box__numbers">
-                <span>N/A</span>
+                <span>@(AverageUrgent/168)</span>
+                <span style="color:#09B37B">+0%</span>
+            </div>
+            <span class="stat-box__desc" title="Среднее количествово критичных сигнализаций за последние 720 часов">Среднее количествово критичных</span>
+        </div>
+        <div class="stat-box">
+            <div class="stat-box__numbers">
+                <span>@GeneralCount</span>
                 <span style="color:#09B37B">+0%</span>
             </div>
             <span class="stat-box__desc">УПНГ</span>
@@ -146,7 +153,8 @@
     [Parameter] public static int kpi { get; set; } = 12;
     static int inputKpi = 12;
 
-
+    int GeneralCount = 0;
+    int AverageUrgent = 0;
     int[] Arm1, Arm2, Arm3, Arm4;
     [Parameter] public int[] Kpi { get; set; } = new int[168];
     int[] Arm1Low,Arm1High,Arm1Urgent,Arm1Info;
@@ -165,16 +173,23 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var now = DateTime.Now;
-        To = now.AddDays(-(int)now.DayOfWeek);
+        //var now = DateTime.Now;
+        //To = now.AddDays(-(int)now.DayOfWeek);
+        //To = new DateTime(To.Year , To.Month, To.Day, 23,59,59);
+        //From = To.AddDays(-6);
+        //From = new DateTime(From.Year , From.Month, From.Day, 0,0,0);   
+
+        To = DateTime.Now.AddDays(-1);
         To = new DateTime(To.Year , To.Month, To.Day, 23,59,59);
-        From = To.AddDays(-6);
-        From = new DateTime(From.Year , From.Month, From.Day, 0,0,0);        
+        From = DateTime.Now.AddDays(-7);
+        From = new DateTime(From.Year , From.Month, From.Day, 0,0,0);
+        
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        
+        GeneralCount = 0;
+        AverageUrgent = 0;
         isRender = false;
         var incomingAlarms= await IncomingAlarmService.GetCountInHour(1, From, To);
         int i = 0;
@@ -194,13 +209,18 @@
 
             foreach (var alarm in alarmsOnHour.Value)
             {
+                GeneralCount += 1;
                 if (alarm.Priority == PriorityType.Low)
                     Arm1Low[i] += 1;
                 else if (alarm.Priority == PriorityType.High)
                     Arm1High[i] += 1;
                 else if (alarm.Priority == PriorityType.Urgent)
+                {
                     Arm1Urgent[i] += 1;
-                else
+                    AverageUrgent += 1;
+                }
+                
+            else
                     Arm1Info[i] += 1;
             }
             i++;
