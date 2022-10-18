@@ -90,7 +90,9 @@ else
      //   From = new DateTime(From.Year , From.Month, From.Day, 0,0,0);
         SpinnerService.Show();
 	    To = DateTime.Now.AddDays(-1);
-	    From = DateTime.Now.AddDays(-8);
+        To = new DateTime(To.Year , To.Month, To.Day, 23,59,59);
+        From = DateTime.Now.AddDays(-7);
+        From = new DateTime(From.Year , From.Month, From.Day, 0,0,0);
 
 
         InputAlarms = null;

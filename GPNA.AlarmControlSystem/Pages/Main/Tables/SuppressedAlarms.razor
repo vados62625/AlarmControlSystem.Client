@@ -8,13 +8,13 @@
             <thead class="thead-light">
                 <tr>
                     <th colspan=2>@From.ToString("M") - @To.ToString("M")</th>
-                    <th>Пн</th>
-                    <th>Вт</th>
-                    <th>Ср</th>              
-                    <th>Чт</th>
-                    <th>Пт</th> 
-                    <th>Сб</th>
-                    <th>Вс</th> 
+                    <th>@GetDayString((int)From.DayOfWeek)</th>
+                    <th>@GetDayString((int)From.AddDays(1).DayOfWeek)</th>
+                    <th>@GetDayString((int)From.AddDays(2).DayOfWeek)</th>              
+                    <th>@GetDayString((int)From.AddDays(3).DayOfWeek)</th>
+                    <th>@GetDayString((int)From.AddDays(4).DayOfWeek)</th> 
+                    <th>@GetDayString((int)From.AddDays(5).DayOfWeek)</th>
+                    <th>@GetDayString((int)From.AddDays(6).DayOfWeek)</th>  
                 </tr>
             </thead>            
             <tbody>
@@ -104,5 +104,20 @@
             }
         }
         
+    }
+
+    string GetDayString(int dayofweek)
+    {
+        switch(dayofweek)
+        {      
+            case 0: return "Вс";
+            case 1: return "Пн"; 
+            case 2: return "Вт";  
+            case 3: return "Ср";
+            case 4: return "Чт";
+            case 5: return "Пт";
+            case 6: return "Сб";
+        }
+        return "";
     }
 }
