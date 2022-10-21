@@ -1,52 +1,58 @@
-﻿@inject IJSRuntime JSRuntime
+﻿@using LocalDbStorage.Dto
+@using LocalDbStorage.Repositories.Models.Enum
+@inject IJSRuntime JSRuntime
  
 <canvas id="@Id"></canvas>
  
 @code {
-    public enum ChartType
-    {
-        Pie,
-        Bar,
-        Line
-    }
+
+    [Parameter] public Dictionary<DateTime, List<IncomingAlarmDto>>? IncomingAlarms {get;set;}
 
     [Parameter]
-    public string? Id { get; set; }
-
+    public string? Id { get; set; } = "chart2";
     [Parameter]
-    public ChartType? Type { get; set; }
-
-    [Parameter]
-    public int[]? Data1 { get; set; }
-
-    [Parameter]
-    public int[]? Data2 { get; set; }
-
-    [Parameter]
-    public int[]? Data3 { get; set; }
+    public int Kpi { get; set; }     
     
-    [Parameter]
-    public int[]? Data4 { get; set; }
-
-    
-
-    [Parameter]
-    public string[]? Labels { get; set; }
-
-    [Parameter]
-    public string? Label1 { get; set; }
-    [Parameter]
-    public string? Label2 { get; set; }
-    [Parameter]
-    public string? Label3 { get; set; }
-    
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var config = new
+        if (IncomingAlarms != null && IncomingAlarms.Count > 0)
+        {
+            var numTime = new string[IncomingAlarms.Count];
+
+            var arm1Low = new int[IncomingAlarms.Count];
+            var arm1High = new int[IncomingAlarms.Count];
+            var arm1Urgent = new int[IncomingAlarms.Count];
+            var arm1Info = new int[IncomingAlarms.Count];
+
+            int i = 0;
+
+            foreach (var alarmsOnHour in IncomingAlarms)
+            {
+                numTime[i] = (alarmsOnHour.Key.ToString("M") + " " + alarmsOnHour.Key.ToString("t"));
+                
+                 if (alarmsOnHour.Value!=null && alarmsOnHour.Value.Count > 0)
+                    foreach (var alarm in alarmsOnHour.Value)
+                    {
+                        if (alarm.Priority == PriorityType.Low)
+                            arm1Low[i] += 1;
+                        else if (alarm.Priority == PriorityType.High)
+                            arm1High[i] += 1;
+                        else if (alarm.Priority == PriorityType.Urgent)
+                        {
+                            arm1Urgent[i] += 1;
+                        }
+                    else
+                        arm1Info[i] += 1;
+                    }
+
+
+                i++;
+            }
+
+            var config = new
         {
 
-            Type = ChartType.Line.ToString().ToLower(),
+            Type = "line",
             Options = new
             {
                 Responsive = true,
@@ -97,17 +103,20 @@
             {
                 Datasets = new[]
                 {
-                    new { Data = Data1, BackgroundColor= "#EB3333", BorderColor = "#EB3333", BorderWidth = "2",PointRadius="0",Label = "Критичный" },
-                    new { Data = Data2, BackgroundColor= "#F38B01", BorderColor = "#F38B01", BorderWidth = "2",PointRadius="0",Label = "Высокий"},
-                    new { Data = Data3, BackgroundColor= "#56B9F2", BorderColor = "#56B9F2", BorderWidth = "2",PointRadius="0",Label = "Низкий"} ,
-                    new { Data = Data4, BackgroundColor= "#000000", BorderColor = "#000000", BorderWidth = "2",PointRadius="0",Label = "Информационный"}
+                    new { Data = arm1Urgent, BackgroundColor= "#EB3333", BorderColor = "#EB3333", BorderWidth = "2",PointRadius="0",Label = "Критичный" },
+                    new { Data = arm1High, BackgroundColor= "#F38B01", BorderColor = "#F38B01", BorderWidth = "2",PointRadius="0",Label = "Высокий"},
+                    new { Data = arm1Low, BackgroundColor= "#56B9F2", BorderColor = "#56B9F2", BorderWidth = "2",PointRadius="0",Label = "Низкий"} ,
+                    new { Data = arm1Info, BackgroundColor= "#000000", BorderColor = "#000000", BorderWidth = "2",PointRadius="0",Label = "Информационный"}
                 },
-                Labels = Labels
+                Labels = numTime
             }
         };
-
-        if(firstRender)
-            await JSRuntime.InvokeVoidAsync("setup", Id!, config);
+            await JSRuntime.InvokeVoidAsync("setup3", Id!, config);
+        }
+        
+        
+        
     }
+
 }
 

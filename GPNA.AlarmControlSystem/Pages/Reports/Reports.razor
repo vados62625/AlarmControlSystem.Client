@@ -1,21 +1,13 @@
 ﻿@page "/reports"
 @using GPNA.AlarmControlSystem.Pages.Reports.Charts
+@using GPNA.AlarmControlSystem.Services
 @using LocalDbStorage.Interfaces
 @using LocalDbStorage.Repositories.Models
 @using LocalDbStorage.Repositories.Models.Enum
 @inject IJSRuntime JSRuntime
 
 
-<div style="display:flex;align-items: center;    justify-content: space-evenly; ">
-    <h3>@Title</h3>
-    <div>
-        <a style="margin-left:20px;">C :</a>
-        <input  type="datetime-local" @bind="From" >
-        <a>По :</a>
-        <input  type="datetime-local" @bind="To">
-    </div>
-    
-    
+<div style="display:flex;align-items: center;    justify-content: center; ">  
     <div style="display:flex;gap:8px;">
         <div class="stat-box">
             <div class="stat-box__numbers">
@@ -26,10 +18,10 @@
         </div>
         <div class="stat-box">
             <div class="stat-box__numbers">
-                <span>@(AverageUrgent/168)</span>
+                <span title="Среднее количествово критичных сигнализаций за последние @IncomingAlarms.Count часов">@(AverageUrgent)</span>
                 <span style="color:#09B37B">+0%</span>
             </div>
-            <span class="stat-box__desc" title="Среднее количествово критичных сигнализаций за последние 720 часов">Среднее количествово критичных</span>
+            <span class="stat-box__desc" title="Среднее количествово критичных сигнализаций за последние @IncomingAlarms.Count часов">Среднее количествово критичных</span>
         </div>
         <div class="stat-box">
             <div class="stat-box__numbers">
@@ -60,42 +52,31 @@
             <span class="stat-box__desc">Энергетика</span>
         </div>
     </div>
-
-    <input type="number" @bind="inputKpi"/>
-    <button class="btn-primary" style="margin-left:5px;" @onclick="ChangeKpi" >Изменить KPI</button>
+    <div style="position: absolute;    right: 20px;">
+        <span style="margin-right:10px;">KPI:</span><input type="number" @bind="inputKpi"/>
+    </div>    
 </div>
 
-
-
 <div>
-    <h4>Количество сигнализаций за неделю</h4>
-    @if (!isRender)
-        {
-            <div style="display:block;height:340px;">
-                <div style="top: 140px; position: relative;">
-                    <Loader />
-                </div>
-            </div>
-        }
-        else
-        {
-            if (numTime.Count() > 0)
-            {   
-                 <div style="height:340px;">
-                   <Chart1 Id="Chart1" 
-                        Data1="@Arm1"
-                        Data5="@Kpi"
-                        Labels="@numTime"/>
-                </div> 
-            }
-            else
-            {
-                <div style="display:block;height:340px;">
-                    <p style="padding: 0; top: 140px; position: relative;">Данные отсутствуют.</p>
-                </div>
-            }
-        }    
-      
+    <div style="display: flex;    align-items: center;    gap: 10px;    margin: 10px 0 0 0;">
+        <h4>Количество сигнализаций</h4>
+        <a style="margin-left:20px;">C :</a>
+        <input  type="datetime-local" @bind="From">
+        <a>По :</a>
+        <input  type="datetime-local" @bind="To">
+        <img src="img/icons/refresh.svg" style="cursor:pointer" @onclick="(()=>OnParametersSetAsync())" />
+    </div>
+    
+    @if (!IsEnableRenderChart)
+    {
+        <Loader/>
+    }
+    else
+    {
+        <div style="height:340px;">
+            <Chart1 Kpi="@inputKpi" IncomingAlarms="@IncomingAlarms"/>
+         </div>
+    }    
         
     <div style="display:flex;gap:20px;">
         <h4>Количество сигнализаций на АРМе</h4>
@@ -106,126 +87,16 @@
             <option value="Энергетика">Энергетика</option>
         </select>
     </div>
-    @if (!isRender)
-        {
-            <div style="display:block;height:340px;">
-                <div style="top: 140px; position: relative;">
-                    <Loader />
-                </div>
-            </div>
-        }
-        else
-        {
-            if (numTime.Count() > 0)
-            {
-                <div style="height:340px;">
-                    <Chart2  Id = "chart2"
-                        Data1="@Arm1Low"
-                        Data2="@Arm1High"  
-                        Data3="@Arm1Urgent"
-                        Data4="@Arm1Info"
-                        Labels=@numTime>
-                    </Chart2>     
-                </div>
-            }
-            else
-            {
-                <div style="display:block;height:340px;">
-                    <p style="padding: 0; top: 140px; position: relative;">Данные отсутствуют.</p>
-                </div>
-            }
-        }    
-   
+
+    @if (!IsEnableRenderChart)
+    {
+        <Loader/>
+    }
+    else
+    {
+        <div style="height:340px;">
+            <Chart2 IncomingAlarms="@IncomingAlarms"/>
+         </div>
+    }
 
 </div>
-
-
-
-@code {
-    [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
-    [Parameter] public string? Title { get; set; }
-
-    [CascadingParameter(Name = "From")] public DateTime From { get; set; }
-    [CascadingParameter(Name = "To")] public DateTime To { get; set; }
-
-    Chart1 Chart1 = new();
-
-    [Parameter] public static int kpi { get; set; } = 12;
-    static int inputKpi = 12;
-
-    int GeneralCount = 0;
-    int AverageUrgent = 0;
-    int[] Arm1, Arm2, Arm3, Arm4;
-    [Parameter] public int[] Kpi { get; set; } = new int[168];
-    int[] Arm1Low,Arm1High,Arm1Urgent,Arm1Info;
-    string[] numTime;
-    [Parameter] public bool isRender  { get; set; }= false;
-
-    List<IncomingAlarm>? InputAlarms;
-
-    async void ChangeKpi()
-    {
-        isRender = false;
-        kpi = inputKpi;
-        await OnParametersSetAsync();
-    }
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        //var now = DateTime.Now;
-        //To = now.AddDays(-(int)now.DayOfWeek);
-        //To = new DateTime(To.Year , To.Month, To.Day, 23,59,59);
-        //From = To.AddDays(-6);
-        //From = new DateTime(From.Year , From.Month, From.Day, 0,0,0);   
-
-        To = DateTime.Now.AddDays(-1);
-        To = new DateTime(To.Year , To.Month, To.Day, 23,59,59);
-        From = DateTime.Now.AddDays(-7);
-        From = new DateTime(From.Year , From.Month, From.Day, 0,0,0);
-        
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        GeneralCount = 0;
-        AverageUrgent = 0;
-        isRender = false;
-        var incomingAlarms= await IncomingAlarmService.GetCountInHour(1, From, To);
-        int i = 0;
-        Arm1 = new int[incomingAlarms.Count];
-        Kpi = new int[incomingAlarms.Count];
-        numTime = new string[incomingAlarms.Count];
-        Arm1Low = new int[incomingAlarms.Count];
-        Arm1High = new int[incomingAlarms.Count];
-        Arm1Urgent = new int[incomingAlarms.Count];
-        Arm1Info= new int[incomingAlarms.Count];
-
-        foreach(var alarmsOnHour in incomingAlarms)
-        {
-            numTime[i] = (alarmsOnHour.Key.ToString("M")+" " + alarmsOnHour.Key.ToString("t"));
-            Arm1[i] = alarmsOnHour.Value.Count;
-            Kpi[i] = kpi;
-
-            foreach (var alarm in alarmsOnHour.Value)
-            {
-                GeneralCount += 1;
-                if (alarm.Priority == PriorityType.Low)
-                    Arm1Low[i] += 1;
-                else if (alarm.Priority == PriorityType.High)
-                    Arm1High[i] += 1;
-                else if (alarm.Priority == PriorityType.Urgent)
-                {
-                    Arm1Urgent[i] += 1;
-                    AverageUrgent += 1;
-                }
-                
-            else
-                    Arm1Info[i] += 1;
-            }
-            i++;
-        }
-
-        isRender = true;
-    }
-}

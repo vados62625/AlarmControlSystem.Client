@@ -136,8 +136,8 @@ public class IncomingAlarmService : IIncomingAlarmService
 
         foreach (var s in _count)
         {
-            var d = result.FindAll(c => c.DateTime.Date == s.Key.Date);
-            _count[s.Key] = d.Count / Day;
+            var count = Convert.ToDouble((result.FindAll(c => c.DateTime.Date == s.Key.Date)).Count);
+            _count[s.Key] = Convert.ToInt32(count / Day);
         }
 
         //var groupDateTime = result.GroupBy(g => g.Date.Date);
