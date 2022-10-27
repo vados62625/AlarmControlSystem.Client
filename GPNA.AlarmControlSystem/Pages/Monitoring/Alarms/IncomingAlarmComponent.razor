@@ -59,13 +59,13 @@
         }
               
         <td style="text-align: right;">@List.Count</td>   
-        @if (Tag.Test != null)
+        @if (Tag.Test == true)
         {
-             <td style="text-align: center;"><input type="checkbox" @bind="Tag.Test" @bind:event="oninput" @onkeydown="SaveComment" /></td>
+             <td style="text-align: center;"><input type="checkbox" @onchange="SendTest" checked/></td>
         }
         else 
         {
-            <td>N/A</td>
+            <td style="text-align: center;"><input type="checkbox" @onchange="SendTest"/></td>
         } 
     </tr>                 
     @if (displayMore || (Tag.Comment!=null && Tag.Comment.Length>0))
@@ -109,6 +109,14 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
             await IncomingAlarmService.UpdateAlarm(Tag);
             await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
         }
+    }
+
+    private async Task SendTest()
+    {
+        Tag.Test = !Tag.Test;
+        await IncomingAlarmService.UpdateAlarm(Tag);
+        await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
+        
     }
 
     void ShowMoreattributes()

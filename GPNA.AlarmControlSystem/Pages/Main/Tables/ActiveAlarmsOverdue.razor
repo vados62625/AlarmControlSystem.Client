@@ -57,7 +57,7 @@
     protected override async Task OnInitializedAsync()    
     {
         SpinnerService.Show();
-        var activeAlarms= await ActiveAlarmService.GetScopeAlarms(1, From, To);
+        var activeAlarms= await ActiveAlarmService.GetAllAlarms();
 	    foreach (var alarm in activeAlarms)
         {
             if (alarm!=null &&  (alarm.Duration!=null ? alarm.Duration.Value.TotalHours : 0)  > 72)
