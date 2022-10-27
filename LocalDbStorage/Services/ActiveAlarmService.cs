@@ -13,16 +13,12 @@ public class ActiveAlarmService : IActiveAlarmService
 {
     private readonly ILogger<ActiveAlarmService> _log;
     private readonly IBufferAlarmService _bufferAlarmService;
-    private readonly Mapper _mapBufferToActive;
     private readonly Mapper _mapActiveToBuffer;
-    DateTime _dateTime = new DateTime();
-    List<ActiveAlarmDto> _alarms = new List<ActiveAlarmDto>();
 
     public ActiveAlarmService(ILogger<ActiveAlarmService> log, IBufferAlarmService bufferAlarmService)
     {
         _log = log;
         _bufferAlarmService = bufferAlarmService;
-        _mapBufferToActive = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<BufferAlarm, ActiveAlarmDto>()));
         _mapActiveToBuffer = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<ActiveAlarmDto, BufferAlarm>()));
     }
 
@@ -32,59 +28,7 @@ public class ActiveAlarmService : IActiveAlarmService
     /// <returns></returns>
     public async Task<List<ActiveAlarmDto>> GetAllAlarms()
     {
-        _alarms.Clear();
-        
-        var bufferAlarms = await _bufferAlarmService.GetAllAlarms();
-
-        // сортируем по имени тега 
-        var groupsOfTags = bufferAlarms
-            .GroupBy(u => u.TagName)
-            .Select(g => g.ToList())
-            .ToList();
-
-        // перебираем лист по тегу
-        foreach (var group in groupsOfTags)
-        {
-            var itemGroup = group.OrderBy(u => u.DateTime).ToList();
-            
-            var activationEvent = itemGroup.FindLast(c => c.EventAlarm == EventAlarm.Activation);
-            var suppressionEvent = itemGroup.FindLast(c => c.EventAlarm == EventAlarm.Suppression);
-            var normalizationEvent = itemGroup.FindLast(c => c.EventAlarm == EventAlarm.Normalization);
-            
-            if (activationEvent != null)
-            {
-                if (normalizationEvent != null && (normalizationEvent.DateTime > activationEvent.DateTime)) { }
-                else if (suppressionEvent != null && (suppressionEvent.DateTime > activationEvent.DateTime)) { }
-                else
-                {
-                    var duration = DateTime.Now - activationEvent.DateTime;
-                    if (duration.Days > 1)
-                    {
-                        var activeAlarm = _mapBufferToActive.Map<BufferAlarm, ActiveAlarmDto>(activationEvent);
-                        activeAlarm.Duration = duration;
-                        _alarms.Add(activeAlarm);
-                    }
-                }
-            }
-
-            // foreach (var bufferAlarm in itemGroup)
-            // {
-            //     if (bufferAlarm.EventAlarm == (int)EventAlarm.Activation)
-            //     {
-            //         var item = itemGroup.Find(c => c.EventAlarm == EventAlarm.Normalization);
-            //
-            //         var duration = DateTime.Now - bufferAlarm.DateTime;
-            //
-            //         if (item == null && duration.Days > 1)
-            //         {
-            //             var activeAlarm = _mapBufferToActive.Map<BufferAlarm, ActiveAlarmDto>(bufferAlarm);
-            //             activeAlarm.Duration = duration;
-            //             _alarms.Add(activeAlarm);
-            //         }
-            //     }
-            // }
-        }
-        return _alarms;
+        return await _bufferAlarmService.GetAllActiveAlarms();
     }
 
     /// <summary>
@@ -94,7 +38,7 @@ public class ActiveAlarmService : IActiveAlarmService
     public async Task UpdateAlarm(ActiveAlarmDto activeAlarm)
     {
         var bufferAlarm = _mapActiveToBuffer.Map<ActiveAlarmDto, BufferAlarm>(activeAlarm);
-        await _bufferAlarmService.UpdateAlarm(bufferAlarm);
+        await _bufferAlarmService.UpdateBufferAlarm(bufferAlarm);
     }
 
     /// <summary>

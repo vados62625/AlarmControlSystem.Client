@@ -31,38 +31,7 @@ public class SuppressedAlarmService : ISuppressedAlarmService
     /// <returns></returns>
     public async Task<List<SuppressedAlarmDto>> GetAllAlarms()
     {
-        _alarms.Clear();
-        
-        var bufferAlarms = await _bufferAlarmService.GetAllAlarms();
-
-        // сортируем по имени тега 
-        var groupsOfTags = bufferAlarms
-            .GroupBy(u => u.TagName)
-            .Select(g => g.ToList())
-            .ToList();
-
-        // перебираем лист по тегу
-        foreach (var group in groupsOfTags)
-        {
-            var itemGroup = group.OrderBy(u => u.DateTime).ToList();
-
-            var activationEvent = itemGroup.FindLast(c => c.EventAlarm == EventAlarm.Activation);
-            var suppressionEvent = itemGroup.FindLast(c => c.EventAlarm == EventAlarm.Suppression);
-            var normalizationEvent = itemGroup.FindLast(c => c.EventAlarm == EventAlarm.Normalization);
-            
-            if (activationEvent != null && suppressionEvent != null && 
-                (suppressionEvent.DateTime > activationEvent.DateTime))
-            {
-                if (normalizationEvent != null && !(suppressionEvent.DateTime > normalizationEvent.DateTime)) { }
-                else
-                {
-                    var suppressedAlarm = _mapBufferToSuppressed.Map<BufferAlarm, SuppressedAlarmDto>(suppressionEvent);
-                    suppressedAlarm.Duration = DateTime.Now - suppressionEvent.DateTime;
-                    _alarms.Add(suppressedAlarm);
-                }
-            }
-        }
-        return _alarms;
+        return await _bufferAlarmService.GetAllSuppressedAlarms();
     }
 
     /// <summary>
@@ -72,7 +41,7 @@ public class SuppressedAlarmService : ISuppressedAlarmService
     public async Task UpdateAlarm(SuppressedAlarmDto activeAlarm)
     {
         var bufferAlarm = _mapSuppressedToBuffer.Map<SuppressedAlarmDto, BufferAlarm>(activeAlarm);
-        await _bufferAlarmService.UpdateAlarm(bufferAlarm);
+        await _bufferAlarmService.UpdateBufferAlarm(bufferAlarm);
     }
 
     /// <summary>

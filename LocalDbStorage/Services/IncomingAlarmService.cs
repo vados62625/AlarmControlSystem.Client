@@ -13,16 +13,13 @@ public class IncomingAlarmService : IIncomingAlarmService
 {
     private readonly ILogger<IncomingAlarmService> _log;
     private readonly IBufferAlarmService _bufferAlarmService;
-    private readonly Mapper _mapBufferToIncoming;
     private readonly Mapper _mapIncomingToBuffer;
-    List<IncomingAlarmDto> _alarms = new List<IncomingAlarmDto>();
     public const int Day = 24;
     
     public IncomingAlarmService(IBufferAlarmService bufferAlarmService, ILogger<IncomingAlarmService> log)
     {
         _log = log;
         _bufferAlarmService = bufferAlarmService;
-        _mapBufferToIncoming = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<BufferAlarm, IncomingAlarmDto>()));
         _mapIncomingToBuffer = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<IncomingAlarmDto, BufferAlarm>()));
     }
     
@@ -32,30 +29,7 @@ public class IncomingAlarmService : IIncomingAlarmService
     /// <returns></returns>
     public async Task<List<IncomingAlarmDto>> GetAllAlarms()
     {
-        _alarms.Clear();
-        
-        var bufferAlarms = await _bufferAlarmService.GetAllAlarms();
-// сортируем по имени тега 
-        var groupsOfTags = bufferAlarms
-            .GroupBy(u => u.TagName)
-            .Select(g => g.ToList())
-            .ToList();
-
-        // перебираем лист по тегу
-        foreach (var group in groupsOfTags)
-        {
-            var itemGroup = group.OrderBy(u => u.DateTime).ToList();
-
-            foreach (var bufferAlarm in itemGroup)
-            {
-                if (bufferAlarm.EventAlarm == (int)EventAlarm.Activation)
-                {
-                    var incomingAlarm = _mapBufferToIncoming.Map<BufferAlarm, IncomingAlarmDto>(bufferAlarm);
-                    _alarms.Add(incomingAlarm);
-                }
-            }
-        }
-        return _alarms;
+        return await _bufferAlarmService.GetAllIncomingAlarms();
     }
 
     /// <summary>
@@ -65,7 +39,7 @@ public class IncomingAlarmService : IIncomingAlarmService
     public async Task UpdateAlarm(IncomingAlarmDto incomingAlarm)
     {
         var bufferAlarm = _mapIncomingToBuffer.Map<IncomingAlarmDto, BufferAlarm>(incomingAlarm);
-        await _bufferAlarmService.UpdateAlarm(bufferAlarm);
+        await _bufferAlarmService.UpdateBufferAlarm(bufferAlarm);
     }
 
     public async Task<List<List<IncomingAlarmDto>>> GetAlarmsPerDate(int idWorkStation, DateTime startDate, DateTime endDate)
@@ -152,22 +126,4 @@ public class IncomingAlarmService : IIncomingAlarmService
         return _count;
     }
 
-    //public async Task<Dictionary<DateTime, double>> GetAlarmsInHour(int idWorkStation, DateTime startDate, DateTime endDate)
-    //{
-    //    var result = await GetScopeAlarms(idWorkStation, startDate, endDate);
-
-    //    Dictionary<DateTime, double> _count = new Dictionary<DateTime, double>();
-
-    //    var groupDateTime = result.GroupBy(g => g.Date.Hour);
-
-    //    groupDateTime = groupDateTime.OrderBy(u => u.Key).ToList();
-
-    //    foreach (var g in groupDateTime)
-    //    {
-    //        _count.Add(g.Key, g.Count());
-    //    }
-
-    //    return _count;
-
-    //}
 }
