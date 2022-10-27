@@ -78,17 +78,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-	    //var test2 = await ActiveAlarmService.GetAllAlarms();
-	    //var test = await ActiveAlarmService.GetAllAlarms();
-
-        //TODO не понял почему ты берешь данные которые были две недели назад 
-	    //var now = DateTime.Now;
-     //   var i = -(int)now.DayOfWeek;
-     //   To = now.AddDays(i);
-     //   To = new DateTime(To.Year , To.Month, To.Day, 23,59,59);
-     //   From = To.AddDays(-6);
-     //   From = new DateTime(From.Year , From.Month, From.Day, 0,0,0);
-        SpinnerService.Show();
+	    SpinnerService.Show();
 	    To = DateTime.Now.AddDays(-1);
         To = new DateTime(To.Year , To.Month, To.Day, 23,59,59);
         From = DateTime.Now.AddDays(-7);

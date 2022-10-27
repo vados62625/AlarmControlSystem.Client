@@ -28,7 +28,8 @@ public class ActiveAlarmService : IActiveAlarmService
     /// <returns></returns>
     public async Task<List<ActiveAlarmDto>> GetAllAlarms()
     {
-        return await _bufferAlarmService.GetAllActiveAlarms();
+        var result =  await _bufferAlarmService.GetAllActiveAlarms();
+        return result;
     }
 
     /// <summary>

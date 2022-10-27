@@ -4,15 +4,11 @@ namespace LocalDbStorage.Dto
 {
     public class DtoBase
     {
+
         /// <summary>
         /// Id
         /// </summary>
         public int Id { get; set; }
-
-        /// <summary>
-        /// Id рабочей станции
-        /// </summary>
-        public int IdWorkStation { get; set; }
 
         /// <summary>
         /// Начало сигнализации
@@ -22,7 +18,7 @@ namespace LocalDbStorage.Dto
         /// <summary>
         /// Имя тега
         /// </summary>
-        public string TagName { get; set; } = null!;
+        public string TagName { get; set; }
 
         /// <summary>
         /// Описание

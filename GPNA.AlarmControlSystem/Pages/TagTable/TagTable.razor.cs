@@ -63,7 +63,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
         {
             ArgumentNullException.ThrowIfNull(tag.Id);
             var parameters = new ModalParameters();
-            parameters.Add("Name", tag.TagName);
+            parameters.Add("TagName", tag.TagName);
             var options = new ModalOptions();
             options.Class = "modal-delete";
             var deleteModal = Modal.Show<DeleteTagModal>("Удаление Tag", parameters, options);
