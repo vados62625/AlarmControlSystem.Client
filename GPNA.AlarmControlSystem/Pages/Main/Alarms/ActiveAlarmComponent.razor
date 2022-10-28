@@ -2,7 +2,8 @@
 @using Microsoft.AspNetCore.Components
 @using LocalDbStorage.Repositories.Models
 @using LocalDbStorage.Dto
-
+@using ActiveAlarmDto = LocalDbStorage.Dto.ActiveAlarmDto
+@inject IJSRuntime JSRuntime
 
 @if(Tag!=null && Tag.TagName!=null)
 {
@@ -53,6 +54,7 @@
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
             await ActiveAlarmService.UpdateAlarm(Tag);
+            await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
         }
     }
 }

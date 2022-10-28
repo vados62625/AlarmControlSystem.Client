@@ -1,4 +1,5 @@
 ﻿@using LocalDbStorage.Interfaces
+@using LocalDbStorage.Repositories.Models.Enum
 @using Microsoft.AspNetCore.Components
 @using LocalDbStorage.Repositories.Models
 @using LocalDbStorage.Dto
@@ -10,7 +11,7 @@
         <td>@Tag.DateTime.ToString("d")</td>
         <td>@Tag.DateTime.ToString("t")</td>
         
-        @if (Tag.TagName.EndsWith("LL") || Tag.TagName.EndsWith("HH"))
+        @*@if (Tag.TagName.EndsWith("LL") || Tag.TagName.EndsWith("HH"))
         {
             <td colspan=3>@Tag.TagName.Substring(0,Tag.TagName.Length - 2)<span style="color: #EB3333;font-weight:700;">@Tag.TagName.Substring(Tag.TagName.Length-2)</span></td>
         }
@@ -21,7 +22,19 @@
         else
         {
             <td colspan=3>@Tag.TagName</td>
-        } 
+        } *@
+
+        <td colspan=3>@(Tag.TagName)
+            @{
+                string color = "";
+                if (Tag.State == StateType.HH || Tag.State == StateType.LL)
+                { color = "#EB3333"; }                    
+                if (Tag.State == StateType.H || Tag.State == StateType.L)
+                { color = "#F38B01"; } 
+            }
+            @if (Tag.State != StateType.none)
+            { <span >_<b style="color: @color;">@Tag.State</b></span> }
+        </td>
     
         @if (Tag.Description != null)
         {

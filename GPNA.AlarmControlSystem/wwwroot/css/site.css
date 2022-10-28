@@ -1,8 +1,10 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 :root {
     --color-bg-caution: #F2C94C;
-    --color-bg-warning: #F38B00;
-    --color-bg-alert: #EB5757;
+    --color-bg-warning: #F38B01;
+    --color-bg-alert: #FF4443;
+    --color-bg-normal: #0BA5FF;
+    --color-typo-primary-white: #FAFAFA;
 }
 
 .page.light-theme {
@@ -10,7 +12,7 @@
     --color-bg-secondary: #0078D2;
     --color-bg-link: #0078D2;
     --color-bg-brand: #0071B2;
-    --color-bg-normal: #22C38E;
+    --color-bg-success: #22C38E;
     --color-bg-system: #DEE4E8;
     --color-bg-stripe: rgba(0, 32, 51, 0.05);
     --color-bg-tone: rgba(0, 32, 51, 0.85);
@@ -29,7 +31,7 @@
     --color-bg-secondary: #161A1D;
     --color-bg-link: #0078D2;
     --color-bg-brand: #0071B2;
-    --color-bg-normal: #0BA5FF;
+    --color-bg-success: #0BA5FF;
     --color-bg-system: #4D525B;
     --color-bg-stripe: rgba(246, 251, 253, 0.06);
     --color-bg-tone: rgba(12, 17, 19, 0.85);
@@ -37,7 +39,7 @@
     --color-bg-border: rgba(255, 255, 255, 0.2);
     --color-bg-ghost: rgba(246, 251, 253, 0.1);
     --color-nums-shadow: #000000;
-    --color-typo-primary: #FAFAFA;
+    --color-typo-primary: #FAFAFA;    
     --color-typo-secondary: rgba(255, 255, 255, 0.6);
     --color-typo-link: #0F9FFF;
     --color-typo-link-hover: #6FA5C8;
@@ -157,15 +159,11 @@ h4 {
 }
 
 .table-striped tr {
-    color: var(--color-typo-primary)!important;
+    color: inherit;
 }
 
 .item-table td{
-    color: var(--color-typo-primary);
-}
-
-.item-table--alert td {
-    background-color: rgba(235, 87, 87, 0.5);
+    color: inherit;
 }
 
 
@@ -173,12 +171,26 @@ h4 {
     border: 1px solid var(--color-bg-border);
 }
 
-.thead-light th{
-    position:sticky;
-    top:-3px;
-    background-color:#fff;
+.thead-light th {
+    position: sticky;
+    top: -3px;
+    background-color: #fff;
 }
 
+.item-table.item-table--alert, item-table--alert td, item-table--alert tr {
+    background-color: var(--color-bg-alert);
+    color: var(--color-typo-primary-white);
+}
+
+.item-table.item-table--warning, item-table--warning td, item-table--warning tr {
+    background-color: var(--color-bg-warning);
+    color: var(--color-typo-primary-white);
+}
+
+.item-table.item-table--normal, item-table--normal td, item-table--normal tr {
+    background-color: var(--color-bg-normal);
+    color: var(--color-typo-primary-white);
+}
 
 /*Äארבמנה*/
 .stat-box {

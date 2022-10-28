@@ -4,18 +4,12 @@
 @using LocalDbStorage.Services
 
 
-    <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">
-        <td colspan=2>@Tag.Position</td>
-
-        @if(Tag.AlarmLimit != null && Tag.State != LocalDbStorage.Repositories.Models.Enum.StateType.none)
-        {
-            <td colspan=2>@(Tag.TagName + "_" + Tag.State)</td>
-        }
-        else
-        {
-            <td colspan=2>@Tag.TagName</td>
-        }
-    
+    <tr class="item-table @modificator" @onclick="ShowMoreattributes" style="cursor:pointer;">        
+        <td colspan=2>
+            @((Tag.State != LocalDbStorage.Repositories.Models.Enum.StateType.none) 
+            ? (Tag.TagName + "_" + Tag.State) 
+            : (Tag.TagName))
+        </td>
         <td colspan=6>@Tag.Description</td>
         <td>@Tag.Priority</td>
         <td>@Tag.AlarmLimit</td>
@@ -30,7 +24,8 @@
     @if (displayMore)
     {
     <tr>
-        <td colspan="13" class="p-4 m-4">           
+        <td colspan="11" class="p-4 m-4">
+                <p><b>Позиция по ГП: </b> @Tag.Position</p>
                 <p><b>Потенциальные последствия: </b> @Tag.Consequence</p>
                 <p><b>Действия Полевого оператора: </b>@Tag.ActionFieldOperator</p>
                 <p><b>Действия Оператора АРМ: </b>@Tag.ActionArmOperator</p>
@@ -49,6 +44,26 @@
     [Parameter] public Tag Tag { get; set; }
 
     bool displayMore = false;
+    string modificator = "";
+
+    protected override void OnParametersSet()
+    {
+        switch (Tag.Validate)
+        {
+            case LocalDbStorage.Repositories.Models.Enum.Validate.NoneCheck:
+                modificator = "item-table--normal";
+                break;
+            case LocalDbStorage.Repositories.Models.Enum.Validate.NotValid:
+                modificator = "item-table--alert";
+                break;
+            case LocalDbStorage.Repositories.Models.Enum.Validate.NewTag:
+                modificator = "item-table--warning";
+                break;
+            case LocalDbStorage.Repositories.Models.Enum.Validate.Valid:
+                modificator = "";
+                break;
+        }
+    }
 
     void ShowMoreattributes()
     {
