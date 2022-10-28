@@ -9,5 +9,7 @@ public enum Validate
     [Description("Валидный")]
     Valid,
     [Description("Не валидный")]
-    NotValid
+    NotValid,
+    [Description("Новая запись")]
+    NewTag
 }

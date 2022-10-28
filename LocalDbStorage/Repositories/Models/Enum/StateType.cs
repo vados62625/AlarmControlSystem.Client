@@ -13,5 +13,13 @@ public enum StateType
     [Description("H")]
     H,
     [Description("HH")]
-    HH
+    HH,
+    [Description("RSLO")]
+    RSLO,
+    [Description("RSHI")]
+    RSHI,
+    [Description("Discr")]
+    Discr,
+    [Description("Comms")]
+    Comms
 }
