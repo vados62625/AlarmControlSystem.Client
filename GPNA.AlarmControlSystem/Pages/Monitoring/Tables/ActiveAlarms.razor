@@ -3,7 +3,8 @@
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms
 @using ActiveAlarmDto = LocalDbStorage.Dto.ActiveAlarmDto
 
-
+<div class="table-responsive" style="margin-top:10px;height:780px;overflow-y:auto;border-top: 0.5px solid rgba(0, 65, 102, 0.2);border-bottom: 0.5px solid rgba(0, 65, 102, 0.2);">
+    <table class="table table-bordered">
 <thead class="thead-light">
     <tr>
 	    <th>Дата начала сигнализации</th>
@@ -24,6 +25,7 @@
     </tr>            
 </thead>
 <tbody>
+        
     @if(Alarms == null)
     {
         <Loader/>
@@ -35,6 +37,8 @@
         </Virtualize>
     }
 </tbody>
+</table>
+</div>
 
 @code {
     [Inject] IActiveAlarmService ActiveAlarmService { get; set; } = default!;

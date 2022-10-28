@@ -160,12 +160,34 @@ h4 {
 
 .table-striped tr {
     color: inherit;
-}
+}    
 
 .item-table td{
     color: inherit;
 }
 
+.item-table:hover {
+    color: var(--color-typo-link-hover);
+}
+
+.item-table__count {
+    text-align: right;
+}
+
+    .item-table__count:hover {
+        background-color: rgba(0, 32, 51, 0.05);
+    }
+
+.item-table__checkbox {
+    text-align: center;
+}
+    .item-table__checkbox:hover {
+        background-color: rgba(0, 32, 51, 0.05);
+    }
+
+.item-table__checkbox-input {
+    cursor:pointer;
+}
 
 .table-bordered {
     border: 1px solid var(--color-bg-border);

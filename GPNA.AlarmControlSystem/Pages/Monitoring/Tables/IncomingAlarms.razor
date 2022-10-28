@@ -6,6 +6,15 @@
 @using LocalDbStorage.Repositories.Models.Enum
 @using LocalDbStorage.Services
 
+<div style="display:flex; justify-content:flex-end; gap: 10px">
+    <span>Всего: <b>@countAll</b></span>
+    <span>HH: <b>@countHH</b></span>
+    <span>H: <b>@countH</b></span>
+    <span>LL: <b>@countLL</b></span>
+    <span>L: <b>@countL</b></span>
+</div>
+<div class="table-responsive" style="margin-top:10px;height:780px;overflow-y:auto;border-top: 0.5px solid rgba(0, 65, 102, 0.2);border-bottom: 0.5px solid rgba(0, 65, 102, 0.2);">
+    <table class="table table-bordered">
 <thead class="thead-light">
     <tr>
         <th>Дата последней сигнализации</th>
@@ -39,6 +48,8 @@
     }
         
 </tbody>
+    </table>
+</div>
 
 @code {
     [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
@@ -50,10 +61,12 @@
     [CascadingParameter(Name = "From")] public DateTime From { get; set; }
     [CascadingParameter(Name = "To")] public DateTime To { get; set; }
 
+    int countL, countLL, countH, countHH, countAll;
 
     protected override async Task OnParametersSetAsync()
     {
         Alarms = null;
+        countH = 0; countHH = 0; countL = 0; countLL = 0; countAll = 0;
         var incomingAlarms= await IncomingAlarmService.GetAlarmsPerDate(1, From, To);
         var from = new DateTime(From.Year, From.Month, From.Day, 8, 0, 0);
 
@@ -66,6 +79,27 @@
         }
 
         Alarms = incomingAlarms.OrderByDescending(c => c[c.Count-1].DateTime).ToList();
+
+        foreach (var x in Alarms)
+        {
+            switch (x[x.Count - 1].State) 
+            {
+                case StateType.H:
+                    countH += x.Count;
+                    break; 
+                case StateType.HH:
+                    countHH += x.Count;
+                    break; 
+                case StateType.L:
+                    countL += x.Count;
+                    break; 
+                case StateType.LL:
+                    countLL += x.Count;
+                    break; 
+            }
+            countAll += x.Count;
+        }
+
         //if (Priority != 5)
         //{
         //    var alarms = new List<IncomingAlarm>();

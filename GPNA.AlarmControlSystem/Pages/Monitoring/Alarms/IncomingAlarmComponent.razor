@@ -6,25 +6,14 @@
 @inject IJSRuntime JSRuntime
 
 @if(Tag!=null && Tag.TagName!=null && Tag.Description!="ПЕРЕСМЕНКА")
-{
-    <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">        
-        <td>@Tag.DateTime.ToString("d")</td>
-        <td>@Tag.DateTime.ToString("t")</td>
-        
-        @*@if (Tag.TagName.EndsWith("LL") || Tag.TagName.EndsWith("HH"))
-        {
-            <td colspan=3>@Tag.TagName.Substring(0,Tag.TagName.Length - 2)<span style="color: #EB3333;font-weight:700;">@Tag.TagName.Substring(Tag.TagName.Length-2)</span></td>
-        }
-        else if (Tag.TagName.EndsWith("L") || Tag.TagName.EndsWith("H"))
-        {
-            <td colspan=3>@Tag.TagName.Substring(0,Tag.TagName.Length - 1)<span style="color: #F38B01;font-weight:700;">@Tag.TagName.Substring(Tag.TagName.Length-1)</span></td>
-        }
-        else
-        {
-            <td colspan=3>@Tag.TagName</td>
-        } *@
+{    
+    string bgColor = ""; if (IsChildren) { bgColor = "rgba(0, 32, 51, 0.05);"; } 
+    
+    <tr class="item-table" style="cursor:pointer; background-color: @bgColor;">        
+        <td @onclick="ShowMoreAttributes">@Tag.DateTime.ToString("d")</td>
+        <td @onclick="ShowMoreAttributes">@Tag.DateTime.ToString("t")</td>
 
-        <td colspan=3>@(Tag.TagName)
+        <td colspan=3 @onclick="ShowMoreAttributes">@(Tag.TagName)
             @{
                 string color = "";
                 if (Tag.State == StateType.HH || Tag.State == StateType.LL)
@@ -35,53 +24,14 @@
             @if (Tag.State != StateType.none)
             { <span >_<b style="color: @color;">@Tag.State</b></span> }
         </td>
+        <td colspan=4 @onclick="ShowMoreAttributes"> @((Tag.Description != null) ? Tag.Description : "N/A") </td>
+        <td @onclick="ShowMoreAttributes">@Tag.Priority</td>
+        <td @onclick="ShowMoreAttributes">@((Tag.AlarmLimit != null) ? Tag.AlarmLimit : "N/A") / @((Tag.Value != null) ? Tag.Value : "N/A")</td>              
+        <td class="item-table__count" @onclick="ShowListAlarms">@((IsChildren) ? "" : (List?.Count ?? -1))</td>
+        <td class="item-table__checkbox" @onclick="SendTest"><input class="item-table__checkbox-input" type="checkbox" checked="@Tag.Test"/></td>
+    </tr>
     
-        @if (Tag.Description != null)
-        {
-            <td colspan=4>@(Tag.Description ??= "N/A")</td>
-        }
-        else
-        {
-            <td colspan=4>N/A</td>
-        }
-
-        @if (Tag.Priority != null)
-        {
-            <td>@(Tag.Priority)</td>
-        }
-        else
-        {
-            <td>N/A</td>
-        }
-
-        @if (Tag.AlarmLimit != null && Tag.Value!=null)
-        {
-            <td>@(Tag.AlarmLimit+" / "+Tag.Value)</td>
-        }
-        else if(Tag.AlarmLimit != null)
-        {
-            <td>@(Tag.AlarmLimit+" / N/A")</td>
-        } 
-        else if(Tag.Value != null)
-        {
-            <td>@("N/A / " + Tag.Value)</td>
-        }
-        else
-        {
-            <td>N/A / N/A</td>
-        }
-              
-        <td style="text-align: right;">@List.Count</td>   
-        @if (Tag.Test == true)
-        {
-             <td style="text-align: center;"><input type="checkbox" @onchange="SendTest" checked/></td>
-        }
-        else 
-        {
-            <td style="text-align: center;"><input type="checkbox" @onchange="SendTest"/></td>
-        } 
-    </tr>                 
-    @if (displayMore || (Tag.Comment!=null && Tag.Comment.Length>0))
+    @if (displayComment || (Tag.Comment!=null && Tag.Comment.Length>0))
     {
         <tr>
             <td colspan="13" class="p-0 m-0">
@@ -89,16 +39,23 @@
             </td>                        
         </tr>
     }
+
+    @if (displayList && List?.Count>1)
+    {
+        for (int i = List.Count-2; i >=0; i--)
+        {
+           <IncomingAlarmComponent Tag="List[i]" IsChildren = "true"/> 
+        }
+        
+    }
+
 } 
 else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМЕНКА")
 {
     <tr class="item-table">        
         <td>@Tag.DateTime.ToString("d")</td>
-        <td>@Tag.DateTime.ToString("t")</td>    
-        @if (Tag.Description != null)
-        {
-            <td colspan=11 style="text-align:center;font-weight:700;letter-spacing:10px;">@(Tag.Description ??= "N/A")</td>
-        }        
+        <td>@Tag.DateTime.ToString("t")</td>        
+        <td colspan=11 style="text-align:center;font-weight:700;letter-spacing:10px;">@Tag.Description</td>              
     </tr>   
 }
 @code
@@ -107,12 +64,22 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
 
     [Parameter] public List<IncomingAlarmDto>? List { get; set; } = new();
     [Parameter] public IncomingAlarmDto? Tag { get; set; }
+    [Parameter] public bool IsChildren { get; set; } = false;
 
-    bool displayMore = false;
+    bool displayComment = false;
+    bool displayList = false;
 
     protected override void OnInitialized()    
     {
-        Tag = List[List.Count - 1];
+        if (List?.Count>0)
+        {
+            if (Tag == null)
+            {
+                Tag = List[List.Count - 1];
+            }  
+            
+            List = List.OrderByDescending(c => c.DateTime).ToList();
+        }        
     }
 
     private async Task SaveComment(KeyboardEventArgs e)
@@ -129,11 +96,16 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
         Tag.Test = !Tag.Test;
         await IncomingAlarmService.UpdateAlarm(Tag);
         await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
-        
+
     }
 
-    void ShowMoreattributes()
+    void ShowMoreAttributes()
     {
-        displayMore = !displayMore;
+        displayComment = !displayComment;
+    }
+
+    void ShowListAlarms()
+    {
+        displayList = !displayList;
     }
 }
