@@ -11,7 +11,7 @@
                 <th>Время последней сигнализации</th>
                 <th>Длительность (в часах)</th>
                 <th>Таг</th>
-                <th>Описание</th>
+                <th colspan=4>Описание</th>
                 <th>Приоритет 
                     <select @bind="@Priority" @onabort="OnParametersSet">
                         <option value="5">Все</option>
@@ -57,7 +57,7 @@
 
     protected override async Task OnInitializedAsync()    
     {
-        var suppressedAlarms= await SuppressedAlarmService.GetScopeAlarms(1, From, To);
+        var suppressedAlarms= await SuppressedAlarmService.GetAllAlarms();
 
         foreach (var alarm in suppressedAlarms)
         {
