@@ -4,7 +4,7 @@
 @using LocalDbStorage.Services
 
 
-    <tr class="item-table @modificator" @onclick="ShowMoreattributes" style="cursor:pointer;">        
+    <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">        
         <td colspan=2>
             @((Tag.State != LocalDbStorage.Repositories.Models.Enum.StateType.none) 
             ? (Tag.TagName + "_" + Tag.State) 
@@ -12,7 +12,7 @@
         </td>
         <td colspan=6>@Tag.Description</td>
         <td>@Tag.Priority</td>
-        <td>@Tag.AlarmLimit</td>
+        <td class="@modificator">@Tag.AlarmLimit</td>
         <td style="padding: 0; padding-top: 8px;">
             <div style="display:flex; gap:8px; justify-content:center">
                 <IconEditButton Tooltip="Изменить" ClickEvent="ClickEditTag" />

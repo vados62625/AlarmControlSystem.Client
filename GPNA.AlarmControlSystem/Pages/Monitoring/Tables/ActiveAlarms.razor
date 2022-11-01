@@ -2,25 +2,43 @@
 @using LocalDbStorage.Repositories.Models
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms
 @using ActiveAlarmDto = LocalDbStorage.Dto.ActiveAlarmDto
+@using LocalDbStorage.Repositories.Models.Enum
 
+<div style="display:flex; justify-content:flex-end; gap: 10px; color: var(--color-typo-primary);">
+    <span>Всего: <b>@countAll</b></span>
+    <span>Критический: <b>@countUrgent</b></span>
+    <span>Высокий: <b>@countHigh</b></span>
+    <span>Низкий: <b>@countLow</b></span>
+    <span>Информационный: <b>@countInfo</b></span>
+    <span>Без приоритета: <b>@countNonePriority</b></span>
+    <br />
+    <span>HH: <b>@countHH</b></span>
+    <span>H: <b>@countH</b></span>
+    <span>LL: <b>@countLL</b></span>
+    <span>L: <b>@countL</b></span>
+    <span>Discr: <b>@countDiscr</b></span>
+    <span>RSHI: <b>@countRSHI</b></span>
+    <span>RSLO: <b>@countRSLO</b></span>
+    <span>NoneState: <b>@countNoneState</b></span>
+</div>
 <div class="table-responsive" style="margin-top:10px;height:780px;overflow-y:auto;border-top: 0.5px solid rgba(0, 65, 102, 0.2);border-bottom: 0.5px solid rgba(0, 65, 102, 0.2);">
     <table class="table table-bordered">
 <thead class="thead-light">
     <tr>
 	    <th>Дата начала сигнализации</th>
-	    @*   TODO временно endDate в контроллере не используется*@
-    @*    <th>Дата окончания сигнализации</th>*@
         <th>Длительность (в часах)</th>
         <th colspan=2>Таг</th>
         <th colspan=4>Описание</th>
         <th>Приоритет 
-            <select @bind="@Priority" @onabort="OnParametersSet">
-                <option value="5">Все</option>
-                <option value="4">Критический</option>
-                <option value="3">Высокий</option>
-                <option value="2">Низкий</option>
-            </select>
-        </th>
+                    <select @bind="@Priority" @onclick="OnParametersSetAsync">
+                        <option value="">Все</option>
+                        <option value="@PriorityType.Urgent">Критический</option>
+                        <option value="@PriorityType.High">Высокий</option>
+                        <option value="@PriorityType.Low">Низкий</option>
+                        <option value="@PriorityType.Information">Инфо</option>
+                        <option value="@PriorityType.None">Без приорит.</option>                        
+                    </select>
+                </th>
         <th>Уставка/Значение</th>        
     </tr>            
 </thead>
@@ -45,29 +63,86 @@
 
     [Parameter] public List<ActiveAlarmDto>? Alarms { get; set; }
 
-    [Parameter] public int? Priority { get; set; } = 5;
+    [Parameter] public PriorityType? Priority { get; set; }
 
     [CascadingParameter(Name = "From")] public DateTime From { get; set; }
     [CascadingParameter(Name = "To")] public DateTime To { get; set; }
-
+    int countL, countLL, countH, countHH, countAll, countUrgent, countHigh, countLow, countInfo, countNonePriority, countDiscr,countRSHI,countRSLO,countComms, countNoneState;
 
     protected override async Task OnParametersSetAsync()
     {
+        countH = 0; countHH = 0; countL = 0; countLL = 0; countAll = 0; countUrgent = 0; countHigh = 0; countLow = 0; countInfo = 0; countNonePriority=0; countDiscr = 0; countRSHI = 0; countRSLO = 0; countComms = 0; countNoneState = 0;
         Alarms = null;
         var activeAlarms= await ActiveAlarmService.GetAllAlarms();
         
 	    Alarms = activeAlarms.OrderByDescending(c => c.DateTime).ToList();
-        //if (Priority != 5)
-        //{
-        //    var alarms = new List<ActiveAlarm>();
-        //    foreach (var item in Alarms ?? new List<ActiveAlarm>())
-        //    {
-        //        if (Convert.ToInt32(item.Priority) == Priority)
-        //        {
-        //            alarms.Add(item);
-        //        }
-        //    }
-        //    Alarms = alarms;
-        //}
+
+        foreach (var x in Alarms)
+        {
+            switch (x.State) 
+            {
+                case StateType.H:
+                    countH += 1;
+                    break; 
+                case StateType.HH:
+                    countHH += 1;
+                    break; 
+                case StateType.L:
+                    countL += 1;
+                    break; 
+                case StateType.LL:
+                    countLL += 1;
+                    break; 
+                case StateType.Discr:
+                    countDiscr += 1;
+                    break; 
+                case StateType.RSHI:
+                    countRSHI += 1;
+                    break; 
+                case StateType.RSLO:
+                    countRSLO += 1;
+                    break; 
+                case StateType.Comms:
+                    countComms += 1;
+                    break; 
+                case StateType.none:
+                    countNoneState += 1;
+                    break; 
+            }
+
+            switch (x.Priority) 
+            {
+                case PriorityType.Low:
+                    countLow += 1;
+                    break; 
+                case PriorityType.High:
+                    countHigh += 1;
+                    break; 
+                case PriorityType.Urgent:
+                    countUrgent += 1;
+                    break; 
+                case PriorityType.Information:
+                    countInfo += 1;
+                    break; 
+                case PriorityType.None:
+                    countNonePriority += 1;
+                    break; 
+            }
+
+            countAll += 1;
+        }        
+
+        if (Priority != null)
+        {
+            var alarms = new List<ActiveAlarmDto>();
+            foreach (var context in Alarms)
+            {
+                if (Priority == context.Priority || Priority == null)
+                {
+                    alarms.Add(context);
+                }
+            }
+            Alarms = alarms;
+        }
     }
 }

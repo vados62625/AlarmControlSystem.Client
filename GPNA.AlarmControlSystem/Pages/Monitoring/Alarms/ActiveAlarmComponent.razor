@@ -1,4 +1,5 @@
 ﻿@using LocalDbStorage.Interfaces
+@using LocalDbStorage.Repositories.Models.Enum
 @using Microsoft.AspNetCore.Components
 @using LocalDbStorage.Repositories.Models
 @using ActiveAlarmDto = LocalDbStorage.Dto.ActiveAlarmDto
@@ -6,27 +7,27 @@
 
 @if(Tag!=null && Tag.TagName!=null)
 {
-    <tr class="item-table @styleTr" @onclick="ShowMoreattributes" style="cursor:pointer;">        
+    <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">        
         <td>@Tag.DateTime.ToString("d") @Tag.DateTime.ToString("t")</td>
-  @*      <td>@Tag.EndDate.ToString("d") @Tag.EndDate.ToString("t")</td>*@
-        <td>@(Tag.Duration.Value.TotalHours.ToString("N") ?? "N/A")</td>        
-        @if (Tag.TagName.EndsWith("LL") || Tag.TagName.EndsWith("HH"))
-        {
-            <td colspan=2>@Tag.TagName.Substring(0,Tag.TagName.Length - 2)<span style="color: #EB3333;font-weight:700;">@Tag.TagName.Substring(Tag.TagName.Length-2)</span></td>
-        }
-        else if (Tag.TagName.EndsWith("L") || Tag.TagName.EndsWith("H"))
-        {
-            <td colspan=2>@Tag.TagName.Substring(0,Tag.TagName.Length - 1)<span style="color: #F38B01;font-weight:700;">@Tag.TagName.Substring(Tag.TagName.Length-1)</span></td>
-        }
-        else
-        {
-            <td colspan=2>@Tag.TagName</td>
-        } 
+        <td class="@styleTr">@(Tag.Duration.Value.TotalHours.ToString("N") ?? "N/A")</td>        
+       
+        <td colspan=2>@(Tag.TagName)
+            @{
+                string color = "";
+                if (Tag.State == StateType.HH || Tag.State == StateType.LL)
+                { color = "#EB3333"; }                    
+                if (Tag.State == StateType.H || Tag.State == StateType.L)
+                { color = "#F38B01"; } 
+            }
+            @if (Tag.State != StateType.none)
+            { <span >_<b style="color: @color;">@Tag.State</b></span> }
+        </td>
     
         <td colspan=4>@(Tag.Description ??= "N/A")</td>
         <td>@Tag.Priority</td>
-        <td>@Tag.AlarmLimit / @Tag.Value</td>       
-    </tr>             
+        <td>@((Tag.AlarmLimit != null) ? Tag.AlarmLimit : "N/A") / @((Tag.Value != null) ? Tag.Value : "N/A")</td>     
+    </tr> 
+    
     @if (displayMore || (Tag.Comment!=null && Tag.Comment.Length>0))
     {
         <tr>
@@ -52,7 +53,6 @@
             if (Tag.Duration!=null && Tag.Duration.Value.TotalHours > 72)
             {
                 styleTr = "item-table--alert";
-
             }
     }
 
