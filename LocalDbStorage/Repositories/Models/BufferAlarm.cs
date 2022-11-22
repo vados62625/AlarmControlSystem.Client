@@ -57,9 +57,14 @@ namespace LocalDbStorage.Repositories.Models
         public string? Comment { get; set; }
 
         /// <summary>
-        /// Тест
+        /// Статус сигнализации
         /// </summary>
-        public bool Test { get; set; }
+        public StatusAlarm StatusAlarm { get; set; }
+
+        /// <summary>
+        /// Идентификатор в Источнике
+        /// </summary>
+        public string IdInSourse { get; set; }
 
     }
 }
