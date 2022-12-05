@@ -14,8 +14,4 @@ public class IncomingAlarmDto : DtoBase
     /// </summary>
     public DateTime EndDate { get; set; }
     
-    /// <summary>
-    /// Тест
-    /// </summary>
-    public bool Test { get; set; }
 }

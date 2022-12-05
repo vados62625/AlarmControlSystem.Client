@@ -1,5 +1,6 @@
 ﻿@using LocalDbStorage.Interfaces
 @using LocalDbStorage.Repositories.Models
+@using LocalDbStorage.Dto
   
 <div style="min-width:530px;">
         <h3 style="margin-top:50px;text-align: center;">@Title</h3>
@@ -81,7 +82,7 @@
     [Inject] IActiveAlarmService ActiveAlarmService { get; set; } = null!;
 
     [Parameter] public string? Title { get; set; } = "Активные сигнализации"; 
-    [Parameter] public List<List<IncomingAlarm>>? Alarms { get; set; }
+    [Parameter] public List<List<IncomingAlarmDto>>? Alarms { get; set; }
 
     [CascadingParameter(Name = "From")] public DateTime From { get; set; }
     [CascadingParameter(Name = "To")] public DateTime To { get; set; }

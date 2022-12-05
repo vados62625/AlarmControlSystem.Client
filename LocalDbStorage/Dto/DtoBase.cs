@@ -36,6 +36,11 @@ namespace LocalDbStorage.Dto
         public PriorityType Priority { get; set; }
 
         /// <summary>
+        /// Статус сигнализации
+        /// </summary>
+        public StatusAlarm StatusAlarm { get; set; }
+
+        /// <summary>
         /// Предел
         /// </summary>
         public string? AlarmLimit { get; set; }
