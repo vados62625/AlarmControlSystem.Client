@@ -46,7 +46,7 @@ public class IncomingAlarmService : IIncomingAlarmService
     {
         var alarms = await GetScopeAlarms(idWorkStation, startDate, endDate);
 
-        List<List<IncomingAlarmDto>> groups = alarms.GroupBy(c => new { c.DateTime.Date, TagName = c.TagName })
+        List<List<IncomingAlarmDto>> groups = alarms.GroupBy(c => new { c.DateTime.Date, TagName = c.TagName,  c.State})
             .Select(group => group.ToList())
             .ToList();
 

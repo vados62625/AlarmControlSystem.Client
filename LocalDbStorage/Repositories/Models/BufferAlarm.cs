@@ -7,11 +7,6 @@ namespace LocalDbStorage.Repositories.Models
     {
 
         /// <summary>
-        /// Id рабочей станции
-        /// </summary>
-        public int IdWorkStation { get; set; }
-
-        /// <summary>
         /// Время события сигнализации
         /// </summary>
         public DateTime DateTime { get; set; }
@@ -40,6 +35,7 @@ namespace LocalDbStorage.Repositories.Models
         /// Приоритет
         /// </summary>
         public PriorityType Priority { get; set; }
+
 
         /// <summary>
         /// Предел

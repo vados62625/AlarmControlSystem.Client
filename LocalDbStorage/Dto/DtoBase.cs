@@ -36,11 +36,6 @@ namespace LocalDbStorage.Dto
         public PriorityType Priority { get; set; }
 
         /// <summary>
-        /// Статус сигнализации
-        /// </summary>
-        public StatusAlarm StatusAlarm { get; set; }
-
-        /// <summary>
         /// Предел
         /// </summary>
         public string? AlarmLimit { get; set; }
@@ -54,5 +49,15 @@ namespace LocalDbStorage.Dto
         /// Комментарии
         /// </summary>
         public string? Comment { get; set; }
+
+        /// <summary>
+        /// Статус сигнализации
+        /// </summary>
+        public StatusAlarm StatusAlarm { get; set; }
+
+        /// <summary>
+        /// Идентификатор в Источнике
+        /// </summary>
+        public string IdInSourse { get; set; }
     }
 }
