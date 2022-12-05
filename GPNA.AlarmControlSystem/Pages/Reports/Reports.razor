@@ -18,7 +18,7 @@
         </div>
         <div class="stat-box">
             <div class="stat-box__numbers">
-                <span title="Среднее количествово критичных сигнализаций за последние @IncomingAlarms.Count часов">@(AverageUrgent)</span>
+                <span title="Среднее количествово критичных сигнализаций за последние 720 часов">@(AverageUrgent)</span>
                 <span style="color:#09B37B">+0%</span>
             </div>
             <span class="stat-box__desc" title="Среднее количествово критичных сигнализаций за последние @IncomingAlarms.Count часов">Среднее количествово критичных</span>
@@ -65,6 +65,8 @@
         <a>По :</a>
         <input  type="datetime-local" @bind="To">
         <img src="img/icons/refresh.svg" style="cursor:pointer" @onclick="(()=>OnParametersSetAsync())" />
+        <button class="btn-primary" @onclick="()=>SetDateTime(1)">1 день</button>
+        <button class="btn-primary" @onclick="()=>SetDateTime(7)">Неделя</button>
     </div>
     
     @if (!IsEnableRenderChart)
@@ -73,9 +75,19 @@
     }
     else
     {
-        <div style="height:340px;">
+        if (IncomingAlarms != null && IncomingAlarms.Count > 0)
+        {
+            <div style="height:340px;">
             <Chart1 Kpi="@inputKpi" IncomingAlarms="@IncomingAlarms"/>
-         </div>
+            </div>
+        }
+        else
+        {
+            <div style="height:340px;display:flex; align-items:center; justify-content:center;">
+                <p>Нет данных.</p>
+            </div>
+        }
+
     }    
         
     <div style="display:flex;gap:20px;">
@@ -94,9 +106,19 @@
     }
     else
     {
-        <div style="height:340px;">
-            <Chart2 IncomingAlarms="@IncomingAlarms"/>
-         </div>
+        
+        if (IncomingAlarms != null && IncomingAlarms.Count > 0)
+        {
+            <div style="height:340px;">
+                <Chart2 IncomingAlarms="@IncomingAlarms"/>
+             </div>
+        }
+        else
+        {
+            <div style="height:340px;display:flex; align-items:center; justify-content:center;">
+                <p>Нет данных.</p>
+            </div>
+        }
     }
 
 </div>

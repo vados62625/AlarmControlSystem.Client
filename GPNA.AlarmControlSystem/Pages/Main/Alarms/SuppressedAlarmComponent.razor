@@ -1,15 +1,13 @@
 ﻿@using LocalDbStorage.Interfaces
 @using LocalDbStorage.Repositories.Models
-@using LocalDbStorage.Repositories.Models.Enum
-@using Microsoft.AspNetCore.Components
 @using LocalDbStorage.Dto
+@using LocalDbStorage.Repositories.Models.Enum
 @inject IJSRuntime JSRuntime
-
 
 
 @if(Tag!=null && Tag.TagName!=null)
 {
-    <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">        
+    <tr class="item-table " @onclick="ShowMoreattributes" style="cursor:pointer;">        
         <td>@Tag.DateTime.ToString("d")</td>
         <td>@Tag.DateTime.ToString("t")</td>                  
         <td>@(Tag!=null && Tag.Duration!=null ? Tag.Duration.Value.TotalHours.ToString("N") : "N/A")</td>
@@ -32,11 +30,11 @@
              
     @if (displayMore || (Tag.Comment!=null && Tag.Comment.Length>0))
     {
-    <tr>
-        <td colspan="11" class="p-0 m-0">
-            <input type="text" style="margin:0;padding:5px 10px;width:100%" @bind="Tag.Comment" @bind:event="oninput" @onkeydown="SaveComment">
-        </td>                        
-    </tr>
+        <tr>
+            <td colspan="10" class="p-0 m-0">
+                <input type="text" style="margin:0;padding:5px 10px;width:100%" @bind="Tag.Comment" @bind:event="oninput" @onkeydown="SaveComment">
+            </td>                        
+        </tr>
     }
 } 
 @code
@@ -46,15 +44,6 @@
 
     bool displayMore = false;
     string styleTr = "";
-
-    protected override void OnInitialized()
-    {
-        if (Tag!=null)
-            if (Tag.Duration!=null && Tag.Duration.Value.TotalHours > 720)
-            {
-                styleTr = "item-table--alert";            
-            }
-    }
 
     void ShowMoreattributes()
     {

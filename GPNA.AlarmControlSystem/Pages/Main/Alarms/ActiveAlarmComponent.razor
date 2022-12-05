@@ -31,7 +31,7 @@
     @if (displayMore || (Tag.Comment!=null && Tag.Comment.Length>0))
     {
         <tr>
-            <td colspan="9" class="p-0 m-0">
+            <td colspan="10" class="p-0 m-0">
                 <input type="text" style="margin:0;padding:5px 10px;width:100%" @bind="Tag.Comment" @bind:event="oninput" @onkeydown="SaveComment">
             </td>                        
         </tr>

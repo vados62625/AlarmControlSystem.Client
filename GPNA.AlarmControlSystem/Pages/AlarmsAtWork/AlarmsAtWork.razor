@@ -1,9 +1,12 @@
-﻿@using LocalDbStorage.Interfaces
-@using LocalDbStorage.Repositories.Models
-@using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms
-@using ActiveAlarmDto = LocalDbStorage.Dto.ActiveAlarmDto
+﻿@page "/alarms-at-work"
+@using GPNA.AlarmControlSystem.Services
+@using LocalDbStorage.Dto
+@using LocalDbStorage.Interfaces
 @using LocalDbStorage.Repositories.Models.Enum
+@using GPNA.AlarmControlSystem.Pages.AlarmsAtWork.Alarms
 
+
+<h3>Задачи</h3>
 <div style="display:flex; justify-content:flex-end; gap: 10px; color: var(--color-typo-primary);">
     <span>Всего: <b>@countAll</b></span>
     <span>Критический: <b>@countUrgent</b></span>
@@ -23,59 +26,62 @@
 </div>
 <div class="table-responsive" style="margin-top:10px;height:780px;overflow-y:auto;border-top: 0.5px solid rgba(0, 65, 102, 0.2);border-bottom: 0.5px solid rgba(0, 65, 102, 0.2);">
     <table class="table table-bordered">
-<thead class="thead-light">
-    <tr>
-	    <th>Дата начала сигнализации</th>
-        <th>Длительность (в часах)</th>
-        <th colspan=2>Таг</th>
-        <th colspan=4>Описание</th>
-        <th>Приоритет 
-            <select @bind="@Priority" @onclick="OnParametersSetAsync">
-                <option value="">Все</option>
-                <option value="@PriorityType.Urgent">Критический</option>
-                <option value="@PriorityType.High">Высокий</option>
-                <option value="@PriorityType.Low">Низкий</option>
-                <option value="@PriorityType.Information">Инфо</option>
-                <option value="@PriorityType.None">Без приорит.</option>                        
-            </select>
-        </th>
-        <th>Уставка/Значение</th>        
-    </tr>            
-</thead>
-<tbody>
+        <thead class="thead-light">
+            <tr>
+                <th>Дата последней сигнализации</th>
+                <th>Время последней сигнализации</th>
+                <th colspan=3>Таг</th>
+                <th colspan=4>Описание</th>
+                <th>Приоритет 
+                    <select @bind="@Priority" @onclick="OnParametersSetAsync">
+                        <option value="">Все</option>
+                        <option value="@PriorityType.Urgent">Критический</option>
+                        <option value="@PriorityType.High">Высокий</option>
+                        <option value="@PriorityType.Low">Низкий</option>
+                        <option value="@PriorityType.Information">Инфо</option>
+                        <option value="@PriorityType.None">Без приорит.</option>                        
+                    </select>
+                </th>
+                <th>Уставка/Значение</th>                
+                <th>В архив</th>
+            </tr>            
+        </thead>
+        <tbody>
+
+            @if(Alarms == null)
+            {
+                <Loader/>
+            }
+            else
+            {
+                foreach (var context in Alarms)
+                {
+                     <AlarmAtWork @key="context.Id" Tag="@context"/>  
+                }                    
+            }
         
-    @if(Alarms == null)
-    {
-        <Loader/>
-    }
-    else
-    {
-        <Virtualize Items="Alarms" OverscanCount="10">           
-            <ActiveAlarmComponent @key="context.Id" Tag="@context"/>            
-        </Virtualize>
-    }
-</tbody>
-</table>
+        </tbody>
+    </table>
 </div>
 
 @code {
-    [Inject] IActiveAlarmService ActiveAlarmService { get; set; } = default!;
+    [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
+    [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
 
-    [Parameter] public List<ActiveAlarmDto>? Alarms { get; set; }
-
+    [Parameter] public List<IncomingAlarmDto>? Alarms { get; set; }
     [Parameter] public PriorityType? Priority { get; set; }
 
-    [CascadingParameter(Name = "From")] public DateTime From { get; set; }
-    [CascadingParameter(Name = "To")] public DateTime To { get; set; }
     int countL, countLL, countH, countHH, countAll, countUrgent, countHigh, countLow, countInfo, countNonePriority, countDiscr,countRSHI,countRSLO,countComms, countNoneState;
 
     protected override async Task OnParametersSetAsync()
     {
-        countH = 0; countHH = 0; countL = 0; countLL = 0; countAll = 0; countUrgent = 0; countHigh = 0; countLow = 0; countInfo = 0; countNonePriority=0; countDiscr = 0; countRSHI = 0; countRSLO = 0; countComms = 0; countNoneState = 0;
+        SpinnerService.Show();
         Alarms = null;
-        var activeAlarms= await ActiveAlarmService.GetAllAlarms();
-        
-	    Alarms = activeAlarms.OrderByDescending(c => c.DateTime).ToList();
+        countH = 0; countHH = 0; countL = 0; countLL = 0; countAll = 0; countUrgent = 0; countHigh = 0; countLow = 0; countInfo = 0; countNonePriority=0; countDiscr = 0; countRSHI = 0; countRSLO = 0; countComms = 0; countNoneState = 0;
+        var incomingAlarms = await IncomingAlarmService.GetAllAlarms();
+        Alarms = incomingAlarms.Where(c => c.StatusAlarm == StatusAlarm.InWork).ToList();       
+
+        Alarms = Alarms.OrderByDescending(c => c.DateTime).ToList();
 
         foreach (var x in Alarms)
         {
@@ -130,11 +136,11 @@
             }
 
             countAll += 1;
-        }        
+        }
 
         if (Priority != null)
         {
-            var alarms = new List<ActiveAlarmDto>();
+            var alarms = new List<IncomingAlarmDto>();
             foreach (var context in Alarms)
             {
                 if (Priority == context.Priority || Priority == null)
@@ -144,5 +150,7 @@
             }
             Alarms = alarms;
         }
+        SpinnerService.Hide();
     }
+
 }

@@ -26,28 +26,19 @@
         </td>
         <td colspan=4 @onclick="ShowMoreAttributes"> @((Tag.Description != null) ? Tag.Description : "N/A") </td>
         <td @onclick="ShowMoreAttributes">@Tag.Priority</td>
-        <td @onclick="ShowMoreAttributes">@((Tag.AlarmLimit != null) ? Tag.AlarmLimit : "N/A") / @((Tag.Value != null) ? Tag.Value : "N/A")</td>              
-        <td class="item-table__count" @onclick="ShowListAlarms">@((IsChildren) ? "" : (List?.Count ?? -1))</td>
-        <td class="item-table__checkbox" @onclick="SendTest"><input class="item-table__checkbox-input" type="checkbox" checked="@(Tag.StatusAlarm==StatusAlarm.InWork)"/></td>
+        <td @onclick="ShowMoreAttributes">@((Tag.AlarmLimit != null) ? Tag.AlarmLimit : "N/A") / @((Tag.Value != null) ? Tag.Value : "N/A")</td>        
+        <td class="item-table__checkbox" @onclick="SendTest"><input class="item-table__checkbox-input" type="checkbox" checked="@(Tag.StatusAlarm==StatusAlarm.Done)"/></td>
     </tr>
     
     @if (displayComment || (Tag.Comment!=null && Tag.Comment.Length>0))
     {
         <tr>
-            <td colspan="13" class="p-0 m-0">
+            <td colspan="12" class="p-0 m-0">
                 <input type="text" style="margin:0;padding:5px 10px;width:100%" @bind="Tag.Comment" @bind:event="oninput" @onkeydown="SaveComment">
             </td>                        
         </tr>
     }
-
-    @if (displayList && List?.Count>1)
-    {
-        for (int i = List.Count-2; i >=0; i--)
-        {
-           <IncomingAlarmComponent Tag="List[i]" IsChildren = "true"/> 
-        }
-        
-    }
+    
 
 } 
 else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМЕНКА")
@@ -62,7 +53,6 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
 {
     [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
 
-    [Parameter] public List<IncomingAlarmDto>? List { get; set; } = new();
     [Parameter] public IncomingAlarmDto? Tag { get; set; }
     [Parameter] public bool IsChildren { get; set; } = false;
 
@@ -70,16 +60,7 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
     bool displayList = false;
 
     protected override void OnInitialized()    
-    {
-        if (List?.Count>0)
-        {
-            if (Tag == null)
-            {
-                Tag = List[List.Count - 1];
-            }  
-            
-            List = List.OrderByDescending(c => c.DateTime).ToList();
-        }        
+    {       
     }
 
     private async Task SaveComment(KeyboardEventArgs e)
@@ -93,26 +74,22 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
 
     private async Task SendTest()
     {
-        if (Tag.StatusAlarm == StatusAlarm.Undefined)
+        if (Tag.StatusAlarm == StatusAlarm.InWork)
         {
-            Tag.StatusAlarm = StatusAlarm.InWork;
+            Tag.StatusAlarm = StatusAlarm.Done;
         }
         else
         {
-            Tag.StatusAlarm = StatusAlarm.Undefined;
+            Tag.StatusAlarm = StatusAlarm.InWork;
         }
+
         await IncomingAlarmService.UpdateAlarm(Tag);
         await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
-
     }
 
     void ShowMoreAttributes()
     {
         displayComment = !displayComment;
     }
-
-    void ShowListAlarms()
-    {
-        displayList = !displayList;
-    }
+    
 }
