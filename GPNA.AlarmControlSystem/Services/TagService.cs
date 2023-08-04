@@ -11,8 +11,8 @@ public class TagService : CrudBase<TagDto>, ITagService
     public TagService(IAlarmControlSystemApiBroker broker) : base(broker, URL)
     { }
     
-    public async Task<Result<PageableCollectionDto<TagDto>>> GetCollection()
+    public async Task<Result<PageableCollectionDto<TagDto>>> GetCollection(int workStationId)
     {
-        return await ApiBroker.Get<PageableCollectionDto<TagDto>>("api/Tags");
+        return await ApiBroker.Get<PageableCollectionDto<TagDto>>($"api/Tags/{workStationId}");
     }
 }
