@@ -1,13 +1,10 @@
 ﻿@page "/"
 @using GPNA.AlarmControlSystem.Services
-@using LocalDbStorage.Repositories.Models
-@using LocalDbStorage.Interfaces
-
-@using System.Text.Json;
+@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Pages.Main.Tables
 @using GPNA.AlarmControlSystem.Pages.Main.Charts
-@using LocalDbStorage.Dto
-@using LocalDbStorage.Repositories.Models.Enum
+
 
 <CascadingValue Name="From" Value="@From">
 <CascadingValue Name="To" Value="@To">

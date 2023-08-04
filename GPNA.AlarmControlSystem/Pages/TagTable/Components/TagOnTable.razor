@@ -2,11 +2,13 @@
 @using GPNA.AlarmControlSystem.Shared.Icons
 @using LocalDbStorage.Repositories.Models
 @using LocalDbStorage.Services
+@using GPNA.AlarmControlSystem.Models.Dto
+@using GPNA.AlarmControlSystem.Models.Enums
 
 
-    <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">        
+<tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">        
         <td colspan=2>
-            @((Tag.State != LocalDbStorage.Repositories.Models.Enum.StateType.none) 
+            @((Tag.State != StateType.none) 
             ? (Tag.TagName + "_" + Tag.State) 
             : (Tag.TagName))
         </td>
@@ -37,11 +39,11 @@
 @code
 {
     [Parameter]
-    public EventCallback<Tag> EditTag { get; set; }
+    public EventCallback<TagDto> EditTag { get; set; }
     [Parameter]
-    public EventCallback<Tag> DeleteTag { get; set; }
+    public EventCallback<TagDto> DeleteTag { get; set; }
 
-    [Parameter] public Tag Tag { get; set; }
+    [Parameter] public TagDto Tag { get; set; }
 
     bool displayMore = false;
     string modificator = "";
@@ -50,16 +52,16 @@
     {
         switch (Tag.Validate)
         {
-            case LocalDbStorage.Repositories.Models.Enum.Validate.NoneCheck:
+            case ValidateType.NoneCheck:
                 modificator = "item-table--normal";
                 break;
-            case LocalDbStorage.Repositories.Models.Enum.Validate.NotValid:
+            case ValidateType.NotValid:
                 modificator = "item-table--alert";
                 break;
-            case LocalDbStorage.Repositories.Models.Enum.Validate.NewTag:
+            case ValidateType.NewTag:
                 modificator = "item-table--warning";
                 break;
-            case LocalDbStorage.Repositories.Models.Enum.Validate.Valid:
+            case ValidateType.Valid:
                 modificator = "";
                 break;
         }

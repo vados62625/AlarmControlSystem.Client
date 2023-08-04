@@ -1,5 +1,4 @@
 using LocalDbStorage.Dto;
-using LocalDbStorage.Repositories.Models;
 
 namespace LocalDbStorage.Interfaces;
 

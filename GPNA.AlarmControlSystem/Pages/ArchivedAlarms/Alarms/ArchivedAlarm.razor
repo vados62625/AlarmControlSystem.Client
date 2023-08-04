@@ -1,8 +1,5 @@
-﻿@using LocalDbStorage.Interfaces
-@using LocalDbStorage.Repositories.Models.Enum
-@using Microsoft.AspNetCore.Components
-@using LocalDbStorage.Repositories.Models
-@using LocalDbStorage.Dto
+﻿@using Microsoft.AspNetCore.Components
+@using GPNA.AlarmControlSystem.Models.Enums
 @inject IJSRuntime JSRuntime
 
 @if(Tag!=null && Tag.TagName!=null && Tag.Description!="ПЕРЕСМЕНКА")
@@ -27,7 +24,7 @@
         <td colspan=4 @onclick="ShowMoreAttributes"> @((Tag.Description != null) ? Tag.Description : "N/A") </td>
         <td @onclick="ShowMoreAttributes">@Tag.Priority</td>
         <td @onclick="ShowMoreAttributes">@((Tag.AlarmLimit != null) ? Tag.AlarmLimit : "N/A") / @((Tag.Value != null) ? Tag.Value : "N/A")</td>        
-        <td class="item-table__checkbox" @onclick="SendTest"><input class="item-table__checkbox-input" type="checkbox" checked="@(Tag.StatusAlarm==StatusAlarm.InWork)"/></td>
+        <td class="item-table__checkbox" @onclick="SendTest"><input class="item-table__checkbox-input" type="checkbox" checked="@(Tag.StatusAlarm==StatusAlarmType.InWork)"/></td>
     </tr>
     
     @if (displayComment || (Tag.Comment!=null && Tag.Comment.Length>0))
@@ -74,13 +71,13 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
 
     private async Task SendTest()
     {
-        if (Tag.StatusAlarm == StatusAlarm.InWork)
+        if (Tag.StatusAlarm == StatusAlarmType.InWork)
         {
-            Tag.StatusAlarm = StatusAlarm.Done;
+            Tag.StatusAlarm = StatusAlarmType.Done;
         }
         else
         {
-            Tag.StatusAlarm = StatusAlarm.InWork;
+            Tag.StatusAlarm = StatusAlarmType.InWork;
         }
 
         await IncomingAlarmService.UpdateAlarm(Tag);

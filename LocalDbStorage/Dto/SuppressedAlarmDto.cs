@@ -1,6 +1,4 @@
-﻿using LocalDbStorage.Repositories.Models.Enum;
-
-namespace LocalDbStorage.Dto;
+﻿namespace LocalDbStorage.Dto;
 
 /// <summary>
 /// Активные сигнализации

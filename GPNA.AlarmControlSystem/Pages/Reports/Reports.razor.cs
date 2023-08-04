@@ -1,9 +1,6 @@
-﻿using GPNA.AlarmControlSystem.Pages.Reports.Charts;
-using GPNA.AlarmControlSystem.Services;
+﻿using GPNA.AlarmControlSystem.Services;
 using LocalDbStorage.Dto;
 using LocalDbStorage.Interfaces;
-using LocalDbStorage.Repositories.Models;
-using LocalDbStorage.Repositories.Models.Enum;
 using Microsoft.AspNetCore.Components;
 
 namespace GPNA.AlarmControlSystem.Pages.Reports

@@ -1,4 +1,3 @@
-using LocalDbStorage.Repositories.Models;
 using ActiveAlarmDto = LocalDbStorage.Dto.ActiveAlarmDto;
 
 namespace LocalDbStorage.Interfaces;

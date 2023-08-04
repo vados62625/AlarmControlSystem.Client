@@ -1,19 +1,13 @@
-using System.Configuration;
-using System.Globalization;
-using GPNA.AlarmControlSystem;
-using GPNA.AlarmControlSystem.Data;
-using LocalDbStorage.Interfaces;
-using LocalDbStorage.Services;
 using Blazored.Modal;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Services;
 
 IConfiguration configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
     .Build();
 
-Int32 result;
+double timeOut = 1000;
+double.TryParse(configuration["ConnectionConfig:AlarmControlSystemWebApi:TimeOut"], out timeOut);
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,37 +17,15 @@ builder.Services
     .AddBlazoredModal()
     .AddScoped<ISpinnerService, SpinnerService>()
     .AddScoped<IBufferAlarmService, BufferAlarmService>()
-    .AddScoped<IActiveAlarmService, ActiveAlarmService>()
-    .AddScoped<IIncomingAlarmService, IncomingAlarmService>()
-    .AddScoped<ISuppressedAlarmService, SuppressedAlarmService>()
-    .AddScoped<IBufferAlarmService, BufferAlarmService>()
+    .AddScoped<IWorkStationService, WorkStationService>()
+    .AddScoped<IUserService, UserService>()
     .AddScoped<ITagService, TagService>();
 
-builder.Services.AddHttpClient<BufferAlarmService>(client =>
+builder.Services.AddHttpClient<IAlarmControlSystemApiBroker, AlarmControlSystemApiBroker>(client =>
 {
-    client.BaseAddress = new Uri(configuration["HttpClientConfig:BaseAddress"]);
+    client.BaseAddress = new Uri(configuration["ConnectionConfig:AlarmControlSystemWebApi:Uri"]);
+    client.Timeout = TimeSpan.FromMilliseconds(timeOut);
 });
-
-builder.Services.AddHttpClient<ActiveAlarmService>(client =>
-{
-    client.BaseAddress = new Uri(configuration["HttpClientConfig:BaseAddress"]);
-});
-
-builder.Services.AddHttpClient<IncomingAlarmService>(client =>
-{
-    client.BaseAddress = new Uri(configuration["HttpClientConfig:BaseAddress"]);
-});
-
-builder.Services.AddHttpClient<SuppressedAlarmService>(client =>
-{
-    client.BaseAddress = new Uri(configuration["HttpClientConfig:BaseAddress"]);
-});
-
-builder.Services.AddHttpClient<TagService>(client =>
-{
-    client.BaseAddress = new Uri(configuration["HttpClientConfig:BaseAddress"]);
-});
-
 
 var app = builder.Build();
 

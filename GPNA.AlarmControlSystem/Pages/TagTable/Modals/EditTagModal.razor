@@ -1,7 +1,7 @@
 ﻿@using GPNA.AlarmControlSystem.Services
-@using LocalDbStorage.Interfaces
-@using LocalDbStorage.Repositories.Models
-@using LocalDbStorage.Repositories.Models.Enum
+@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto
+@using GPNA.AlarmControlSystem.Models.Enums
 
 <div class="simple-form">
 
@@ -116,7 +116,7 @@
     [Inject]
     protected ISpinnerService SpinnerService { get; set; } = default!;
 
-    [Parameter] public Tag Tag { get; set; }
+    [Parameter] public TagDto Tag { get; set; }
 
     private bool IsLoading { get; set; } = false;
     private string Error { get; set; } = "";
@@ -124,7 +124,7 @@
     public async void HandleValidSubmit() 
     {
         SpinnerService.Show();
-        await TagService.UpdateTag(Tag);  
+        await TagService.Update(Tag);  
         SpinnerService.Hide();        
         IsLoading = false;
         StateHasChanged();        

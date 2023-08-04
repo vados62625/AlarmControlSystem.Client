@@ -1,9 +1,9 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
+using GPNA.AlarmControlSystem.Interfaces;
+using GPNA.AlarmControlSystem.Models.Dto;
 using GPNA.AlarmControlSystem.Pages.TagTable.Modals;
 using GPNA.AlarmControlSystem.Services;
-using LocalDbStorage.Interfaces;
-using LocalDbStorage.Repositories.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -19,7 +19,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
         [CascadingParameter]
         public IModalService Modal { get; set; } = default!;
 
-        public List<Tag>? AlarmsTagTable;
+        public List<TagDto>? AlarmsTagTable;
 
         string input = "";
 
@@ -41,7 +41,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
             }
         }
 
-        public async Task EditTag(Tag tag)
+        public async Task EditTag(TagDto tag)
         {
             var options = new ModalOptions();
             options.Class = "modal-2";
@@ -59,7 +59,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
             }
         }
 
-        public async Task DeleteTag(Tag tag)
+        public async Task DeleteTag(TagDto tag)
         {
             ArgumentNullException.ThrowIfNull(tag.Id);
             var parameters = new ModalParameters();
@@ -72,7 +72,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
             if (result.Confirmed)
             {
                 SpinnerService.Show();
-                await TagService.DeleteTag(tag);
+                await TagService.Delete(tag.Id);
                 await GetTags();
                 SpinnerService.Hide();
             }
@@ -90,8 +90,8 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
         {
             SpinnerService.Show();
 
-            var tags = await TagService.GetAllTags();
-            var alarmsTagTable = new List<Tag>(tags);
+            var tags = await TagService.GetList(); // TODO I make PageableCollectionDto
+            var alarmsTagTable = new List<TagDto>(tags.Payload); //TODO need check success
 
             if (input != "")
             {

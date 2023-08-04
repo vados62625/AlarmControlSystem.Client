@@ -1,6 +1,4 @@
-﻿using LocalDbStorage.Repositories.Models.Enum;
-
-namespace LocalDbStorage.Repositories.Base
+﻿namespace LocalDbStorage.Repositories.Base
 {
     public class EntityBase
     {

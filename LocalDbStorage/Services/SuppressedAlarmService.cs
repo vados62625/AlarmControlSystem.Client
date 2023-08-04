@@ -1,9 +1,7 @@
 using AutoMapper;
 using LocalDbStorage.Dto;
-using LocalDbStorage.Extentions;
 using LocalDbStorage.Interfaces;
 using LocalDbStorage.Repositories.Models;
-using LocalDbStorage.Repositories.Models.Enum;
 using Microsoft.Extensions.Logging;
 
 namespace LocalDbStorage.Services;

@@ -1,9 +1,9 @@
 ﻿@page "/alarms-at-work"
 @using GPNA.AlarmControlSystem.Services
-@using LocalDbStorage.Dto
-@using LocalDbStorage.Interfaces
-@using LocalDbStorage.Repositories.Models.Enum
 @using GPNA.AlarmControlSystem.Pages.AlarmsAtWork.Alarms
+@using GPNA.AlarmControlSystem.Models.Enums
+@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
+@using GPNA.AlarmControlSystem.Interfaces
 
 
 <h3>Задачи</h3>
@@ -65,7 +65,7 @@
 </div>
 
 @code {
-    [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
+    [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
     [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
 
     [Parameter] public List<IncomingAlarmDto>? Alarms { get; set; }
@@ -78,8 +78,8 @@
         SpinnerService.Show();
         Alarms = null;
         countH = 0; countHH = 0; countL = 0; countLL = 0; countAll = 0; countUrgent = 0; countHigh = 0; countLow = 0; countInfo = 0; countNonePriority=0; countDiscr = 0; countRSHI = 0; countRSLO = 0; countComms = 0; countNoneState = 0;
-        var incomingAlarms = await IncomingAlarmService.GetAllAlarms();
-        Alarms = incomingAlarms.Where(c => c.StatusAlarm == StatusAlarm.InWork).ToList();       
+        var incomingAlarms = await AlarmService.GetAllAlarms();
+        Alarms = incomingAlarms.Where(c => c.StatusAlarm == StatusAlarmType.InWork).ToList();       
 
         Alarms = Alarms.OrderByDescending(c => c.DateTime).ToList();
 

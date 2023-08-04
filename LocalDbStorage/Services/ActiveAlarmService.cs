@@ -1,9 +1,6 @@
 using AutoMapper;
-using LocalDbStorage.Extentions;
 using LocalDbStorage.Interfaces;
 using LocalDbStorage.Repositories.Models;
-using LocalDbStorage.Repositories.Models.Enum;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using ActiveAlarmDto = LocalDbStorage.Dto.ActiveAlarmDto;
 

@@ -1,8 +1,4 @@
-﻿using LocalDbStorage.Repositories.Base;
-using LocalDbStorage.Repositories.Models;
-
-
-namespace LocalDbStorage.Dto;
+﻿namespace LocalDbStorage.Dto;
 
 /// <summary>
 /// Входящие аварии

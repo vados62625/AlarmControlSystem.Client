@@ -1,5 +1,4 @@
 ﻿using LocalDbStorage.Repositories.Base;
-using LocalDbStorage.Repositories.Models.Enum;
 
 namespace LocalDbStorage.Repositories.Models;
 
