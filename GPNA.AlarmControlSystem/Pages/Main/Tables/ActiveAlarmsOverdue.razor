@@ -1,6 +1,8 @@
 ﻿@using GPNA.AlarmControlSystem.Services
 @using GPNA.AlarmControlSystem.Pages.Main.Alarms
 @using GPNA.AlarmControlSystem.Models.Enums
+@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 
 <div class="table-responsive" style="margin-top:10px;border-top: 0.5px solid rgba(0, 65, 102, 0.2);border-bottom: 0.5px solid rgba(0, 65, 102, 0.2);">
         <table class="table table-bordered">
@@ -41,7 +43,7 @@
 
 
 @code {
-    [Inject] IActiveAlarmService ActiveAlarmService { get; set; } = default!;
+    [Inject] IBufferAlarmService AlarmService { get; set; } = default!;
     [Inject]
     protected ISpinnerService SpinnerService { get; set; } = default!;
 
@@ -58,7 +60,7 @@
     {
         SpinnerService.Show();
         Alarms = new();
-        var activeAlarms= await ActiveAlarmService.GetAllAlarms();
+        var activeAlarms= await AlarmService.GetAllAlarms();
 	    foreach (var alarm in activeAlarms)
         {
             if (alarm!=null &&  (alarm.Duration!=null ? alarm.Duration.Value.TotalHours : 0)  > 72)

@@ -1,5 +1,7 @@
 ﻿@using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms
 @using GPNA.AlarmControlSystem.Models.Enums
+@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 
 <div style="display:flex; justify-content:flex-end; gap: 10px; color: var(--color-typo-primary);">
     <span>Всего: <b>@countAll</b></span>
@@ -56,7 +58,7 @@
 </div>
 
 @code {
-    [Inject] IActiveAlarmService ActiveAlarmService { get; set; } = default!;
+    [Inject] IBufferAlarmService AlarmService { get; set; } = default!;
 
     [Parameter] public List<ActiveAlarmDto>? Alarms { get; set; }
 
@@ -70,7 +72,7 @@
     {
         countH = 0; countHH = 0; countL = 0; countLL = 0; countAll = 0; countUrgent = 0; countHigh = 0; countLow = 0; countInfo = 0; countNonePriority=0; countDiscr = 0; countRSHI = 0; countRSLO = 0; countComms = 0; countNoneState = 0;
         Alarms = null;
-        var activeAlarms= await ActiveAlarmService.GetAllAlarms();
+        var activeAlarms= await AlarmService.GetAllAlarms();
         
 	    Alarms = activeAlarms.OrderByDescending(c => c.DateTime).ToList();
 

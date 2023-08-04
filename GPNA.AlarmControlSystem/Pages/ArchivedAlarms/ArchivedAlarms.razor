@@ -2,6 +2,8 @@
 @using GPNA.AlarmControlSystem.Services
 @using GPNA.AlarmControlSystem.Pages.ArchivedAlarms.Alarms
 @using GPNA.AlarmControlSystem.Models.Enums
+@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 
 
 <h3>Архив</h3>
@@ -63,7 +65,7 @@
 </div>
 
 @code {
-    [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
+    [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
     [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
 
     [Parameter] public List<IncomingAlarmDto>? Alarms { get; set; }
@@ -76,7 +78,7 @@
         SpinnerService.Show();
         Alarms = null;
         countH = 0; countHH = 0; countL = 0; countLL = 0; countAll = 0; countUrgent = 0; countHigh = 0; countLow = 0; countInfo = 0; countNonePriority=0; countDiscr = 0; countRSHI = 0; countRSLO = 0; countComms = 0; countNoneState = 0;
-        var incomingAlarms = await IncomingAlarmService.GetAllAlarms();
+        var incomingAlarms = await AlarmService.GetAllAlarms();
         Alarms = incomingAlarms.Where(c => c.StatusAlarm == StatusAlarmType.Done).ToList();       
 
         Alarms = Alarms.OrderByDescending(c => c.DateTime).ToList();

@@ -1,4 +1,6 @@
-﻿  
+﻿@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
+  
 <div style="min-width:530px;">
         <h3 style="margin-top:50px;text-align: center;">@Title</h3>
         <div class="table-responsive">
@@ -76,7 +78,7 @@
     </div>
 
 @code {
-    [Inject] ISuppressedAlarmService SuppressedAlarmService { get; set; } = null!;
+    [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
 
     [Parameter] public string? Title { get; set; } = "Подавленные сигнализации"; 
     [Parameter] public List<List<IncomingAlarmDto>>? Alarms { get; set; }
@@ -91,7 +93,7 @@
 
     protected override async Task OnInitializedAsync()    
     {
-        var suppressedAlarms= await SuppressedAlarmService.CountOfSuppressedAlarms(1, From, To);
+        var suppressedAlarms= await AlarmService.CountOfSuppressedAlarms(1, From, To);
         int i = 0;
         foreach (var count in suppressedAlarms)
         {

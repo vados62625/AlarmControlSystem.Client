@@ -1,4 +1,6 @@
-﻿  
+﻿@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
+  
 <div style="min-width:530px;">
         <h3 style="margin-top:50px;text-align: center;">@Title</h3>
         <div class="table-responsive">
@@ -75,7 +77,7 @@
     </div>
 
 @code {
-    [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
+    [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
 
     [Parameter] public string? Title { get; set; } = "Входящие сигнализации"; 
     [Parameter] public List<List<IncomingAlarmDto>>? Alarms { get; set; }
@@ -93,7 +95,7 @@
 
 
         //Получить список всех аварий Входящих/Активных/Подавленных за промежуток From - To        
-        var incomingAlarms= await IncomingAlarmService.GetAverageAlarmsByDates(1, From, To);
+        var incomingAlarms= await AlarmService.GetAverageAlarmsByDates(1, From, To);
         int i = 0;
         foreach(var alarm in incomingAlarms)
         {

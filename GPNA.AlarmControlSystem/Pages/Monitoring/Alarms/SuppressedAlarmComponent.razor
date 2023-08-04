@@ -1,4 +1,7 @@
 ﻿@using GPNA.AlarmControlSystem.Models.Enums
+@using Microsoft.AspNetCore.Components
+@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 @inject IJSRuntime JSRuntime
 
 
@@ -36,7 +39,7 @@
 } 
 @code
 {
-    [Inject] ISuppressedAlarmService SuppressedAlarmService { get; set; } = null!;
+    [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
     [Parameter] public SuppressedAlarmDto? Tag { get; set; }
 
     bool displayMore = false;
@@ -61,7 +64,7 @@
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
-            await SuppressedAlarmService.UpdateAlarm(Tag);
+            await AlarmService.UpdateAlarm(Tag);
             await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
         }
     }

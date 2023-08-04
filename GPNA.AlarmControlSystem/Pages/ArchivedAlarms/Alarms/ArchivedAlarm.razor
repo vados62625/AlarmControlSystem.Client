@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components
 @using GPNA.AlarmControlSystem.Models.Enums
+@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 @inject IJSRuntime JSRuntime
 
 @if(Tag!=null && Tag.TagName!=null && Tag.Description!="ПЕРЕСМЕНКА")
@@ -48,7 +50,7 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
 }
 @code
 {
-    [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
+    [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
         
     [Parameter] public IncomingAlarmDto? Tag { get; set; }
     [Parameter] public bool IsChildren { get; set; } = false;
@@ -64,7 +66,7 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
-            await IncomingAlarmService.UpdateAlarm(Tag);
+            await AlarmService.UpdateAlarm(Tag);
             await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
         }
     }
@@ -80,7 +82,7 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
             Tag.StatusAlarm = StatusAlarmType.InWork;
         }
 
-        await IncomingAlarmService.UpdateAlarm(Tag);
+        await AlarmService.UpdateAlarm(Tag);
         await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
 
     }

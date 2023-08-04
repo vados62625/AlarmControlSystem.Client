@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using GPNA.AlarmControlSystem.Services
 @using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Pages.Main.Tables
 @using GPNA.AlarmControlSystem.Pages.Main.Charts
@@ -50,10 +51,8 @@ else
 @code {
     [Parameter] public string? Title { get; set; }
 
-	[Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
-	[Inject] IActiveAlarmService ActiveAlarmService { get; set; } = null!;
-	[Inject] ISuppressedAlarmService SuppressedAlarmService { get; set; } = null!;
-	[Inject] ITagService TagService { get; set; } = null!;
+	[Inject] IBufferAlarmService AlarmService { get; set; } = null!;
+    [Inject] ITagService TagService { get; set; } = null!;
     [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
     [CascadingParameter(Name = "From")] public DateTime From { get; set; }
     [CascadingParameter(Name = "To")] public DateTime To { get; set; }
@@ -87,7 +86,7 @@ else
         CountSensorsDayPriority = new string[3];
         int[] countDayPriority = new int[3];
         int[] countSensorsDayPriority = new int[3];
-        var tags = await IncomingAlarmService.GetAlarmsPerDate(1,From,To);
+        var tags = await AlarmService.GetAlarmsPerDate(1,From,To);
 
         InputAlarms = tags;
 
