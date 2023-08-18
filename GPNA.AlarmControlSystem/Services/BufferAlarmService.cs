@@ -22,9 +22,29 @@ public class BufferAlarmService : IBufferAlarmService
     /// <returns></returns>
     public async Task<Result<PageableCollectionDto<ActiveAlarmDto>>> GetAllActiveAlarms(int workStationId)
     {
-        return await _apiBroker.Get<PageableCollectionDto<ActiveAlarmDto>>($"api/BufferAlarms/GetAllActiveAlarms/{workStationId}");
+        return await _apiBroker.Get<PageableCollectionDto<ActiveAlarmDto>>($"api/ActiveAlarms/GetAllActiveAlarms/{workStationId}");
     }
-    
+
+    /// <summary>
+    /// Получить активные сигнализации в рамках заданного периода
+    /// </summary>
+    /// <param name="workStationId"></param>
+    /// <returns></returns>
+    public async Task<Result<PageableCollectionDto<ActiveAlarmDto>>> GetActiveAlarmsByDates(int workStationId, DateTimeOffset dateTimeStart, DateTimeOffset dateTimeEnd)
+    {
+        return await _apiBroker.Get<PageableCollectionDto<ActiveAlarmDto>>($"api/ActiveAlarms/GetActiveAlarmsByDates/{workStationId}/{dateTimeStart}/{dateTimeEnd}");
+    }
+
+    /// <summary>
+    /// Получить количество активных сигнализаций за дату в рамках заданного периода
+    /// </summary>
+    /// <param name="workStationId"></param>
+    /// <returns></returns>
+    public async Task<Result<CountAlarmsOnDate[]>> GetCountActiveAlarmsByDates(int workStationId, DateTimeOffset dateTimeStart, DateTimeOffset dateTimeEnd)
+    {
+        return await _apiBroker.Get<CountAlarmsOnDate[]>($"api/ActiveAlarms/GetCountActiveAlarmsByDates/{workStationId}/{dateTimeStart}/{dateTimeEnd}");
+    }
+
     /// <summary>
     /// Получить все входящие сигнализации по id АРМ
     /// </summary>
@@ -32,9 +52,19 @@ public class BufferAlarmService : IBufferAlarmService
     /// <returns></returns>
     public async Task<Result<PageableCollectionDto<IncomingAlarmDto>>> GetAllIncomingAlarms(int workStationId)
     {
-        return await _apiBroker.Get<PageableCollectionDto<IncomingAlarmDto>>($"api/BufferAlarms/GetAllIncomingAlarms/{workStationId}");
+        return await _apiBroker.Get<PageableCollectionDto<IncomingAlarmDto>>($"api/IncomingAlarms/GetAllIncomingAlarms/{workStationId}");
     }
-    
+
+    /// <summary>
+    /// Получить входящие сигнализации в рамках заданного периода
+    /// </summary>
+    /// <param name="workStationId"></param>
+    /// <returns></returns>
+    public async Task<Result<PageableCollectionDto<IncomingAlarmDto>>> GetIncomingAlarmsByDates(int workStationId, DateTimeOffset dateTimeStart, DateTimeOffset dateTimeEnd)
+    {
+        return await _apiBroker.Get<PageableCollectionDto<IncomingAlarmDto>>($"api/IncomingAlarms/GetIncomingAlarmsByDates/{workStationId}/{dateTimeStart}/{dateTimeEnd}");
+    }
+
     /// <summary>
     /// Получить все подавленные сигнализации по id АРМ
     /// </summary>
@@ -44,7 +74,28 @@ public class BufferAlarmService : IBufferAlarmService
     {
         return await _apiBroker.Get<PageableCollectionDto<SuppressedAlarmDto>>($"api/BufferAlarms/GetAllSuppressedAlarms/{workStationId}");
     }
-    
+
+
+    /// <summary>
+    /// Получить подавленные сигнализации в рамках заданного периода
+    /// </summary>
+    /// <param name="workStationId"></param>
+    /// <returns></returns>
+    public async Task<Result<PageableCollectionDto<SuppressedAlarmDto>>> GetSuppressedAlarmsByDates(int workStationId, DateTimeOffset dateTimeStart, DateTimeOffset dateTimeEnd)
+    {
+        return await _apiBroker.Get<PageableCollectionDto<SuppressedAlarmDto>>($"api/SuppressedAlarms/GetSuppressedAlarmsByDates/{workStationId}/{workStationId}/{dateTimeStart}/{dateTimeEnd}");
+    }
+
+    /// <summary>
+    /// Получить количество подавленных сигнализаций за дату в рамках заданного периода
+    /// </summary>
+    /// <param name="workStationId"></param>
+    /// <returns></returns>
+    public async Task<Result<CountAlarmsOnDate[]>> GetCountSuppressedAlarmsByDates(int workStationId, DateTimeOffset dateTimeStart, DateTimeOffset dateTimeEnd)
+    {
+        return await _apiBroker.Get<CountAlarmsOnDate[]>($"api/SuppressedAlarms/GetCountSuppressedAlarmsByDates/{workStationId}/{workStationId}/{dateTimeStart}/{dateTimeEnd}");
+    }
+
     //TODO возможно не будет работать, надо проверить
     /// <summary>
     /// Добавить коммент к сигнализации
