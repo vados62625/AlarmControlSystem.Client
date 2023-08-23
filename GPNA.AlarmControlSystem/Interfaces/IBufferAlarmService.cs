@@ -31,4 +31,9 @@ public interface IBufferAlarmService
     Task<Result<BufferAlarmDto>> AddComment(int id, string content);
 
     Task<Result<BufferAlarmDto>> ChangeStatus(int id, StatusAlarmType content);
+
+    Task<List<List<IncomingAlarmDto>>> GetAlarmsPerDate(int idWorkStation, DateTime startDate, DateTime endDate);
+
+    Task<Dictionary<DateTime, List<IncomingAlarmDto>>> GetCountInHour(int idWorkStation, DateTime startDate,
+        DateTime endDate);
 }
