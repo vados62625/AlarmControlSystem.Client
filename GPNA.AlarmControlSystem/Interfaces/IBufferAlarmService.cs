@@ -20,6 +20,9 @@ public interface IBufferAlarmService
     Task<Result<PageableCollectionDto<IncomingAlarmDto>>> GetIncomingAlarmsByDates(int workStationId,
         DateTimeOffset dateTimeStart, DateTimeOffset dateTimeEnd);
 
+    Task<Result<CountAlarmsOnDate[]>> GetCountIncomingAlarmsByDates(int workStationId, DateTimeOffset dateTimeStart,
+        DateTimeOffset dateTimeEnd);
+
     Task<Result<PageableCollectionDto<SuppressedAlarmDto>>> GetAllSuppressedAlarms(int workStationId);
 
     Task<Result<PageableCollectionDto<SuppressedAlarmDto>>> GetSuppressedAlarmsByDates(int workStationId,

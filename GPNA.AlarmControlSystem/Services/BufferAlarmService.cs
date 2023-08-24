@@ -66,6 +66,16 @@ public class BufferAlarmService : IBufferAlarmService
     }
 
     /// <summary>
+    /// Получить количество входящие сигнализаций за дату в рамках заданного периода
+    /// </summary>
+    /// <param name="workStationId"></param>
+    /// <returns></returns>
+    public async Task<Result<CountAlarmsOnDate[]>> GetCountIncomingAlarmsByDates(int workStationId, DateTimeOffset dateTimeStart, DateTimeOffset dateTimeEnd)
+    {
+        return await _apiBroker.Get<CountAlarmsOnDate[]>($"api/IncomingAlarms/GetCountIncomingAlarmsByDates/{workStationId}/{workStationId}/{dateTimeStart}/{dateTimeEnd}");
+    }
+
+    /// <summary>
     /// Получить все подавленные сигнализации по id АРМ
     /// </summary>
     /// <param name="workStationId"></param>
