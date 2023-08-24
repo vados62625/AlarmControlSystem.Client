@@ -32,7 +32,7 @@ public class BufferAlarmService : IBufferAlarmService
     /// <returns></returns>
     public async Task<Result<PageableCollectionDto<ActiveAlarmDto>>> GetActiveAlarmsByDates(int workStationId, DateTimeOffset dateTimeStart, DateTimeOffset dateTimeEnd)
     {
-        return await _apiBroker.Get<PageableCollectionDto<ActiveAlarmDto>>($"api/ActiveAlarms/GetActiveAlarmsByDates/{workStationId}/{dateTimeStart}/{dateTimeEnd}");
+        return await _apiBroker.Get<PageableCollectionDto<ActiveAlarmDto>>($"api/ActiveAlarms/GetActiveAlarmsByDates/{workStationId}/{dateTimeStart:yyyy-MM-dd HH:mm:ss}/{dateTimeEnd:yyyy-MM-dd HH:mm:ss}");
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public class BufferAlarmService : IBufferAlarmService
     /// <returns></returns>
     public async Task<Result<CountAlarmsOnDate[]>> GetCountActiveAlarmsByDates(int workStationId, DateTimeOffset dateTimeStart, DateTimeOffset dateTimeEnd)
     {
-        return await _apiBroker.Get<CountAlarmsOnDate[]>($"api/ActiveAlarms/GetCountActiveAlarmsByDates/{workStationId}/{dateTimeStart}/{dateTimeEnd}");
+        return await _apiBroker.Get<CountAlarmsOnDate[]>($"api/ActiveAlarms/GetCountActiveAlarmsByDates/{workStationId}/{dateTimeStart:yyyy-MM-dd HH:mm:ss}/{dateTimeEnd:yyyy-MM-dd HH:mm:ss}");
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ public class BufferAlarmService : IBufferAlarmService
     /// <returns></returns>
     public async Task<Result<PageableCollectionDto<IncomingAlarmDto>>> GetIncomingAlarmsByDates(int workStationId, DateTimeOffset dateTimeStart, DateTimeOffset dateTimeEnd)
     {
-        return await _apiBroker.Get<PageableCollectionDto<IncomingAlarmDto>>($"api/IncomingAlarms/GetIncomingAlarmsByDates/{workStationId}/{dateTimeStart}/{dateTimeEnd}");
+        return await _apiBroker.Get<PageableCollectionDto<IncomingAlarmDto>>($"api/IncomingAlarms/GetIncomingAlarmsByDates/{workStationId}/{dateTimeStart:yyyy-MM-dd HH:mm:ss}/{dateTimeEnd:yyyy-MM-dd HH:mm:ss}");
     }
 
     /// <summary>
@@ -72,7 +72,7 @@ public class BufferAlarmService : IBufferAlarmService
     /// <returns></returns>
     public async Task<Result<CountAlarmsOnDate[]>> GetCountIncomingAlarmsByDates(int workStationId, DateTimeOffset dateTimeStart, DateTimeOffset dateTimeEnd)
     {
-        return await _apiBroker.Get<CountAlarmsOnDate[]>($"api/IncomingAlarms/GetCountIncomingAlarmsByDates/{workStationId}/{workStationId}/{dateTimeStart}/{dateTimeEnd}");
+        return await _apiBroker.Get<CountAlarmsOnDate[]>($"api/IncomingAlarms/GetCountIncomingAlarmsByDates/{workStationId}/{dateTimeStart:yyyy-MM-dd HH:mm:ss}/{dateTimeEnd:yyyy-MM-dd HH:mm:ss}");
     }
 
     /// <summary>
@@ -93,7 +93,7 @@ public class BufferAlarmService : IBufferAlarmService
     /// <returns></returns>
     public async Task<Result<PageableCollectionDto<SuppressedAlarmDto>>> GetSuppressedAlarmsByDates(int workStationId, DateTimeOffset dateTimeStart, DateTimeOffset dateTimeEnd)
     {
-        return await _apiBroker.Get<PageableCollectionDto<SuppressedAlarmDto>>($"api/SuppressedAlarms/GetSuppressedAlarmsByDates/{workStationId}/{workStationId}/{dateTimeStart}/{dateTimeEnd}");
+        return await _apiBroker.Get<PageableCollectionDto<SuppressedAlarmDto>>($"api/SuppressedAlarms/GetSuppressedAlarmsByDates/{workStationId}/{dateTimeStart:yyyy-MM-dd HH:mm:ss}/{dateTimeEnd:yyyy-MM-dd HH:mm:ss}");
     }
 
     /// <summary>
@@ -103,7 +103,7 @@ public class BufferAlarmService : IBufferAlarmService
     /// <returns></returns>
     public async Task<Result<CountAlarmsOnDate[]>> GetCountSuppressedAlarmsByDates(int workStationId, DateTimeOffset dateTimeStart, DateTimeOffset dateTimeEnd)
     {
-        return await _apiBroker.Get<CountAlarmsOnDate[]>($"api/SuppressedAlarms/GetCountSuppressedAlarmsByDates/{workStationId}/{workStationId}/{dateTimeStart}/{dateTimeEnd}");
+        return await _apiBroker.Get<CountAlarmsOnDate[]>($"api/SuppressedAlarms/GetCountSuppressedAlarmsByDates/{workStationId}/{dateTimeStart:yyyy-MM-dd HH:mm:ss}/{dateTimeEnd:yyyy-MM-dd HH:mm:ss}");
     }
 
     //TODO возможно не будет работать, надо проверить
