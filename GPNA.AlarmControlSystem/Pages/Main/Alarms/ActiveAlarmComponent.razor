@@ -4,11 +4,11 @@
 @using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 @inject IJSRuntime JSRuntime
 
-@if(Tag!=null && Tag.TagName!=null)
+@if(Tag is {TagName: { } })
 {
     <tr class="item-table" @onclick="ShowMoreAttributes" style="cursor:pointer;">        
-        <td>@Tag.DateTime.ToString("d") @Tag.DateTime.ToString("t")</td>
-        <td>@(Tag.Duration.Value.TotalHours.ToString("N") ?? "N/A")</td>        
+        <td>@Tag.DateTimeActivation.ToString("d") @Tag.DateTimeActivation.ToString("t")</td>
+        <td>@(Tag.Duration?.TotalHours.ToString("N") ?? "N/A")</td>        
        
         <td colspan=2>@(Tag.TagName)
             @{
@@ -24,9 +24,9 @@
     
         <td colspan=4>@(Tag.Description ??= "N/A")</td>
         <td>@Tag.Priority</td>
-        <td>@((Tag.AlarmLimit != null) ? Tag.AlarmLimit : "N/A") / @((Tag.Value != null) ? Tag.Value : "N/A")</td>     
+        <td>@(Tag.AlarmLimit ?? "N/A") / @(Tag.Value ?? "N/A")</td>     
     </tr>        
-    @if (displayMore || (Tag.Comment!=null && Tag.Comment.Length>0))
+    @if (_displayMore || Tag.Comment is {Length: > 0 })
     {
         <tr>
             <td colspan="10" class="p-0 m-0">
@@ -41,19 +41,22 @@
 
     [Parameter] public ActiveAlarmDto? Tag { get; set; } = new ActiveAlarmDto();
 
-    bool displayMore = false;
+    bool _displayMore = false;
 
     void ShowMoreAttributes()
     {
-        displayMore = !displayMore;
+        _displayMore = !_displayMore;
     }
 
     private async Task SaveComment(KeyboardEventArgs e)
     {
-        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        if (e.Code is "Enter" or "NumpadEnter")
         {
-            await AlarmService.UpdateAlarm(Tag);
-            await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
+            if (Tag?.Comment != null)
+            {
+                await AlarmService.AddComment(Tag.Id, Tag.Comment);
+                await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
+            }
         }
     }
 }

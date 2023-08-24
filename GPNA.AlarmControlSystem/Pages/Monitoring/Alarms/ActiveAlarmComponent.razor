@@ -4,18 +4,18 @@
 @using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 @inject IJSRuntime JSRuntime
 
-@if(Tag!=null && Tag.TagName!=null)
+@if(Tag is {TagName: { } })
 {
     <tr class="item-table" @onclick="ShowMoreattributes" style="cursor:pointer;">        
-        <td>@Tag.DateTime.ToString("d") @Tag.DateTime.ToString("t")</td>
-        <td class="@styleTr">@(Tag.Duration.Value.TotalHours.ToString("N") ?? "N/A")</td>        
+        <td>@Tag.DateTimeActivation.ToString("d") @Tag.DateTimeActivation.ToString("t")</td>
+        <td class="@_styleTr">@(Tag.Duration.Value.TotalHours.ToString("N") ?? "N/A")</td>        
        
         <td colspan=2>@(Tag.TagName)
             @{
                 string color = "";
-                if (Tag.State == StateType.HH || Tag.State == StateType.LL)
+                if (Tag.State is StateType.HH or StateType.LL)
                 { color = "#EB3333"; }                    
-                if (Tag.State == StateType.H || Tag.State == StateType.L)
+                if (Tag.State is StateType.H or StateType.L)
                 { color = "#F38B01"; } 
             }
             @if (Tag.State != StateType.none)
@@ -24,10 +24,10 @@
     
         <td colspan=4>@(Tag.Description ??= "N/A")</td>
         <td>@Tag.Priority</td>
-        <td>@((Tag.AlarmLimit != null) ? Tag.AlarmLimit : "N/A") / @((Tag.Value != null) ? Tag.Value : "N/A")</td>     
+        <td>@(Tag.AlarmLimit ?? "N/A") / @(Tag.Value ?? "N/A")</td>     
     </tr> 
     
-    @if (displayMore || (Tag.Comment!=null && Tag.Comment.Length>0))
+    @if (_displayMore || Tag.Comment is {Length: > 0 })
     {
         <tr>
             <td colspan="10" class="p-0 m-0">
@@ -42,30 +42,32 @@
 
     [Parameter] public ActiveAlarmDto? Tag { get; set; }
 
-    bool displayMore = false;
-    string styleTr = "";
+    bool _displayMore = false;
+    string _styleTr = "";
 
 
     protected override void OnInitialized()
     {
-        if (Tag!=null)
-            if (Tag.Duration!=null && Tag.Duration.Value.TotalHours > 72)
-            {
-                styleTr = "item-table--alert";
-            }
+        if (Tag?.Duration != null && Tag.Duration.Value.TotalHours > 72)
+        {
+            _styleTr = "item-table--alert";
+        }
     }
 
     void ShowMoreattributes()
     {
-        displayMore = !displayMore;
+        _displayMore = !_displayMore;
     }
 
     private async Task SaveComment(KeyboardEventArgs e)
     {
-        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        if (e.Code is "Enter" or "NumpadEnter")
         {
-            await AlarmService.UpdateAlarm(Tag);
-            await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
+            if (Tag?.Comment != null)
+            {
+                await AlarmService.AddComment(Tag.Id, Tag.Comment);
+                await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
+            }
         }
     }
 }

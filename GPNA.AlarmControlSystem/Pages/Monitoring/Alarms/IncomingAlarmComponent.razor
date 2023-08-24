@@ -4,33 +4,33 @@
 @using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 @inject IJSRuntime JSRuntime
 
-@if(Tag!=null && Tag.TagName!=null && Tag.Description!="ПЕРЕСМЕНКА")
+@if(Tag!=null && Tag.Description!="ПЕРЕСМЕНКА")
 {    
     string bgColor = ""; if (IsChildren) { bgColor = "rgba(0, 32, 51, 0.05);"; } 
     
     <tr class="item-table" style="cursor:pointer; background-color: @bgColor;">        
-        <td @onclick="ShowMoreAttributes">@Tag.DateTime.ToString("d")</td>
-        <td @onclick="ShowMoreAttributes">@Tag.DateTime.ToString("t")</td>
+        <td @onclick="ShowMoreAttributes">@Tag.DateTimeActivation.ToString("d")</td>
+        <td @onclick="ShowMoreAttributes">@Tag.DateTimeActivation.ToString("t")</td>
 
         <td colspan=3 @onclick="ShowMoreAttributes">@(Tag.TagName)
             @{
                 string color = "";
-                if (Tag.State == StateType.HH || Tag.State == StateType.LL)
+                if (Tag.State is StateType.HH or StateType.LL)
                 { color = "#EB3333"; }                    
-                if (Tag.State == StateType.H || Tag.State == StateType.L)
+                if (Tag.State is StateType.H or StateType.L)
                 { color = "#F38B01"; } 
             }
             @if (Tag.State != StateType.none)
             { <span >_<b style="color: @color;">@Tag.State</b></span> }
         </td>
-        <td colspan=4 @onclick="ShowMoreAttributes"> @((Tag.Description != null) ? Tag.Description : "N/A") </td>
+        <td colspan=4 @onclick="ShowMoreAttributes"> @(Tag.Description ?? "N/A") </td>
         <td @onclick="ShowMoreAttributes">@Tag.Priority</td>
-        <td @onclick="ShowMoreAttributes">@((Tag.AlarmLimit != null) ? Tag.AlarmLimit : "N/A") / @((Tag.Value != null) ? Tag.Value : "N/A")</td>              
+        <td @onclick="ShowMoreAttributes">@(Tag.AlarmLimit ?? "N/A") / @(Tag.Value ?? "N/A")</td>              
         <td class="item-table__count" @onclick="ShowListAlarms">@((IsChildren) ? "" : (List?.Count ?? -1))</td>
         <td class="item-table__checkbox" @onclick="SendTest"><input class="item-table__checkbox-input" type="checkbox" checked="@(Tag.StatusAlarm==StatusAlarmType.InWork)"/></td>
     </tr>
     
-    @if (displayComment || (Tag.Comment!=null && Tag.Comment.Length>0))
+    @if (displayComment || Tag.Comment is {Length: > 0 })
     {
         <tr>
             <td colspan="13" class="p-0 m-0">
@@ -52,8 +52,8 @@
 else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМЕНКА")
 {
     <tr class="item-table">        
-        <td>@Tag.DateTime.ToString("d")</td>
-        <td>@Tag.DateTime.ToString("t")</td>        
+        <td>@Tag.DateTimeActivation.ToString("d")</td>
+        <td>@Tag.DateTimeActivation.ToString("t")</td>        
         <td colspan=11 style="text-align:center;font-weight:700;letter-spacing:10px;">@Tag.Description</td>              
     </tr>   
 }
@@ -77,31 +77,31 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
                 Tag = List[List.Count - 1];
             }  
             
-            List = List.OrderByDescending(c => c.DateTime).ToList();
+            List = List.OrderByDescending(c => c.DateTimeActivation).ToList();
         }        
     }
 
     private async Task SaveComment(KeyboardEventArgs e)
     {
-        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        if (e.Code is "Enter" or "NumpadEnter")
         {
-            await AlarmService.UpdateAlarm(Tag);
-            await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
+            if (Tag?.Comment != null)
+            {
+                await AlarmService.AddComment(Tag.Id, Tag.Comment);
+                await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
+            }
         }
     }
 
     private async Task SendTest()
     {
-        if (Tag.StatusAlarm == StatusAlarmType.Undefined)
+        if (Tag != null)
         {
-            Tag.StatusAlarm = StatusAlarmType.InWork;
+            Tag.StatusAlarm = Tag is {StatusAlarm: StatusAlarmType.Undefined } ? StatusAlarmType.InWork : StatusAlarmType.Undefined;
+            await AlarmService.ChangeStatus(Tag.Id, Tag.StatusAlarm);
+            await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
         }
-        else
-        {
-            Tag.StatusAlarm = StatusAlarmType.Undefined;
-        }
-        await AlarmService.UpdateAlarm(Tag);
-        await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
+        
 
     }
 

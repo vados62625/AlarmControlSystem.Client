@@ -78,23 +78,28 @@
         Alarms = null;
         countH = 0; countHH = 0; countL = 0; countLL = 0; countAll = 0; countUrgent = 0; countHigh = 0; countLow = 0; countInfo = 0; countNonePriority=0; countDiscr = 0; countRSHI = 0; countRSLO = 0; countComms = 0; countNoneState = 0;
         var incomingAlarms= await AlarmService.GetAlarmsPerDate(1, From, To);
+        if (incomingAlarms == null)
+        {
+            Alarms = new List<List<IncomingAlarmDto>>();
+            return;
+        }
         var from = new DateTime(From.Year, From.Month, From.Day, 8, 0, 0);
 
         for (int i = 0; from<To; i++ )
         {
             var list = new List<IncomingAlarmDto>();
-            list.Add(new IncomingAlarmDto() { DateTime = from, Description = "ПЕРЕСМЕНКА", Id=i,Priority=PriorityType.None });
+            list.Add(new IncomingAlarmDto() { DateTimeActivation = from, Description = "ПЕРЕСМЕНКА", Id=i,Priority=PriorityType.None });
             incomingAlarms.Add(list);
             countAll -= 1;
             countNonePriority -= 1;
             from = from.AddHours(12);
         }
 
-        Alarms = incomingAlarms.OrderByDescending(c => c[c.Count-1].DateTime).ToList();
+        Alarms = incomingAlarms.OrderByDescending(c => c[^1].DateTimeActivation).ToList();
 
         foreach (var x in Alarms)
         {
-            switch (x[x.Count - 1].State) 
+            switch (x[^1].State) 
             {
                 case StateType.H:
                     countH += x.Count;
@@ -122,10 +127,13 @@
                     break; 
                 case StateType.none:
                     countNoneState += x.Count;
-                    break; 
+                    break;
+                default:
+                    countNoneState += x.Count;
+                    break;
             }
 
-            switch (x[x.Count - 1].Priority) 
+            switch (x[^1].Priority) 
             {
                 case PriorityType.Low:
                     countLow += x.Count;
@@ -141,7 +149,10 @@
                     break; 
                 case PriorityType.None:
                     countNonePriority += x.Count;
-                    break; 
+                    break;
+                default:
+                    countNonePriority += x.Count;
+                    break;
             }
 
             countAll += x.Count;
@@ -149,15 +160,7 @@
 
         if (Priority != null)
         {
-            var alarms = new List<List<IncomingAlarmDto>>();
-            foreach (var context in Alarms)
-            {
-                if (Priority == context[context.Count - 1].Priority || Priority == null)
-                {
-                    alarms.Add(context);
-                }
-            }
-            Alarms = alarms;
+            Alarms = Alarms.Where(context => Priority == context[^1].Priority || Priority == null).ToList();
         }
     }
 }

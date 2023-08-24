@@ -54,36 +54,36 @@
     [CascadingParameter(Name = "From")] public DateTime From { get; set; }
     [CascadingParameter(Name = "To")] public DateTime To { get; set; }
 
-
+    int _workStation = 1;
 
     protected override async Task OnParametersSetAsync()
     {
         SpinnerService.Show();
         Alarms = new();
-        var activeAlarms= await AlarmService.GetAllAlarms();
-	    foreach (var alarm in activeAlarms)
+        var result = await AlarmService.GetAllActiveAlarms(_workStation);
+        if (result.Success)
         {
-            if (alarm!=null &&  (alarm.Duration!=null ? alarm.Duration.Value.TotalHours : 0)  > 72)
+            var activeAlarms = result.Payload.Items;
+            foreach (var alarm in activeAlarms.Where(alarm => (alarm.Duration?.TotalHours ?? 0) > 72))
             {
                 Alarms.Add(alarm);
             }
-        }        
 
-        if (Priority != null)
-        {
-            var alarms = new List<ActiveAlarmDto>();
-            foreach (var context in Alarms)
+            if (Priority != null)
             {
-                if (Priority == context.Priority || Priority == null)
+                var alarms = new List<ActiveAlarmDto>();
+                foreach (var context in Alarms)
                 {
-                    alarms.Add(context);
+                    if (Priority == context.Priority || Priority == null)
+                    {
+                        alarms.Add(context);
+                    }
                 }
+                Alarms = alarms;
             }
-            Alarms = alarms;
-        }
 
-        if (Alarms!=null)
-            Alarms = Alarms.OrderByDescending(c => c.DateTime).ToList();
+            Alarms = Alarms?.OrderByDescending(c => c.DateTimeActivation).ToList();
+        }
 
         SpinnerService.Hide();
     }

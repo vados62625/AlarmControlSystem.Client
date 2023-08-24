@@ -4,32 +4,33 @@
 @using GPNA.AlarmControlSystem.Interfaces
 @inject IJSRuntime JSRuntime
 
-@if(Tag!=null && Tag.TagName!=null && Tag.Description!="ПЕРЕСМЕНКА")
+@if(Tag!=null && Tag.Description!="ПЕРЕСМЕНКА")
 {    
-    string bgColor = ""; if (IsChildren) { bgColor = "rgba(0, 32, 51, 0.05);"; } 
+    var bgColor = ""; if (IsChildren) { bgColor = "rgba(0, 32, 51, 0.05);"; } 
     
     <tr class="item-table" style="cursor:pointer; background-color: @bgColor;">        
-        <td @onclick="ShowMoreAttributes">@Tag.DateTime.ToString("d")</td>
-        <td @onclick="ShowMoreAttributes">@Tag.DateTime.ToString("t")</td>
+        <td @onclick="ShowMoreAttributes">@Tag.EndDate.ToString("d")</td>
+        <td @onclick="ShowMoreAttributes">@Tag.EndDate.ToString("t")</td>
 
         <td colspan=3 @onclick="ShowMoreAttributes">@(Tag.TagName)
             @{
-                string color = "";
-                if (Tag.State == StateType.HH || Tag.State == StateType.LL)
-                { color = "#EB3333"; }                    
-                if (Tag.State == StateType.H || Tag.State == StateType.L)
-                { color = "#F38B01"; } 
+                var color = Tag.State switch
+                {
+                    StateType.HH or StateType.LL => "#EB3333",
+                    StateType.H or StateType.L => "#F38B01",
+                    _ => ""
+                    };
             }
             @if (Tag.State != StateType.none)
             { <span >_<b style="color: @color;">@Tag.State</b></span> }
         </td>
-        <td colspan=4 @onclick="ShowMoreAttributes"> @((Tag.Description != null) ? Tag.Description : "N/A") </td>
+        <td colspan=4 @onclick="ShowMoreAttributes"> @(Tag.Description ?? "N/A") </td>
         <td @onclick="ShowMoreAttributes">@Tag.Priority</td>
-        <td @onclick="ShowMoreAttributes">@((Tag.AlarmLimit != null) ? Tag.AlarmLimit : "N/A") / @((Tag.Value != null) ? Tag.Value : "N/A")</td>        
+        <td @onclick="ShowMoreAttributes">@(Tag.AlarmLimit ?? "N/A") / @(Tag.Value ?? "N/A")</td>        
         <td class="item-table__checkbox" @onclick="SendTest"><input class="item-table__checkbox-input" type="checkbox" checked="@(Tag.StatusAlarm==StatusAlarmType.Done)"/></td>
     </tr>
     
-    @if (displayComment || (Tag.Comment!=null && Tag.Comment.Length>0))
+    @if (_displayComment || Tag.Comment is {Length: > 0 })
     {
         <tr>
             <td colspan="12" class="p-0 m-0">
@@ -40,11 +41,11 @@
     
 
 } 
-else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМЕНКА")
+else if (Tag is {Description: "ПЕРЕСМЕНКА" })
 {
     <tr class="item-table">        
-        <td>@Tag.DateTime.ToString("d")</td>
-        <td>@Tag.DateTime.ToString("t")</td>        
+        <td>@Tag.EndDate.ToString("d")</td>
+        <td>@Tag.EndDate.ToString("t")</td>        
         <td colspan=11 style="text-align:center;font-weight:700;letter-spacing:10px;">@Tag.Description</td>              
     </tr>   
 }
@@ -53,10 +54,10 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
     [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
 
     [Parameter] public IncomingAlarmDto? Tag { get; set; }
-    [Parameter] public bool IsChildren { get; set; } = false;
+    [Parameter] public bool IsChildren { get; set; }
 
-    bool displayComment = false;
-    bool displayList = false;
+    bool _displayComment = false;
+    bool _displayList = false;
 
     protected override void OnInitialized()    
     {       
@@ -66,29 +67,25 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
     {
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
-            await AlarmService.UpdateAlarm(Tag);
+            if (Tag?.Comment != null) 
+                await AlarmService.AddComment(Tag.Id, Tag.Comment);
             await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
         }
     }
 
     private async Task SendTest()
     {
-        if (Tag.StatusAlarm == StatusAlarmType.InWork)
+        if (Tag != null)
         {
-            Tag.StatusAlarm = StatusAlarmType.Done;
+            Tag.StatusAlarm = Tag is {StatusAlarm: StatusAlarmType.InWork } ? StatusAlarmType.Done : StatusAlarmType.InWork;
+            await AlarmService.ChangeStatus(Tag.Id, Tag.StatusAlarm);
         }
-        else
-        {
-            Tag.StatusAlarm = StatusAlarmType.InWork;
-        }
-
-        await AlarmService.UpdateAlarm(Tag);
         await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
     }
 
     void ShowMoreAttributes()
     {
-        displayComment = !displayComment;
+        _displayComment = !_displayComment;
     }
     
 }

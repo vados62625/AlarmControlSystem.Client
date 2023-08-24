@@ -1,13 +1,14 @@
-﻿using GPNA.AlarmControlSystem.Services;
-using LocalDbStorage.Dto;
-using LocalDbStorage.Interfaces;
+﻿using GPNA.AlarmControlSystem.Interfaces;
+using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
+using GPNA.AlarmControlSystem.Models.Enums;
+using GPNA.AlarmControlSystem.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace GPNA.AlarmControlSystem.Pages.Reports
 {
     public partial class Reports : ComponentBase
     {
-        [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
+        [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
         [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
 
         [Parameter] public DateTime From { get; set; }
@@ -35,7 +36,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
             StateHasChanged();
             GeneralCount = 0;
             AverageUrgent = SetAverageUrgent().Result;
-            IncomingAlarms = await IncomingAlarmService.GetCountInHour(1, From, To);
+            IncomingAlarms = await AlarmService.GetCountInHour(1, From, To); //TODO: ?
 
             foreach (var alarmsOnHour in IncomingAlarms)
             {
@@ -63,7 +64,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
 
         async Task<int> SetAverageUrgent()
         {
-            var incomingAlarms = await IncomingAlarmService.GetCountInHour(1, DateTime.Now.AddHours(-720), DateTime.Now);
+            var incomingAlarms = await AlarmService.GetCountInHour(1, DateTime.Now.AddHours(-720), DateTime.Now);
             int countUrgent = 0;
             foreach (var alarmsOnHour in incomingAlarms)
             {
@@ -76,6 +77,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
                         }
                     }
             }
+            
             if (incomingAlarms.Count > 0)
                 return countUrgent / incomingAlarms.Count;
             return -1;

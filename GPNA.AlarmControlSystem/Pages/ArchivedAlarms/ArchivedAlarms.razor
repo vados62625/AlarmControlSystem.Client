@@ -71,6 +71,7 @@
     [Parameter] public List<IncomingAlarmDto>? Alarms { get; set; }
     [Parameter] public PriorityType? Priority { get; set; }
 
+    int _workStation = 1;
     int countL, countLL, countH, countHH, countAll, countUrgent, countHigh, countLow, countInfo, countNonePriority, countDiscr,countRSHI,countRSLO,countComms, countNoneState;
 
     protected override async Task OnParametersSetAsync()
@@ -78,77 +79,73 @@
         SpinnerService.Show();
         Alarms = null;
         countH = 0; countHH = 0; countL = 0; countLL = 0; countAll = 0; countUrgent = 0; countHigh = 0; countLow = 0; countInfo = 0; countNonePriority=0; countDiscr = 0; countRSHI = 0; countRSLO = 0; countComms = 0; countNoneState = 0;
-        var incomingAlarms = await AlarmService.GetAllAlarms();
-        Alarms = incomingAlarms.Where(c => c.StatusAlarm == StatusAlarmType.Done).ToList();       
-
-        Alarms = Alarms.OrderByDescending(c => c.DateTime).ToList();
-
-        foreach (var x in Alarms)
+        var result = await AlarmService.GetAllIncomingAlarms(_workStation);
+        if (result.Success)
         {
-            switch (x.State) 
-            {
-                case StateType.H:
-                    countH += 1;
-                    break; 
-                case StateType.HH:
-                    countHH += 1;
-                    break; 
-                case StateType.L:
-                    countL += 1;
-                    break; 
-                case StateType.LL:
-                    countLL += 1;
-                    break; 
-                case StateType.Discr:
-                    countDiscr += 1;
-                    break; 
-                case StateType.RSHI:
-                    countRSHI += 1;
-                    break; 
-                case StateType.RSLO:
-                    countRSLO += 1;
-                    break; 
-                case StateType.Comms:
-                    countComms += 1;
-                    break; 
-                case StateType.none:
-                    countNoneState += 1;
-                    break; 
-            }
+            var incomingAlarms = result.Payload.Items;
+            Alarms = incomingAlarms.Where(c => c.StatusAlarm == StatusAlarmType.Done).ToList();
+            Alarms = Alarms.OrderByDescending(c => c.EndDate).ToList();
 
-            switch (x.Priority) 
+            foreach (var x in Alarms)
             {
-                case PriorityType.Low:
-                    countLow += 1;
-                    break; 
-                case PriorityType.High:
-                    countHigh += 1;
-                    break; 
-                case PriorityType.Urgent:
-                    countUrgent += 1;
-                    break; 
-                case PriorityType.Information:
-                    countInfo += 1;
-                    break; 
-                case PriorityType.None:
-                    countNonePriority += 1;
-                    break; 
-            }
-
-            countAll += 1;
-        }
-
-        if (Priority != null)
-        {
-            var alarms = new List<IncomingAlarmDto>();
-            foreach (var context in Alarms)
-            {
-                if (Priority == context.Priority || Priority == null)
+                switch (x.State)
                 {
-                    alarms.Add(context);
+                    case StateType.H:
+                        countH += 1;
+                        break;
+                    case StateType.HH:
+                        countHH += 1;
+                        break;
+                    case StateType.L:
+                        countL += 1;
+                        break;
+                    case StateType.LL:
+                        countLL += 1;
+                        break;
+                    case StateType.Discr:
+                        countDiscr += 1;
+                        break;
+                    case StateType.RSHI:
+                        countRSHI += 1;
+                        break;
+                    case StateType.RSLO:
+                        countRSLO += 1;
+                        break;
+                    case StateType.Comms:
+                        countComms += 1;
+                        break;
+                    case StateType.none:
+                        countNoneState += 1;
+                        break;
                 }
+
+                switch (x.Priority)
+                {
+                    case PriorityType.Low:
+                        countLow += 1;
+                        break;
+                    case PriorityType.High:
+                        countHigh += 1;
+                        break;
+                    case PriorityType.Urgent:
+                        countUrgent += 1;
+                        break;
+                    case PriorityType.Information:
+                        countInfo += 1;
+                        break;
+                    case PriorityType.None:
+                        countNonePriority += 1;
+                        break;
+                }
+
+                countAll += 1;
             }
-            Alarms = alarms;
+
+            if (Priority != null)
+            {
+                var alarms = Alarms.Where(context => Priority == context.Priority || Priority == null).ToList();
+                Alarms = alarms;
+            }
         }
         SpinnerService.Hide();
     }

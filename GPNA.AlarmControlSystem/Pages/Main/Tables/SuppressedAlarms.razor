@@ -93,31 +93,31 @@
 
     protected override async Task OnInitializedAsync()    
     {
-        var suppressedAlarms= await AlarmService.CountOfSuppressedAlarms(1, From, To);
-        int i = 0;
-        foreach (var count in suppressedAlarms)
+        var suppressedAlarms= await AlarmService.GetCountSuppressedAlarmsByDates(1, From, To); //TODO: настороить фильтр по дате
+        if (!suppressedAlarms.Success) return;
+        
+        var i = 0;
+        foreach (var count in suppressedAlarms.Payload)
         {
-            if(count.Key == From.AddDays(i))
-            {
-                AlarmsOnDay.Add(count.Value);
-                i++;
-            }
+            if (count.DateTime != From.AddDays(i)) continue;
+            AlarmsOnDay.Add(count.Count);
+            i++;
         }
         
     }
 
-    string GetDayString(int dayofweek)
+    string GetDayString(int dayOfWeek)
     {
-        switch(dayofweek)
-        {      
-            case 0: return "Вс";
-            case 1: return "Пн"; 
-            case 2: return "Вт";  
-            case 3: return "Ср";
-            case 4: return "Чт";
-            case 5: return "Пт";
-            case 6: return "Сб";
-        }
-        return "";
+        return dayOfWeek switch
+        {
+            0 => "Вс",
+            1 => "Пн",
+            2 => "Вт",
+            3 => "Ср",
+            4 => "Чт",
+            5 => "Пт",
+            6 => "Сб",
+            _ => ""
+            };
     }
 }

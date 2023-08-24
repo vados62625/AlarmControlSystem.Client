@@ -20,15 +20,15 @@
             <tbody>
                 <tr>
                     <th colspan=2>УПНГ</th>
-                    @if (AlarmsOnDay != null && AlarmsOnDay.Count > 0)
+                    @if (_alarmsOnDay != null && _alarmsOnDay.Count > 0)
                     {
-                        <td>@AlarmsOnDay[0].ToString()</td>
-                        <td>@AlarmsOnDay[1].ToString()</td>
-                        <td>@AlarmsOnDay[2].ToString()</td>
-                        <td>@AlarmsOnDay[3].ToString()</td>
-                        <td>@AlarmsOnDay[4].ToString()</td>
-                        <td>@AlarmsOnDay[5].ToString()</td>
-                        <td>@AlarmsOnDay[6].ToString()</td>
+                        <td>@_alarmsOnDay[0].ToString()</td>
+                        <td>@_alarmsOnDay[1].ToString()</td>
+                        <td>@_alarmsOnDay[2].ToString()</td>
+                        <td>@_alarmsOnDay[3].ToString()</td>
+                        <td>@_alarmsOnDay[4].ToString()</td>
+                        <td>@_alarmsOnDay[5].ToString()</td>
+                        <td>@_alarmsOnDay[6].ToString()</td>
                     }
                     else
                     {
@@ -80,45 +80,38 @@
     [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
 
     [Parameter] public string? Title { get; set; } = "Входящие сигнализации"; 
-    [Parameter] public List<List<IncomingAlarmDto>>? Alarms { get; set; }
 
     [CascadingParameter(Name = "From")] public DateTime From { get; set; }
     [CascadingParameter(Name = "To")] public DateTime To { get; set; }
 
-    public List<double> AlarmsOnDay = new List<double>(7);
-
-
-
+    private List<double> _alarmsOnDay = new List<double>(7);
 
     protected override async Task OnInitializedAsync()    
     {
-
-
         //Получить список всех аварий Входящих/Активных/Подавленных за промежуток From - To        
-        var incomingAlarms= await AlarmService.GetAverageAlarmsByDates(1, From, To);
-        int i = 0;
-        foreach(var alarm in incomingAlarms)
+        var incomingAlarms= await AlarmService.GetCountIncomingAlarmsByDates(1, From, To);
+        if(!incomingAlarms.Success) return;
+        var i = 0;
+        foreach(var alarm in incomingAlarms.Payload)
         {
-            if (From.AddDays(i).Date == alarm.Key.Date)
-            {
-                AlarmsOnDay.Add(alarm.Value);
-                i++;
-            }
+            if (From.AddDays(i).Date != alarm.DateTime) continue;
+            _alarmsOnDay.Add(alarm.Count);
+            i++;
         }
     }
 
-    string GetDayString(int dayofweek)
+    string GetDayString(int dayOfWeek)
     {
-        switch(dayofweek)
-        {      
-            case 0: return "Вс";
-            case 1: return "Пн"; 
-            case 2: return "Вт";  
-            case 3: return "Ср";
-            case 4: return "Чт";
-            case 5: return "Пт";
-            case 6: return "Сб";
-        }
-        return "";
+        return dayOfWeek switch
+        {
+            0 => "Вс",
+            1 => "Пн",
+            2 => "Вт",
+            3 => "Ср",
+            4 => "Чт",
+            5 => "Пт",
+            6 => "Сб",
+            _ => ""
+            };
     }
 }

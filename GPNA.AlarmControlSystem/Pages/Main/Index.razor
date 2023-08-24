@@ -9,12 +9,7 @@
 
 <CascadingValue Name="From" Value="@From">
 <CascadingValue Name="To" Value="@To">
-@if (InputAlarms == null)
-{
-    <Loader/>
-}
-else
-{
+
 <div style="display:flex;justify-content:space-evenly; margin-top:50px;">
     <div style="display:flex;flex-direction:column;align-content:center;">
         <h4>Количество сигнализаций за @To.ToString("M")</h4>
@@ -43,7 +38,7 @@ else
 <h4>Подавленные сигнализации (Просроченные)</h4>
 <SuppressedAlarmsOverdue/>    
 
-}
+
 </CascadingValue>
 </CascadingValue>
 
@@ -65,55 +60,46 @@ else
     int CountSensorsDay = 0;
 
     public List<List<IncomingAlarmDto>>? InputAlarms;
-
-    void SelectPriority()
-    {
-
-    }
-
+    int _workStation = 1;
 
     protected override async Task OnInitializedAsync()
     {
 	    SpinnerService.Show();
 	    To = DateTime.Now.AddDays(-1);
-        To = new DateTime(To.Year , To.Month, To.Day, 23,59,59);
-        From = DateTime.Now.AddDays(-7);
+        // To = new DateTime(To.Year , To.Month, To.Day, 23,59,59);
+        To = new DateTime(2023 , 3, 9, 23,59,59);
+        // From = DateTime.Now.AddDays(-7);
+        From = To.AddDays(-7);
         From = new DateTime(From.Year , From.Month, From.Day, 0,0,0);
 
-
-        InputAlarms = null;
         CountDayPriority = new string[3];
         CountSensorsDayPriority = new string[3];
         int[] countDayPriority = new int[3];
         int[] countSensorsDayPriority = new int[3];
-        var tags = await AlarmService.GetAlarmsPerDate(1,From,To);
+        var inputAlarms = await AlarmService.GetAlarmsPerDate(1,From,To);
 
-        InputAlarms = tags;
-
-        if(InputAlarms!=null)
-            foreach(var c in InputAlarms)
+        if(inputAlarms!=null)
+            foreach(var c in inputAlarms)
             {
-                if(c[0].DateTime.Date == To.Date && c[0].Priority != PriorityType.Information && c[0].Priority != PriorityType.None)
+                if (c[0].DateTimeActivation.Date != To.Date || c[0].Priority is PriorityType.Information or PriorityType.None) continue;
+                if (c[0].Priority == PriorityType.Low)
                 {
-                    if (c[0].Priority == PriorityType.Low)
-                    {
-                        countDayPriority[2] += c.Count;
-                        countSensorsDayPriority[2] += 1;
-                    }
-                    if (c[0].Priority == PriorityType.High)
-                    {
-                        countDayPriority[1] += c.Count;
-                        countSensorsDayPriority[1] += 1;
-                    }
-                    if (c[0].Priority == PriorityType.Urgent)
-                    {
-                        countDayPriority[0] += c.Count;
-                        countSensorsDayPriority[0] += 1;
-                    }
-
-                    CountDay += c.Count;
-                    CountSensorsDay += 1;
+                    countDayPriority[2] += c.Count;
+                    countSensorsDayPriority[2] += 1;
                 }
+                if (c[0].Priority == PriorityType.High)
+                {
+                    countDayPriority[1] += c.Count;
+                    countSensorsDayPriority[1] += 1;
+                }
+                if (c[0].Priority == PriorityType.Urgent)
+                {
+                    countDayPriority[0] += c.Count;
+                    countSensorsDayPriority[0] += 1;
+                }
+
+                CountDay += c.Count;
+                CountSensorsDay += 1;
             }       
 
         CountDayPriority[0] = countDayPriority[0].ToString();

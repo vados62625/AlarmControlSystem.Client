@@ -72,10 +72,10 @@
     {
         countH = 0; countHH = 0; countL = 0; countLL = 0; countAll = 0; countUrgent = 0; countHigh = 0; countLow = 0; countInfo = 0; countNonePriority=0; countDiscr = 0; countRSHI = 0; countRSLO = 0; countComms = 0; countNoneState = 0;
         Alarms = null;
-        var activeAlarms= await AlarmService.GetAllAlarms();
+        var result= await AlarmService.GetAllActiveAlarms(1);
+        if (!result.Success) return;
+        Alarms = result.Payload.Items.OrderByDescending(c => c.DateTimeActivation).ToList();
         
-	    Alarms = activeAlarms.OrderByDescending(c => c.DateTime).ToList();
-
         foreach (var x in Alarms)
         {
             switch (x.State) 
@@ -106,7 +106,10 @@
                     break; 
                 case StateType.none:
                     countNoneState += 1;
-                    break; 
+                    break;
+                default:
+                    countNoneState += 1;
+                    break;
             }
 
             switch (x.Priority) 
@@ -125,7 +128,10 @@
                     break; 
                 case PriorityType.None:
                     countNonePriority += 1;
-                    break; 
+                    break;
+                default:
+                    countNonePriority += 1;
+                    break;
             }
 
             countAll += 1;
@@ -133,15 +139,7 @@
 
         if (Priority != null)
         {
-            var alarms = new List<ActiveAlarmDto>();
-            foreach (var context in Alarms)
-            {
-                if (Priority == context.Priority || Priority == null)
-                {
-                    alarms.Add(context);
-                }
-            }
-            Alarms = alarms;
+            Alarms = Alarms.Where(context => Priority == context.Priority || Priority == null).ToList();
         }
     }
 }

@@ -8,9 +8,9 @@
 @if(Tag!=null && Tag.TagName!=null)
 {
     <tr class="item-table " @onclick="ShowMoreattributes" style="cursor:pointer;">        
-        <td>@Tag.DateTime.ToString("d")</td>
-        <td>@Tag.DateTime.ToString("t")</td>                  
-        <td>@(Tag!=null && Tag.Duration!=null ? Tag.Duration.Value.TotalHours.ToString("N") : "N/A")</td>
+        <td>@Tag.DateTimeSuppression.ToString("d")</td>
+        <td>@Tag.DateTimeSuppression.ToString("t")</td>                  
+        <td>@(Tag is {Duration: { } } ? Tag.Duration.Value.TotalHours.ToString("N") : "N/A")</td>
         <td colspan=1>@(Tag.TagName)
             @{
                 string color = "";
@@ -25,10 +25,10 @@
     
         <td colspan="4">@(Tag.Description ??= "N/A")</td>
         <td>@Tag.Priority</td>
-        <td>@((Tag.AlarmLimit != null) ? Tag.AlarmLimit : "N/A") / @((Tag.Value != null) ? Tag.Value : "N/A")</td>         
+        <td>@(Tag.AlarmLimit ?? "N/A") / @(Tag.Value ?? "N/A")</td>         
     </tr>
              
-    @if (displayMore || (Tag.Comment!=null && Tag.Comment.Length>0))
+    @if (_displayMore || Tag.Comment is {Length: > 0 })
     {
         <tr>
             <td colspan="10" class="p-0 m-0">
@@ -42,20 +42,23 @@
     [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
     [Parameter] public SuppressedAlarmDto? Tag { get; set; }
 
-    bool displayMore = false;
-    string styleTr = "";
+    bool _displayMore = false;
+    string _styleTr = "";
 
     void ShowMoreattributes()
     {
-        displayMore = !displayMore;
+        _displayMore = !_displayMore;
     }
 
     private async Task SaveComment(KeyboardEventArgs e)
     {
-        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        if (e.Code is "Enter" or "NumpadEnter")
         {
-            await AlarmService.UpdateAlarm(Tag);
-            await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
+            if (Tag?.Comment != null)
+            {
+                await AlarmService.AddComment(Tag.Id, Tag.Comment);
+                await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
+            }
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿@using GPNA.AlarmControlSystem.Pages.Main.Alarms
 @using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 @using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Enums
+@using GPNA.AlarmControlSystem.Services
 
 
 <div class="table-responsive" style="margin-top:10px;border-top: 0.5px solid rgba(0, 65, 102, 0.2);border-bottom: 0.5px solid rgba(0, 65, 102, 0.2);">
@@ -47,42 +49,47 @@
 
 @code {
     [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
-
+    [Inject]
+    protected ISpinnerService SpinnerService { get; set; } = default!;
+    
     [Parameter] public List<SuppressedAlarmDto>? Alarms { get; set; } = new();
 
-    [Parameter] public int? Priority { get; set; } = 5;
+    [Parameter] public PriorityType? Priority { get; set; }
 
     [CascadingParameter(Name = "From")] public DateTime From { get; set; }
     [CascadingParameter(Name = "To")] public DateTime To { get; set; }
 
-    protected override async Task OnInitializedAsync()    
-    {
-        var suppressedAlarms= await AlarmService.GetAllAlarms();
+    int _workStation = 1;
 
-        foreach (var alarm in suppressedAlarms)
+    protected override async Task OnParametersSetAsync()
+    {
+        SpinnerService.Show();
+        Alarms = new();
+        var result = await AlarmService.GetAllSuppressedAlarms(_workStation);
+        if (result.Success)
         {
-            if (alarm!=null &&  (alarm.Duration!=null ? alarm.Duration.Value.TotalHours : 0)  > 720)
+            var suppressedAlarms = result.Payload.Items;
+            foreach (var alarm in suppressedAlarms.Where(alarm => (alarm.Duration?.TotalHours ?? 0) > 720))
             {
                 Alarms.Add(alarm);
             }
-        }
-        if (Alarms!=null)
-            Alarms = Alarms.OrderByDescending(c => c.DateTime).ToList();
-    }
 
-    protected override void OnParametersSet()
-    {
-        //if (Priority != 5)
-        //{
-        //    var alarms = new List<SuppressedAlarm>();
-        //    foreach (var item in Alarms ?? new List<SuppressedAlarm>())
-        //    {
-        //        if (Convert.ToInt32(item.Priority) == Priority)
-        //        {
-        //            alarms.Add(item);
-        //        }
-        //    }
-        //    Alarms = alarms;
-        //}
+            if (Priority != null)
+            {
+                var alarms = new List<SuppressedAlarmDto>();
+                foreach (var context in Alarms)
+                {
+                    if (Priority == context.Priority || Priority == null)
+                    {
+                        alarms.Add(context);
+                    }
+                }
+                Alarms = alarms;
+            }
+
+            Alarms = Alarms?.OrderByDescending(c => c.DateTimeActivation).ToList();
+        }
+
+        SpinnerService.Hide();
     }
 }
