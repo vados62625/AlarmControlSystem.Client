@@ -1,5 +1,5 @@
 using GPNA.AlarmControlSystem.Interfaces;
-using GPNA.AlarmControlSystem.Models.Dto;
+using GPNA.AlarmControlSystem.Models.Dto.Tag;
 using GPNA.RestClient.Models;
 using GPNA.RestClient.Services.Base;
 
@@ -11,8 +11,8 @@ public class TagService : CrudBase<TagDto>, ITagService
     public TagService(IAlarmControlSystemApiBroker broker) : base(broker, URL)
     { }
     
-    public async Task<Result<PageableCollectionDto<TagDto>>> GetCollection(int workStationId)
+    public async Task<Result<PageableCollectionDto<TagDto>>> GetTags(GetTagsListQuery content)
     {
-        return await ApiBroker.Get<PageableCollectionDto<TagDto>>($"api/Tags/{workStationId}");
+        return await ApiBroker.Get<PageableCollectionDto<TagDto>>($"{URL}/GetTags", content);
     }
 }

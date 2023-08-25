@@ -1,6 +1,6 @@
 ﻿using GPNA.AlarmControlSystem.Models.Enums;
 
-namespace GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
+namespace GPNA.AlarmControlSystem.Models.Dto.ActiveAlarm;
 
 /// <summary>
 /// Активные сигнализации
@@ -20,10 +20,10 @@ public class ActiveAlarmDto : AlarmBaseDto
         get => DateTime.Now - DateTimeActivation.DateTime;
         set
         {
-    
-        } 
 
-    } 
+        }
+
+    }
 
     /// <summary>
     /// Комментарии

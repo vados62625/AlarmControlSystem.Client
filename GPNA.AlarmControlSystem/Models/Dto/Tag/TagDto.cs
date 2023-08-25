@@ -1,6 +1,6 @@
 ﻿using GPNA.AlarmControlSystem.Models.Enums;
 
-namespace GPNA.AlarmControlSystem.Models.Dto
+namespace GPNA.AlarmControlSystem.Models.Dto.Tag
 {
     /// <summary>
     /// Теги

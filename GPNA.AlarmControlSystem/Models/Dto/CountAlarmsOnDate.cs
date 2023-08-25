@@ -2,7 +2,7 @@
 {
     public class CountAlarmsOnDate
     {
-        public DateTime DateTime { get; set; }
+        public DateTimeOffset DateTime { get; set; }
         public int Count { get; set; }
     }
 }

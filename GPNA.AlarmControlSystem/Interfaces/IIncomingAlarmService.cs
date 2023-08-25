@@ -7,6 +7,9 @@ namespace GPNA.AlarmControlSystem.Interfaces
 {
     public interface IIncomingAlarmService
     {
-        Task<Result<PageableCollectionDto<IncomingAlarmDto>>> GetIncomingAlarmsByDates(object? content = null);
+        Task<Result<PageableCollectionDto<IncomingAlarmDto>>> GetIncomingAlarmsByDates(
+            GetIncomingAlarmsListQuery content);
+
+        Task<Result<CountAlarmsOnDate[]>> GetCountIncomingAlarmsByDates(GetCountIncomingAlarmsByDatesQuery content);
     }
 }

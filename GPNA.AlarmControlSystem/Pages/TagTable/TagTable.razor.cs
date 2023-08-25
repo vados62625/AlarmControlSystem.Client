@@ -1,7 +1,7 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
 using GPNA.AlarmControlSystem.Interfaces;
-using GPNA.AlarmControlSystem.Models.Dto;
+using GPNA.AlarmControlSystem.Models.Dto.Tag;
 using GPNA.AlarmControlSystem.Pages.TagTable.Modals;
 using GPNA.AlarmControlSystem.Services;
 using Microsoft.AspNetCore.Components;

@@ -1,6 +1,6 @@
 ﻿using GPNA.AlarmControlSystem.Models.Enums;
 
-namespace GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
+namespace GPNA.AlarmControlSystem.Models.Dto.SuppressedAlarm;
 
 /// <summary>
 /// Подавленные сигнализации

@@ -7,13 +7,5 @@ namespace GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
 /// </summary>
 public class IncomingAlarmDto : BufferAlarmDto
 {
-    /// <summary>
-    /// Дата
-    /// </summary>
-    public DateTime EndDate
-    {
-        get => DateTimeNormalization.Value.DateTime;
 
-        set { }
-    }
 }
