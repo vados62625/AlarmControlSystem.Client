@@ -1,5 +1,5 @@
 ﻿using GPNA.AlarmControlSystem.Interfaces;
-using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
+using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
 using GPNA.AlarmControlSystem.Models.Enums;
 using GPNA.AlarmControlSystem.Services;
 using Microsoft.AspNetCore.Components;

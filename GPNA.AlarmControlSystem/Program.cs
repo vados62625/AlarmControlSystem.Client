@@ -17,6 +17,7 @@ builder.Services
     .AddBlazoredModal()
     .AddScoped<ISpinnerService, SpinnerService>()
     .AddScoped<IBufferAlarmService, BufferAlarmService>()
+    .AddScoped<IIncomingAlarmService, IncomingAlarmService>()
     .AddScoped<IWorkStationService, WorkStationService>()
     .AddScoped<IUserService, UserService>()
     .AddScoped<ITagService, TagService>();

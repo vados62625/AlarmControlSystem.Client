@@ -1,5 +1,6 @@
 using GPNA.AlarmControlSystem.Models.Dto;
 using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
+using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
 using GPNA.AlarmControlSystem.Models.Enums;
 using GPNA.RestClient.Models;
 

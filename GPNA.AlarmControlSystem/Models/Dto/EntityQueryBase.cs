@@ -3,8 +3,8 @@
     public class EntityQueryBase
     {
         public int WorkStationId { get; set; }
-        public virtual DateTimeOffset? CreatedAtFrom { get; set; }
-        public virtual DateTimeOffset? CreatedAtTo { get; set; }
+        public virtual DateTimeOffset? ActivationFrom { get; set; }
+        public virtual DateTimeOffset? ActivationTo { get; set; }
         public int? Page { get; set; }
         public int? ItemsOnPage { get; set; }
         public string? Suggest { get; set; }

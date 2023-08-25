@@ -1,8 +1,12 @@
-﻿@using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms
-@using GPNA.AlarmControlSystem.Pages.Monitoring.Tables
-@using GPNA.AlarmControlSystem.Models.Enums
+﻿@using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Interfaces
-@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
+@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
+@	using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms
+@	using GPNA.AlarmControlSystem.Pages.Monitoring.Tables
+@	using GPNA.AlarmControlSystem.Models.Enums
+@	using GPNA.AlarmControlSystem.Interfaces
+@	using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
+@	using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
 
 <div style="display:flex; justify-content:flex-end; gap: 10px; color: var(--color-typo-primary);">
     <span>Всего: <b>@countAll</b></span>
@@ -64,6 +68,8 @@
 @code {
     [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
 
+	[Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
+
     [Parameter] public List<List<IncomingAlarmDto>>? Alarms { get; set; }
 
     [Parameter] public PriorityType? Priority { get; set; }
@@ -78,6 +84,10 @@
         Alarms = null;
         countH = 0; countHH = 0; countL = 0; countLL = 0; countAll = 0; countUrgent = 0; countHigh = 0; countLow = 0; countInfo = 0; countNonePriority=0; countDiscr = 0; countRSHI = 0; countRSLO = 0; countComms = 0; countNoneState = 0;
         var incomingAlarms= await AlarmService.GetAlarmsPerDate(1, From, To);
+
+	    var test = await IncomingAlarmService.GetIncomingAlarmsByDates(new GetIncomingAlarmsListQuery() { WorkStationId = 1, ActivationFrom = From, ActivationTo = To });
+
+
         if (incomingAlarms == null)
         {
             Alarms = new List<List<IncomingAlarmDto>>();

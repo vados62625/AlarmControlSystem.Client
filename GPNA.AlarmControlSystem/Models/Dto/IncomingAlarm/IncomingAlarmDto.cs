@@ -1,4 +1,6 @@
-﻿namespace GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
+﻿using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
+
+namespace GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
 
 /// <summary>
 /// Входящие аварии
