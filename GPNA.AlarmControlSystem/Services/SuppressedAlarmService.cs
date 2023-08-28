@@ -21,7 +21,7 @@ namespace GPNA.AlarmControlSystem.Services
         /// <returns></returns>
         public async Task<Result<PageableCollectionDto<SuppressedAlarmDto>>> GetSuppressedAlarmsByDates(GetSuppressedAlarmsListQuery content)
         {
-            return await _apiBroker.Get<PageableCollectionDto<SuppressedAlarmDto>>($"{URL}/GetSuppressedAlarms", content);
+            return await _apiBroker.Get<PageableCollectionDto<SuppressedAlarmDto>>($"{URL}", content);
         }
 
         /// <summary>

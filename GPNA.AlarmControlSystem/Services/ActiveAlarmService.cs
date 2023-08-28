@@ -21,7 +21,7 @@ namespace GPNA.AlarmControlSystem.Services
         /// <returns></returns>
         public async Task<Result<PageableCollectionDto<ActiveAlarmDto>>> GetActiveAlarmsByDates(GetActiveAlarmsListQuery content)
         {
-            return await _apiBroker.Get<PageableCollectionDto<ActiveAlarmDto>>($"{URL}/GetActiveAlarms", content);
+            return await _apiBroker.Get<PageableCollectionDto<ActiveAlarmDto>>($"{URL}", content);
         }
 
         /// <summary>

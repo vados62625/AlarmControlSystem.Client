@@ -6,5 +6,4 @@ namespace GPNA.AlarmControlSystem.Interfaces;
 
 public interface ITagService : ICrudBase<TagDto>
 {
-    Task<Result<PageableCollectionDto<TagDto>>> GetTags(GetTagsListQuery content);
 }

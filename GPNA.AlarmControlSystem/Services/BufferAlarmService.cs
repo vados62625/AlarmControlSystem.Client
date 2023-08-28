@@ -13,6 +13,8 @@ public class BufferAlarmService : IBufferAlarmService
 {
     protected readonly IAlarmControlSystemApiBroker _apiBroker;
 
+    const string URL = "api/BufferAlarms";
+
     public BufferAlarmService(IAlarmControlSystemApiBroker apiBroker)
     {
         _apiBroker = apiBroker;
@@ -28,7 +30,7 @@ public class BufferAlarmService : IBufferAlarmService
     /// <returns></returns>
     public async Task<Result<BufferAlarmDto>> AddComment(AddCommentInAlarmCommand content)
     {
-        return await _apiBroker.Patch<BufferAlarmDto>($"api/BufferAlarms/AddCommentInAlarm", content);
+        return await _apiBroker.Patch<BufferAlarmDto>($"{URL}/AddCommentInAlarm", content);
     }
     
     //TODO возможно не будет работать, надо проверить
@@ -40,6 +42,6 @@ public class BufferAlarmService : IBufferAlarmService
     /// <returns></returns>
     public async Task<Result<BufferAlarmDto>> ChangeStatus(ChangeStatusAlarmCommand content)
     {
-        return await _apiBroker.Patch<BufferAlarmDto>($"api/BufferAlarms/ChangeStatusAlarm", content);
+        return await _apiBroker.Patch<BufferAlarmDto>($"{URL}/ChangeStatusAlarm", content);
     }
 }

@@ -5,11 +5,8 @@ using GPNA.RestClient.Models;
 
 namespace GPNA.AlarmControlSystem.Interfaces
 {
-    public interface IIncomingAlarmService
+    public interface IIncomingAlarmService : ICrudBase<IncomingAlarmDto>
     {
-        Task<Result<PageableCollectionDto<IncomingAlarmDto>>> GetIncomingAlarmsByDates(
-            GetIncomingAlarmsListQuery content);
-
         Task<Result<CountAlarmsOnDate[]>> GetCountIncomingAlarmsByDates(GetCountIncomingAlarmsByDatesQuery content);
     }
 }

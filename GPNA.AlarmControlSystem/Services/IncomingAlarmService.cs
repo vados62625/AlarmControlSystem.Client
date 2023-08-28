@@ -6,23 +6,14 @@ using GPNA.RestClient.Services.Base;
 
 namespace GPNA.AlarmControlSystem.Services
 {
-    public class IncomingAlarmService : IIncomingAlarmService
+    public class IncomingAlarmService : CrudBase<IncomingAlarmDto>, IIncomingAlarmService
     {
-        IAlarmControlSystemApiBroker _apiBroker;
+        readonly IAlarmControlSystemApiBroker _apiBroker;
 
         const string URL = "api/IncomingAlarms";
-        public IncomingAlarmService(IAlarmControlSystemApiBroker apiBroker)
+        public IncomingAlarmService(IAlarmControlSystemApiBroker apiBroker) : base(apiBroker, URL)
         {
             _apiBroker = apiBroker;
-        }
-        
-        /// <summary>
-        /// Получить входящие сигнализации в рамках заданного периода
-        /// </summary>
-        /// <returns></returns>
-        public async Task<Result<PageableCollectionDto<IncomingAlarmDto>>> GetIncomingAlarmsByDates(GetIncomingAlarmsListQuery content)
-        {
-            return await _apiBroker.Get<PageableCollectionDto<IncomingAlarmDto>>($"{URL}/GetIncomingAlarms", content);
         }
 
         /// <summary>
@@ -34,43 +25,44 @@ namespace GPNA.AlarmControlSystem.Services
             return await _apiBroker.Get<CountAlarmsOnDate[]>($"{URL}/GetCountIncomingAlarmsByDates", content);
         }
 
-        //TODO оптимизировать, вынести в АПИ
-        public async Task<List<List<IncomingAlarmDto>>> GetAlarmsPerDate(int idWorkStation, DateTime startDate, DateTime endDate)
-        {
-            var result = await GetIncomingAlarmsByDates(new GetIncomingAlarmsListQuery());
 
-            if (result.Success)
-            {
-                return result.Payload.Items.GroupBy(c => new { c.DateTimeActivation.Date, c.TagName, c.State })
-                    .Select(group => group.ToList())
-                    .ToList();
-            }
+        ////TODO оптимизировать, вынести в АПИ
+        //public async Task<List<List<IncomingAlarmDto>>> GetAlarmsPerDate(int idWorkStation, DateTime startDate, DateTime endDate)
+        //{
+        //    var result = await GetIncomingAlarmsByDates(new GetIncomingAlarmsListQuery());
 
-            return default;
-        }
+        //    if (result.Success)
+        //    {
+        //        return result.Payload.Items.GroupBy(c => new { c.DateTimeActivation.Date, c.TagName, c.State })
+        //            .Select(group => group.ToList())
+        //            .ToList();
+        //    }
 
-        //TODO оптимизировать
-        public async Task<Dictionary<DateTime, List<IncomingAlarmDto>>> GetCountInHour(int idWorkStation, DateTime startDate, DateTime endDate)
-        {
-            var result = await GetIncomingAlarmsByDates(new GetIncomingAlarmsListQuery());
+        //    return default;
+        //}
 
-            var dictionaryCount = new Dictionary<DateTime, List<IncomingAlarmDto>>();
+        ////TODO оптимизировать
+        //public async Task<Dictionary<DateTime, List<IncomingAlarmDto>>> GetCountInHour(int idWorkStation, DateTime startDate, DateTime endDate)
+        //{
+        //    var result = await GetIncomingAlarmsByDates(new GetIncomingAlarmsListQuery());
 
-            if (result.Success)
-            {
-                var dateTimes = Enumerable
-                    .Range(0, (int)(endDate - startDate).TotalHours + 1)
-                    .Select(x => startDate.AddHours(x))
-                    .ToArray();
+        //    var dictionaryCount = new Dictionary<DateTime, List<IncomingAlarmDto>>();
 
-                foreach (var dateTime in dateTimes)
-                {
-                    var list = result.Payload.Items.FindAll(c => c.DateTimeActivation > dateTime & c.DateTimeActivation < dateTime.AddHours(1));
-                    dictionaryCount.TryAdd(dateTime, list);
-                }
-            }
+        //    if (result.Success)
+        //    {
+        //        var dateTimes = Enumerable
+        //            .Range(0, (int)(endDate - startDate).TotalHours + 1)
+        //            .Select(x => startDate.AddHours(x))
+        //            .ToArray();
 
-            return dictionaryCount;
-        }
+        //        foreach (var dateTime in dateTimes)
+        //        {
+        //            var list = result.Payload.Items.FindAll(c => c.DateTimeActivation > dateTime & c.DateTimeActivation < dateTime.AddHours(1));
+        //            dictionaryCount.TryAdd(dateTime, list);
+        //        }
+        //    }
+
+        //    return dictionaryCount;
+        //}
     }
 }
