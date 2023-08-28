@@ -48,6 +48,7 @@
     [Parameter] public string? Title { get; set; }
 
 	[Inject] IBufferAlarmService AlarmService { get; set; } = null!;
+	[Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
     [Inject] ITagService TagService { get; set; } = null!;
     [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
     [CascadingParameter(Name = "From")] public DateTime From { get; set; }
@@ -77,7 +78,7 @@
         CountSensorsDayPriority = new string[3];
         int[] countDayPriority = new int[3];
         int[] countSensorsDayPriority = new int[3];
-        var inputAlarms = await AlarmService.GetAlarmsPerDate(1,From,To);
+        var inputAlarms = await IncomingAlarmService.GetAlarmsPerDate(1,From,To);
 
         if(inputAlarms!=null)
             foreach(var c in inputAlarms)

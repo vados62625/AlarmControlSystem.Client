@@ -18,6 +18,8 @@ builder.Services
     .AddScoped<ISpinnerService, SpinnerService>()
     .AddScoped<IBufferAlarmService, BufferAlarmService>()
     .AddScoped<IIncomingAlarmService, IncomingAlarmService>()
+    .AddScoped<IActiveAlarmService, ActiveAlarmService>()
+    .AddScoped<ISuppressedAlarmService, SuppressedAlarmService>()
     .AddScoped<IWorkStationService, WorkStationService>()
     .AddScoped<IUserService, UserService>()
     .AddScoped<ITagService, TagService>();

@@ -83,7 +83,7 @@
     {
         Alarms = null;
         countH = 0; countHH = 0; countL = 0; countLL = 0; countAll = 0; countUrgent = 0; countHigh = 0; countLow = 0; countInfo = 0; countNonePriority=0; countDiscr = 0; countRSHI = 0; countRSLO = 0; countComms = 0; countNoneState = 0;
-        var incomingAlarms= await AlarmService.GetAlarmsPerDate(1, From, To);
+        var incomingAlarms= await IncomingAlarmService.GetAlarmsPerDate(1, From, To);
 
 	    var test = await IncomingAlarmService.GetCollection(new GetIncomingAlarmsListQuery() { WorkStationId = 1, ActivationFrom = From, ActivationTo = To });
 
