@@ -1,5 +1,6 @@
 ﻿@using GPNA.AlarmControlSystem.Interfaces
 @using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
+@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
   
 <div style="min-width:530px;">
         <h3 style="margin-top:50px;text-align: center;">@Title</h3>
@@ -79,6 +80,8 @@
 @code {
     [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
 
+	[Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
+
     [Parameter] public string? Title { get; set; } = "Входящие сигнализации"; 
 
     [CascadingParameter(Name = "From")] public DateTime From { get; set; }
@@ -89,7 +92,7 @@
     protected override async Task OnInitializedAsync()    
     {
         //Получить список всех аварий Входящих/Активных/Подавленных за промежуток From - To        
-        var incomingAlarms= await AlarmService.GetCountIncomingAlarmsByDates(1, From, To);
+        var incomingAlarms= await IncomingAlarmService.GetCountIncomingAlarmsByDates(new GetCountIncomingAlarmsByDatesQuery() {WorkStationId = 1, ActivationFrom = From, ActivationTo = To});
         if(!incomingAlarms.Success) return;
         var i = 0;
         foreach(var alarm in incomingAlarms.Payload)

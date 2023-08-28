@@ -1,4 +1,5 @@
 ﻿@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.ActiveAlarm
 @using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 
 <div style="min-width:530px;">
@@ -79,6 +80,7 @@
 
 @code {
     [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
+	[Inject] IActiveAlarmService ActiveAlarmService { get; set; } = null!;
 
     [Parameter] public string? Title { get; set; } = "Активные сигнализации"; 
 
@@ -89,7 +91,7 @@
 
     protected override async Task OnInitializedAsync()    
     {
-        var activeAlarms= await AlarmService.GetCountActiveAlarmsByDates(1, From, To);
+        var activeAlarms= await ActiveAlarmService.GetCountActiveAlarmsByDates(new GetCountActiveAlarmsByDatesQuery(){WorkStationId = 1, ActivationFrom = From, ActivationTo = To});
         if (!activeAlarms.Success) return;
         var i = 0;
         foreach (var count in activeAlarms.Payload)

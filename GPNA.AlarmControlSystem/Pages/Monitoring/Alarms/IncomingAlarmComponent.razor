@@ -2,6 +2,7 @@
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Interfaces
 @using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
+@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
 @inject IJSRuntime JSRuntime
 
 @if(Tag!=null && Tag.Description!="ПЕРЕСМЕНКА")
@@ -87,7 +88,7 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
         {
             if (Tag?.Comment != null)
             {
-                await AlarmService.AddComment(Tag.Id, Tag.Comment);
+                await AlarmService.AddComment(new AddCommentInAlarmCommand(){Id = Tag.Id, Comment = Tag.Comment});
                 await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
             }
         }
@@ -98,7 +99,7 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
         if (Tag != null)
         {
             Tag.StatusAlarm = Tag is {StatusAlarm: StatusAlarmType.Undefined } ? StatusAlarmType.InWork : StatusAlarmType.Undefined;
-            await AlarmService.ChangeStatus(Tag.Id, Tag.StatusAlarm);
+            await AlarmService.ChangeStatus(new ChangeStatusAlarmCommand() {Id = Tag.Id, StatusAlarm = Tag.StatusAlarm});
             await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
         }
         

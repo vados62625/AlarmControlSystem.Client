@@ -1,6 +1,7 @@
 ﻿@using GPNA.AlarmControlSystem.Models.Enums
 @using Microsoft.AspNetCore.Components
 @using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 @using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
 
 @inject IJSRuntime JSRuntime
@@ -10,8 +11,8 @@
     string bgColor = ""; if (IsChildren) { bgColor = "rgba(0, 32, 51, 0.05);"; } 
     
     <tr class="item-table" style="cursor:pointer; background-color: @bgColor;">        
-        <td @onclick="ShowMoreAttributes">@Tag.EndDate.ToString("d")</td>
-        <td @onclick="ShowMoreAttributes">@Tag.EndDate.ToString("t")</td>
+        <td @onclick="ShowMoreAttributes">@Tag.DateTimeActivation.ToString("d")</td>
+        <td @onclick="ShowMoreAttributes">@Tag.DateTimeActivation.ToString("t")</td>
 
         <td colspan=3 @onclick="ShowMoreAttributes">@(Tag.TagName)
             @{
@@ -45,8 +46,8 @@
 else if (Tag is {Description: "ПЕРЕСМЕНКА" })
 {
     <tr class="item-table">        
-        <td>@Tag.EndDate.ToString("d")</td>
-        <td>@Tag.EndDate.ToString("t")</td>        
+        <td>@Tag.DateTimeActivation.ToString("d")</td>
+        <td>@Tag.DateTimeActivation.ToString("t")</td>        
         <td colspan=11 style="text-align:center;font-weight:700;letter-spacing:10px;">@Tag.Description</td>              
     </tr>   
 }
@@ -67,7 +68,7 @@ else if (Tag is {Description: "ПЕРЕСМЕНКА" })
         {
             if (Tag is {Comment: { } })
             {
-                var result = await AlarmService.AddComment(Tag.Id, Tag.Comment);
+                var result = await AlarmService.AddComment(new AddCommentInAlarmCommand(){Id = Tag.Id, Comment = Tag.Comment});
                 if (result.Success)
                     await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
             }
@@ -79,7 +80,7 @@ else if (Tag is {Description: "ПЕРЕСМЕНКА" })
         if (Tag != null)
         {
             Tag.StatusAlarm = Tag is {StatusAlarm: StatusAlarmType.InWork } ? StatusAlarmType.Done : StatusAlarmType.InWork;
-            var result = await AlarmService.ChangeStatus(Tag.Id, Tag.StatusAlarm);
+            var result = await AlarmService.ChangeStatus(new ChangeStatusAlarmCommand() {Id = Tag.Id, StatusAlarm = Tag.StatusAlarm});
             if (result.Success)
                 await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
         }

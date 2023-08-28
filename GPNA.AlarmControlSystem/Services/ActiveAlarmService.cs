@@ -2,26 +2,18 @@
 using GPNA.AlarmControlSystem.Models.Dto;
 using GPNA.AlarmControlSystem.Models.Dto.ActiveAlarm;
 using GPNA.RestClient.Models;
+using GPNA.RestClient.Services.Base;
 
 namespace GPNA.AlarmControlSystem.Services
 {
-    public class ActiveAlarmService : IActiveAlarmService
+    public class ActiveAlarmService : CrudBase<ActiveAlarmDto>, IActiveAlarmService
     {
         IAlarmControlSystemApiBroker _apiBroker;
 
         const string URL = "api/ActiveAlarms";
-        public ActiveAlarmService(IAlarmControlSystemApiBroker apiBroker)
+        public ActiveAlarmService(IAlarmControlSystemApiBroker apiBroker) : base(apiBroker, URL)
         {
             _apiBroker = apiBroker;
-        }
-
-        /// <summary>
-        /// Получить активные сигнализации в рамках заданного периода
-        /// </summary>
-        /// <returns></returns>
-        public async Task<Result<PageableCollectionDto<ActiveAlarmDto>>> GetActiveAlarmsByDates(GetActiveAlarmsListQuery content)
-        {
-            return await _apiBroker.Get<PageableCollectionDto<ActiveAlarmDto>>($"{URL}", content);
         }
 
         /// <summary>

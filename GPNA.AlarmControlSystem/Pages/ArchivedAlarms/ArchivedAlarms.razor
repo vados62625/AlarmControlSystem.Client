@@ -4,6 +4,7 @@
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Interfaces
 @using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
+@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
 
 
 <h3>Архив</h3>
@@ -66,6 +67,7 @@
 
 @code {
     [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
+	[Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
     [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
 
     [Parameter] public List<IncomingAlarmDto>? Alarms { get; set; }
@@ -79,12 +81,13 @@
         SpinnerService.Show();
         Alarms = null;
         countH = 0; countHH = 0; countL = 0; countLL = 0; countAll = 0; countUrgent = 0; countHigh = 0; countLow = 0; countInfo = 0; countNonePriority=0; countDiscr = 0; countRSHI = 0; countRSLO = 0; countComms = 0; countNoneState = 0;
-        var result = await AlarmService.GetAllIncomingAlarms(_workStation);
+        var result = await IncomingAlarmService.GetCollection(new GetIncomingAlarmsListQuery(){WorkStationId = _workStation});
         if (result.Success)
         {
             var incomingAlarms = result.Payload.Items;
-            Alarms = incomingAlarms.Where(c => c.StatusAlarm == StatusAlarmType.Done).ToList();
-            Alarms = Alarms.OrderByDescending(c => c.EndDate).ToList();
+            Alarms = incomingAlarms
+	            .Where(c => c.StatusAlarm == StatusAlarmType.Done)
+				.OrderByDescending(c => c.DateTimeActivation).ToList();
 
             foreach (var x in Alarms)
             {

@@ -1,6 +1,7 @@
 ﻿@using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.ActiveAlarm
 @using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 
 <div style="display:flex; justify-content:flex-end; gap: 10px; color: var(--color-typo-primary);">
@@ -59,6 +60,7 @@
 
 @code {
     [Inject] IBufferAlarmService AlarmService { get; set; } = default!;
+	[Inject] IActiveAlarmService ActiveAlarmService { get; set; } = default!;
 
     [Parameter] public List<ActiveAlarmDto>? Alarms { get; set; }
 
@@ -72,7 +74,7 @@
     {
         countH = 0; countHH = 0; countL = 0; countLL = 0; countAll = 0; countUrgent = 0; countHigh = 0; countLow = 0; countInfo = 0; countNonePriority=0; countDiscr = 0; countRSHI = 0; countRSLO = 0; countComms = 0; countNoneState = 0;
         Alarms = null;
-        var result= await AlarmService.GetAllActiveAlarms(1);
+        var result= await ActiveAlarmService.GetCollection(new GetActiveAlarmsListQuery(){WorkStationId = 1});
         if (!result.Success) return;
         Alarms = result.Payload.Items.OrderByDescending(c => c.DateTimeActivation).ToList();
         

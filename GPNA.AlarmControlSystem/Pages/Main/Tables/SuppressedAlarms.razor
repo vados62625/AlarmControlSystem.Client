@@ -1,5 +1,7 @@
 ﻿@using GPNA.AlarmControlSystem.Interfaces
 @using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
+@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
+@using GPNA.AlarmControlSystem.Models.Dto.SuppressedAlarm
   
 <div style="min-width:530px;">
         <h3 style="margin-top:50px;text-align: center;">@Title</h3>
@@ -79,6 +81,7 @@
 
 @code {
     [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
+	[Inject] ISuppressedAlarmService SuppressedAlarmService { get; set; } = null!;
 
     [Parameter] public string? Title { get; set; } = "Подавленные сигнализации"; 
     [Parameter] public List<List<IncomingAlarmDto>>? Alarms { get; set; }
@@ -93,7 +96,7 @@
 
     protected override async Task OnInitializedAsync()    
     {
-        var suppressedAlarms= await AlarmService.GetCountSuppressedAlarmsByDates(1, From, To); //TODO: настороить фильтр по дате
+        var suppressedAlarms= await SuppressedAlarmService.GetCountSuppressedAlarmsByDates(new GetCountSuppressedAlarmsByDatesQuery(){WorkStationId = 1, ActivationFrom = From, ActivationTo = To});
         if (!suppressedAlarms.Success) return;
         
         var i = 0;

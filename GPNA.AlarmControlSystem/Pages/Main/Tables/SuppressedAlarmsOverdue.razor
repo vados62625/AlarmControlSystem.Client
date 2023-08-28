@@ -1,6 +1,7 @@
 ﻿@using GPNA.AlarmControlSystem.Pages.Main.Alarms
 @using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 @using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.SuppressedAlarm
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Services
 
@@ -49,6 +50,7 @@
 
 @code {
     [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
+	[Inject] ISuppressedAlarmService SuppressedAlarmService { get; set; } = null!;
     [Inject]
     protected ISpinnerService SpinnerService { get; set; } = default!;
     
@@ -65,7 +67,7 @@
     {
         SpinnerService.Show();
         Alarms = new();
-        var result = await AlarmService.GetAllSuppressedAlarms(_workStation);
+        var result = await SuppressedAlarmService.GetCollection(new GetSuppressedAlarmsListQuery(){WorkStationId = _workStation});
         if (result.Success)
         {
             var suppressedAlarms = result.Payload.Items;

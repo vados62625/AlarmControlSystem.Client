@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.ActiveAlarm
 @using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 @inject IJSRuntime JSRuntime
 
@@ -54,7 +55,7 @@
         {
             if (Tag?.Comment != null)
             {
-                await AlarmService.AddComment(Tag.Id, Tag.Comment);
+                await AlarmService.AddComment(new AddCommentInAlarmCommand(){Id = Tag.Id, Comment = Tag.Comment});
                 await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
             }
         }

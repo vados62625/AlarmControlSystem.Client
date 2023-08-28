@@ -2,15 +2,16 @@
 using GPNA.AlarmControlSystem.Models.Dto;
 using GPNA.AlarmControlSystem.Models.Dto.SuppressedAlarm;
 using GPNA.RestClient.Models;
+using GPNA.RestClient.Services.Base;
 
 namespace GPNA.AlarmControlSystem.Services
 {
-    public class SuppressedAlarmService : ISuppressedAlarmService
+    public class SuppressedAlarmService : CrudBase<SuppressedAlarmDto>, ISuppressedAlarmService
     {
         IAlarmControlSystemApiBroker _apiBroker;
 
         const string URL = "api/SuppressedAlarms";
-        public SuppressedAlarmService(IAlarmControlSystemApiBroker apiBroker)
+        public SuppressedAlarmService(IAlarmControlSystemApiBroker apiBroker) : base(apiBroker, URL)
         {
             _apiBroker = apiBroker;
         }

@@ -57,7 +57,7 @@
         {
             if (Tag?.Comment != null)
             {
-                await AlarmService.AddComment(Tag.Id, Tag.Comment);
+                await AlarmService.AddComment(new AddCommentInAlarmCommand(){Id = Tag.Id, Comment = Tag.Comment});
                 await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
             }
         }
