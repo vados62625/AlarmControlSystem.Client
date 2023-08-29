@@ -118,7 +118,7 @@
     [Inject]
     protected ISpinnerService SpinnerService { get; set; } = default!;
 
-    [Parameter] public TagDto Tag { get; set; }
+    [Parameter] public UpdateTagCommand Tag { get; set; }
 
     private bool IsLoading { get; set; } = false;
     private string Error { get; set; } = "";

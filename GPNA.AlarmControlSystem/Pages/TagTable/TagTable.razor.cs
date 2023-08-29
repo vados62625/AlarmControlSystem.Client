@@ -90,13 +90,21 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
         {
             SpinnerService.Show();
 
-            var tags = await TagService.GetList(); // TODO I make PageableCollectionDto
-            var alarmsTagTable = new List<TagDto>(tags.Payload); //TODO need check success
+            var result = await TagService.GetCollection(new GetTagsListQuery(){WorkStationId = 1}); // TODO I make PageableCollectionDto
+            
+            if (result.Success)
+            {
+                AlarmsTagTable = new List<TagDto>(result.Payload.Items); 
+            }
+            
+            
+            
+        
 
             if (input != "")
             {
-                AlarmsTagTable = new();
-                foreach (var context in alarmsTagTable)
+                //AlarmsTagTable = new();
+                foreach (var context in AlarmsTagTable)
                 {
                     if (context != null && context.TagName != null)
                     {
@@ -109,7 +117,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
             }
             else
             {
-                AlarmsTagTable = alarmsTagTable;
+                //AlarmsTagTable = alarmsTagTable;
             }
             SpinnerService.Hide();
         }
