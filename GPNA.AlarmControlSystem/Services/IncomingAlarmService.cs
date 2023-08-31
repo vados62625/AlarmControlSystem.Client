@@ -1,4 +1,5 @@
-﻿using GPNA.AlarmControlSystem.Interfaces;
+﻿using GPNA.AlarmControlSystem.Application.Dto;
+using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto;
 using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
 using GPNA.RestClient.Models;
@@ -26,6 +27,11 @@ namespace GPNA.AlarmControlSystem.Services
         }
 
         //TODO оптимизировать, вынести в АПИ
+        public Task<Result<CountAlarmsOnPriority[]>> GetCountIncomingAlarmsByPriorities(GetCountIncomingAlarmsByDatesQuery content)
+        {
+            return _apiBroker.Get<CountAlarmsOnPriority[]>($"{URL}/GetCountIncomingAlarmsByPriorities", content);
+        }
+        
         public async Task<List<List<IncomingAlarmDto>>> GetAlarmsPerDate(int idWorkStation, DateTime from, DateTime to)
         {
             var result = await this.GetCollection(new GetIncomingAlarmsListQuery(){WorkStationId = idWorkStation, ActivationFrom = from, ActivationTo = to});

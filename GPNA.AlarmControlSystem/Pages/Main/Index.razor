@@ -9,51 +9,64 @@
 
 
 <CascadingValue Name="From" Value="@From">
-<CascadingValue Name="To" Value="@To">
+    <CascadingValue Name="To" Value="@To">
 
-<div style="display:flex;justify-content:space-evenly; margin-top:50px;">
-    <div style="display:flex;flex-direction:column;align-content:center;">
-        <h4>Количество сигнализаций за @To.ToString("M")</h4>
-        <div style="height:340px;display: flex;justify-content: center; align-items: center; max-width:420px;margin: auto;position:relative;">
-            <DoughnutChart Id="donutChart1" Data1="@CountDayPriority"/>
-            <p style="position: absolute; margin-top: 50px; font-size: 50px;z-index:1;" title="Среднее число входящих сигнализаций">@CountDay</p>
+        <div style="display:flex;justify-content:space-evenly; margin-top:50px;">
+            <div style="display:flex;flex-direction:column;align-content:center;">
+                <h4>Количество сигнализаций за @To.ToString("M")</h4>
+                <div style="height:340px;display: flex;justify-content: center; align-items: center; max-width:420px;margin: auto;position:relative;">
+                    <DoughnutChart Id="donutChart1" Data1="@CountDayPriority"/>
+                    <p style="position: absolute; margin-top: 50px; font-size: 50px;z-index:1;" title="Среднее число входящих сигнализаций">@CountDay</p>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-content:center;">
+                <h4>Количество уникальных сигнализаций за @To.ToString("M")</h4>
+                <div style="height:340px;display: flex;justify-content: center; align-items: center;max-width:420px;margin: auto; position:relative;">
+                    <DoughnutChart Id="donutChart2" Data1="@CountSensorsDayPriority"/>
+                    <p style="position: absolute;   margin-top: 50px; font-size: 50px;" title="Среднее число входящих сигнализаций">@CountSensorsDay</p>
+                </div>
+            </div>
         </div>
-    </div>
-    <div style="display:flex;flex-direction:column;align-content:center;">
-        <h4>Количество уникальных сигнализаций за @To.ToString("M")</h4>
-        <div style="height:340px;display: flex;justify-content: center; align-items: center;max-width:420px;margin: auto; position:relative;">
-            <DoughnutChart Id="donutChart2" Data1="@CountSensorsDayPriority"/>
-            <p style="position: absolute;   margin-top: 50px; font-size: 50px;" title="Среднее число входящих сигнализаций">@CountSensorsDay</p>
+
+        <div style="display:flex;gap:20px;justify-content: space-evenly;">
+            <IncomingAlarms/>
+            <ActiveAlarms/>
+            <SuppressedAlarms/>
         </div>
-    </div>
-</div>
 
-<div style="display:flex;gap:20px;justify-content: space-evenly;">
-    <IncomingAlarms/>
-    <ActiveAlarms/>
-    <SuppressedAlarms/>
-</div>
-
-<h4>Активные сигнализации (Просроченные)</h4>
-<ActiveAlarmsOverdue/>
-<h4>Подавленные сигнализации (Просроченные)</h4>
-<SuppressedAlarmsOverdue/>    
+        <h4>Активные сигнализации (Просроченные)</h4>
+        <ActiveAlarmsOverdue/>
+        <h4>Подавленные сигнализации (Просроченные)</h4>
+        <SuppressedAlarmsOverdue/>
 
 
-</CascadingValue>
+    </CascadingValue>
 </CascadingValue>
 
 
 @code {
-    [Parameter] public string? Title { get; set; }
 
-	[Inject] IBufferAlarmService AlarmService { get; set; } = null!;
-	[Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
-    [Inject] ITagService TagService { get; set; } = null!;
-    [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
-    [CascadingParameter(Name = "From")] public DateTime From { get; set; }
-    [CascadingParameter(Name = "To")] public DateTime To { get; set; }
-    
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Inject]
+    IBufferAlarmService AlarmService { get; set; } = null!;
+
+    [Inject]
+    IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
+
+    [Inject]
+    ITagService TagService { get; set; } = null!;
+
+    [Inject]
+    protected ISpinnerService SpinnerService { get; set; } = default!;
+
+    [CascadingParameter(Name = "From")]
+    public DateTime From { get; set; }
+
+    [CascadingParameter(Name = "To")]
+    public DateTime To { get; set; }
+
 
     string[] CountDayPriority = new string[3];
     string[] CountSensorsDayPriority = new string[3];
@@ -66,52 +79,69 @@
 
     protected override async Task OnInitializedAsync()
     {
-	    SpinnerService.Show();
-	    To = DateTime.Now.AddDays(-1);
-        // To = new DateTime(To.Year , To.Month, To.Day, 23,59,59);
-        To = new DateTime(2023 , 3, 9, 23,59,59);
-        // From = DateTime.Now.AddDays(-7);
+        SpinnerService.Show();
+        To = DateTime.Now.AddDays(-1);
+    // To = new DateTime(To.Year , To.Month, To.Day, 23,59,59);
+        // To = new DateTime(2023, 3, 9, 23, 59, 59);
+        To = new DateTime(2023, 8, 2, 23, 59, 59);
+    // From = DateTime.Now.AddDays(-7);
         From = To.AddDays(-7);
-        From = new DateTime(From.Year , From.Month, From.Day, 0,0,0);
+        From = new DateTime(From.Year, From.Month, From.Day, 0, 0, 0);
+        var from1 = new DateTime(To.Year, To.Month, To.Day, 0, 0, 0);
+        var toOffset = new DateTimeOffset(To, TimeZoneInfo.Local.GetUtcOffset(To));
+        Console.WriteLine(toOffset);
 
         CountDayPriority = new string[3];
         CountSensorsDayPriority = new string[3];
-        int[] countDayPriority = new int[3];
-        int[] countSensorsDayPriority = new int[3];
-        var inputAlarms = await IncomingAlarmService.GetAlarmsPerDate(1,From,To);
+        var countDayPriority = new int[3];
+        var countSensorsDayPriority = new int[3];
+        var inputAlarms = await IncomingAlarmService.GetAlarmsPerDate(1, From, To);
+        var countByPriorities = 
+            await IncomingAlarmService.GetCountIncomingAlarmsByPriorities(
+                new GetCountIncomingAlarmsByDatesQuery
+                {
+                    WorkStationId = 1, 
+                    ActivationFrom = new DateTimeOffset(from1, TimeZoneInfo.Local.GetUtcOffset(from1)), 
+                    ActivationTo = toOffset
+                });
 
-        if(inputAlarms!=null)
-            foreach(var c in inputAlarms)
+        if (inputAlarms != null)
+            foreach (var c in inputAlarms)
             {
-                if (c[0].DateTimeActivation.Date != To.Date || c[0].Priority is PriorityType.Information or PriorityType.None) continue;
-                if (c[0].Priority == PriorityType.Low)
+                if (c[0].DateTimeActivation.Date != To.Date) continue;
+                var index = c[0].Priority switch 
                 {
-                    countDayPriority[2] += c.Count;
-                    countSensorsDayPriority[2] += 1;
-                }
-                if (c[0].Priority == PriorityType.High)
-                {
-                    countDayPriority[1] += c.Count;
-                    countSensorsDayPriority[1] += 1;
-                }
-                if (c[0].Priority == PriorityType.Urgent)
-                {
-                    countDayPriority[0] += c.Count;
-                    countSensorsDayPriority[0] += 1;
-                }
+                    PriorityType.Low => 2,
+                    PriorityType.High => 1,
+                    PriorityType.Urgent => 0,
+                    _ => -1
+                };
+                
+                if (index < 0) continue;
 
+                countDayPriority[index] += c.Count;
+                countSensorsDayPriority[index]++;
+                
                 CountDay += c.Count;
                 CountSensorsDay += 1;
-            }       
+            }
 
-        CountDayPriority[0] = countDayPriority[0].ToString();
-        CountDayPriority[1] = countDayPriority[1].ToString();
-        CountDayPriority[2] = countDayPriority[2].ToString();
-        
+        if (countByPriorities.Success)
+        {
+            var countByPrioritiesResult = countByPriorities.Payload;
+            CountDayPriority[0] = countByPrioritiesResult.FirstOrDefault(c => c.PriorityType == PriorityType.Urgent)?.Count.ToString();
+            CountDayPriority[1] = countByPrioritiesResult.FirstOrDefault(c => c.PriorityType == PriorityType.High)?.Count.ToString();
+            CountDayPriority[2] = countByPrioritiesResult.FirstOrDefault(c => c.PriorityType == PriorityType.Low)?.Count.ToString();
+        }
+// CountDayPriority[0] = countDayPriority[0].ToString();
+//         CountDayPriority[1] = countDayPriority[1].ToString();
+//         CountDayPriority[2] = countDayPriority[2].ToString();
+
         CountSensorsDayPriority[0] = countSensorsDayPriority[0].ToString();
         CountSensorsDayPriority[1] = countSensorsDayPriority[1].ToString();
         CountSensorsDayPriority[2] = countSensorsDayPriority[2].ToString();
 
         SpinnerService.Hide();
     }
+
 }

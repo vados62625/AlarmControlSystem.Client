@@ -1,5 +1,9 @@
 
 window.setup = (id, config) => {
+    let chartStatus = Chart.getChart(id); // <canvas> id
+    if (chartStatus != undefined) {
+        chartStatus.destroy();
+    }
     var ctx = document.getElementById(id).getContext('2d');
     new Chart(ctx, config);
 }
