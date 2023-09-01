@@ -88,7 +88,10 @@
         From = To.AddDays(-7);
         From = new DateTime(From.Year, From.Month, From.Day, 0, 0, 0);
         var from1 = new DateTime(To.Year, To.Month, To.Day, 0, 0, 0);
-        var toOffset = new DateTimeOffset(To, TimeZoneInfo.Local.GetUtcOffset(To));
+        // var fromOffset = new DateTimeOffset(from1, TimeZoneInfo.Local.GetUtcOffset(from1));
+        // var toOffset = new DateTimeOffset(To, TimeZoneInfo.Local.GetUtcOffset(To));
+        var fromOffset = new DateTimeOffset(2023, 8, 2, 00, 00, 00, TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
+        var toOffset = new DateTimeOffset(2023, 8, 2, 23, 59, 59, TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
         Console.WriteLine(toOffset);
 
         CountDayPriority = new string[3];
@@ -101,7 +104,7 @@
                 new GetCountIncomingAlarmsByDatesQuery
                 {
                     WorkStationId = 1, 
-                    ActivationFrom = new DateTimeOffset(from1, TimeZoneInfo.Local.GetUtcOffset(from1)), 
+                    ActivationFrom = fromOffset, 
                     ActivationTo = toOffset
                 });
 
@@ -129,9 +132,12 @@
         if (countByPriorities.Success)
         {
             var countByPrioritiesResult = countByPriorities.Payload;
-            CountDayPriority[0] = countByPrioritiesResult.FirstOrDefault(c => c.PriorityType == PriorityType.Urgent)?.Count.ToString();
-            CountDayPriority[1] = countByPrioritiesResult.FirstOrDefault(c => c.PriorityType == PriorityType.High)?.Count.ToString();
-            CountDayPriority[2] = countByPrioritiesResult.FirstOrDefault(c => c.PriorityType == PriorityType.Low)?.Count.ToString();
+            CountDayPriority[0] = countByPrioritiesResult
+                .FirstOrDefault(c => c.PriorityType == PriorityType.Urgent)?.Count.ToString() ?? "0";
+            CountDayPriority[1] = countByPrioritiesResult
+                .FirstOrDefault(c => c.PriorityType == PriorityType.High)?.Count.ToString() ?? "0";
+            CountDayPriority[2] = countByPrioritiesResult
+                .FirstOrDefault(c => c.PriorityType == PriorityType.Low)?.Count.ToString() ?? "0";
         }
 // CountDayPriority[0] = countDayPriority[0].ToString();
 //         CountDayPriority[1] = countDayPriority[1].ToString();

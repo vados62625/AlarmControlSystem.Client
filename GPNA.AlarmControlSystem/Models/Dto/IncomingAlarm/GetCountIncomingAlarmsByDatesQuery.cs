@@ -3,7 +3,9 @@
     public class GetCountIncomingAlarmsByDatesQuery
     {
         public int WorkStationId { get; set; }
-        public virtual DateTimeOffset ActivationFrom { get; set; }
-        public virtual DateTimeOffset ActivationTo { get; set; }
+        
+        public DateTimeOffset ActivationFrom { get; set; }
+        
+        public DateTimeOffset ActivationTo { get; set; }
     }
 }
