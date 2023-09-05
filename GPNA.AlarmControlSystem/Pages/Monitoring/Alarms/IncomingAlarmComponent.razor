@@ -27,7 +27,7 @@
         <td colspan=4 @onclick="ShowMoreAttributes"> @(Tag.Description ?? "N/A") </td>
         <td @onclick="ShowMoreAttributes">@Tag.Priority</td>
         <td @onclick="ShowMoreAttributes">@(Tag.AlarmLimit ?? "N/A") / @(Tag.Value ?? "N/A")</td>              
-        <td class="item-table__count" @onclick="ShowListAlarms">@((IsChildren) ? "" : (List?.Count ?? -1))</td>
+        <td class="item-table__count" @onclick="ShowListAlarms">@((IsChildren) ? "" : (List?.Length ?? -1))</td>
         <td class="item-table__checkbox" @onclick="SendTest"><input class="item-table__checkbox-input" type="checkbox" checked="@(Tag.StatusAlarm==StatusAlarmType.InWork)"/></td>
     </tr>
     
@@ -40,9 +40,9 @@
         </tr>
     }
 
-    @if (displayList && List?.Count>1)
+    @if (displayList && List?.Length > 1)
     {
-        for (int i = List.Count-2; i >=0; i--)
+        for (int i = List.Length - 2; i >=0; i--)
         {
            <IncomingAlarmComponent Tag="List[i]" IsChildren = "true"/> 
         }
@@ -62,7 +62,7 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
 {
     [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
 
-    [Parameter] public List<IncomingAlarmDto>? List { get; set; } = new();
+    [Parameter] public IncomingAlarmDto[]? List { get; set; } = Array.Empty<IncomingAlarmDto>();
     [Parameter] public IncomingAlarmDto? Tag { get; set; }
     [Parameter] public bool IsChildren { get; set; } = false;
 
@@ -71,14 +71,14 @@ else if (Tag!=null && Tag.Description!=null && Tag.Description == "ПЕРЕСМ�
 
     protected override void OnInitialized()    
     {
-        if (List?.Count>0)
+        if (List?.Length > 0)
         {
             if (Tag == null)
             {
-                Tag = List[List.Count - 1];
+                Tag = List[List.Length - 1];
             }  
             
-            List = List.OrderByDescending(c => c.DateTimeActivation).ToList();
+            List = List.OrderByDescending(c => c.DateTimeActivation).ToArray();
         }        
     }
 

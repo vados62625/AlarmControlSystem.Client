@@ -84,15 +84,15 @@
 
     [Parameter] public string? Title { get; set; } = "Входящие сигнализации"; 
 
-    [CascadingParameter(Name = "From")] public DateTime From { get; set; }
-    [CascadingParameter(Name = "To")] public DateTime To { get; set; }
+    [CascadingParameter(Name = "From")] public DateTimeOffset From { get; set; }
+    [CascadingParameter(Name = "To")] public DateTimeOffset To { get; set; }
 
     private List<double> _alarmsOnDay = new List<double>(7);
 
     protected override async Task OnInitializedAsync()    
     {
         //Получить список всех аварий Входящих/Активных/Подавленных за промежуток From - To        
-        var incomingAlarms= await IncomingAlarmService.GetCountIncomingAlarmsByDates(new GetCountIncomingAlarmsByDatesQuery() {WorkStationId = 1, ActivationFrom = From, ActivationTo = To});
+        var incomingAlarms= await IncomingAlarmService.GetCountIncomingAlarmsByDates(new GetIncomingAlarmsByDatesQuery() {WorkStationId = 1, ActivationFrom = From, ActivationTo = To});
         if(!incomingAlarms.Success) return;
         var i = 0;
         foreach(var alarm in incomingAlarms.Payload)

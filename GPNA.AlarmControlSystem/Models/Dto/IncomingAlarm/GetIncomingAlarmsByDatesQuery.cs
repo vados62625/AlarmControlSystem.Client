@@ -1,6 +1,6 @@
 ﻿namespace GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
 {
-    public class GetCountIncomingAlarmsByDatesQuery
+    public class GetIncomingAlarmsByDatesQuery
     {
         public int WorkStationId { get; set; }
         

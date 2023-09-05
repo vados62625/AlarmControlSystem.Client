@@ -57,7 +57,7 @@
             else
             {
                 <Virtualize Items="Alarms">
-                    <IncomingAlarmComponent @key="context[context.Count-1].Id" List="@context"/>                                   
+                    <IncomingAlarmComponent @key="context[context.Length - 1].Id" List="@context"/>                                   
                 </Virtualize>
             }
         
@@ -70,7 +70,7 @@
 
 	[Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
 
-    [Parameter] public List<List<IncomingAlarmDto>>? Alarms { get; set; }
+    [Parameter] public IncomingAlarmDto[][] Alarms { get; set; }
 
     [Parameter] public PriorityType? Priority { get; set; }
 
@@ -83,94 +83,97 @@
     {
         Alarms = null;
         countH = 0; countHH = 0; countL = 0; countLL = 0; countAll = 0; countUrgent = 0; countHigh = 0; countLow = 0; countInfo = 0; countNonePriority=0; countDiscr = 0; countRSHI = 0; countRSLO = 0; countComms = 0; countNoneState = 0;
-        var incomingAlarms= await IncomingAlarmService.GetAlarmsPerDate(1, From, To);
-
-	    var test = await IncomingAlarmService.GetCollection(new GetIncomingAlarmsListQuery() { WorkStationId = 1, ActivationFrom = From, ActivationTo = To });
-
-
+        var incomingAlarms= await IncomingAlarmService.GetAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
+        {
+            WorkStationId = 1,
+            ActivationFrom = From,
+            ActivationTo = To,
+        });
+        
         if (incomingAlarms == null)
         {
-            Alarms = new List<List<IncomingAlarmDto>>();
+            Alarms = Array.Empty<IncomingAlarmDto[]>();
             return;
         }
         var from = new DateTime(From.Year, From.Month, From.Day, 8, 0, 0);
 
         for (int i = 0; from<To; i++ )
         {
-            var list = new List<IncomingAlarmDto>();
-            list.Add(new IncomingAlarmDto() { DateTimeActivation = from, Description = "ПЕРЕСМЕНКА", Id=i,Priority=PriorityType.None });
-            incomingAlarms.Add(list);
+            var list = Array.Empty<IncomingAlarmDto[]>();
+            list = list.Append(new [] { new IncomingAlarmDto { DateTimeActivation = from, Description = "ПЕРЕСМЕНКА", Id=i,Priority=PriorityType.None }}).ToArray();
+            incomingAlarms = incomingAlarms.Concat(list).ToArray();
             countAll -= 1;
             countNonePriority -= 1;
             from = from.AddHours(12);
         }
 
-        Alarms = incomingAlarms.OrderByDescending(c => c[^1].DateTimeActivation).ToList();
+
+        Alarms = incomingAlarms.OrderByDescending(c => c[^1].DateTimeActivation).ToArray();
 
         foreach (var x in Alarms)
         {
             switch (x[^1].State) 
             {
                 case StateType.H:
-                    countH += x.Count;
+                    countH += x.Length;
                     break; 
                 case StateType.HH:
-                    countHH += x.Count;
+                    countHH += x.Length;
                     break; 
                 case StateType.L:
-                    countL += x.Count;
+                    countL += x.Length;
                     break; 
                 case StateType.LL:
-                    countLL += x.Count;
+                    countLL += x.Length;
                     break; 
                 case StateType.Discr:
-                    countDiscr += x.Count;
+                    countDiscr += x.Length;
                     break; 
                 case StateType.RSHI:
-                    countRSHI += x.Count;
+                    countRSHI += x.Length;
                     break; 
                 case StateType.RSLO:
-                    countRSLO += x.Count;
+                    countRSLO += x.Length;
                     break; 
                 case StateType.Comms:
-                    countComms += x.Count;
+                    countComms += x.Length;
                     break; 
                 case StateType.none:
-                    countNoneState += x.Count;
+                    countNoneState += x.Length;
                     break;
                 default:
-                    countNoneState += x.Count;
+                    countNoneState += x.Length;
                     break;
             }
 
             switch (x[^1].Priority) 
             {
                 case PriorityType.Low:
-                    countLow += x.Count;
+                    countLow += x.Length;
                     break; 
                 case PriorityType.High:
-                    countHigh += x.Count;
+                    countHigh += x.Length;
                     break; 
                 case PriorityType.Urgent:
-                    countUrgent += x.Count;
+                    countUrgent += x.Length;
                     break; 
                 case PriorityType.Information:
-                    countInfo += x.Count;
+                    countInfo += x.Length;
                     break; 
                 case PriorityType.None:
-                    countNonePriority += x.Count;
+                    countNonePriority += x.Length;
                     break;
                 default:
-                    countNonePriority += x.Count;
+                    countNonePriority += x.Length;
                     break;
             }
 
-            countAll += x.Count;
+            countAll += x.Length;
         }
 
         if (Priority != null)
         {
-            Alarms = Alarms.Where(context => Priority == context[^1].Priority || Priority == null).ToList();
+            Alarms = Alarms.Where(context => Priority == context[^1].Priority || Priority == null).ToArray();
         }
     }
 }

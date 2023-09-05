@@ -2,56 +2,58 @@
 @using GPNA.AlarmControlSystem.Pages.Reports.Charts
 @inject IJSRuntime JSRuntime
 
-
-<div style="display:flex;align-items: center;    justify-content: center; ">  
-    <div style="display:flex;gap:8px;">
-        <div class="stat-box">
-            <div class="stat-box__numbers">
-                <span>@GeneralCount</span>
-                <span style="color:#09B37B">+0%</span>
+@if (IsEnableRenderChart)
+{
+    <div style="display:flex;align-items: center;    justify-content: center; ">  
+        <div style="display:flex;gap:8px;">
+            <div class="stat-box">
+                <div class="stat-box__numbers">
+                    <span>@GeneralCount</span>
+                    <span style="color:#09B37B">+0%</span>
+                </div>
+                <span class="stat-box__desc">Общее количество сигнализаций</span>
             </div>
-            <span class="stat-box__desc">Общее количество сигнализаций</span>
-        </div>
-        <div class="stat-box">
-            <div class="stat-box__numbers">
-                <span title="Среднее количествово критичных сигнализаций за последние 720 часов">@(AverageUrgent)</span>
-                <span style="color:#09B37B">+0%</span>
+            <div class="stat-box">
+                <div class="stat-box__numbers">
+                    <span title="Среднее количествово критичных сигнализаций за последние 720 часов">@AverageUrgent</span>
+                    <span style="color:#09B37B">+0%</span>
+                </div>
+                <span class="stat-box__desc" title="Среднее количествово критичных сигнализаций за последние @IncomingAlarms.Count часов">Среднее количествово критичных</span>
             </div>
-            <span class="stat-box__desc" title="Среднее количествово критичных сигнализаций за последние @IncomingAlarms.Count часов">Среднее количествово критичных</span>
-        </div>
-        <div class="stat-box">
-            <div class="stat-box__numbers">
-                <span>@GeneralCount</span>
-                <span style="color:#09B37B">+0%</span>
+            <div class="stat-box">
+                <div class="stat-box__numbers">
+                    <span>@GeneralCount</span>
+                    <span style="color:#09B37B">+0%</span>
+                </div>
+                <span class="stat-box__desc">УПНГ</span>
             </div>
-            <span class="stat-box__desc">УПНГ</span>
-        </div>
-        <div class="stat-box">
-            <div class="stat-box__numbers">
-                <span>N/A</span>
-                <span style="color:#09B37B">+0%</span>
+            <div class="stat-box">
+                <div class="stat-box__numbers">
+                    <span>N/A</span>
+                    <span style="color:#09B37B">+0%</span>
+                </div>
+                <span class="stat-box__desc">БМУПН</span>
             </div>
-            <span class="stat-box__desc">БМУПН</span>
-        </div>
-        <div class="stat-box">
-            <div class="stat-box__numbers">
-                <span>N/A</span>
-                <span style="color:#09B37B">+0%</span>
+            <div class="stat-box">
+                <div class="stat-box__numbers">
+                    <span>N/A</span>
+                    <span style="color:#09B37B">+0%</span>
+                </div>
+                <span class="stat-box__desc">Скважины</span>
             </div>
-            <span class="stat-box__desc">Скважины</span>
-        </div>
-        <div class="stat-box">
-            <div class="stat-box__numbers">
-                <span>N/A</span>
-                <span style="color:#09B37B">+0%</span>
+            <div class="stat-box">
+                <div class="stat-box__numbers">
+                    <span>N/A</span>
+                    <span style="color:#09B37B">+0%</span>
+                </div>
+                <span class="stat-box__desc">Энергетика</span>
             </div>
-            <span class="stat-box__desc">Энергетика</span>
         </div>
+        <div style="position: absolute;    right: 20px;">
+            <span style="margin-right:10px;">KPI:</span><input type="number" @bind="inputKpi"/>
+        </div>    
     </div>
-    <div style="position: absolute;    right: 20px;">
-        <span style="margin-right:10px;">KPI:</span><input type="number" @bind="inputKpi"/>
-    </div>    
-</div>
+}
 
 <div>
     <div style="display: flex;    align-items: center;    gap: 10px;    margin: 10px 0 0 0;">

@@ -6,7 +6,7 @@
 
 @code {
 
-    [Parameter] public Dictionary<DateTime, List<IncomingAlarmDto>>? IncomingAlarms {get;set;}
+    [Parameter] public Dictionary<DateTimeOffset, IncomingAlarmDto[]>? IncomingAlarms {get;set;}
 
     [Parameter]
     public string? Id { get; set; } = "chart1";
@@ -38,7 +38,7 @@
             foreach (var alarmsOnHour in IncomingAlarms)
             {
                 numTime[i] = (alarmsOnHour.Key.ToString("M") + " " + alarmsOnHour.Key.ToString("t"));
-                Arm1[i] = alarmsOnHour.Value.Count;
+                Arm1[i] = alarmsOnHour.Value.Length;
                 kpi[i] = Kpi;
                 i++;
             }

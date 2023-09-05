@@ -84,8 +84,8 @@
 
     [Parameter] public string? Title { get; set; } = "Активные сигнализации"; 
 
-    [CascadingParameter(Name = "From")] public DateTime From { get; set; }
-    [CascadingParameter(Name = "To")] public DateTime To { get; set; }
+    [CascadingParameter(Name = "From")] public DateTimeOffset From { get; set; }
+    [CascadingParameter(Name = "To")] public DateTimeOffset To { get; set; }
 
     private List<int> _alarmsOnDay = new List<int>(7);
 

@@ -12,22 +12,24 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
         [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
         [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
 
-        [Parameter] public DateTime From { get; set; }
-        [Parameter] public DateTime To { get; set; }
+        [Parameter] public DateTimeOffset From { get; set; }
+        [Parameter] public DateTimeOffset To { get; set; }
         static int inputKpi = 12;
 
         // Значения в плитках
         int GeneralCount, AverageUrgent, AlarmsCountArm1, AlarmsCountArm2, AlarmsCountArm3, AlarmsCountArm4;
 
         [Parameter] public bool IsEnableRenderChart { get; set; } = false;
-        public Dictionary<DateTime, List<IncomingAlarmDto>>? IncomingAlarms { get; set; }
+        public Dictionary<DateTimeOffset, IncomingAlarmDto[]>? IncomingAlarms { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
-            To = DateTime.Now.AddDays(-1);
-            To = new DateTime(To.Year, To.Month, To.Day, 23, 59, 59);
-            From = DateTime.Now.AddDays(-1);
-            From = new DateTime(From.Year, From.Month, From.Day, 0, 0, 0);            
+            To = DateTimeOffset.Now.AddDays(-1);
+            To = new DateTimeOffset(To.Year, To.Month, To.Day, 23, 59, 59,
+                TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
+            From = DateTimeOffset.Now.AddDays(-1);
+            From = new DateTimeOffset(From.Year, From.Month, From.Day, 0, 0, 0,
+                TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
         }
 
         protected override async Task OnParametersSetAsync()
@@ -36,15 +38,26 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
             SpinnerService.Show();
             StateHasChanged();
             GeneralCount = 0;
-            AverageUrgent = SetAverageUrgent().Result;
-            IncomingAlarms = await IncomingAlarmService.GetCountInHour(1, From, To); //TODO: ?
-
-            foreach (var alarmsOnHour in IncomingAlarms)
+            AverageUrgent = await SetAverageUrgent();
+            
+            var incomingAlarmsResult = await IncomingAlarmService.GetCountInHour(new GetIncomingAlarmsByDatesQuery
             {
-                if (alarmsOnHour.Value != null && alarmsOnHour.Value.Count > 0)
-                { 
-                    GeneralCount += alarmsOnHour.Value.Count;
-                    AlarmsCountArm1 += alarmsOnHour.Value.Count;                        
+                WorkStationId = 1,
+                ActivationFrom = From,
+                ActivationTo = To,
+            });
+            
+            if (incomingAlarmsResult.Success)
+            {
+                IncomingAlarms = incomingAlarmsResult.Payload;
+
+                foreach (var alarmsOnHour in IncomingAlarms)
+                {
+                    if (alarmsOnHour.Value != null && alarmsOnHour.Value.Length > 0)
+                    {
+                        GeneralCount += alarmsOnHour.Value.Length;
+                        AlarmsCountArm1 += alarmsOnHour.Value.Length;
+                    }
                 }
             }
 
@@ -55,32 +68,47 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
 
         async void SetDateTime(int days)
         {
-            To = DateTime.Now.AddDays(-1);
-            To = new DateTime(To.Year, To.Month, To.Day, 23, 59, 59);
-            From = DateTime.Now.AddDays(-days);
-            From = new DateTime(From.Year, From.Month, From.Day, 0, 0, 0);
+            To = DateTimeOffset.Now.AddDays(-1);
+            To = new DateTimeOffset(To.Year, To.Month, To.Day, 23, 59, 59,
+                TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
+            From = DateTimeOffset.Now.AddDays(-days);
+            From = new DateTimeOffset(From.Year, From.Month, From.Day, 0, 0, 0,
+                TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
 
             await OnParametersSetAsync();
         }
 
         async Task<int> SetAverageUrgent()
         {
-            var incomingAlarms = await IncomingAlarmService.GetCountInHour(1, DateTime.Now.AddHours(-720), DateTime.Now);
-            int countUrgent = 0;
-            foreach (var alarmsOnHour in incomingAlarms)
+            var incomingAlarmsResult = await IncomingAlarmService.GetCountInHour(new GetIncomingAlarmsByDatesQuery
             {
-                if (alarmsOnHour.Value != null && alarmsOnHour.Value.Count > 0)
-                    foreach (var alarm in alarmsOnHour.Value)
-                    {                        
-                        if (alarm.Priority == PriorityType.Urgent)
+                WorkStationId = 1,
+                ActivationFrom = From,
+                ActivationTo = To,
+            });
+            
+            if (incomingAlarmsResult.Success)
+            {
+                var incomingAlarms = incomingAlarmsResult.Payload;
+                
+                int countUrgent = 0;
+                
+                foreach (var alarmsOnHour in incomingAlarms)
+                {
+                    if (alarmsOnHour.Value != null && alarmsOnHour.Value.Length > 0)
+                        foreach (var alarm in alarmsOnHour.Value)
                         {
-                            countUrgent += 1;
+                            if (alarm.Priority == PriorityType.Urgent)
+                            {
+                                countUrgent += 1;
+                            }
                         }
-                    }
+                }
+
+                if (incomingAlarms.Count > 0)
+                    return countUrgent / incomingAlarms.Count;
             }
             
-            if (incomingAlarms.Count > 0)
-                return countUrgent / incomingAlarms.Count;
             return -1;
         }
     }
