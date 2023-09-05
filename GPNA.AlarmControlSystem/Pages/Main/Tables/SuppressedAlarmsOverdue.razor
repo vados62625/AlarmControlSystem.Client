@@ -58,8 +58,8 @@
 
     [Parameter] public PriorityType? Priority { get; set; }
 
-    [CascadingParameter(Name = "From")] public DateTime From { get; set; }
-    [CascadingParameter(Name = "To")] public DateTime To { get; set; }
+    [CascadingParameter(Name = "From")] public DateTimeOffset From { get; set; }
+    [CascadingParameter(Name = "To")] public DateTimeOffset To { get; set; }
 
     int _workStation = 1;
 

@@ -34,24 +34,14 @@ namespace GPNA.AlarmControlSystem.Services
             return _apiBroker.Get<CountAlarmsOnPriority[]>($"{URL}/GetCountIncomingAlarmsByPriorities", content);
         }
 
-        public async Task<IncomingAlarmDto[][]> GetAlarmsPerDate(GetIncomingAlarmsByDatesQuery content)
+        public Task<Result<IncomingAlarmDto[][]>> GetAlarmsPerDate(GetIncomingAlarmsByDatesQuery content)
         {
-            var result = await this.GetCollection(new GetIncomingAlarmsListQuery()
-                { WorkStationId = content.WorkStationId, ActivationFrom = content.ActivationFrom, ActivationTo = content.ActivationTo });
-
-            if (result.Success)
-            {
-                return result.Payload.Items.GroupBy(c => new { c.DateTimeActivation.Date, c.TagName, c.State })
-                    .Select(group => group.ToArray())
-                    .ToArray();
-            }
-
-            return default;
+            return _apiBroker.Get<IncomingAlarmDto[][]>($"{URL}/GetIncomingAlarmsPerDate", content);
         }
 
-        public async Task<Result<Dictionary<DateTimeOffset, IncomingAlarmDto[]>>> GetCountInHour(GetIncomingAlarmsByDatesQuery content)
+        public Task<Result<Dictionary<DateTimeOffset, IncomingAlarmDto[]>>> GetCountInHour(GetIncomingAlarmsByDatesQuery content)
         {
-            return await _apiBroker.Get<Dictionary<DateTimeOffset, IncomingAlarmDto[]>>($"{URL}/GetCountIncomingAlarmsInHour", content);
+            return _apiBroker.Get<Dictionary<DateTimeOffset, IncomingAlarmDto[]>>($"{URL}/GetCountIncomingAlarmsInHour", content);
         }
     }
 }
