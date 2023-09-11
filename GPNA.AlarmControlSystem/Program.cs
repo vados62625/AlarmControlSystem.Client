@@ -27,7 +27,8 @@ builder.Services
     .AddScoped<ISuppressedAlarmService, SuppressedAlarmService>()
     .AddScoped<IWorkStationService, WorkStationService>()
     .AddScoped<IUserService, UserService>()
-    .AddScoped<ITagService, TagService>();
+    .AddScoped<ITagService, TagService>()
+    .AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddHttpClient<IAlarmControlSystemApiBroker, AlarmControlSystemApiBroker>(client =>
 {
