@@ -2,50 +2,38 @@
 @using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 @using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
 @using GPNA.AlarmControlSystem.Models.Dto.SuppressedAlarm
-  
+
 <div style="min-width:530px;">
-        <h3 style="margin-top:50px;text-align: center;">@Title</h3>
-        <div class="table-responsive">
+    <h3 style="margin-top:50px;text-align: center;">@Title</h3>
+    <div class="table-responsive">
         <table class="table table-striped table-bordered">
             <thead class="thead-light">
-                <tr>
-                    <th colspan=2>@From.ToString("M") - @To.ToString("M")</th>
-                    <th>@GetDayString((int)From.DayOfWeek)</th>
-                    <th>@GetDayString((int)From.AddDays(1).DayOfWeek)</th>
-                    <th>@GetDayString((int)From.AddDays(2).DayOfWeek)</th>              
-                    <th>@GetDayString((int)From.AddDays(3).DayOfWeek)</th>
-                    <th>@GetDayString((int)From.AddDays(4).DayOfWeek)</th> 
-                    <th>@GetDayString((int)From.AddDays(5).DayOfWeek)</th>
-                    <th>@GetDayString((int)From.AddDays(6).DayOfWeek)</th>  
-                </tr>
-            </thead>            
+            <tr>
+                <th colspan=2>@From.ToString("M") - @To.ToString("M")</th>
+                <th>@GetDayString((int)From.DayOfWeek)</th>
+                <th>@GetDayString((int)From.AddDays(1).DayOfWeek)</th>
+                <th>@GetDayString((int)From.AddDays(2).DayOfWeek)</th>
+                <th>@GetDayString((int)From.AddDays(3).DayOfWeek)</th>
+                <th>@GetDayString((int)From.AddDays(4).DayOfWeek)</th>
+                <th>@GetDayString((int)From.AddDays(5).DayOfWeek)</th>
+                <th>@GetDayString((int)From.AddDays(6).DayOfWeek)</th>
+            </tr>
+            </thead>
             <tbody>
-                <tr>
-                    <th colspan=2>УПНГ</th>  
-                    @if (AlarmsOnDay != null && AlarmsOnDay.Count > 0)
-                    {
-                        <td>@AlarmsOnDay[0].ToString()</td>
-                        <td>@AlarmsOnDay[1].ToString()</td>
-                        <td>@AlarmsOnDay[2].ToString()</td>
-                        <td>@AlarmsOnDay[3].ToString()</td>
-                        <td>@AlarmsOnDay[4].ToString()</td>
-                        <td>@AlarmsOnDay[5].ToString()</td>
-                        <td>@AlarmsOnDay[6].ToString()</td>
-                    }
-                    else
-                    {
-                        <td>N/A</td>
-                        <td>N/A</td>
-                        <td>N/A</td>
-                        <td>N/A</td>
-                        <td>N/A</td>
-                        <td>N/A</td>
-                        <td>N/A</td>
-                    }
-                                        
-                </tr>
-                <tr>
-                    <th colspan=2>БМУПН</th>
+            <tr>
+                <th colspan=2>УПНГ</th>
+                @if (AlarmsOnDay != null && AlarmsOnDay.Count > 0)
+                {
+                    <td>@AlarmsOnDay[0].ToString()</td>
+                    <td>@AlarmsOnDay[1].ToString()</td>
+                    <td>@AlarmsOnDay[2].ToString()</td>
+                    <td>@AlarmsOnDay[3].ToString()</td>
+                    <td>@AlarmsOnDay[4].ToString()</td>
+                    <td>@AlarmsOnDay[5].ToString()</td>
+                    <td>@AlarmsOnDay[6].ToString()</td>
+                }
+                else
+                {
                     <td>N/A</td>
                     <td>N/A</td>
                     <td>N/A</td>
@@ -53,52 +41,75 @@
                     <td>N/A</td>
                     <td>N/A</td>
                     <td>N/A</td>
-                </tr>
-                <tr>
-                    <th colspan=2>Скважины</th>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                </tr>
-                <tr>
-                    <th colspan=2>Энергетика</th>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                </tr>            
-             </tbody>
+                }
+
+            </tr>
+            <tr>
+                <th colspan=2>БМУПН</th>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+            </tr>
+            <tr>
+                <th colspan=2>Скважины</th>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+            </tr>
+            <tr>
+                <th colspan=2>Энергетика</th>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                <td>N/A</td>
+            </tr>
+            </tbody>
         </table>
     </div>
-    </div>
+</div>
 
 @code {
-    [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
-	[Inject] ISuppressedAlarmService SuppressedAlarmService { get; set; } = null!;
 
-    [Parameter] public string? Title { get; set; } = "Подавленные сигнализации"; 
-    [Parameter] public List<List<IncomingAlarmDto>>? Alarms { get; set; }
+    [Inject]
+    IBufferAlarmService AlarmService { get; set; } = null!;
 
-    [CascadingParameter(Name = "From")] public DateTimeOffset From { get; set; }
-    [CascadingParameter(Name = "To")] public DateTimeOffset To { get; set; }
+    [Inject]
+    ISuppressedAlarmService SuppressedAlarmService { get; set; } = null!;
+
+    [Inject]
+    ILogger<SuppressedAlarms> _logger { get; set; } = null!;
+
+    [Parameter]
+    public string? Title { get; set; } = "Подавленные сигнализации";
+
+    [Parameter]
+    public List<List<IncomingAlarmDto>>? Alarms { get; set; }
+
+    [CascadingParameter(Name = "From")]
+    public DateTimeOffset From { get; set; }
+
+    [CascadingParameter(Name = "To")]
+    public DateTimeOffset To { get; set; }
 
     public List<int> AlarmsOnDay = new List<int>(7);
 
 
-
-
-    protected override async Task OnInitializedAsync()    
+    protected override async Task OnInitializedAsync()
     {
-        var suppressedAlarms= await SuppressedAlarmService.GetCountSuppressedAlarmsByDates(new GetCountSuppressedAlarmsByDatesQuery(){WorkStationId = 1, ActivationFrom = From, ActivationTo = To});
+        var suppressedAlarms = await SuppressedAlarmService.GetCountSuppressedAlarmsByDates(new GetCountSuppressedAlarmsByDatesQuery() { WorkStationId = 1, ActivationFrom = From, ActivationTo = To });
         if (!suppressedAlarms.Success) return;
-        
+
         var i = 0;
         foreach (var count in suppressedAlarms.Payload)
         {
@@ -106,7 +117,6 @@
             AlarmsOnDay.Add(count.Count);
             i++;
         }
-        
     }
 
     string GetDayString(int dayOfWeek)
@@ -123,4 +133,5 @@
             _ => ""
             };
     }
+
 }

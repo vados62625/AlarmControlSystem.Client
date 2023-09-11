@@ -1,6 +1,8 @@
 using Blazored.Modal;
+using Blazored.Toast;
 using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Services;
+using NLog.Web;
 
 IConfiguration configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
@@ -11,10 +13,13 @@ double.TryParse(configuration["ConnectionConfig:AlarmControlSystemWebApi:TimeOut
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseNLog();
+
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services
     .AddBlazoredModal()
+    .AddBlazoredToast()
     .AddScoped<ISpinnerService, SpinnerService>()
     .AddScoped<IBufferAlarmService, BufferAlarmService>()
     .AddScoped<IIncomingAlarmService, IncomingAlarmService>()

@@ -1,8 +1,15 @@
-﻿@inherits LayoutComponentBase
+﻿@using Blazored.Toast.Configuration
+@inherits LayoutComponentBase
 
+<BlazoredToasts Position="ToastPosition.BottomRight"
+                Timeout="10"
+                IconType="IconType.FontAwesome"
+                SuccessClass="success-toast-override"
+                SuccessIcon="fa fa-thumbs-up"
+                ErrorIcon="fa fa-bug"/>
 <Spinner></Spinner>
 <div class="page @theme">
-    <header>        
+    <header>
         <span class="logo @theme"></span>
         <span class="app-name">СУС Меретояха</span>
 
@@ -12,11 +19,11 @@
                     Главная
                 </NavLink>
             </li>
-            <li class="top-menu_item">                                  
-                    <NavLink class="top-menu_link" style="pointer-events: none;" href="Arm">
-                        Мониторинг
-                    </NavLink>
-                
+            <li class="top-menu_item">
+                <NavLink class="top-menu_link" style="pointer-events: none;" href="Arm">
+                    Мониторинг
+                </NavLink>
+
                 <ul class="sub-menu">
                     <li class="sub-menu_item">
                         <NavLink class="top-menu_link" href="Arm/1">
@@ -73,14 +80,14 @@
         </ul>
 
         <div class="header-right-side">
-            <span @onclick="ChangeTheme"  class="theme-toggler @theme"></span>            
-            <LoginDisplay />
+            <span @onclick="ChangeTheme" class="theme-toggler @theme"></span>
+            <LoginDisplay/>
         </div>
     </header>
 
     <div class="main">
         <div class="top-row px-4 auth">
-            
+
 
         </div>
 

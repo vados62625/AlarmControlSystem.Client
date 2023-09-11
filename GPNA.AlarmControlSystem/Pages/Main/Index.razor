@@ -6,6 +6,7 @@
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Pages.Main.Tables
 @using GPNA.AlarmControlSystem.Pages.Main.Charts
+@inject IJSRuntime JSRuntime
 
 
 <CascadingValue Name="From" Value="@From">
@@ -16,14 +17,14 @@
                 <h4>Количество сигнализаций за @To.ToString("M")</h4>
                 <div style="height:340px;display: flex;justify-content: center; align-items: center; max-width:420px;margin: auto;position:relative;">
                     <DoughnutChart Id="donutChart1" Data1="@CountDayPriority"/>
-                    <p style="position: absolute; margin-top: 50px; font-size: 50px;z-index:1;" title="Среднее число входящих сигнализаций">@CountDay</p>
+                    <p style="position: absolute; margin-top: 50px; font-size: 50px;z-index:1;" title="Среднее число входящих сигнализаций">@(!_hasExceptions ? CountDay : "N/A")</p>
                 </div>
             </div>
             <div style="display:flex;flex-direction:column;align-content:center;">
                 <h4>Количество уникальных сигнализаций за @To.ToString("M")</h4>
                 <div style="height:340px;display: flex;justify-content: center; align-items: center;max-width:420px;margin: auto; position:relative;">
                     <DoughnutChart Id="donutChart2" Data1="@CountSensorsDayPriority"/>
-                    <p style="position: absolute;   margin-top: 50px; font-size: 50px;" title="Среднее число входящих сигнализаций">@CountSensorsDay</p>
+                    <p style="position: absolute;   margin-top: 50px; font-size: 50px;" title="Среднее число входящих сигнализаций">@(!_hasExceptions ? CountSensorsDay : "N/A")</p>
                 </div>
             </div>
         </div>
@@ -61,6 +62,9 @@
     [Inject]
     protected ISpinnerService SpinnerService { get; set; } = default!;
 
+    [Inject]
+    private ILogger<Index> _logger { get; set; } = default!;
+
     [CascadingParameter(Name = "From")]
     public DateTimeOffset From { get; set; }
 
@@ -76,32 +80,33 @@
 
     public List<List<IncomingAlarmDto>>? InputAlarms;
     int _workStation = 1;
+    private bool _hasExceptions = false;
 
     protected override async Task OnInitializedAsync()
     {
         SpinnerService.Show();
         To = DateTime.Now.AddDays(-1);
-        // To = new DateTime(To.Year , To.Month, To.Day, 23,59,59);
-        // To = new DateTime(2023, 3, 9, 23, 59, 59);
+    // To = new DateTime(To.Year , To.Month, To.Day, 23,59,59);
+    // To = new DateTime(2023, 3, 9, 23, 59, 59);
         To = new DateTime(2023, 8, 2, 23, 59, 59);
-        // From = DateTime.Now.AddDays(-7);
+    // From = DateTime.Now.AddDays(-7);
         From = To.AddDays(-7);
         From = new DateTime(From.Year, From.Month, From.Day, 0, 0, 0);
         var from1 = new DateTime(To.Year, To.Month, To.Day, 0, 0, 0);
-        
+
         var fromOffset = new DateTimeOffset(2023, 8, 2, 00, 00, 00, TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
         var toOffset = new DateTimeOffset(2023, 8, 2, 23, 59, 59, TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
         Console.WriteLine(toOffset);
 
         CountDayPriority = new string[3];
         CountSensorsDayPriority = new string[3];
-        
-        var countByPriorities = 
+
+        var countByPriorities =
             await IncomingAlarmService.GetCountIncomingAlarmsByPriorities(
                 new GetIncomingAlarmsByDatesQuery
                 {
-                    WorkStationId = 1, 
-                    ActivationFrom = fromOffset, 
+                    WorkStationId = 1,
+                    ActivationFrom = fromOffset,
                     ActivationTo = toOffset
                 });
 
