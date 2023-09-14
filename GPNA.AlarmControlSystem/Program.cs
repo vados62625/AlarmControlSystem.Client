@@ -2,6 +2,7 @@ using Blazored.Modal;
 using Blazored.Toast;
 using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Services;
+using Microsoft.AspNetCore.Authentication.Negotiate;
 using NLog.Web;
 
 IConfiguration configuration = new ConfigurationBuilder()
@@ -15,7 +16,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseNLog();
 
+builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
+    .AddNegotiate();
+
 builder.Services.AddRazorPages();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddServerSideBlazor();
 builder.Services
     .AddBlazoredModal()
@@ -46,11 +51,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");

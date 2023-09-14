@@ -1,4 +1,6 @@
-﻿using GPNA.AlarmControlSystem.Application.Dto;
+﻿using System.Security.Principal;
+using System.Text;
+using GPNA.AlarmControlSystem.Application.Dto;
 using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto;
 using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
@@ -10,12 +12,14 @@ namespace GPNA.AlarmControlSystem.Services
     public class IncomingAlarmService : CrudBase<IncomingAlarmDto>, IIncomingAlarmService
     {
         readonly IAlarmControlSystemApiBroker _apiBroker;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         const string URL = "api/IncomingAlarms";
 
-        public IncomingAlarmService(IAlarmControlSystemApiBroker apiBroker) : base(apiBroker, URL)
+        public IncomingAlarmService(IAlarmControlSystemApiBroker apiBroker, IHttpContextAccessor httpContextAccessor) : base(apiBroker, URL)
         {
             _apiBroker = apiBroker;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -34,9 +38,9 @@ namespace GPNA.AlarmControlSystem.Services
             return _apiBroker.Get<CountAlarmsOnPriority[]>($"{URL}/GetCountIncomingAlarmsByPriorities", content);
         }
 
-        public Task<Result<IncomingAlarmDto[][]>> GetAlarmsPerDate(GetIncomingAlarmsByDatesQuery content)
+        public async Task<Result<IncomingAlarmDto[][]>> GetAlarmsPerDate(GetIncomingAlarmsByDatesQuery content)
         {
-            return _apiBroker.Get<IncomingAlarmDto[][]>($"{URL}/GetIncomingAlarmsPerDate", content);
+            return await _apiBroker.Get<IncomingAlarmDto[][]>($"{URL}/GetIncomingAlarmsPerDate", content);
         }
 
         public Task<Result<Dictionary<DateTimeOffset, IncomingAlarmDto[]>>> GetCountInHour(GetIncomingAlarmsByDatesQuery content)
