@@ -36,10 +36,15 @@ builder.Services
     .AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddHttpClient<IAlarmControlSystemApiBroker, AlarmControlSystemApiBroker>(client =>
-{
-    client.BaseAddress = new Uri(configuration["ConnectionConfig:AlarmControlSystemWebApi:Uri"]);
-    client.Timeout = TimeSpan.FromMilliseconds(timeOut);
-});
+    {
+        client.BaseAddress = new Uri(configuration["ConnectionConfig:AlarmControlSystemWebApi:Uri"]);
+        client.Timeout = TimeSpan.FromMilliseconds(timeOut);
+    })
+    .ConfigurePrimaryHttpMessageHandler(() =>
+        new HttpClientHandler
+        {
+            UseDefaultCredentials = true
+        });
 
 var app = builder.Build();
 
