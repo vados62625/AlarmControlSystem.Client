@@ -6,6 +6,7 @@ using GPNA.AlarmControlSystem.Models.Dto;
 using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
 using GPNA.RestClient.Models;
 using GPNA.RestClient.Services.Base;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GPNA.AlarmControlSystem.Services
 {
@@ -26,6 +27,7 @@ namespace GPNA.AlarmControlSystem.Services
         /// Получить количество входящие сигнализаций за дату в рамках заданного периода
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         public async Task<Result<CountAlarmsOnDate[]>> GetCountIncomingAlarmsByDates(
             GetIncomingAlarmsByDatesQuery content)
         {

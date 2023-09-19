@@ -1,3 +1,5 @@
+using System.Net;
+using System.Security.Principal;
 using Blazored.Modal;
 using Blazored.Toast;
 using GPNA.AlarmControlSystem.Interfaces;
@@ -17,7 +19,33 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseNLog();
 
 builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
-    .AddNegotiate();
+    .AddNegotiate(options =>
+    {
+        options.Events = new NegotiateEvents
+        {
+            OnAuthenticated = context =>
+            {
+                if (context.Principal.Identity is WindowsIdentity windowsIdentity)
+                {
+                    string loginName = windowsIdentity.Name;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
+    });
+
+// builder.Services.AddAuthentication()
+//     .AddCookie("ntlm", o =>
+//     {
+//         o.LoginPath = "/api/Authorization";
+//         o.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+//     });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("console", policy => policy.RequireRole("BUILTIN\\Пользователи журналов производительности"));
+});
 
 builder.Services.AddRazorPages();
 builder.Services.AddHttpContextAccessor();
@@ -40,11 +68,23 @@ builder.Services.AddHttpClient<IAlarmControlSystemApiBroker, AlarmControlSystemA
         client.BaseAddress = new Uri(configuration["ConnectionConfig:AlarmControlSystemWebApi:Uri"]);
         client.Timeout = TimeSpan.FromMilliseconds(timeOut);
     })
-    .ConfigurePrimaryHttpMessageHandler(() =>
-        new HttpClientHandler
+    .ConfigurePrimaryHttpMessageHandler((sp) =>
+    {
+        // var cookieContainer = new CookieContainer();
+        //
+        // var cookie = sp.GetRequiredService<IHttpContextAccessor>().HttpContext.Request.Cookies[".AspNetCore.ntlm"];
+        //
+        // cookieContainer.Add(new Uri(configuration["ConnectionConfig:AlarmControlSystemWebApi:Uri"]), new Cookie(".AspNetCore.ntlm", cookie));
+
+        return new HttpClientHandler
         {
-            UseDefaultCredentials = true
-        });
+            // Credentials = sp.GetRequiredService<HttpContext>().
+            UseDefaultCredentials = true,
+            UseCookies = true,
+            // CookieContainer = cookieContainer
+        };
+    });
+
 
 var app = builder.Build();
 
@@ -65,7 +105,8 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapBlazorHub();
+app.MapBlazorHub()
+    .RequireAuthorization(/* Policy */);
 app.MapFallbackToPage("/_Host");
 
 app.Run();
