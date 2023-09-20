@@ -1,12 +1,13 @@
 ﻿@page "/"
-@* @attribute [Authorize(AuthenticationSchemes = NegotiateDefaults.AuthenticationScheme, Roles = "admin")] *@
+@attribute [Authorize]
+@* @attribute [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] *@
 @using GPNA.AlarmControlSystem.Services
 @using GPNA.AlarmControlSystem.Interfaces
 @using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Pages.Main.Tables
 @using GPNA.AlarmControlSystem.Pages.Main.Charts
-@using Microsoft.AspNetCore.Authentication.Negotiate
+@using Microsoft.AspNetCore.Authentication.JwtBearer
 @inject IJSRuntime JSRuntime
 
 
