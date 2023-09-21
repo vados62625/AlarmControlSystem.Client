@@ -4,6 +4,8 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject AuthorizationService AuthorizationService
 @inject ProtectedSessionStorage ProtectedSessionStore
+@inject NavigationManager Navigation
+@attribute [AllowAnonymous]
 
 <h3>Авторизация...</h3>
 
@@ -18,10 +20,11 @@
             var savedToken = await ProtectedSessionStore.GetAsync<string>("apiToken");
             if (string.IsNullOrEmpty(savedToken.Value))
             {
-                var apiToken = await AuthorizationService.GetAndSaveApiToken(user);
+                var apiToken = await AuthorizationService.GetAndSaveApiToken();
                 if (!string.IsNullOrEmpty(apiToken))
                 {
                     await ProtectedSessionStore.SetAsync("apiToken", apiToken);
+                    Navigation.NavigateTo("/", forceLoad: true);
                 }
             }
         }

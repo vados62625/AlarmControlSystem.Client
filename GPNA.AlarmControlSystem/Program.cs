@@ -23,46 +23,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseNLog();
 
 builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
-    .AddNegotiate(options =>
-    {
-        // options.Events = new NegotiateEvents
-        // {
-        //     OnAuthenticated = context =>
-        //     {
-        //         if (context.Principal.Identity is WindowsIdentity windowsIdentity)
-        //         {
-        //             string loginName = windowsIdentity.Name;
-        //         }
-        //
-        //         return Task.CompletedTask;
-        //     }
-        // };
-    });
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.RequireHttpsMetadata = false;
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            // укзывает, будет ли валидироваться издатель при валидации токена
-            ValidateIssuer = true,
-            // строка, представляющая издателя
-            ValidIssuer = JwtOptions.ISSUER,
-
-            // будет ли валидироваться потребитель токена
-            ValidateAudience = true,
-            // установка потребителя токена
-            ValidAudience = JwtOptions.AUDIENCE,
-            // будет ли валидироваться время существования
-            ValidateLifetime = true,
-
-            // установка ключа безопасности
-            IssuerSigningKey = JwtOptions.GetSymmetricSecurityKey(),
-            // валидация ключа безопасности
-            ValidateIssuerSigningKey = true,
-        };
-    });
+    .AddNegotiate();
 
 builder.Services.AddAuthorization(options =>
 {
@@ -116,7 +77,6 @@ app.MapBlazorHub()
     .RequireAuthorization(new AuthorizeAttribute()
     {
         AuthenticationSchemes = NegotiateDefaults.AuthenticationScheme,
-        // Roles = "superAdmin"
     });
 
 app.MapFallbackToPage("/_Host");

@@ -14,29 +14,46 @@ public interface IAlarmControlSystemApiBroker : IApiBrokerBase
 public class AlarmControlSystemApiBroker : ApiBrokerBase, IAlarmControlSystemApiBroker
 {
     private readonly IToastService _toastService;
+
     private readonly ProtectedSessionStorage _sessionStorage;
+
+    // private readonly AuthorizationService _authorizationService;
     private readonly ILogger<AlarmControlSystemApiBroker> _logger;
-    public AlarmControlSystemApiBroker(HttpClient httpClient, IToastService toastService, ProtectedSessionStorage sessionStorage, ILogger<AlarmControlSystemApiBroker> logger)
+
+    public AlarmControlSystemApiBroker(HttpClient httpClient, IToastService toastService,
+        ProtectedSessionStorage sessionStorage, // AuthorizationService authorizationService,
+        ILogger<AlarmControlSystemApiBroker> logger)
         : base(httpClient)
     {
         _toastService = toastService;
         _sessionStorage = sessionStorage;
+        // _authorizationService = authorizationService;
         _logger = logger;
     }
-    
+
     public async Task<Result<T>> Get<T>(string uri, object? content = null)
     {
         try
         {
-            var apiToken = await _sessionStorage.GetAsync<string>("apiToken");
-            
-            if (!string.IsNullOrEmpty(apiToken.Value))
+            var apiTokenResult = await _sessionStorage.GetAsync<string>("apiToken");
+
+            var apiToken = apiTokenResult.Value;
+            //
+            // if (!apiTokenResult.Success)
+            // {
+            //     apiToken = await _authorizationService.GetAndSaveApiToken();
+            // }
+            //
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+
+            var result = await base.Get<T>(uri, content);
+
+            if (!result.Success)
             {
-                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken.Value);
-                // HttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiToken}");
+                await _sessionStorage.DeleteAsync("apiToken");
             }
-            
-            return await base.Get<T>(uri, content);
+
+            return result;
         }
         catch (Exception ex) when (
             ex is System.Net.Sockets.SocketException ||
@@ -44,9 +61,9 @@ public class AlarmControlSystemApiBroker : ApiBrokerBase, IAlarmControlSystemApi
         )
         {
             _toastService.ShowError($"Нет связи с сервером. Ошибка получения данных с источника {uri}");
-            
+
             _logger.LogError(ex.Message);
-            
+
             return new Result<T>("Нет связи с сервером");
         }
     }

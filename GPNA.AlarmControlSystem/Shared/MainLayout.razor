@@ -1,5 +1,12 @@
 ﻿@using Blazored.Toast.Configuration
+@using GPNA.AlarmControlSystem.Services
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inherits LayoutComponentBase
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject AuthorizationService AuthorizationService
+@inject ProtectedSessionStorage ProtectedSessionStore
+@inject NavigationManager NavigationManager
 
 <BlazoredToasts Position="ToastPosition.BottomRight"
                 Timeout="10"
@@ -115,6 +122,30 @@
         else
         {
             theme = "light-theme";
+        }
+    }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState?.User?.Identity?.Name; //Получаем полное имя с доменом так
+
+        if (user != null)
+        {
+            var savedToken = await ProtectedSessionStore.GetAsync<string>("apiToken");
+            if (string.IsNullOrEmpty(savedToken.Value) || !await AuthorizationService.GetAuthorizationStatus())
+            {
+                var apiToken = await AuthorizationService.GetAndSaveApiToken();
+                if (!string.IsNullOrEmpty(apiToken))
+                {
+                    await ProtectedSessionStore.SetAsync("apiToken", apiToken);
+                    
+                    if (await AuthorizationService.GetAuthorizationStatus())
+                    {
+                        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+                    }
+                }
+            }
         }
     }
 

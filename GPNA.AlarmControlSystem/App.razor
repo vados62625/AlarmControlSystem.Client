@@ -1,15 +1,15 @@
 ﻿<CascadingBlazoredModal>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
-            
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                <Authorizing>
-                    Авторизация блин блять...
-                </Authorizing>
-                <NotAuthorized>
-                    <RedirectToLogin/>
-                </NotAuthorized>
-            </AuthorizeRouteView>
+            @* *@
+            @* <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"> *@
+            @*     <Authorizing> *@
+            @*         Авторизация... *@
+            @*     </Authorizing> *@
+            @*     <NotAuthorized> *@
+            @*         <RedirectToLogin/> *@
+            @*     </NotAuthorized> *@
+            @* </AuthorizeRouteView> *@
             
             <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
             <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
