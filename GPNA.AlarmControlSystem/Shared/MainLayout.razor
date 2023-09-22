@@ -1,12 +1,16 @@
 ﻿@using Blazored.Toast.Configuration
+@using Blazored.Toast.Services
+@using GPNA.AlarmControlSystem.Extensions
 @using GPNA.AlarmControlSystem.Services
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using IAuthorizationService = GPNA.AlarmControlSystem.Interfaces.IAuthorizationService
 @inherits LayoutComponentBase
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject AuthorizationService AuthorizationService
+@inject IAuthorizationService AuthorizationService
 @inject ProtectedSessionStorage ProtectedSessionStore
 @inject NavigationManager NavigationManager
+@inject IToastService ToastService
 
 <BlazoredToasts Position="ToastPosition.BottomRight"
                 Timeout="10"
@@ -124,29 +128,28 @@
             theme = "light-theme";
         }
     }
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState?.User?.Identity?.Name; //Получаем полное имя с доменом так
-
-        if (user != null)
+        if (!await AuthorizationService.GetAuthorizationStatus())
         {
-            var savedToken = await ProtectedSessionStore.GetAsync<string>("apiToken");
-            if (string.IsNullOrEmpty(savedToken.Value) || !await AuthorizationService.GetAuthorizationStatus())
+            await UpdateBearerAuthorizationToken();
+        }
+    }
+
+    private async Task UpdateBearerAuthorizationToken()
+    {
+        var apiToken = await AuthorizationService.GetAndSaveApiToken();
+        if (!string.IsNullOrEmpty(apiToken))
+        {
+            if (await AuthorizationService.GetAuthorizationStatus())
             {
-                var apiToken = await AuthorizationService.GetAndSaveApiToken();
-                if (!string.IsNullOrEmpty(apiToken))
-                {
-                    await ProtectedSessionStore.SetAsync("apiToken", apiToken);
-                    
-                    if (await AuthorizationService.GetAuthorizationStatus())
-                    {
-                        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
-                    }
-                }
+                NavigationManager.ReloadPage();
+                return;
             }
         }
+
+        ToastService.ShowError("Не удалось авторизоваться на сервере");
     }
 
 }
