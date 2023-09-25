@@ -133,23 +133,7 @@
     {
         if (!await AuthorizationService.GetAuthorizationStatus())
         {
-            await UpdateBearerAuthorizationToken();
+            ToastService.ShowError("Не удалось авторизоваться на сервере");
         }
     }
-
-    private async Task UpdateBearerAuthorizationToken()
-    {
-        var apiToken = await AuthorizationService.GetAndSaveApiToken();
-        if (!string.IsNullOrEmpty(apiToken))
-        {
-            if (await AuthorizationService.GetAuthorizationStatus())
-            {
-                NavigationManager.ReloadPage();
-                return;
-            }
-        }
-
-        ToastService.ShowError("Не удалось авторизоваться на сервере");
-    }
-
 }
