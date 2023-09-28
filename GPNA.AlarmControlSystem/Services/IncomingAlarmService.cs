@@ -34,10 +34,10 @@ namespace GPNA.AlarmControlSystem.Services
             return await _apiBroker.Get<CountAlarmsOnDate[]>($"{URL}/GetCountIncomingAlarmsByDates", content);
         }
 
-        public Task<Result<CountAlarmsOnPriority[]>> GetCountIncomingAlarmsByPriorities(
+        public async Task<Result<CountAlarmsOnPriority[]>> GetCountIncomingAlarmsByPriorities(
             GetIncomingAlarmsByDatesQuery content)
         {
-            return _apiBroker.Get<CountAlarmsOnPriority[]>($"{URL}/GetCountIncomingAlarmsByPriorities", content);
+            return await _apiBroker.Get<CountAlarmsOnPriority[]>($"{URL}/GetCountIncomingAlarmsByPriorities", content);
         }
 
         public async Task<Result<IncomingAlarmDto[][]>> GetAlarmsPerDate(GetIncomingAlarmsByDatesQuery content)
@@ -45,9 +45,9 @@ namespace GPNA.AlarmControlSystem.Services
             return await _apiBroker.Get<IncomingAlarmDto[][]>($"{URL}/GetIncomingAlarmsPerDate", content);
         }
 
-        public Task<Result<Dictionary<DateTimeOffset, IncomingAlarmDto[]>>> GetCountInHour(GetIncomingAlarmsByDatesQuery content)
+        public async Task<Result<Dictionary<DateTimeOffset, IncomingAlarmDto[]>>> GetCountInHour(GetIncomingAlarmsByDatesQuery content)
         {
-            return _apiBroker.Get<Dictionary<DateTimeOffset, IncomingAlarmDto[]>>($"{URL}/GetCountIncomingAlarmsInHour", content);
+            return await _apiBroker.Get<Dictionary<DateTimeOffset, IncomingAlarmDto[]>>($"{URL}/GetCountIncomingAlarmsInHour", content);
         }
     }
 }

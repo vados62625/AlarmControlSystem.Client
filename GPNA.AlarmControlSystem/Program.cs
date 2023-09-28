@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using NLog.Web;
+using IAuthorizationService = GPNA.AlarmControlSystem.Interfaces.IAuthorizationService;
 
 IConfiguration configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
@@ -52,7 +53,7 @@ builder.Services.AddHttpClient<IAlarmControlSystemApiBroker, AlarmControlSystemA
     client.Timeout = TimeSpan.FromMilliseconds(timeOut);
 });
 
-builder.Services.AddScoped<AuthorizationService>();
+builder.Services.AddScoped<IAuthorizationService, AuthorizationService>();
 
 var app = builder.Build();
 
