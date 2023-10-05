@@ -6,136 +6,21 @@
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Pages.Main.Tables
 @using GPNA.AlarmControlSystem.Pages.Main.Charts
+@using GPNA.AlarmControlSystem.Shared.Main
 @inject IJSRuntime JSRuntime
 
 
-<CascadingValue Name="From" Value="@From">
-    <CascadingValue Name="To" Value="@To">
-
-        <div style="display:flex;justify-content:space-evenly; margin-top:50px;">
-            <div style="display:flex;flex-direction:column;align-content:center;">
-                <h4>Количество сигнализаций за @To.ToString("M")</h4>
-                <div style="height:340px;display: flex;justify-content: center; align-items: center; max-width:420px;margin: auto;position:relative;">
-                    <DoughnutChart Id="donutChart1" Data1="@CountDayPriority"/>
-                    <p style="position: absolute; margin-top: 50px; font-size: 50px;z-index:1;" title="Среднее число входящих сигнализаций">@(!_hasExceptions ? CountDay : "N/A")</p>
-                </div>
-            </div>
-            <div style="display:flex;flex-direction:column;align-content:center;">
-                <h4>Количество уникальных сигнализаций за @To.ToString("M")</h4>
-                <div style="height:340px;display: flex;justify-content: center; align-items: center;max-width:420px;margin: auto; position:relative;">
-                    <DoughnutChart Id="donutChart2" Data1="@CountSensorsDayPriority"/>
-                    <p style="position: absolute;   margin-top: 50px; font-size: 50px;" title="Среднее число входящих сигнализаций">@(!_hasExceptions ? CountSensorsDay : "N/A")</p>
-                </div>
-            </div>
-        </div>
-
-        <div style="display:flex;gap:20px;justify-content: space-evenly;">
-            <IncomingAlarms/>
-            <ActiveAlarms/>
-            <SuppressedAlarms/>
-        </div>
-
-        <h4>Активные сигнализации (Просроченные)</h4>
-        <ActiveAlarmsOverdue/>
-        <h4>Подавленные сигнализации (Просроченные)</h4>
-        <SuppressedAlarmsOverdue/>
-
-
-    </CascadingValue>
-</CascadingValue>
-
+<div class="page-main">
+    <div class="page-title">
+        <ButtonNavigation Title="Меретояхинское" Navigation="left"/>
+        <p>ЖУРНАЛ СИГНАЛИЗАЦИЙ ЗА @DateTime.Now.ToString("dd MMMM") МЕРЕТОЯХА <b>ТАЗОВСКОЕ</b></p>
+        <SelectDto/>   
+        <ButtonNavigation Title="Северо-Самбурское" Navigation="right"/>
+    </div>
+    <Alarm Title="УПНГ"/>  
+</div>
 
 @code {
 
-    [Parameter]
-    public string? Title { get; set; }
-
-    [Inject]
-    IBufferAlarmService AlarmService { get; set; } = null!;
-
-    [Inject]
-    IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
-
-    [Inject]
-    ITagService TagService { get; set; } = null!;
-
-    [Inject]
-    protected ISpinnerService SpinnerService { get; set; } = default!;
-
-    [Inject]
-    private ILogger<Index> _logger { get; set; } = default!;
-
-    [CascadingParameter(Name = "From")]
-    public DateTimeOffset From { get; set; }
-
-    [CascadingParameter(Name = "To")]
-    public DateTimeOffset To { get; set; }
-
-
-    string[] CountDayPriority = new string[3];
-    string[] CountSensorsDayPriority = new string[3];
-
-    int CountDay = 0;
-    int CountSensorsDay = 0;
-
-    public List<List<IncomingAlarmDto>>? InputAlarms;
-    int _workStation = 1;
-    private bool _hasExceptions = false;
-
-    protected override async Task OnInitializedAsync()
-    {
-        SpinnerService.Show();
-        To = DateTime.Now.AddDays(-1);
-    // To = new DateTime(To.Year , To.Month, To.Day, 23,59,59);
-    // To = new DateTime(2023, 3, 9, 23, 59, 59);
-        To = new DateTime(2023, 8, 2, 23, 59, 59);
-    // From = DateTime.Now.AddDays(-7);
-        From = To.AddDays(-7);
-        From = new DateTime(From.Year, From.Month, From.Day, 0, 0, 0);
-        var from1 = new DateTime(To.Year, To.Month, To.Day, 0, 0, 0);
-
-        var fromOffset = new DateTimeOffset(2023, 8, 2, 00, 00, 00, TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
-        var toOffset = new DateTimeOffset(2023, 8, 2, 23, 59, 59, TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
-        Console.WriteLine(toOffset);
-
-        CountDayPriority = new string[3];
-        CountSensorsDayPriority = new string[3];
-
-        var countByPriorities =
-            await IncomingAlarmService.GetCountIncomingAlarmsByPriorities(
-                new GetIncomingAlarmsByDatesQuery
-                {
-                    WorkStationId = 1,
-                    ActivationFrom = fromOffset,
-                    ActivationTo = toOffset
-                });
-
-        if (countByPriorities.Success)
-        {
-            var countByPrioritiesResult = countByPriorities.Payload;
-            if (countByPrioritiesResult != null)
-            {
-                var urgentCount = countByPrioritiesResult
-                    .FirstOrDefault(c => c.PriorityType == PriorityType.Urgent);
-                var highCount = countByPrioritiesResult
-                    .FirstOrDefault(c => c.PriorityType == PriorityType.High);
-                var lowCount = countByPrioritiesResult
-                    .FirstOrDefault(c => c.PriorityType == PriorityType.Low);
-
-                CountDayPriority[0] = urgentCount?.CountDayPriority.ToString() ?? "0";
-                CountDayPriority[1] = highCount?.CountDayPriority.ToString() ?? "0";
-                CountDayPriority[2] = lowCount?.CountDayPriority.ToString() ?? "0";
-
-                CountSensorsDayPriority[0] = urgentCount?.CountSensorsDayPriority.ToString() ?? "0";
-                CountSensorsDayPriority[1] = highCount?.CountSensorsDayPriority.ToString() ?? "0";
-                CountSensorsDayPriority[2] = lowCount?.CountSensorsDayPriority.ToString() ?? "0";
-
-                CountDay = urgentCount.CountDayPriority + highCount.CountDayPriority + lowCount.CountDayPriority;
-                CountSensorsDay = urgentCount.CountSensorsDayPriority + highCount.CountSensorsDayPriority + lowCount.CountSensorsDayPriority;
-            }
-        }
-
-        SpinnerService.Hide();
-    }
-
+    [Parameter] public DateTime DateTime { get; set; }
 }

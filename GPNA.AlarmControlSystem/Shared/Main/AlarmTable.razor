@@ -1,0 +1,61 @@
+﻿@if (VisibleTablePriority)
+{
+    <table class="alarm-table-priority">
+        <tbody>
+            <tr><td colspan="2">Приоритет</td></tr>
+            <tr><td>Низкий</td></tr>
+            <tr><td>Высокий</td></tr>
+            <tr><td>Критичный</td></tr>
+        </tbody>
+    </table>
+}
+
+<table class="alarm-table">
+    <caption>@Title</caption>
+    <thead>
+        <tr>
+            <th>@DateTime.Now.ToString("dd.MM")</th>
+            <th>@DateTime.Now.AddDays(-1).ToString("dd.MM")</th>
+            <th>@DateTime.Now.AddDays(-2).ToString("dd.MM")</th>
+            <th>@DateTime.Now.AddDays(-3).ToString("dd.MM")</th>
+            <th>@DateTime.Now.AddDays(-4).ToString("dd.MM")</th>
+            <th>@DateTime.Now.AddDays(-5).ToString("dd.MM")</th>
+            <th>@DateTime.Now.AddDays(-6).ToString("dd.MM")</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>4</td>
+            <td>4</td>
+            <td>4</td>
+            <td>4</td>
+            <td>4</td>
+            <td>4</td>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>3</td>
+            <td>3</td>
+            <td>3</td>
+            <td>3</td>
+            <td>3</td>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>2</td>
+            <td>2</td>
+            <td>2</td>
+            <td>2</td>
+            <td>2</td>
+            <td>2</td>
+        </tr>
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public DateTime DateTime { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public bool VisibleTablePriority { get; set; } = false;
+}
