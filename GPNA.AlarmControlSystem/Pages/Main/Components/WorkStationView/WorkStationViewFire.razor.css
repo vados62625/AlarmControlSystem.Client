@@ -1,0 +1,10 @@
+﻿.title {
+    font-size: 10px;
+    color: var(--text-light-grey);
+    margin-bottom: 7px;
+}
+
+.container {
+    display: flex;
+    gap: 7px;
+}

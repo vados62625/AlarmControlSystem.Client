@@ -1,0 +1,22 @@
+﻿.bg-navigation {
+    border: none;
+    background-color: transparent;
+    gap: 11px;
+    display: flex;
+    align-items: center;
+}
+
+    .bg-navigation.right {
+        flex-direction: row-reverse;
+    }
+
+    .bg-navigation svg {
+        width: 6px;
+        height: 11px;
+    }
+
+    .bg-navigation p {
+        font-size: 14px;
+        color: var(--text-button-navigation-grey);
+        line-height: 120%;
+    }

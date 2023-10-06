@@ -6,18 +6,19 @@
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Pages.Main.Tables
 @using GPNA.AlarmControlSystem.Pages.Main.Charts
-@using GPNA.AlarmControlSystem.Shared.Main
+@using GPNA.AlarmControlSystem.Pages.Main.Components
+@using GPNA.AlarmControlSystem.Pages.Main.Components.WorkStationView
 @inject IJSRuntime JSRuntime
 
 
 <div class="page-main">
     <div class="page-title">
-        <ButtonNavigation Title="Меретояхинское" Navigation="left"/>
+        <ButtonNavigation Title="Меретояхинское" />
         <p>ЖУРНАЛ СИГНАЛИЗАЦИЙ ЗА @DateTime.Now.ToString("dd MMMM") МЕРЕТОЯХА <b>ТАЗОВСКОЕ</b></p>
         <SelectDto/>   
         <ButtonNavigation Title="Северо-Самбурское" Navigation="right"/>
     </div>
-    <Alarm Title="УПНГ"/>  
+    <WorkStationView Title="УПНГ" />
 </div>
 
 @code {

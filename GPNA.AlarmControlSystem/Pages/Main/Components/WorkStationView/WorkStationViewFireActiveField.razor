@@ -1,0 +1,11 @@
+﻿<div class="active-field">
+    <p>@Title</p>
+    <svg>
+        <use href="/img/icons/icons.svg#@Alarm"></use>
+    </svg>
+</div>
+    
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Alarm { get; set; }
+}

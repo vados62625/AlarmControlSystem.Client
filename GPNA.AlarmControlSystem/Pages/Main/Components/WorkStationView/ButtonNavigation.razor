@@ -1,0 +1,18 @@
+﻿<button class="bg-navigation @Navigation">
+    <svg>
+        @if (Navigation != null)
+        {
+                <use href="/img/icons/icons.svg#arrow-right"></use>
+        }
+        else
+        {
+                <use href="/img/icons/icons.svg#arrow-left"></use>
+        }   
+    </svg>
+    <p>@Title</p>    
+</button>
+
+@code {
+    [Parameter] public string? Navigation { get; set; }
+    [Parameter] public string? Title { get; set; }
+}
