@@ -1,0 +1,101 @@
+﻿.bg {
+    min-width: 93px;
+    min-height: 53px;
+    background: var(--white);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+}
+    .bg.total {
+        border: 0.5px solid var(--border-light-grey);
+    }
+    .bg.critical {
+        background: var(--bg-red);
+    }
+    .bg.high {
+        background: var(--bg-orange);
+    }
+    .bg.low {
+        background: var(--bg-blue-status);
+    }
+    .bg.info {
+        background: var(--bg-grey-status);
+    }
+    .bg.none-priority {
+        background: var(--bg-purple);
+    }
+
+.bg p {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--white);
+}
+
+    .bg p:first-child {
+        font-weight: 400;
+        font-size: 10px;        
+    }
+    .bg.total p {
+        color: var(--text-black);
+    }
+    .bg.total p:first-child {
+        color: var(--text-light-grey);
+    }
+
+    .bg.hh, .bg.ll {
+        border: 0.5px solid var(--border-red);
+    }
+        .bg.hh p, .bg.ll p {
+            color: var(--text-red);
+        }
+    .bg.h, .bg.l {
+        border: 0.5px solid var(--border-orange);
+    }
+        .bg.h p, .bg.l p {
+            color: var(--text-orange);
+        }
+    .bg.discr {
+        border: 0.5px solid var(--border-black);
+    }
+
+        .bg.discr p, .bg.rshi p, .bg.rslo p, .bg.none-state p {
+            color: var(--text-black);
+        }
+    .bg.rshi, .bg.rslo, .bg.none-state {
+        border: 0.5px solid var(--border-light-grey);
+    }
+
+        .bg.rshi p:first-child, .bg.rslo p:first-child, .bg.none-state p:first-child {
+            color: var(--text-light-grey);
+        }
+    .bg.fire, .bg.gas {
+        border: 0.5px solid var(--border-lighter-grey);
+        gap: 6px;
+    }
+        .bg.fire.active {
+            border: 0.5px solid var(--border-red);        
+        }
+        .bg.gas.active {
+            border: 0.5px solid var(--border-orange);
+        }
+
+    .bg.fire p, .bg.gas p {
+        color: var(--text-lighter-grey);
+    }
+        .bg.fire.active p, .bg.fire.active svg {
+            color: var(--text-red);
+        }
+
+        .bg.gas.active p, .bg.gas.active svg {
+            color: var(--text-orange);
+        }
+
+    .bg.fire svg, .bg.gas svg {
+        width: 20px;
+        height: 15px;
+        color: var(--text-lighter-grey);
+        margin-bottom: 4px;
+    }

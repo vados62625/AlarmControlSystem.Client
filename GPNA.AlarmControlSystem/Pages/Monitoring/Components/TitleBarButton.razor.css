@@ -1,0 +1,44 @@
+﻿.title-bar-button {
+    border: none;
+    background-color: transparent;
+    width: 150px;
+    height: 29px;
+    border-radius: 6px;
+    padding: 0;
+}
+
+    .title-bar-button.filtration {
+        background: var(--bg-lighter-red);
+        border: 1px solid var(--border-red);
+    }
+
+    .title-bar-button.export {
+        background: var(--bg-light-green);
+        border: 1px solid var(--border-grey-status);
+    }
+
+    .title-bar-button p {
+        font-weight: 400;
+        font-size: 14px;
+        color: var(--text-grey);
+    }
+
+    .title-bar-button.filtration p {
+        margin-left: 23px;
+    }
+
+    .title-bar-button.export p {
+        margin-left: 34px;
+    }
+
+    .title-bar-button div {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .title-bar-button svg {
+        width: 15px;
+        height: 15px;
+        margin-right: 14px;
+    }

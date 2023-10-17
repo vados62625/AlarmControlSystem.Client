@@ -1,0 +1,13 @@
+﻿<button class="title-bar-button @FunctionButton">
+    <div>
+        <p>@Title</p>
+        <svg>
+            <use href="/img/icons/icons.svg#@FunctionButton"></use>
+        </svg>
+    </div>
+</button>    
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? FunctionButton { get; set; }
+}

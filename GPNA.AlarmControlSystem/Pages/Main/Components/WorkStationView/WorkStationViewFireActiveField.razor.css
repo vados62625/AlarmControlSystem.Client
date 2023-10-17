@@ -28,5 +28,5 @@
     .active-field svg {
         width: 20px;
         height: 15px;
-        color: white;
+        color: var(--white);
     }

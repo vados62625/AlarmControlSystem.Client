@@ -1,0 +1,20 @@
+﻿<div class="bg @Priority @Status @StatusActive">
+    <p>@Title</p>
+    @if (Status == "fire" || Status == "gas")
+    {
+        <svg>
+            <use href="/img/icons/icons.svg#@Status"></use>
+        </svg>
+    } else
+    {
+        <p>@Value</p>
+    }    
+</div>
+
+@code {
+    [Parameter] public string? Priority { get; set; }
+    [Parameter] public string? Status { get; set; }
+    [Parameter] public string? StatusActive { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public int? Value { get; set; } = 11097;  
+}

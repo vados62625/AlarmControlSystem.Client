@@ -14,10 +14,13 @@
 <div class="page-main">
     <div class="page-title">
         <ButtonNavigation Title="Меретояхинское" />
-        <p>ЖУРНАЛ СИГНАЛИЗАЦИЙ ЗА @DateTime.Now.ToString("dd MMMM") МЕРЕТОЯХА <b>ТАЗОВСКОЕ</b></p>
-        <SelectDto/>   
+        <div class="d-flex align-items-center">
+            <p>ЖУРНАЛ СИГНАЛИЗАЦИЙ ЗА @DateTime.Now.ToString("dd MMMM") МЕРЕТОЯХА <b>ТАЗОВСКОЕ</b></p>
+            <SelectObject Object="dto" />
+        </div>           
         <ButtonNavigation Title="Северо-Самбурское" Navigation="right"/>
     </div>
+    <WorkStationView Title="УПНГ" />
     <WorkStationView Title="УПНГ" />
 </div>
 

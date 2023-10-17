@@ -1,54 +1,95 @@
 ﻿@page "/Arm/{armId:int}"
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Tables
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Components
 
 <CascadingValue Name="From" Value="@From">
 <CascadingValue Name="To" Value="@To">
-    <div style="display:flex; margin-left:300px;">
-        <h3>@Title</h3>
-        <div class="choice-group">
-            <select @bind="@AlarmType">        
-                <option value="Входящие">Входящие</option>
-                <option value="Активные">Активные</option>
-                <option value="Подавленные">Подавленные</option>
-            </select>
-            @if (AlarmType == "Входящие")
-            {           
-                <a style="margin-left:20px;">C :</a>
-                <input  type="datetime-local" @bind="From" >
-                <a>По :</a>
-                <input  type="datetime-local" @bind="To" >
-            }    
+
+<div class="page-main">
+    <div class="page-title">
+        <div class="d-flex date-period-select">
+            <input type="datetime-local" @bind="From">
+            <input type="datetime-local" @bind="To">
         </div>
+        <div class="d-flex">
+            <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ ЗА ПЕРИОД С DP МЕРЕТОЯХА <b>ТАЗОВСКОЕ</b></p>
+            <SelectObject Object="dto" />
+            <p style="margin-left:15px;"><b>УПНГ</b></p>
+            <SelectObject />
+        </div>
+        <div class="d-flex gap-2">
+            <TitleBarButton Title="Фильтрация" FunctionButton="filtration" />
+            <TitleBarButton Title="Экспорт" FunctionButton="export" />
+        </div>
+              
     </div>
+    <div class="d-flex justify-content-between">
+        <div class="priority-alarm-container">
+            <PriorityAlarm Title="Всего" Priority="total" />
+            <PriorityAlarm Title="Критичный" Priority="critical" />
+            <PriorityAlarm Title="Высокий" Priority="high"/>
+            <PriorityAlarm Title="Низкий" Priority="low"/>
+            <PriorityAlarm Title="Инфо" Priority="info"/>
+            <PriorityAlarm Title="Без приоритета" Priority="none-priority"/>
+        </div>
+        <div class="priority-alarm-container">
+            <PriorityAlarm Title="HH" Status="hh"/>
+            <PriorityAlarm Title="H" Status="h"/>
+            <PriorityAlarm Title="LL" Status="ll"/>
+            <PriorityAlarm Title="L" Status="l"/>
+            <PriorityAlarm Title="DISCR" Status="discr"/>
+            <PriorityAlarm Title="RSHI" Status="rshi"/>
+            <PriorityAlarm Title="RSLO" Status="rslo"/>
+            <PriorityAlarm Title="NoneState" Status="none-state"/>
+            <PriorityAlarm Title="Пожар" Status="fire"/>
+            <PriorityAlarm Title="Загазованность" Status="gas"/>
+        </div> 
+    </div>
+    <div style="border-radius: 6px;">
+        <MonitoringTable></MonitoringTable>
+    </div>
+    @*<BlazoredModal></BlazoredModal>*@
 
-    @if (AlarmType == "Входящие")
-    {
-       <IncomingAlarms />
-    }
+            @*<div style="display:flex; margin-left:300px;">
+                <h3>@Title</h3>
+                <div class="choice-group">
+                    <select @bind="@AlarmType">
+                        <option value="Входящие">Входящие</option>
+                        <option value="Активные">Активные</option>
+                        <option value="Подавленные">Подавленные</option>
+                    </select>                   
+                </div>
+            </div>*@
 
-    @if (AlarmType == "Активные")
-    {
-        <ActiveAlarms/>
-    }
+            @*@if (AlarmType == "Входящие")
+            {
+                <IncomingAlarms />
+            }
 
-    @if (AlarmType == "Подавленные")
-    {
-        <SuppressedAlarms/>
-    }       
+            @if (AlarmType == "Активные")
+            {
+                <ActiveAlarms />
+            }
 
+            @if (AlarmType == "Подавленные")
+            {
+                <SuppressedAlarms />
+            }*@
+        </div>
+
+    </CascadingValue>
 </CascadingValue>
-</CascadingValue>
-
 
 @code {
+
+    [Parameter] public DateTime DateTime { get; set; }
     [Parameter] public int ArmId { get; set; }
     [Parameter] public string? Title { get; set; }
-
 
     [CascadingParameter(Name = "From")] public DateTimeOffset From { get; set; }
     [CascadingParameter(Name = "To")] public DateTimeOffset To { get; set; }
 
-    string? AlarmType = "Входящие";    
+    string? AlarmType = "Входящие";
     string? Priority = "0";
 
     void SelectPriority()
@@ -59,17 +100,17 @@
     protected override void OnInitialized()
     {
         To = DateTime.Now;
-        if (To.Hour > 7 &&  To.Hour < 20)
+        if (To.Hour > 7 && To.Hour < 20)
         {
-            From = new DateTime(To.Year , To.Month, To.Day, 8,0,0);
+            From = new DateTime(To.Year, To.Month, To.Day, 8, 0, 0);
         }
         else if (To.Hour >= 20)
         {
-            From = new DateTime(To.Year , To.Month, To.Day, 20,0,0);
+            From = new DateTime(To.Year, To.Month, To.Day, 20, 0, 0);
         }
         else
         {
-            From = new DateTime(To.Year , To.Month, To.Day-1, 20,0,0);
+            From = new DateTime(To.Year, To.Month, To.Day - 1, 20, 0, 0);
         }
     }
 
@@ -78,7 +119,7 @@
         switch (ArmId)
         {
             case 1:
-                Title = "УПНГ";                
+                Title = "УПНГ";
                 break;
             case 2:
                 Title = "БМУПН";

@@ -1,0 +1,31 @@
+﻿<div class="select-dto">
+    <button class="select-dto-button">
+        <svg>
+            <use href="/img/icons/icons.svg#select"></use>
+        </svg>
+    </button>
+    <div class="select-dto-content">
+        @if (Object == "dto")
+        {
+            <a href="#">Тазовское</a>
+            <a href="#">Месторождение 2</a>
+            <a href="#">Месторождение 3</a>
+            <a href="#">Отгрузка нефти</a>
+        }
+        else
+        {
+            <a href="#">УПНГ</a>
+            <a href="#">Энергоцентр</a>
+            <a href="#">ПСП</a>
+            <a href="#">ННП+ГВТ+УП</a>
+            <a href="#">УПНГ(БМУПН)</a>
+            <a href="#">ЦДНГ</a>
+            <a href="#">УКПГ</a>
+            <a href="#">АГРС</a>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? Object { get; set; }
+}

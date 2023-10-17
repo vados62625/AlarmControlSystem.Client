@@ -1,0 +1,61 @@
+﻿.table-status {
+    width: 90px;
+    height: 22px;
+    background: var(--white);   
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    text-transform: uppercase;   
+}
+
+    .table-status.hh-ll {
+        border: 1px solid var(--border-red);
+        color: var(--text-red);
+    }
+
+    .table-status.h-l {
+        border: 1px solid var(--border-orange);
+        color: var(--text-orange);
+    }
+
+    .table-status.discr {
+        border: 1px solid var(--border-black);
+        color: var(--text-black);
+    }
+
+    .table-status.comms {
+        border: 1px solid var(--border-grey-table-status);
+        color: var(--text-grey-table-status);
+    }        
+
+    .table-status.critical {
+        background: var(--bg-red);
+        color: var(--white);
+    }
+
+    .table-status.high {
+        background: var(--bg-orange);
+        color: var(--white);
+    }
+
+    .table-status.low {
+        background: var(--bg-blue-status);
+        color: var(--white);
+    }
+
+    .table-status.info {
+        background: var(--bg-grey-status);
+        color: var(--white);
+    }
+
+    .table-status.none-priority {
+        background: var(--bg-purple);
+        color: var(--white);
+    }
+
+    .table-status p {
+        font-weight: 400;
+        font-size: 11px;        
+    }
