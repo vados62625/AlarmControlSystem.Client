@@ -1,30 +1,63 @@
-﻿@page "/"
-@using GPNA.AlarmControlSystem.Services
-@using GPNA.AlarmControlSystem.Interfaces
-@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
-@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
-@using GPNA.AlarmControlSystem.Models.Enums
-@using GPNA.AlarmControlSystem.Pages.Main.Tables
-@using GPNA.AlarmControlSystem.Pages.Main.Charts
-@using GPNA.AlarmControlSystem.Pages.Main.Components
+﻿@page "/{fieldId:int}"
 @using GPNA.AlarmControlSystem.Pages.Main.Components.WorkStationView
-@inject IJSRuntime JSRuntime
+@using GPNA.AlarmControlSystem.Models.Dto.Field
+@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.Queries
+@inject IJSRuntime JsRuntime
 
 
 <div class="page-main">
     <div class="page-title">
-        <ButtonNavigation Title="Меретояхинское" />
+        <ButtonNavigation Title="Меретояхинское"/>
         <div class="d-flex align-items-center">
-            <p>ЖУРНАЛ СИГНАЛИЗАЦИЙ ЗА @DateTime.Now.ToString("dd MMMM") МЕРЕТОЯХА <b>ТАЗОВСКОЕ</b></p>
-            <SelectObject Object="dto" />
-        </div>           
+            <p>ЖУРНАЛ СИГНАЛИЗАЦИЙ ЗА @DateTime.ToString("dd MMMM") МЕРЕТОЯХА <b>ТАЗОВСКОЕ</b></p>
+            <SelectObject Object="dto"/>
+        </div>
         <ButtonNavigation Title="Северо-Самбурское" Navigation="right"/>
     </div>
-    <WorkStationView Title="УПНГ" />
-    <WorkStationView Title="УПНГ" />
+    @if (Field != default)
+    {
+        foreach (var workstation in Field.Workstations)
+        {
+            <WorkStationView Title=@workstation.Name/>
+        }
+    }
+    @* <WorkStationView Title="УПНГ"/> *@
 </div>
 
 @code {
 
-    [Parameter] public DateTime DateTime { get; set; }
+    [Parameter]
+    public DateTimeOffset DateTime { get; set; } = DateTimeOffset.Now;
+
+    [Parameter]
+    public int FieldId { get; set; }
+
+    [Inject]
+    private IFieldService? FieldService { get; set; }
+
+    public FieldMainPageDto? Field { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await InitializeField();
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task InitializeField()
+    {
+        if (FieldService != null && FieldId != default)
+        {
+            var query = new GetAlarmsCountForFieldQuery { FieldId = FieldId, ActivationFrom = DateTime.AddDays(-7), ActivationTo = DateTime };
+
+            var result = await FieldService.GetField(query);
+
+            if (result.Success)
+            {
+                Field = result.Payload;
+            }
+        }
+    }
+
 }

@@ -1,4 +1,4 @@
-namespace GPNA.AlarmControlSystem.Models.Dto;
+namespace GPNA.AlarmControlSystem.Models.Dto.Workstation;
 
 public class WorkStationDto : EntityDtoBase
 {

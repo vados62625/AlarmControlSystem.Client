@@ -1,5 +1,6 @@
 using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto;
+using GPNA.AlarmControlSystem.Models.Dto.Workstation;
 using GPNA.RestClient.Services.Base;
 
 namespace GPNA.AlarmControlSystem.Services;

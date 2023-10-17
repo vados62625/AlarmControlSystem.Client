@@ -1,4 +1,5 @@
-﻿using GPNA.AlarmControlSystem.Models.Enums;
+﻿using GPNA.AlarmControlSystem.Models.Dto.Queries;
+using GPNA.AlarmControlSystem.Models.Enums;
 
 namespace GPNA.AlarmControlSystem.Models.Dto.ActiveAlarm
 {
