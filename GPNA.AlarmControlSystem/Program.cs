@@ -1,8 +1,16 @@
+using System.Net;
+using System.Security.Principal;
 using Blazored.Modal;
 using Blazored.Toast;
 using GPNA.AlarmControlSystem.Interfaces;
+using GPNA.AlarmControlSystem.Options;
 using GPNA.AlarmControlSystem.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Negotiate;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 using NLog.Web;
+using IAuthorizationService = GPNA.AlarmControlSystem.Interfaces.IAuthorizationService;
 
 IConfiguration configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
@@ -15,7 +23,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseNLog();
 
+builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
+    .AddNegotiate();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("console", policy => policy.RequireRole("BUILTIN\\Пользователи журналов производительности"));
+});
+
 builder.Services.AddRazorPages();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddServerSideBlazor();
 builder.Services
     .AddBlazoredModal()
@@ -37,6 +54,8 @@ builder.Services.AddHttpClient<IAlarmControlSystemApiBroker, AlarmControlSystemA
     client.Timeout = TimeSpan.FromMilliseconds(timeOut);
 });
 
+builder.Services.AddScoped<IAuthorizationService, AuthorizationService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -47,13 +66,21 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
 app.UseRouting();
 
-app.MapBlazorHub();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapBlazorHub()
+    .RequireAuthorization(new AuthorizeAttribute()
+    {
+        AuthenticationSchemes = NegotiateDefaults.AuthenticationScheme,
+    });
+
 app.MapFallbackToPage("/_Host");
 
 app.Run();
