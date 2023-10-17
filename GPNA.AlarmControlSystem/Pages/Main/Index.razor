@@ -1,4 +1,4 @@
-﻿@page "/{fieldId:int}"
+﻿@page "/{fieldId?}"
 @using GPNA.AlarmControlSystem.Pages.Main.Components.WorkStationView
 @using GPNA.AlarmControlSystem.Models.Dto.Field
 @using GPNA.AlarmControlSystem.Interfaces
@@ -10,16 +10,16 @@
     <div class="page-title">
         <ButtonNavigation Title="Меретояхинское"/>
         <div class="d-flex align-items-center">
-            <p>ЖУРНАЛ СИГНАЛИЗАЦИЙ ЗА @DateTime.ToString("dd MMMM") МЕРЕТОЯХА <b>ТАЗОВСКОЕ</b></p>
+            <p>ЖУРНАЛ СИГНАЛИЗАЦИЙ ЗА @DateTime.ToString("dd MMMM") МЕРЕТОЯХА <b>@(_field?.Name ?? "N/A")</b></p>
             <SelectObject Object="dto"/>
         </div>
         <ButtonNavigation Title="Северо-Самбурское" Navigation="right"/>
     </div>
-    @if (Field != default)
+    @if (_field != default)
     {
-        foreach (var workstation in Field.Workstations)
+        foreach (var workstation in _field.Workstations)
         {
-            <WorkStationView Title=@workstation.Name/>
+            <WorkStationView Workstation="workstation"/>
         }
     }
 </div>
@@ -27,34 +27,36 @@
 @code {
 
     [Parameter]
-    public DateTimeOffset DateTime { get; set; } = DateTimeOffset.Now;
+    public DateTimeOffset DateTime { get; set; } = new(2023, 8, 3, 22, 0, 0, DateTimeOffset.Now.Offset);
 
     [Parameter]
-    public int FieldId { get; set; }
+    public int? FieldId { get; set; }
 
     [Inject]
     private IFieldService? FieldService { get; set; }
 
-    public FieldMainPageDto? Field { get; set; }
+    private FieldMainPageDto? _field;
 
     protected override async Task OnInitializedAsync()
     {
-        await InitializeField();
+        await InitializeFieldModel();
 
         await base.OnInitializedAsync();
     }
 
-    private async Task InitializeField()
+    private async Task InitializeFieldModel()
     {
-        if (FieldService != null && FieldId != default)
+        FieldId ??= 1;
+        
+        if (FieldService != null)
         {
-            var query = new GetAlarmsCountForFieldQuery { FieldId = FieldId, ActivationFrom = DateTime.AddDays(-7), ActivationTo = DateTime };
+            var query = new GetAlarmsCountForFieldQuery { FieldId = FieldId.Value, ActivationFrom = DateTime.AddDays(-7), ActivationTo = DateTime };
 
             var result = await FieldService.GetField(query);
 
             if (result.Success)
             {
-                Field = result.Payload;
+                _field = result.Payload;
             }
         }
     }

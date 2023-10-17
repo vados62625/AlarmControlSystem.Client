@@ -1,13 +1,14 @@
 ﻿@using GPNA.AlarmControlSystem.Pages.Main
 @using GPNA.AlarmControlSystem.Models.Dto.Workstation
+@using GPNA.AlarmControlSystem.Models.Enums
 
 <div class="bg">
     <div class="bg-fire-container">
         <p>@Workstation.Name</p>
         <WorkStationViewIconContainer Fire="Workstation.Fire" Gas="Workstation.Gas"/>
     </div>
-    <WorkStationViewPieChart Title="Общее количество за"/>
-    <WorkStationViewPieChart Title="Уникальные"/>
+    <WorkStationViewPieChart Title="Общее количество за" CountAlarms="_countAlarms"/>
+    <WorkStationViewPieChart Title="Уникальные" CountAlarms="_countUniqueAlarms"/>
 
     <div class="bg-table-container">
         <WorkStationViewTable VisibleTablePriority="true" Title="ВХОДЯЩИЕ СИГНАЛИЗАЦИИ"/>
@@ -19,6 +20,27 @@
 @code {
 
     [Parameter]
-    public WorkstationMainPageDto Workstation { get; set; }
+    public WorkstationMainPageDto? Workstation { get; set; }
+
+    private Dictionary<PriorityType, int>? _countAlarms;
+
+    private Dictionary<PriorityType, int>? _countUniqueAlarms;
+
+    protected override void OnInitialized()
+    {
+        if (Workstation != null)
+        {
+            var lastDayCount = Workstation.CountAlarmsOnPrioritiesMap
+                .MaxBy(c => c.Key);
+
+            if (lastDayCount.Value != default)
+            {
+                _countAlarms = lastDayCount.Value.ToDictionary(c => c.PriorityType, c => c.CountDayPriority);
+                _countUniqueAlarms = lastDayCount.Value.ToDictionary(c => c.PriorityType, c => c.CountSensorsDayPriority);
+            }
+        }
+
+        base.OnInitialized();
+    }
 
 }
