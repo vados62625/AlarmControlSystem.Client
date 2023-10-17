@@ -1,21 +1,24 @@
 ﻿@using GPNA.AlarmControlSystem.Pages.Main
+@using GPNA.AlarmControlSystem.Models.Dto.Workstation
 
 <div class="bg">
     <div class="bg-fire-container">
-        <p>@Title</p>
-        <WorkStationViewIconContainer />
+        <p>@Workstation.Name</p>
+        <WorkStationViewIconContainer Fire="Workstation.Fire" Gas="Workstation.Gas"/>
     </div>
     <WorkStationViewPieChart Title="Общее количество за"/>
     <WorkStationViewPieChart Title="Уникальные"/>
-    
+
     <div class="bg-table-container">
         <WorkStationViewTable VisibleTablePriority="true" Title="ВХОДЯЩИЕ СИГНАЛИЗАЦИИ"/>
-        <WorkStationViewTable Title="АКТИВНЫЕ СИГНАЛИЗАЦИИ" />
-        <WorkStationViewTable Title="ПОДАВЛЕННЫЕ СИГНАЛИЗАЦИ" />
+        <WorkStationViewTable Title="АКТИВНЫЕ СИГНАЛИЗАЦИИ"/>
+        <WorkStationViewTable Title="ПОДАВЛЕННЫЕ СИГНАЛИЗАЦИ"/>
     </div>
 </div>
 
 @code {
-    [Parameter] public string? Title { get; set; }
+
+    [Parameter]
+    public WorkstationMainPageDto Workstation { get; set; }
 
 }

@@ -19,7 +19,7 @@ public interface IAlarmControlSystemApiBroker : IApiBrokerBase
 public class AlarmControlSystemApiBroker : ApiBrokerBase, IAlarmControlSystemApiBroker
 {
     private readonly IToastService _toastService;
-    
+
     private readonly AuthenticationStateProvider _authenticationState;
 
     private readonly ILogger<AlarmControlSystemApiBroker> _logger;
@@ -33,9 +33,15 @@ public class AlarmControlSystemApiBroker : ApiBrokerBase, IAlarmControlSystemApi
         _authenticationState = authenticationState;
         _logger = logger;
 
-        var apiToken = Task.Run(GetApiToken).Result;
-
-        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+        try
+        {
+            var apiToken = Task.Run(GetApiToken).Result;
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+        }
+        catch
+        {
+            _toastService.ShowError("Нет связи с сервером. Не удалось получить токен авторизации");
+        }
     }
 
     public async Task<Result<T>> Get<T>(string uri, object? content = null)

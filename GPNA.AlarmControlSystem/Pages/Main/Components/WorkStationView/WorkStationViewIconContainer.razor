@@ -1,11 +1,12 @@
 ﻿<div class="d-flex align-items-center justify-content-between flex-column">
     <p class="title">Сработала сигнализация</p>
     <div class="container">
-        <WorkStationViewIcon Title="Пожар" Alarm="fire"/>
-        <WorkStationViewIcon Title="Загазованность" Alarm="gas" />
+        <WorkStationViewIcon Title="Пожар" Alarm="fire" Active="Fire"/>
+        <WorkStationViewIcon Title="Загазованность" Alarm="gas" Active="Gas" />
     </div>
 </div>
 
 @code {
-
+    [Parameter] public bool Fire { get; set; }
+    [Parameter] public bool Gas { get; set; }
 }
