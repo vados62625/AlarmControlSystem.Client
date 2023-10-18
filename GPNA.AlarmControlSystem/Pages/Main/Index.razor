@@ -1,4 +1,4 @@
-﻿@page "/{fieldId?}"
+﻿@page "/"
 @using GPNA.AlarmControlSystem.Pages.Main.Components.WorkStationView
 @using GPNA.AlarmControlSystem.Models.Dto.Field
 @using GPNA.AlarmControlSystem.Interfaces
@@ -29,7 +29,10 @@
     [Parameter]
     public DateTimeOffset DateTime { get; set; } = new(2023, 8, 3, 22, 0, 0, DateTimeOffset.Now.Offset);
 
+    // public DateTimeOffset DateTime { get; set; } = DateTimeOffset.Now;
+
     [Parameter]
+    [SupplyParameterFromQuery]
     public int? FieldId { get; set; }
 
     [Inject]
@@ -47,7 +50,7 @@
     private async Task InitializeFieldModel()
     {
         FieldId ??= 1;
-        
+
         if (FieldService != null)
         {
             var query = new GetAlarmsCountForFieldQuery { FieldId = FieldId.Value, ActivationFrom = DateTime.AddDays(-7), ActivationTo = DateTime };
