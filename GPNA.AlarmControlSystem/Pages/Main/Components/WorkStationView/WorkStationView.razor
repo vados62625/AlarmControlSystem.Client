@@ -11,9 +11,9 @@
     <WorkStationViewPieChart Title="Уникальные" CountAlarms="_countUniqueAlarms"/>
 
     <div class="bg-table-container">
-        <WorkStationViewTable VisibleTablePriority="true" Title="ВХОДЯЩИЕ СИГНАЛИЗАЦИИ"/>
-        <WorkStationViewTable Title="АКТИВНЫЕ СИГНАЛИЗАЦИИ"/>
-        <WorkStationViewTable Title="ПОДАВЛЕННЫЕ СИГНАЛИЗАЦИ"/>
+        <WorkStationViewTable AlarmsCount="Workstation.CountIncomingAlarms" VisibleTablePriority="true" Title="ВХОДЯЩИЕ СИГНАЛИЗАЦИИ"/>
+        <WorkStationViewTable AlarmsCount="Workstation.CountActiveAlarms" Title="АКТИВНЫЕ СИГНАЛИЗАЦИИ"/>
+        <WorkStationViewTable AlarmsCount="Workstation.CountSuppressedAlarms" Title="ПОДАВЛЕННЫЕ СИГНАЛИЗАЦИ"/>
     </div>
 </div>
 
@@ -28,9 +28,9 @@
 
     protected override void OnInitialized()
     {
-        if (Workstation != null)
+        if (Workstation != null && Workstation.CountIncomingAlarms.Any())
         {
-            var lastDayCount = Workstation.CountAlarmsOnPrioritiesMap
+            var lastDayCount = Workstation.CountIncomingAlarms
                 .MaxBy(c => c.Key);
 
             if (lastDayCount.Value != default)

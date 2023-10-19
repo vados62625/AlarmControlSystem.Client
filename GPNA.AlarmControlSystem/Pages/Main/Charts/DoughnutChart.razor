@@ -1,8 +1,9 @@
 ﻿@inject IJSRuntime JSRuntime
- 
+
 <canvas id="@Id" style="z-index:1;color: var(--color-typo-default)"></canvas>
- 
+
 @code {
+
     public enum ChartType
     {
         Pie,
@@ -27,15 +28,17 @@
     public string[]? Data3 { get; set; }
 
     [Parameter]
-    public string[]? BackgroundColors{ get; set; }
+    public string[]? BackgroundColors { get; set; }
 
     [Parameter]
     public string[]? Labels { get; set; }
 
     [Parameter]
     public string? Label1 { get; set; }
+
     [Parameter]
     public string? Label2 { get; set; }
+
     [Parameter]
     public string? Label3 { get; set; }
 
@@ -43,34 +46,42 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         BackgroundColors = new string[3]
-            {
-            "#EB3333","#F38B01","#56B9F2"
-            };
+        {
+            "#EB3333", "#F38B01", "#56B9F2"
+        };
 
 
         var config = new
         {
-
             Type = ChartType.Doughnut.ToString().ToLower(),
             Options = new
             {
+                Elements = new
+                {
+                    Center = new
+                    {
+                        Text = Data1.Sum(count => int.Parse(count)).ToString(),
+                        Color = "#000", // Default is #000000
+                        FontStyle = "Arial", // Default is Arial
+                        SidePadding = 20, // Default is 20 (as a percentage)
+                        MinFontSize = 16, // Default is 20 (in px), set to false and text will not wrap.
+                        MaxFontSize = 16,
+                        LineHeight = 12 // Default is 25 (in px), used for when text wraps
+                    }
+                },
                 Responsive = true,
                 MaintainAspectRatio = false,
-
                 Interaction = new
                 {
                     Mode = "index"
                 },
                 Scales = new
                 {
-
                 },
                 Plugins = new
                 {
-
                     Tooltip = new
                     {
-
                         Intersect = false,
                         BackgroundColor = "#fff",
                         BodyColor = "#11273B",
@@ -79,35 +90,36 @@
                         DisplayColors = true,
                         TitleColor = "#11273B",
                         TitleFont = new
-                        {Size ="16"}
+                        { Size = "16" }
                     },
                     Legend = new
                     {
                         Labels = new
                         {
                             Color = "#97B2C4"
-                            
                         },
-                        Display = true,
+                        Display = false,
                         Position = "top",
                     },
                 },
             },
-
             Data = new
             {
                 Datasets = new[]
                 {
-                    new { Data = Data1, BackgroundColor= BackgroundColors},
-                   
-                    
+                    new
+                    {
+                        Data = Data1,
+                        BackgroundColor = BackgroundColors,
+                        Cutout = "80%"
+                    },
                 },
-                Labels = new[] {"Критичные", "Высокий приоритет","Низкий приоритет"}
+                Labels = new[] { "Критичные", "Высокий приоритет", "Низкий приоритет" }
             }
         };
 
-        // if(firstRender)
-            await JSRuntime.InvokeVoidAsync("setup", Id!, config);
+    // if(firstRender)
+        await JSRuntime.InvokeVoidAsync("setup", Id!, config);
     }
-}
 
+}
