@@ -462,19 +462,9 @@ p {
     }
 
 ::-webkit-scrollbar {
-    /*width: 5px;*/
-    /*height: 5px;*/
-    transition: .3s;
-}
-
-:not(:hover)::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-}
-
-:hover::-webkit-scrollbar {
     width: 10px;
     height: 10px;
+    transition: .3s;
 }
 
 ::-webkit-scrollbar-track {
