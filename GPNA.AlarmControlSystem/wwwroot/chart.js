@@ -1,7 +1,7 @@
 Chart.register({
     id: 'doughnut-centertext',
     beforeDraw: function(chart) {
-        if (chart.config.options.elements.center) {
+        if (chart.config.options.elements && chart.config.options.elements.center) {
             // Get ctx from string
             var ctx = chart.ctx;
 
