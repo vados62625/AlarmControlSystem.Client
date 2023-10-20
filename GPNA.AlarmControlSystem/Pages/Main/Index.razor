@@ -3,6 +3,7 @@
 @using GPNA.AlarmControlSystem.Models.Dto.Field
 @using GPNA.AlarmControlSystem.Interfaces
 @using GPNA.AlarmControlSystem.Models.Dto.Queries
+@using GPNA.AlarmControlSystem.Services
 @inject IJSRuntime JsRuntime
 
 
@@ -23,8 +24,18 @@
         }
     }
 </div>
+@if (!IsEnableRenderChart)
+{
+    <Loader/>
+}
 
 @code {
+
+    [Inject]
+    private IFieldService? FieldService { get; set; }
+
+    [Inject]
+    protected ISpinnerService SpinnerService { get; set; } = default!;
 
     [Parameter]
     public DateTimeOffset DateTime { get; set; } = new(2023, 8, 3, 22, 0, 0, DateTimeOffset.Now.Offset);
@@ -35,14 +46,21 @@
     [SupplyParameterFromQuery]
     public int? FieldId { get; set; }
 
-    [Inject]
-    private IFieldService? FieldService { get; set; }
+    [Parameter]
+    public bool IsEnableRenderChart { get; set; } = false;
+
 
     private FieldMainPageDto? _field;
 
     protected override async Task OnInitializedAsync()
     {
+        IsEnableRenderChart = false;
+        SpinnerService.Show();
+        
         await InitializeFieldModel();
+        
+        SpinnerService.Hide();
+        IsEnableRenderChart = true;
 
         await base.OnInitializedAsync();
     }
@@ -65,4 +83,3 @@
     }
 
 }
-
