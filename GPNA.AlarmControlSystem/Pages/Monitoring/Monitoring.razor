@@ -1,117 +1,127 @@
 ﻿@page "/Arm/{armId:int}"
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Tables
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
+@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
+@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
+@using GPNA.AlarmControlSystem.Models.Enums
+@using GPNA.AlarmControlSystem.Services
 
 <CascadingValue Name="From" Value="@From">
-<CascadingValue Name="To" Value="@To">
+    <CascadingValue Name="To" Value="@To">
 
-<div class="page-main">
-    <div class="page-title">
-        <div class="d-flex date-period-select">
-            <input type="datetime-local" @bind="From">
-            <input type="datetime-local" @bind="To">
-        </div>
-        <div class="d-flex">
-            <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ ЗА ПЕРИОД С DP МЕРЕТОЯХА <b>ТАЗОВСКОЕ</b></p>
-            <SelectObject Object="dto" />
-            <p style="margin-left:15px;"><b>УПНГ</b></p>
-            <SelectObject />
-        </div>
-        <div class="d-flex gap-2">
-            <TitleBarButton Title="Фильтрация" FunctionButton="filtration" />
-            <TitleBarButton Title="Экспорт" FunctionButton="export" />
-        </div>
-              
-    </div>
-    <div class="d-flex justify-content-between overflow-auto">
-        <div class="priority-alarm-container">
-            <PriorityAlarm Title="Всего" Priority="total" />
-            <PriorityAlarm Title="Критичный" Priority="critical" />
-            <PriorityAlarm Title="Высокий" Priority="high"/>
-            <PriorityAlarm Title="Низкий" Priority="low"/>
-            <PriorityAlarm Title="Инфо" Priority="info"/>
-            <PriorityAlarm Title="Без приоритета" Priority="none-priority"/>
-        </div>
-        <div class="priority-alarm-container">
-            <PriorityAlarm Title="HH" Status="hh"/>
-            <PriorityAlarm Title="H" Status="h"/>
-            <PriorityAlarm Title="LL" Status="ll"/>
-            <PriorityAlarm Title="L" Status="l"/>
-            <PriorityAlarm Title="DISCR" Status="discr"/>
-            <PriorityAlarm Title="RSHI" Status="rshi"/>
-            <PriorityAlarm Title="RSLO" Status="rslo"/>
-            <PriorityAlarm Title="NoneState" Status="none-state"/>
-            <PriorityAlarm Title="Пожар" Status="fire"/>
-            <PriorityAlarm Title="Загазованность" Status="gas"/>
-        </div> 
-    </div>
-    <div style="border-radius: 6px;">
-        <MonitoringTable></MonitoringTable>
-    </div>
-    @*<BlazoredModal></BlazoredModal>*@
-
-            @*<div style="display:flex; margin-left:300px;">
-                <h3>@Title</h3>
-                <div class="choice-group">
-                    <select @bind="@AlarmType">
-                        <option value="Входящие">Входящие</option>
-                        <option value="Активные">Активные</option>
-                        <option value="Подавленные">Подавленные</option>
-                    </select>                   
+        <div class="page-main">
+            <div class="page-title">
+                <div class="d-flex date-period-select">
+                    <input type="datetime-local" @bind="From">
+                    <input type="datetime-local" @bind="To">
                 </div>
-            </div>*@
+                <div class="d-flex">
+                    <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ ЗА ПЕРИОД С DP МЕРЕТОЯХА <b>ТАЗОВСКОЕ</b></p>
+                    <SelectObject Object="dto"/>
+                    <p style="margin-left:15px;">
+                        <b>УПНГ</b>
+                    </p>
+                    <SelectObject/>
+                </div>
+                <div class="d-flex gap-2">
+                    <TitleBarButton Title="Фильтрация" FunctionButton="filtration"/>
+                    <TitleBarButton Title="Экспорт" FunctionButton="export"/>
+                </div>
 
-            @*@if (AlarmType == "Входящие")
-            {
-                <IncomingAlarms />
-            }
-
-            @if (AlarmType == "Активные")
-            {
-                <ActiveAlarms />
-            }
-
-            @if (AlarmType == "Подавленные")
-            {
-                <SuppressedAlarms />
-            }*@
+            </div>
+            <div class="d-flex justify-content-between overflow-auto">
+                <div class="priority-alarm-container">
+                    <PriorityAlarm Title="Всего" Value="AlarmsCollection?.TotalCount" Priority="total"/>
+                    <PriorityAlarm Title="Критичный" Value="AlarmsCollection?.CountByPriority?[PriorityType.Urgent]" Priority="critical"/>
+                    <PriorityAlarm Title="Высокий" Value="AlarmsCollection?.CountByPriority?[PriorityType.High]" Priority="high"/>
+                    <PriorityAlarm Title="Низкий" Value="AlarmsCollection?.CountByPriority?[PriorityType.Low]" Priority="low"/>
+                    <PriorityAlarm Title="Инфо" Value="AlarmsCollection?.CountByPriority?[PriorityType.Information]" Priority="info"/>
+                    <PriorityAlarm Title="Без приоритета" Value="AlarmsCollection?.CountByPriority?[PriorityType.None]" Priority="none-priority"/>
+                </div>
+                <div class="priority-alarm-container">
+                    <PriorityAlarm Title="HH" Value="AlarmsCollection?.CountByState?[StateType.HH]" Status="hh"/>
+                    <PriorityAlarm Title="H" Value="AlarmsCollection?.CountByState?[StateType.H]" Status="h"/>
+                    <PriorityAlarm Title="LL" Value="AlarmsCollection?.CountByState?[StateType.LL]" Status="ll"/>
+                    <PriorityAlarm Title="L" Value="AlarmsCollection?.CountByState?[StateType.L]" Status="l"/>
+                    <PriorityAlarm Title="DISCR" Value="AlarmsCollection?.CountByState?[StateType.Discr]" Status="discr"/>
+                    <PriorityAlarm Title="RSHI" Value="AlarmsCollection?.CountByState?[StateType.RSHI]" Status="rshi"/>
+                    <PriorityAlarm Title="RSLO" Value="AlarmsCollection?.CountByState?[StateType.RSLO]" Status="rslo"/>
+                    <PriorityAlarm Title="NoneState" Value="AlarmsCollection?.CountByState?[StateType.none]" Status="none-state"/>
+                    <PriorityAlarm Title="Пожар" StatusActive="@(AlarmsCollection?.Fire ?? false ? "active" : "")" Status="fire"/>
+                    <PriorityAlarm Title="Загазованность" StatusActive="@(AlarmsCollection?.Gas ?? false ? "active" : "")" Status="gas"/>
+                </div>
+            </div>
+            <div style="border-radius: 6px;">
+                <MonitoringTable Alarms="AlarmsCollection?.Items"></MonitoringTable>
+            </div>
         </div>
 
     </CascadingValue>
 </CascadingValue>
 
+@if (!IsEnableRenderChart)
+{
+    <Loader/>
+}
+
 @code {
 
-    [Parameter] public DateTime DateTime { get; set; }
-    [Parameter] public int ArmId { get; set; }
-    [Parameter] public string? Title { get; set; }
+    [Inject]
+    private IIncomingAlarmService? IncomingAlarmService { get; set; }
 
-    [CascadingParameter(Name = "From")] public DateTimeOffset From { get; set; }
-    [CascadingParameter(Name = "To")] public DateTimeOffset To { get; set; }
+    [Inject]
+    private ISpinnerService? SpinnerService { get; set; }
+
+    [Parameter]
+    public DateTime DateTime { get; set; }
+
+    [Parameter]
+    public int ArmId { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [CascadingParameter(Name = "From")]
+    public DateTimeOffset From { get; set; }
+
+    [CascadingParameter(Name = "To")]
+    public DateTimeOffset To { get; set; }
+    
+    private AlarmsCollection<IncomingAlarmDto>? AlarmsCollection { get; set; }
+
+    private bool IsEnableRenderChart { get; set; }
 
     string? AlarmType = "Входящие";
     string? Priority = "0";
 
     void SelectPriority()
     {
-
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        To = DateTime.Now;
-        if (To.Hour > 7 && To.Hour < 20)
-        {
-            From = new DateTime(To.Year, To.Month, To.Day, 8, 0, 0);
-        }
-        else if (To.Hour >= 20)
-        {
-            From = new DateTime(To.Year, To.Month, To.Day, 20, 0, 0);
-        }
-        else
-        {
-            From = new DateTime(To.Year, To.Month, To.Day - 1, 20, 0, 0);
-        }
+        SpinnerService?.Show();
+
+        To = DateTimeOffset.Now;
+        // if (To.Hour > 7 && To.Hour < 20)
+        // {
+        //     From = new DateTime(To.Year, To.Month, To.Day, 8, 0, 0);
+        // }
+        // else if (To.Hour >= 20)
+        // {
+        //     From = new DateTime(To.Year, To.Month, To.Day, 20, 0, 0);
+        // }
+        // else
+        // {
+        //     From = new DateTime(To.Year, To.Month, To.Day - 1, 20, 0, 0);
+        // }
+        From = new(2023, 8, 1, 22, 0, 0, DateTimeOffset.Now.Offset);
+
+        await InitializePage();
+
+        SpinnerService?.Hide();
+        IsEnableRenderChart = true;
     }
 
     protected override void OnParametersSet()
@@ -130,7 +140,22 @@
             case 4:
                 Title = "АРМ 4";
                 break;
-
         }
     }
+
+    private async Task InitializePage()
+    {
+        var request = await IncomingAlarmService.GetAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
+        {
+            WorkStationId = 1, 
+            ActivationFrom = From, 
+            ActivationTo = To
+        });
+
+        if (request.Success)
+        {
+            AlarmsCollection = request.Payload;
+        }
+    }
+
 }

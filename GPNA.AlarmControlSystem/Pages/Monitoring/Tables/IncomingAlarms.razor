@@ -1,186 +1,181 @@
-﻿@using GPNA.AlarmControlSystem.Models.Enums
-@using GPNA.AlarmControlSystem.Interfaces
-@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
-@using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms
-@using GPNA.AlarmControlSystem.Pages.Monitoring.Tables
-@using GPNA.AlarmControlSystem.Models.Enums
-@using GPNA.AlarmControlSystem.Interfaces
-@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
-@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
-
-<div style="display:flex; justify-content:flex-end; gap: 10px; color: var(--color-typo-primary);">
-    <span>Всего: <b>@countAll</b></span>
-    <span>Критический: <b>@countUrgent</b></span>
-    <span>Высокий: <b>@countHigh</b></span>
-    <span>Низкий: <b>@countLow</b></span>
-    <span>Информационный: <b>@countInfo</b></span>
-    <span>Без приоритета: <b>@countNonePriority</b></span>
-    <br />
-    <span>HH: <b>@countHH</b></span>
-    <span>H: <b>@countH</b></span>
-    <span>LL: <b>@countLL</b></span>
-    <span>L: <b>@countL</b></span>
-    <span>Discr: <b>@countDiscr</b></span>
-    <span>RSHI: <b>@countRSHI</b></span>
-    <span>RSLO: <b>@countRSLO</b></span>
-    <span>NoneState: <b>@countNoneState</b></span>
-</div>
-<div class="table-responsive" style="margin-top:10px;height:780px;overflow-y:auto;border-top: 0.5px solid rgba(0, 65, 102, 0.2);border-bottom: 0.5px solid rgba(0, 65, 102, 0.2);">
-    <table class="table table-bordered">
-        <thead class="thead-light">
-            <tr>
-                <th>Дата последней сигнализации</th>
-                <th>Время последней сигнализации</th>
-                <th colspan=3>Таг</th>
-                <th colspan=4>Описание</th>
-                <th>Приоритет 
-                    <select @bind="@Priority" @onclick="OnParametersSetAsync">
-                        <option value="">Все</option>
-                        <option value="@PriorityType.Urgent">Критический</option>
-                        <option value="@PriorityType.High">Высокий</option>
-                        <option value="@PriorityType.Low">Низкий</option>
-                        <option value="@PriorityType.Information">Инфо</option>
-                        <option value="@PriorityType.None">Без приорит.</option>                        
-                    </select>
-                </th>
-                <th>Уставка/Значение</th>        
-                <th>Повторений за смену</th>
-                <th>В работе</th>
-            </tr>            
-        </thead>
-        <tbody>
-
-            @if(Alarms == null)
-            {
-                <Loader/>
-            }
-            else
-            {
-                <Virtualize Items="Alarms">
-                    <IncomingAlarmComponent @key="context[context.Length - 1].Id" List="@context"/>                                   
-                </Virtualize>
-            }
-        
-        </tbody>
-    </table>
-</div>
-
-@code {
-    [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
-
-	[Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
-
-    [Parameter] public IncomingAlarmDto[][] Alarms { get; set; }
-
-    [Parameter] public PriorityType? Priority { get; set; }
-
-    [CascadingParameter(Name = "From")] public DateTimeOffset From { get; set; }
-    [CascadingParameter(Name = "To")] public DateTimeOffset To { get; set; }
-
-    int countL, countLL, countH, countHH, countAll, countUrgent, countHigh, countLow, countInfo, countNonePriority, countDiscr,countRSHI,countRSLO,countComms, countNoneState;
-
-    protected override async Task OnParametersSetAsync()
-    {
-        Alarms = null;
-        countH = 0; countHH = 0; countL = 0; countLL = 0; countAll = 0; countUrgent = 0; countHigh = 0; countLow = 0; countInfo = 0; countNonePriority=0; countDiscr = 0; countRSHI = 0; countRSLO = 0; countComms = 0; countNoneState = 0;
-        var incomingAlarmsResult= await IncomingAlarmService.GetAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
-        {
-            WorkStationId = 1,
-            ActivationFrom = From,
-            ActivationTo = To,
-        });
-
-        if (incomingAlarmsResult.Success)
-        {
-            var incomingAlarms = incomingAlarmsResult.Payload;
-            
-            if (incomingAlarms == null)
-            {
-                Alarms = Array.Empty<IncomingAlarmDto[]>();
-                return;
-            }
-            var from = new DateTimeOffset(From.Year, From.Month, From.Day, 8, 0, 0, TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
-
-            for (int i = 0; from<To; i++ )
-            {
-                var list = Array.Empty<IncomingAlarmDto[]>();
-                list = list.Append(new [] { new IncomingAlarmDto { DateTimeActivation = from, Description = "ПЕРЕСМЕНКА", Id=i,Priority=PriorityType.None }}).ToArray();
-                incomingAlarms = incomingAlarms.Concat(list).ToArray();
-                countAll -= 1;
-                countNonePriority -= 1;
-                from = from.AddHours(12);
-            }
-
-
-            Alarms = incomingAlarms.OrderByDescending(c => c[^1].DateTimeActivation).ToArray();
-            
-            foreach (var x in Alarms)
-            {
-                switch (x[^1].State) 
-                {
-                    case StateType.H:
-                        countH += x.Length;
-                        break; 
-                    case StateType.HH:
-                        countHH += x.Length;
-                        break; 
-                    case StateType.L:
-                        countL += x.Length;
-                        break; 
-                    case StateType.LL:
-                        countLL += x.Length;
-                        break; 
-                    case StateType.Discr:
-                        countDiscr += x.Length;
-                        break; 
-                    case StateType.RSHI:
-                        countRSHI += x.Length;
-                        break; 
-                    case StateType.RSLO:
-                        countRSLO += x.Length;
-                        break; 
-                    case StateType.Comms:
-                        countComms += x.Length;
-                        break; 
-                    case StateType.none:
-                        countNoneState += x.Length;
-                        break;
-                    default:
-                        countNoneState += x.Length;
-                        break;
-                }
-
-                switch (x[^1].Priority) 
-                {
-                    case PriorityType.Low:
-                        countLow += x.Length;
-                        break; 
-                    case PriorityType.High:
-                        countHigh += x.Length;
-                        break; 
-                    case PriorityType.Urgent:
-                        countUrgent += x.Length;
-                        break; 
-                    case PriorityType.Information:
-                        countInfo += x.Length;
-                        break; 
-                    case PriorityType.None:
-                        countNonePriority += x.Length;
-                        break;
-                    default:
-                        countNonePriority += x.Length;
-                        break;
-                }
-
-                countAll += x.Length;
-            }
-
-            if (Priority != null)
-            {
-                Alarms = Alarms.Where(context => Priority == context[^1].Priority || Priority == null).ToArray();
-            }
-        }
-        
-
-    }
-}
+﻿@* @using GPNA.AlarmControlSystem.Models.Enums *@
+@* @using GPNA.AlarmControlSystem.Interfaces *@
+@* @using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm *@
+@* @using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms *@
+@* *@
+@* <div style="display:flex; justify-content:flex-end; gap: 10px; color: var(--color-typo-primary);"> *@
+@*     <span>Всего: <b>@countAll</b></span> *@
+@*     <span>Критический: <b>@countUrgent</b></span> *@
+@*     <span>Высокий: <b>@countHigh</b></span> *@
+@*     <span>Низкий: <b>@countLow</b></span> *@
+@*     <span>Информационный: <b>@countInfo</b></span> *@
+@*     <span>Без приоритета: <b>@countNonePriority</b></span> *@
+@*     <br /> *@
+@*     <span>HH: <b>@countHH</b></span> *@
+@*     <span>H: <b>@countH</b></span> *@
+@*     <span>LL: <b>@countLL</b></span> *@
+@*     <span>L: <b>@countL</b></span> *@
+@*     <span>Discr: <b>@countDiscr</b></span> *@
+@*     <span>RSHI: <b>@countRSHI</b></span> *@
+@*     <span>RSLO: <b>@countRSLO</b></span> *@
+@*     <span>NoneState: <b>@countNoneState</b></span> *@
+@* </div> *@
+@* <div class="table-responsive" style="margin-top:10px;height:780px;overflow-y:auto;border-top: 0.5px solid rgba(0, 65, 102, 0.2);border-bottom: 0.5px solid rgba(0, 65, 102, 0.2);"> *@
+@*     <table class="table table-bordered"> *@
+@*         <thead class="thead-light"> *@
+@*             <tr> *@
+@*                 <th>Дата последней сигнализации</th> *@
+@*                 <th>Время последней сигнализации</th> *@
+@*                 <th colspan=3>Таг</th> *@
+@*                 <th colspan=4>Описание</th> *@
+@*                 <th>Приоритет  *@
+@*                     <select @bind="@Priority" @onclick="OnParametersSetAsync"> *@
+@*                         <option value="">Все</option> *@
+@*                         <option value="@PriorityType.Urgent">Критический</option> *@
+@*                         <option value="@PriorityType.High">Высокий</option> *@
+@*                         <option value="@PriorityType.Low">Низкий</option> *@
+@*                         <option value="@PriorityType.Information">Инфо</option> *@
+@*                         <option value="@PriorityType.None">Без приорит.</option>                         *@
+@*                     </select> *@
+@*                 </th> *@
+@*                 <th>Уставка/Значение</th>         *@
+@*                 <th>Повторений за смену</th> *@
+@*                 <th>В работе</th> *@
+@*             </tr>             *@
+@*         </thead> *@
+@*         <tbody> *@
+@* *@
+@*             @if(Alarms == null) *@
+@*             { *@
+@*                 <Loader/> *@
+@*             } *@
+@*             else *@
+@*             { *@
+@*                 <Virtualize Items="Alarms"> *@
+@*                     <IncomingAlarmComponent @key="context[context.Length - 1].Id" List="@context"/>                                    *@
+@*                 </Virtualize> *@
+@*             } *@
+@*          *@
+@*         </tbody> *@
+@*     </table> *@
+@* </div> *@
+@* *@
+@* @code { *@
+@*     [Inject] IBufferAlarmService AlarmService { get; set; } = null!; *@
+@* *@
+@* 	[Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!; *@
+@* *@
+@*     [Parameter] public IncomingAlarmDto[][] Alarms { get; set; } *@
+@* *@
+@*     [Parameter] public PriorityType? Priority { get; set; } *@
+@* *@
+@*     [CascadingParameter(Name = "From")] public DateTimeOffset From { get; set; } *@
+@*     [CascadingParameter(Name = "To")] public DateTimeOffset To { get; set; } *@
+@* *@
+@*     int countL, countLL, countH, countHH, countAll, countUrgent, countHigh, countLow, countInfo, countNonePriority, countDiscr,countRSHI,countRSLO,countComms, countNoneState; *@
+@* *@
+@*     protected override async Task OnParametersSetAsync() *@
+@*     { *@
+@*         Alarms = null; *@
+@*         countH = 0; countHH = 0; countL = 0; countLL = 0; countAll = 0; countUrgent = 0; countHigh = 0; countLow = 0; countInfo = 0; countNonePriority=0; countDiscr = 0; countRSHI = 0; countRSLO = 0; countComms = 0; countNoneState = 0; *@
+@*         var incomingAlarmsResult= await IncomingAlarmService.GetAlarmsPerDate(new GetIncomingAlarmsByDatesQuery *@
+@*         { *@
+@*             WorkStationId = 1, *@
+@*             ActivationFrom = From, *@
+@*             ActivationTo = To, *@
+@*         }); *@
+@* *@
+@*         if (incomingAlarmsResult.Success) *@
+@*         { *@
+@*             var incomingAlarms = incomingAlarmsResult.Payload; *@
+@*              *@
+@*             if (incomingAlarms == null) *@
+@*             { *@
+@*                 Alarms = Array.Empty<IncomingAlarmDto[]>(); *@
+@*                 return; *@
+@*             } *@
+@*             var from = new DateTimeOffset(From.Year, From.Month, From.Day, 8, 0, 0, TimeZoneInfo.Local.GetUtcOffset(DateTime.Now)); *@
+@* *@
+@*             for (int i = 0; from<To; i++ ) *@
+@*             { *@
+@*                 var list = Array.Empty<IncomingAlarmDto[]>(); *@
+@*                 list = list.Append(new [] { new IncomingAlarmDto { DateTimeActivation = from, Description = "ПЕРЕСМЕНКА", Id=i,Priority=PriorityType.None }}).ToArray(); *@
+@*                 incomingAlarms = incomingAlarms.Concat(list).ToArray(); *@
+@*                 countAll -= 1; *@
+@*                 countNonePriority -= 1; *@
+@*                 from = from.AddHours(12); *@
+@*             } *@
+@* *@
+@* *@
+@*             Alarms = incomingAlarms.OrderByDescending(c => c[^1].DateTimeActivation).ToArray(); *@
+@*              *@
+@*             foreach (var x in Alarms) *@
+@*             { *@
+@*                 switch (x[^1].State)  *@
+@*                 { *@
+@*                     case StateType.H: *@
+@*                         countH += x.Length; *@
+@*                         break;  *@
+@*                     case StateType.HH: *@
+@*                         countHH += x.Length; *@
+@*                         break;  *@
+@*                     case StateType.L: *@
+@*                         countL += x.Length; *@
+@*                         break;  *@
+@*                     case StateType.LL: *@
+@*                         countLL += x.Length; *@
+@*                         break;  *@
+@*                     case StateType.Discr: *@
+@*                         countDiscr += x.Length; *@
+@*                         break;  *@
+@*                     case StateType.RSHI: *@
+@*                         countRSHI += x.Length; *@
+@*                         break;  *@
+@*                     case StateType.RSLO: *@
+@*                         countRSLO += x.Length; *@
+@*                         break;  *@
+@*                     case StateType.Comms: *@
+@*                         countComms += x.Length; *@
+@*                         break;  *@
+@*                     case StateType.none: *@
+@*                         countNoneState += x.Length; *@
+@*                         break; *@
+@*                     default: *@
+@*                         countNoneState += x.Length; *@
+@*                         break; *@
+@*                 } *@
+@* *@
+@*                 switch (x[^1].Priority)  *@
+@*                 { *@
+@*                     case PriorityType.Low: *@
+@*                         countLow += x.Length; *@
+@*                         break;  *@
+@*                     case PriorityType.High: *@
+@*                         countHigh += x.Length; *@
+@*                         break;  *@
+@*                     case PriorityType.Urgent: *@
+@*                         countUrgent += x.Length; *@
+@*                         break;  *@
+@*                     case PriorityType.Information: *@
+@*                         countInfo += x.Length; *@
+@*                         break;  *@
+@*                     case PriorityType.None: *@
+@*                         countNonePriority += x.Length; *@
+@*                         break; *@
+@*                     default: *@
+@*                         countNonePriority += x.Length; *@
+@*                         break; *@
+@*                 } *@
+@* *@
+@*                 countAll += x.Length; *@
+@*             } *@
+@* *@
+@*             if (Priority != null) *@
+@*             { *@
+@*                 Alarms = Alarms.Where(context => Priority == context[^1].Priority || Priority == null).ToArray(); *@
+@*             } *@
+@*         } *@
+@*          *@
+@* *@
+@*     } *@
+@* } *@

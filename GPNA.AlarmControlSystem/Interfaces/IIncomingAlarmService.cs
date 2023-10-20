@@ -1,5 +1,6 @@
 ﻿using GPNA.AlarmControlSystem.Application.Dto;
 using GPNA.AlarmControlSystem.Models.Dto;
+using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
 using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
 using GPNA.RestClient.Interfaces.Brokers;
 using GPNA.RestClient.Models;
@@ -12,7 +13,7 @@ namespace GPNA.AlarmControlSystem.Interfaces
         
         Task<Result<CountAlarmsOnPriority[]>> GetCountIncomingAlarmsByPriorities(GetIncomingAlarmsByDatesQuery content);
 
-        Task<Result<IncomingAlarmDto[][]>> GetAlarmsPerDate(GetIncomingAlarmsByDatesQuery content);
+        Task<Result<AlarmsCollection<IncomingAlarmDto>>> GetAlarmsPerDate(GetIncomingAlarmsByDatesQuery content);
 
         Task<Result<Dictionary<DateTimeOffset, IncomingAlarmDto[]>>> GetCountInHour(
             GetIncomingAlarmsByDatesQuery content);

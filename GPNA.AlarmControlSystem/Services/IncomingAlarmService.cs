@@ -3,6 +3,7 @@ using System.Text;
 using GPNA.AlarmControlSystem.Application.Dto;
 using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto;
+using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
 using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
 using GPNA.RestClient.Models;
 using GPNA.RestClient.Services.Base;
@@ -40,9 +41,9 @@ namespace GPNA.AlarmControlSystem.Services
             return await _apiBroker.Get<CountAlarmsOnPriority[]>($"{URL}/GetCountIncomingAlarmsByPriorities", content);
         }
 
-        public async Task<Result<IncomingAlarmDto[][]>> GetAlarmsPerDate(GetIncomingAlarmsByDatesQuery content)
+        public async Task<Result<AlarmsCollection<IncomingAlarmDto>>> GetAlarmsPerDate(GetIncomingAlarmsByDatesQuery content)
         {
-            return await _apiBroker.Get<IncomingAlarmDto[][]>($"{URL}/GetIncomingAlarmsPerDate", content);
+            return await _apiBroker.Get<AlarmsCollection<IncomingAlarmDto>>($"{URL}/GetIncomingAlarmsPerDate", content);
         }
 
         public async Task<Result<Dictionary<DateTimeOffset, IncomingAlarmDto[]>>> GetCountInHour(GetIncomingAlarmsByDatesQuery content)

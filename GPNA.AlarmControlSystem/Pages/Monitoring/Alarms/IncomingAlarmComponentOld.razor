@@ -9,7 +9,7 @@
 {    
     string bgColor = ""; if (IsChildren) { bgColor = "rgba(0, 32, 51, 0.05);"; } 
     
-    <tr>        
+    <tr class="item-table" style="cursor:pointer; background-color: @bgColor;">        
         <td @onclick="ShowMoreAttributes">@Tag.DateTimeActivation.ToString("d")</td>
         <td @onclick="ShowMoreAttributes">@Tag.DateTimeActivation.ToString("t")</td>
 

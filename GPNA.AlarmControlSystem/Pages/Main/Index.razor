@@ -45,9 +45,8 @@
     [Parameter]
     [SupplyParameterFromQuery]
     public int? FieldId { get; set; }
-
-    [Parameter]
-    public bool IsEnableRenderChart { get; set; } = false;
+    
+    private bool IsEnableRenderChart { get; set; }
 
 
     private FieldMainPageDto? _field;

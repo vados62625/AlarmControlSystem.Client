@@ -1,187 +1,241 @@
-﻿<table class="bg-monitoring-table">    
+﻿@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms
+<table class="bg-monitoring-table ">
     <thead>
-        <tr>
-            <th class="bg-monitoring-table-button" style="min-width: 90px;">
+    <tr>
+        <th class="bg-monitoring-table-button" style="min-width: 90px;">
+            <div>
+                <p>Дата</p>
+                <button>
+                    <svg>
+                        <use href="/img/icons/icons.svg#sorting"></use>
+                    </svg>
+                </button>
+            </div>
+        </th>
+        <th class="bg-monitoring-table-button" style="min-width: 90px;">
+            <div>
+                <p>Время</p>
+                <button>
+                    <svg>
+                        <use href="/img/icons/icons.svg#sorting"></use>
+                    </svg>
+                </button>
+            </div>
+        </th>
+        <th class="bg-monitoring-table-button" style="min-width: 120px;">
+            <div>
+                <p>Повторений</p>
+                <button>
+                    <svg>
+                        <use href="/img/icons/icons.svg#sorting"></use>
+                    </svg>
+                </button>
+            </div>
+        </th>
+        <th class="bg-monitoring-table-button" style="min-width: 230px;">
+            <div>
+                <p>Таг</p>
+                <button>
+                    <svg>
+                        <use href="/img/icons/icons.svg#search"></use>
+                    </svg>
+                </button>
+            </div>
+        </th>
+        <th class="bg-monitoring-table-button" style="min-width: 120px;">
+            <div>
+                <p>Статус</p>
                 <div>
-                    <p>Дата</p>
                     <button>
                         <svg>
-                            <use href="/img/icons/icons.svg#sorting"></use>
+                            <use href="/img/icons/icons.svg#filter"></use>
                         </svg>
                     </button>
-                </div>                                
-            </th>
-            <th class="bg-monitoring-table-button" style="min-width: 90px;">
-                <div>
-                    <p>Время</p>
-                    <button>
-                        <svg>
-                            <use href="/img/icons/icons.svg#sorting"></use>
-                        </svg>
-                    </button>
-                </div>                
-            </th>
-            <th class="bg-monitoring-table-button" style="min-width: 120px;">
-                <div>
-                    <p>Повторений</p>
-                    <button>
-                        <svg>
-                            <use href="/img/icons/icons.svg#sorting"></use>
-                        </svg>
-                    </button>
-                </div>
-            </th>
-            <th class="bg-monitoring-table-button" style="min-width: 230px;">
-                <div>
-                    <p>Таг</p>
-                    <button>
-                        <svg>
-                            <use href="/img/icons/icons.svg#search"></use>
-                        </svg>
-                    </button>
-                </div>
-            </th>
-            <th class="bg-monitoring-table-button" style="min-width: 120px;">
-                <div>
-                    <p>Статус</p>
-                    <div>
-                        <button>
-                            <svg>
-                                <use href="/img/icons/icons.svg#filter"></use>
-                            </svg>
-                        </button>
-                        <button>
-                            <svg>
-                                <use href="/img/icons/icons.svg#sorting"></use>
-                            </svg>
-                        </button>
-                    </div>                    
-                </div>
-            </th>
-            <th style="min-width: 860px;"><p>Описание</p></th>
-            <th class="bg-monitoring-table-button" style="min-width: 140px;">
-                <div>
-                    <p>Приоритет</p>
-                    <div>
-                        <button>
-                            <svg>
-                                <use href="/img/icons/icons.svg#filter"></use>
-                            </svg>
-                        </button>
-                        <button>
-                            <svg>
-                                <use href="/img/icons/icons.svg#sorting"></use>
-                            </svg>
-                        </button>
-                    </div>                    
-                </div>
-            </th>
-            <th style="min-width: 150px;"><p>Уставка/значение</p></th>
-            <th class="bg-monitoring-table-button" style="min-width: 90px;">
-                <div>
-                    <p>В задачи</p>
                     <button>
                         <svg>
                             <use href="/img/icons/icons.svg#sorting"></use>
                         </svg>
                     </button>
                 </div>
-            </th>
-        </tr>
+            </div>
+        </th>
+        <th style="min-width: 860px;">
+            <p>Описание</p>
+        </th>
+        <th class="bg-monitoring-table-button" style="min-width: 140px;">
+            <div>
+                <p>Приоритет</p>
+                <div>
+                    <button>
+                        <svg>
+                            <use href="/img/icons/icons.svg#filter"></use>
+                        </svg>
+                    </button>
+                    <button>
+                        <svg>
+                            <use href="/img/icons/icons.svg#sorting"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </th>
+        <th style="min-width: 150px;">
+            <p>Уставка/значение</p>
+        </th>
+        <th class="bg-monitoring-table-button" style="min-width: 90px;">
+            <div>
+                <p>В задачи</p>
+                <button>
+                    <svg>
+                        <use href="/img/icons/icons.svg#sorting"></use>
+                    </svg>
+                </button>
+            </div>
+        </th>
+    </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>30.05.2023</td>
-            <td>19.00</td>
-            <td>
-                <div class="d-flex">
-                    <p>2</p>
-                    <button>
-                        <svg>
-                            <use href="/img/icons/icons.svg#@ButtonArrow"></use>
-                        </svg>
-                    </button>
-                </div>
-            </td>
-            <td>20_1_TT_34_BLKKEY_</td>
-            <td>
-                <MonitoringTableStatus Title="H/L" Status="h-l"/>
-            </td>
-            <td>Сепаратор нефтегазовый С-2-2. Уровень жидкости, мм</td>
-            <td>
-                <MonitoringTableStatus Title="Низкий" Priority="low"/>
-            </td>
-            <td>440 / 420.595</td>
-            <td>
-                <input type="checkbox"/>
-            </td>
-        </tr>
-        <tr class="monitoring-table-comment">
-            <td colspan="9">
-                <input type="text"  placeholder="Введите комментарий" />
-            </td>
-        </tr>
-        <tr>
-            <td>30.05.2023</td>
-            <td>19.00</td>
-            <td>
-                <div class="d-flex">
-                    <p>2</p>
-                    <button>
-                        <svg>
-                            <use href="/img/icons/icons.svg#@ButtonArrow"></use>
-                        </svg>
-                    </button>
-                </div>
-            </td>
-            <td>20_1_TT_34_BLKKEY_</td>
-            <td>
-                <MonitoringTableStatus Title="H/L" Status="h-l" />
-            </td>
-            <td>Сепаратор нефтегазовый С-2-2. Уровень жидкости, мм</td>
-            <td>
-                <MonitoringTableStatus Title="Низкий" Priority="low" />
-            </td>
-            <td>440 / 420.595</td>
-            <td>
-                <input type="checkbox" />
-            </td>
-        </tr>
-        <tr>
-            <td>30.05.2023</td>
-            <td>19.00</td>
-            <td>
-                <div class="d-flex">
-                    <p>2</p>
-                    <button>
-                        <svg>
-                            <use href="/img/icons/icons.svg#@ButtonArrow"></use>
-                        </svg>
-                    </button>
-                </div>
-            </td>
-            <td>20_1_TT_34_BLKKEY_</td>
-            <td>
-                <MonitoringTableStatus Title="H/L" Status="h-l" />
-            </td>
-            <td>Сепаратор нефтегазовый С-2-2. Уровень жидкости, мм</td>
-            <td>
-                <MonitoringTableStatus Title="Низкий" Priority="low" />
-            </td>
-            <td>440 / 420.595</td>
-            <td>
-                <input type="checkbox" />
-            </td>
-        </tr>
-        <tr class="monitoring-table-shift">
-            <td>30.05.2023</td>
-            <td>19.00</td>
-            <td colspan="7">ПЕРЕСМЕНКА</td>
-        </tr>
+    @if (Alarms != null)
+    {
+        foreach (var alarmArray in Alarms)
+        {
+            @* <IncomingAlarmComponent @key="alarmArray[^1].Id" List="@alarmArray"/> *@
+            // foreach (var alarm in alarmArray)
+            // {
+            @* @(var alarm = alarmArray[^1]); *@
+                <tr>
+                    <td>@alarmArray[^1].DateTimeActivation.ToString("dd.MM.yyyy")</td>
+                    <td>@alarmArray[^1].DateTimeActivation.ToString("hh:mm")</td>
+                    <td>
+                        <div class="d-flex">
+                            <p>@alarmArray.Length</p>
+                            <button>
+                                <svg>
+                                    <use href="/img/icons/icons.svg#@ButtonArrow"></use>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                    <td>@alarmArray[^1].TagName</td>
+                    <td>
+                        <MonitoringTableStatus Title="@alarmArray[^1].State.ToString()" Status="@alarmArray[^1].State.ToString().ToLower()"/>
+                    </td>
+                    <td>@alarmArray[^1].Description</td>
+                    <td>
+                        <MonitoringTableStatus Title="@alarmArray[^1].Priority.ToString()" Priority="@alarmArray[^1].Priority.ToString().ToLower()"/>
+                    </td>
+                    <td>@alarmArray[^1].AlarmLimit / @alarmArray[^1].Value</td>
+                    <td>
+                        <input type="checkbox"/>
+                    </td>
+                </tr>
+                <tr class="monitoring-table-comment">
+                    <td colspan="9">
+                        <input type="text" placeholder="Введите комментарий"/>
+                    </td>
+                </tr>
+            // }
+        }
+    }
     </tbody>
 </table>
+@* <tr> *@
+@* <td>30.05.2023</td> *@
+@* <td>19.00</td> *@
+@* <td> *@
+@*     <div class="d-flex"> *@
+@*         <p>2</p> *@
+@*         <button> *@
+@*             <svg> *@
+@*                 <use href="/img/icons/icons.svg#@ButtonArrow"></use> *@
+@*             </svg> *@
+@*         </button> *@
+@*     </div> *@
+@* </td> *@
+@*     <td>20_1_TT_34_BLKKEY_</td> *@
+@*     <td> *@
+@*         <MonitoringTableStatus Title="H/L" Status="h-l"/> *@
+@*     </td> *@
+@*     <td>Сепаратор нефтегазовый С-2-2. Уровень жидкости, мм</td> *@
+@*     <td> *@
+@*         <MonitoringTableStatus Title="Низкий" Priority="low"/> *@
+@*     </td> *@
+@*     <td>440 / 420.595</td> *@
+@*     <td> *@
+@*         <input type="checkbox"/> *@
+@*     </td> *@
+@* </tr> *@
+@* <tr class="monitoring-table-comment"> *@
+@*     <td colspan="9"> *@
+@*         <input type="text" placeholder="Введите комментарий"/> *@
+@*     </td> *@
+@* </tr> *@
+@* <tr> *@
+@*     <td>30.05.2023</td> *@
+@*     <td>19.00</td> *@
+@*     <td> *@
+@*         <div class="d-flex"> *@
+@*             <p>2</p> *@
+@*             <button> *@
+@*                 <svg> *@
+@*                     <use href="/img/icons/icons.svg#@ButtonArrow"></use> *@
+@*                 </svg> *@
+@*             </button> *@
+@*         </div> *@
+@*     </td> *@
+@*     <td>20_1_TT_34_BLKKEY_</td> *@
+@*     <td> *@
+@*         <MonitoringTableStatus Title="H/L" Status="h-l"/> *@
+@*     </td> *@
+@*     <td>Сепаратор нефтегазовый С-2-2. Уровень жидкости, мм</td> *@
+@*     <td> *@
+@*         <MonitoringTableStatus Title="Низкий" Priority="low"/> *@
+@*     </td> *@
+@*     <td>440 / 420.595</td> *@
+@*     <td> *@
+@*         <input type="checkbox"/> *@
+@*     </td> *@
+@* </tr> *@
+@* <tr> *@
+@*     <td>30.05.2023</td> *@
+@*     <td>19.00</td> *@
+@*     <td> *@
+@*         <div class="d-flex"> *@
+@*             <p>2</p> *@
+@*             <button> *@
+@*                 <svg> *@
+@*                     <use href="/img/icons/icons.svg#@ButtonArrow"></use> *@
+@*                 </svg> *@
+@*             </button> *@
+@*         </div> *@
+@*     </td> *@
+@*     <td>20_1_TT_34_BLKKEY_</td> *@
+@*     <td> *@
+@*         <MonitoringTableStatus Title="H/L" Status="h-l"/> *@
+@*     </td> *@
+@*     <td>Сепаратор нефтегазовый С-2-2. Уровень жидкости, мм</td> *@
+@*     <td> *@
+@*         <MonitoringTableStatus Title="Низкий" Priority="low"/> *@
+@*     </td> *@
+@*     <td>440 / 420.595</td> *@
+@*     <td> *@
+@*         <input type="checkbox"/> *@
+@*     </td> *@
+@* </tr> *@
+@* <tr class="monitoring-table-shift"> *@
+@*     <td>30.05.2023</td> *@
+@*     <td>19.00</td> *@
+@*     <td colspan="7">ПЕРЕСМЕНКА</td> *@
+@* </tr> *@
+
 
 @code {
-    [Parameter] public string? ButtonArrow { get; set; } = "arrow-down";
-    //bool inTaskButton = false;    
+
+    [Parameter]
+    public string? ButtonArrow { get; set; } = "arrow-down";
+
+    [Parameter]
+    public IncomingAlarmDto[][]? Alarms { get; set; }
+
 }

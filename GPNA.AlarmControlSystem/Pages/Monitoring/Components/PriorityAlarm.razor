@@ -1,4 +1,4 @@
-﻿<div class="bg @Priority @Status @StatusActive">
+﻿<div class="bg@(DomClass)">
     <p>@Title</p>
     @if (Status == "fire" || Status == "gas")
     {
@@ -16,5 +16,18 @@
     [Parameter] public string? Status { get; set; }
     [Parameter] public string? StatusActive { get; set; }
     [Parameter] public string? Title { get; set; }
-    [Parameter] public int? Value { get; set; } = 11097;  
+    [Parameter] public int? Value { get; set; } = 0;
+    private string? DomClass { get; set; }
+    
+    protected override void OnParametersSet()
+    {
+        DomClass = string.Empty;
+
+        if (!string.IsNullOrEmpty(Priority)) DomClass += $" {Priority}";
+        if (!string.IsNullOrEmpty(Status)) DomClass += $" {Status}";
+        if (!string.IsNullOrEmpty(StatusActive)) DomClass += $" {StatusActive}";
+        
+        base.OnParametersSet();
+    }
+
 }

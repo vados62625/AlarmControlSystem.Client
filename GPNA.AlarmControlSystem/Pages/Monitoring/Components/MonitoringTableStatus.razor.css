@@ -10,12 +10,12 @@
     text-transform: uppercase;   
 }
 
-    .table-status.hh-ll {
+    .table-status.hhll {
         border: 1px solid var(--border-red);
         color: var(--text-red);
     }
 
-    .table-status.h-l {
+    .table-status.hl {
         border: 1px solid var(--border-orange);
         color: var(--text-orange);
     }
@@ -30,7 +30,7 @@
         color: var(--text-grey-table-status);
     }        
 
-    .table-status.critical {
+    .table-status.urgent {
         background: var(--bg-red);
         color: var(--white);
     }
@@ -45,12 +45,12 @@
         color: var(--white);
     }
 
-    .table-status.info {
+    .table-status.information {
         background: var(--bg-grey-status);
         color: var(--white);
     }
 
-    .table-status.none-priority {
+    .table-status.none {
         background: var(--bg-purple);
         color: var(--white);
     }
