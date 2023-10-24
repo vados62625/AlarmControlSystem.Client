@@ -108,6 +108,7 @@ header {
     display: flex;
     gap:16px;
     margin:0;
+    z-index: 1;
     /*opacity: 1;
     transform: scaleY(1);*/
 }

@@ -10,12 +10,12 @@
     text-transform: uppercase;   
 }
 
-    .table-status.hhll {
+    .table-status.ll, .table-status.hh {
         border: 1px solid var(--border-red);
         color: var(--text-red);
     }
 
-    .table-status.hl {
+    .table-status.hl, .table-status.h, .table-status.l {
         border: 1px solid var(--border-orange);
         color: var(--text-orange);
     }

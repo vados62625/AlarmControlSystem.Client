@@ -14,6 +14,7 @@ namespace GPNA.AlarmControlSystem.Services;
 
 public interface IAlarmControlSystemApiBroker : IApiBrokerBase
 {
+    Task<byte[]> GetFile(string uri, object? content = null);
 }
 
 public class AlarmControlSystemApiBroker : ApiBrokerBase, IAlarmControlSystemApiBroker
@@ -67,6 +68,16 @@ public class AlarmControlSystemApiBroker : ApiBrokerBase, IAlarmControlSystemApi
             _logger.LogError(ex.Message);
 
             return new Result<T>("Нет связи с сервером");
+        }
+    }
+
+    public async Task<byte[]> GetFile(string uri, object? content = null)
+    {
+        using (var response = await HttpClient.GetAsync(uri, content))
+        {
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsByteArrayAsync();
         }
     }
 

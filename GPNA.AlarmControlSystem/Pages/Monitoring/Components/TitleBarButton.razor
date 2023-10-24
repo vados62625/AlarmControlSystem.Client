@@ -1,5 +1,5 @@
 ﻿<button class="title-bar-button @FunctionButton">
-    <div>
+    <div @onclick="Action">
         <p>@Title</p>
         <svg>
             <use href="/img/icons/icons.svg#@FunctionButton"></use>
@@ -9,5 +9,9 @@
 
 @code {
     [Parameter] public string? Title { get; set; }
+    
     [Parameter] public string? FunctionButton { get; set; }
+
+    [Parameter]
+    public EventCallback Action { get; set; }
 }

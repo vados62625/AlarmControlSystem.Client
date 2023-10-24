@@ -1,11 +1,11 @@
-﻿@page "/Arm/{armId:int}"
-@using GPNA.AlarmControlSystem.Pages.Monitoring.Tables
+﻿@page "/Arm"
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
 @using GPNA.AlarmControlSystem.Interfaces
 @using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 @using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Services
+@inject IJSRuntime JS
 
 <CascadingValue Name="From" Value="@From">
     <CascadingValue Name="To" Value="@To">
@@ -13,20 +13,29 @@
         <div class="page-main">
             <div class="page-title">
                 <div class="d-flex date-period-select">
-                    <input type="datetime-local" @bind="From">
-                    <input type="datetime-local" @bind="To">
+                    <input type="datetime-local" @bind="From" @bind:event="oninput" @onchange="async () => await InitializePageAsync()">
+                    <input type="datetime-local" @bind="To" @bind:event="oninput" @onchange="async () => await InitializePageAsync()">
+                </div>
+                <div class="d-flex tagname-filter">
+                    <div class="input-group ms-2">
+                        <span class="input-group-text" id="tagname-addon">Тег</span>
+                        <input type="text" class="form-control" aria-describedby="tagname-addon" @bind="TagNameFilter" @bind:event="oninput" @onchange="async () => await InitializePageAsync()">
+                    </div>
                 </div>
                 <div class="d-flex">
                     <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ ЗА ПЕРИОД С DP МЕРЕТОЯХА <b>ТАЗОВСКОЕ</b></p>
                     <SelectObject Object="dto"/>
                     <p style="margin-left:15px;">
-                        <b>УПНГ</b>
+                        <b>@ArmName</b>
                     </p>
                     <SelectObject/>
                 </div>
                 <div class="d-flex gap-2">
-                    <TitleBarButton Title="Фильтрация" FunctionButton="filtration"/>
-                    <TitleBarButton Title="Экспорт" FunctionButton="export"/>
+                    @if (FiltersOn)
+                    {
+                        <TitleBarButton Title="Фильтрация" FunctionButton="filtration" Action="DropFilters"/>
+                    }
+                    <TitleBarButton Title="Экспорт" FunctionButton="export" Action="DownloadFileFromStream"/>
                 </div>
 
             </div>
@@ -60,15 +69,13 @@
     </CascadingValue>
 </CascadingValue>
 
-@if (!IsEnableRenderChart)
-{
-    <Loader/>
-}
-
 @code {
 
     [Inject]
     private IIncomingAlarmService? IncomingAlarmService { get; set; }
+
+    [Inject]
+    private ExportService? ExportService { get; set; }
 
     [Inject]
     private ISpinnerService? SpinnerService { get; set; }
@@ -77,85 +84,111 @@
     public DateTime DateTime { get; set; }
 
     [Parameter]
+    [SupplyParameterFromQuery]
     public int ArmId { get; set; }
 
     [Parameter]
-    public string? Title { get; set; }
+    [SupplyParameterFromQuery]
+    public int FieldId { get; set; } = 1;
+
+    [Parameter]
+    public string? ArmName { get; set; }
+
+    [Parameter]
+    public string? FieldName { get; set; }
 
     [CascadingParameter(Name = "From")]
     public DateTimeOffset From { get; set; }
 
     [CascadingParameter(Name = "To")]
     public DateTimeOffset To { get; set; }
-    
+
+    [Parameter]
+    public string TagNameFilter { get; set; } = string.Empty;
+
+    private bool FiltersOn => !string.IsNullOrWhiteSpace(TagNameFilter);
+
     private AlarmsCollection<IncomingAlarmDto>? AlarmsCollection { get; set; }
 
-    private bool IsEnableRenderChart { get; set; }
-
-    string? AlarmType = "Входящие";
-    string? Priority = "0";
-
-    void SelectPriority()
+    protected override async Task OnParametersSetAsync()
     {
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        SpinnerService?.Show();
-
         To = DateTimeOffset.Now;
-        // if (To.Hour > 7 && To.Hour < 20)
-        // {
-        //     From = new DateTime(To.Year, To.Month, To.Day, 8, 0, 0);
-        // }
-        // else if (To.Hour >= 20)
-        // {
-        //     From = new DateTime(To.Year, To.Month, To.Day, 20, 0, 0);
-        // }
-        // else
-        // {
-        //     From = new DateTime(To.Year, To.Month, To.Day - 1, 20, 0, 0);
-        // }
-        From = new(2023, 8, 1, 22, 0, 0, DateTimeOffset.Now.Offset);
+        From = new DateTimeOffset(2023, 8, 1, 22, 0, 0, DateTimeOffset.Now.Offset);
 
-        await InitializePage();
-
-        SpinnerService?.Hide();
-        IsEnableRenderChart = true;
+        await InitializePageAsync();
     }
 
     protected override void OnParametersSet()
     {
-        switch (ArmId)
+        ArmName = ArmId switch
         {
-            case 1:
-                Title = "УПНГ";
-                break;
-            case 2:
-                Title = "БМУПН";
-                break;
-            case 3:
-                Title = "Скважины";
-                break;
-            case 4:
-                Title = "АРМ 4";
-                break;
+            1 => "УПНГ",
+            2 => "БМУПН",
+            3 => "Скважины",
+            4 => "АРМ 4",
+            _ => ArmName
+            };
+    }
+
+    private async Task InitializePageAsync()
+    {
+        SpinnerService?.Show();
+
+        await UpdateAlarms();
+
+        SpinnerService?.Hide();
+    }
+
+    private async Task UpdateAlarms()
+    {
+        if (IncomingAlarmService != null)
+        {
+            var request = await IncomingAlarmService.GetAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
+            {
+                WorkStationId = ArmId,
+                TagName = TagNameFilter,
+                ActivationFrom = From,
+                ActivationTo = To
+            });
+
+            if (request.Success)
+            {
+                AlarmsCollection = request.Payload;
+            }
         }
     }
 
-    private async Task InitializePage()
+    private Task DropFilters()
     {
-        var request = await IncomingAlarmService.GetAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
+        TagNameFilter = string.Empty;
+        return InitializePageAsync();
+    }
+
+    private async Task<Stream?> GetFileStream()
+    {
+        var result = await ExportService.ExportIncomingAlarms(new GetIncomingAlarmsByDatesQuery
         {
-            WorkStationId = 1, 
-            ActivationFrom = From, 
+            WorkStationId = ArmId,
+            TagName = TagNameFilter,
+            ActivationFrom = From,
             ActivationTo = To
         });
 
-        if (request.Success)
-        {
-            AlarmsCollection = request.Payload;
-        }
+            return new MemoryStream(result);
+
+    }
+
+    private async Task DownloadFileFromStream()
+    {
+        var fileStream = await GetFileStream();
+        
+        if (fileStream == null) return;
+        
+        var fileName = "export.csv";
+
+        using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 
 }
