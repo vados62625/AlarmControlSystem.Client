@@ -166,25 +166,25 @@
 
     private async Task<Stream?> GetFileStream()
     {
-        var result = await ExportService.ExportIncomingAlarms(new GetIncomingAlarmsByDatesQuery
+        var result = await ExportService.ExportIncomingAlarms(new ExportIncomingAlarmsByDatesQuery
         {
+            DocumentType = ExportDocumentType.Excel,
             WorkStationId = ArmId,
             TagName = TagNameFilter,
             ActivationFrom = From,
             ActivationTo = To
         });
 
-            return new MemoryStream(result);
-
+        return new MemoryStream(result);
     }
 
     private async Task DownloadFileFromStream()
     {
         var fileStream = await GetFileStream();
-        
+
         if (fileStream == null) return;
-        
-        var fileName = "export.csv";
+
+        var fileName = "export.xlsx";
 
         using var streamRef = new DotNetStreamReference(stream: fileStream);
 

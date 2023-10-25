@@ -4,7 +4,7 @@ namespace GPNA.AlarmControlSystem.Application.Dto
 {
     public class CountAlarmsOnPriority
     {
-        public PriorityType PriorityType { get; set; }
+        public PriorityType Priority { get; set; }
         public int CountDayPriority { get; set; }
         public int CountSensorsDayPriority { get; set; }
     }

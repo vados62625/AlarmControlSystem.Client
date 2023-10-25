@@ -35,8 +35,8 @@
 
             if (lastDayCount.Value != default)
             {
-                _countAlarms = lastDayCount.Value.ToDictionary(c => c.PriorityType, c => c.CountDayPriority);
-                _countUniqueAlarms = lastDayCount.Value.ToDictionary(c => c.PriorityType, c => c.CountSensorsDayPriority);
+                _countAlarms = lastDayCount.Value.ToDictionary(c => c.Priority, c => c.CountDayPriority);
+                _countUniqueAlarms = lastDayCount.Value.ToDictionary(c => c.Priority, c => c.CountSensorsDayPriority);
             }
         }
 

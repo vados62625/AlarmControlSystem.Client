@@ -4,6 +4,7 @@ using Blazored.Toast.Services;
 using GPNA.AlarmControlSystem.Models.Dto;
 using GPNA.AlarmControlSystem.Options;
 using GPNA.RestClient.Exceptions;
+using GPNA.RestClient.Extensions;
 using GPNA.RestClient.Interfaces.Brokers;
 using GPNA.RestClient.Models;
 using GPNA.RestClient.Services.Brokers;
@@ -73,7 +74,7 @@ public class AlarmControlSystemApiBroker : ApiBrokerBase, IAlarmControlSystemApi
 
     public async Task<byte[]> GetFile(string uri, object? content = null)
     {
-        using (var response = await HttpClient.GetAsync(uri, content))
+        using (var response = await HttpClient.GetAsync(uri + content.ToQueryString()))
         {
             response.EnsureSuccessStatusCode();
 

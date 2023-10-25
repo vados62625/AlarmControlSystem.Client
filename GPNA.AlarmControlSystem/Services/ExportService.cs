@@ -14,7 +14,7 @@ public class ExportService
         _apiBroker = apiBroker;
     }
 
-    public async Task<byte[]> ExportIncomingAlarms(GetIncomingAlarmsByDatesQuery query)
+    public async Task<byte[]> ExportIncomingAlarms(ExportIncomingAlarmsByDatesQuery query)
     {
         return await _apiBroker.GetFile($"{URL}/ExportIncomingAlarms", query);
     }
