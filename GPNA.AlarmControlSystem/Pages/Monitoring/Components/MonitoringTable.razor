@@ -100,7 +100,7 @@
     {
         foreach (var alarmArray in Alarms)
         {
-            <IncomingAlarmComponent Alarm="alarmArray[^1]" List="@alarmArray"/>
+            <IncomingAlarmComponent Alarm="alarmArray.Last()" List="@alarmArray"/>
         }
     }
     </tbody>

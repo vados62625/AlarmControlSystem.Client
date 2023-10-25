@@ -112,7 +112,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        To = DateTimeOffset.Now;
+        To = new DateTimeOffset(2023, 8, 2, 22, 0, 0, DateTimeOffset.Now.Offset);
         From = new DateTimeOffset(2023, 8, 1, 22, 0, 0, DateTimeOffset.Now.Offset);
 
         await InitializePageAsync();
@@ -180,6 +180,8 @@
 
     private async Task DownloadFileFromStream()
     {
+        SpinnerService?.Show();
+        
         var fileStream = await GetFileStream();
 
         if (fileStream == null) return;
@@ -189,6 +191,8 @@
         using var streamRef = new DotNetStreamReference(stream: fileStream);
 
         await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+        
+        SpinnerService?.Hide();
     }
 
 }
