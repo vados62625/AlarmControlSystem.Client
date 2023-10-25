@@ -30,6 +30,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AdditionalFiles Include="Pages\Main\Components\Charts\DoughnutChart.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Main\Charts\DoughnutChart.razor" />
   </ItemGroup>
 
 

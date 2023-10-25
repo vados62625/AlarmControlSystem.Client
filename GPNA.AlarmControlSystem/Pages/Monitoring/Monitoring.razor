@@ -105,6 +105,9 @@
 
     [Parameter]
     public string TagNameFilter { get; set; } = string.Empty;
+    
+    [Parameter]
+    public int StateFilter { get; set; } = -1;
 
     private bool FiltersOn => !string.IsNullOrWhiteSpace(TagNameFilter);
 
