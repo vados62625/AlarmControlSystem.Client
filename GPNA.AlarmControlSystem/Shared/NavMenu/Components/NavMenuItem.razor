@@ -1,0 +1,34 @@
+﻿<li class="top-menu_item">
+    <NavLink class="top-menu_link" href="@Href" Match="@NavLinkMatch">
+        <span class="top-menu_link-title">
+            @Title
+        </span>
+        @if(WithSubmenu)
+        {
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="17" viewBox="0 0 12 17" fill="none">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M6.00511 11.3408L2.03024 7.36595L2.73734 6.65884L6.00511 9.92661L9.27287 6.65884L9.97998 7.36595L6.00511 11.3408Z" fill="#002033" fill-opacity="0.6"/>
+            </svg>
+            <div class="sub-menu">
+                <a href="@(Href+"/1")">Тазовское</a>
+                <a href="#">Месторождение 2</a>
+                <a href="#">Месторождение 3</a>
+                <a href="#">Отгрузка нефти</a>
+            </div>
+        }
+    </NavLink>
+</li>
+
+@code{
+    [Parameter]
+    public string Title { get; set; } = "";
+    [Parameter]
+    public string Href { get; set; } = "";
+
+    [Parameter]
+    public bool WithSubmenu { get; set; } = true;
+
+    [Parameter]
+    public NavLinkMatch NavLinkMatch { get; set; } = NavLinkMatch.Prefix;
+
+    bool _showSubMenu = false;
+}

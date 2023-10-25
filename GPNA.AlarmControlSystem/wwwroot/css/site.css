@@ -163,42 +163,7 @@ h4 {
     align-items:center;
 }
 
-.top-menu_link {
-    color: var(--color-typo-secondary);
-    text-decoration: none;
-}
-
-    .top-menu_link:hover {
-        color: var(--color-typo-link-hover);
-    }
-
-    .top-menu_link.active {
-        color: var(--color-typo-primary);
-        border-bottom: 2px solid var(--color-typo-link);
-    }
-
-.login-display {
-}
-
-.login-display__initials {
-    display:inline-flex;
-    height: 32px;
-    width: 32px;
-    background-image: url(../img/avatar.svg);
-    border-radius: 16px;
-    justify-content: center;
-    align-items: center;
-    color:#FFFFFF;
-    font-weight:600;
-}
-.login-display__username {
-    margin-left: 6px;
-    color: var(--color-typo-primary);
-    line-height: 30px;
-}
-
-
-/*Таблицы*/
+/*пїЅпїЅпїЅпїЅпїЅпїЅпїЅ*/
 
 .table {
     background-color: var(--color-bg-default);
@@ -266,7 +231,7 @@ h4 {
     color: var(--color-typo-primary-white);
 }
 
-/*Дашборд*/
+/*пїЅпїЅпїЅпїЅпїЅпїЅпїЅ*/
 .stat-box {
     display: flex;
     width: 140px;

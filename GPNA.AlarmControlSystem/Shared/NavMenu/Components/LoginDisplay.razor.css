@@ -1,0 +1,16 @@
+﻿.login-display__initials {
+    display:inline-flex;
+    height: 32px;
+    width: 32px;
+    background-image: url(../img/avatar.svg);
+    border-radius: 16px;
+    justify-content: center;
+    align-items: center;
+    color:#FFFFFF;
+    font-weight:600;
+}
+.login-display__username {
+    margin-left: 6px;
+    color: var(--color-typo-primary);
+    line-height: 30px;
+}
