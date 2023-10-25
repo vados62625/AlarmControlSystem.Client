@@ -1,0 +1,29 @@
+﻿@using GPNA.AlarmControlSystem.Shared.NavMenu.Components
+
+<header class="header">
+    <div class="logo">
+        <span class="logo-img"></span>
+        <span class="logo-title">
+            Модуль СУС <br/>
+            Меретояха
+        </span>
+    </div>
+
+    <ul class="top-menu">
+        <NavMenuItem Title="Главная" Href="" NavLinkMatch="NavLinkMatch.All"/>
+        <NavMenuItem Title="Мониторинг" Href="Arm"/>
+        <NavMenuItem Title="Задачи" Href="alarms-at-work"/>
+        <NavMenuItem Title="Отчеты" Href="reports"/>
+        <NavMenuItem Title="Таблица переменных" Href="tagtable"/>
+        <NavMenuItem Title="Справочники" Href="directory" WithSubmenu="false"/>
+        <NavMenuItem Title="Настройки" Href="settings"/>
+    </ul>
+
+    <div class="header-right-side">
+        <LoginDisplay/>
+    </div>
+</header>
+
+@code {
+    
+}

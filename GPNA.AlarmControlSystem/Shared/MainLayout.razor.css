@@ -1,41 +1,7 @@
-
-
 .page {
     display: flex;
     overflow: hidden;
     flex-direction: column;
-}    
-
-.logo {
-    margin: 0 24px 0 18px;
-    background-image: url(img/HeaderLogo.svg);
-    height: 60px;
-    width: 180px;
-}
-
-    .logo.dark-theme {
-        background-image: url(img/HeaderLogoDarkTheme.svg);
-    }
-
-header {
-    display: flex;
-    height: 60px;
-    width: auto;
-    left: 0;
-    right: 0;
-    top: 0px;
-    border-bottom: 1px solid var(--color-bg-border);
-    align-items: center;
-    
-    background-color: var(--color-bg-default);
-}
-
-.app-name {
-    color: var(--color-typo-primary);
-    font-style: normal;
-    font-weight: 700;
-    font-size: 18px;
-    line-height: 120%;
 }
 
 .header-right-side {
@@ -44,79 +10,13 @@ header {
     position: absolute;
     right: 18px;
     align-items: center;
-}
-
-.theme-toggler {
-    height: 36px;
-    width: 36px;
-    cursor: pointer;
-    background-size:cover;
-}
-
-    .theme-toggler.light-theme {
-        background-image: url(img/ButtonLightTheme.svg);
-    }
-
-    .theme-toggler.dark-theme {
-        background-image: url(img/ButtonDarkTheme.svg);
-    }
-
-    .top-menu {
-        display: flex;
-        gap: 16px;
-        list-style: none;
-        margin: 0;
-    }
-
-.top-menu_item {
-    display: flex;
-    height: 60px;
-    line-height: 60px;
-}
-
-.top-menu_link.active {
-    border-bottom: 2px solid #0078D2;
-}
+}    
 
 .main {
     background-color: var(--color-bg-default);
     color: var(--color-typo-default);
     max-height: calc(100vh - 61px);
     overflow-y: auto;
-}
-
-.sub-menu {
-    display: none;
-    position: absolute;
-    top: 59px;
-    border: 1px solid var(--color-bg-border);
-    align-items: center;
-    background-color: var(--color-bg-default);
-    list-style:none;
-    padding:0 12px;
-    /*left: 0;
-    top: 0;
-    z-index: 5;
-    width: 180px;*/
-    /*opacity: 0;*/
-    /* transform: scaleY(0);
-    transform-origin: 0 0;
-    transition: .5s ease-in-out;*/
-}
-
-.top-menu_item:hover .sub-menu {
-    display: flex;
-    gap:16px;
-    margin:0;
-    z-index: 1;
-    /*opacity: 1;
-    transform: scaleY(1);*/
-}
-
-.sub-menu_item {
-    display: flex;
-    height: 40px;
-    line-height: 40px;
 }
 
 /* The snackbar - position it at the bottom and in the middle of the screen */

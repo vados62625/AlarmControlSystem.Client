@@ -1,6 +1,7 @@
 ﻿@using Blazored.Toast.Configuration
 @using Blazored.Toast.Services
 @using IAuthorizationService = GPNA.AlarmControlSystem.Interfaces.IAuthorizationService
+@using GPNA.AlarmControlSystem.Shared.NavMenu
 @inherits LayoutComponentBase
 
 @inject IAuthorizationService AuthorizationService
@@ -12,84 +13,11 @@
                 SuccessClass="success-toast-override"
                 SuccessIcon="fa fa-thumbs-up"
                 ErrorIcon="fa fa-bug"/>
-<Spinner></Spinner>
-<div class="page @theme">
-    <header>
-        <span class="logo @theme"></span>
-        <span class="app-name">СУС Меретояха</span>
 
-        <ul class="top-menu">
-            <li class="top-menu_item">
-                <NavLink class="top-menu_link" href="/" Match="NavLinkMatch.All">
-                    Главная
-                </NavLink>
-            </li>
-            <li class="top-menu_item">
-                <NavLink class="top-menu_link" style="pointer-events: none;" href="Arm">
-                    Мониторинг
-                </NavLink>
+<Spinner/>
 
-                <ul class="sub-menu">
-                    <li class="sub-menu_item">
-                        <NavLink class="top-menu_link" href="Arm?armId=1">
-                            УПНГ
-                        </NavLink>
-                    </li>
-                    <li class="sub-menu_item">
-                        <NavLink class="top-menu_link" href="Arm?armId=2">
-                            БМУПН
-                        </NavLink>
-                    </li>
-                    <li class="sub-menu_item">
-                        <NavLink class="top-menu_link" href="Arm?armId=3">
-                            Скважины
-                        </NavLink>
-                    </li>
-                    <li class="sub-menu_item">
-                        <NavLink class="top-menu_link" href="Arm?armId=4">
-                            Энергетика
-                        </NavLink>
-                    </li>
-                </ul>
-            </li>
-            <li class="top-menu_item">
-                <NavLink class="top-menu_link" href="alarms-at-work">
-                    Задачи
-                </NavLink>
-            </li>
-            <li class="top-menu_item">
-                <NavLink class="top-menu_link" href="archive">
-                    Архив
-                </NavLink>
-            </li>
-            <li class="top-menu_item">
-                <NavLink class="top-menu_link" href="reports">
-                    Отчеты
-                </NavLink>
-            </li>
-            <li class="top-menu_item">
-                <NavLink class="top-menu_link" href="tagtable">
-                    Таблица переменных
-                </NavLink>
-            </li>
-            <li class="top-menu_item">
-                <NavLink class="top-menu_link" href="faq">
-                    FAQ
-                </NavLink>
-            </li>
-            <li class="top-menu_item">
-                <NavLink class="top-menu_link" href="feedback">
-                    Обратная связь
-                </NavLink>
-            </li>
-        </ul>
-
-        <div class="header-right-side">
-            <span @onclick="ChangeTheme" class="theme-toggler @theme"></span>
-            <LoginDisplay/>
-        </div>
-    </header>
-
+<div class="page">
+    <NavMenu/>
     <div class="main">
         <div class="top-row px-4 auth">
 
@@ -105,24 +33,6 @@
 
 
 @code {
-
-
-    bool darkTheme = false;
-    string theme = "light-theme";
-
-    void ChangeTheme()
-    {
-        darkTheme = !darkTheme;
-        if (darkTheme == true)
-        {
-            theme = "dark-theme";
-        }
-        else
-        {
-            theme = "light-theme";
-        }
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!await AuthorizationService.GetAuthorizationStatus())
