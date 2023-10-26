@@ -7,3 +7,22 @@
     width: 25px;
     height: 25px;
 }
+
+.tagname-filter input {
+    height: 24px;
+    width: 225px;
+    border: 1px solid rgba(0, 66, 105, 0.28);
+    border-radius: 4px;
+    padding: 0 25px 0 5px;
+}
+
+.tagname-filter:before{
+    content: "";
+    position: absolute;
+    right: 10px;
+    top: 18%;
+    bottom: 0;
+    width: 13px;
+    background: url("/img/icons/icon-search.svg") center / contain no-repeat;
+    height: 13px;
+}

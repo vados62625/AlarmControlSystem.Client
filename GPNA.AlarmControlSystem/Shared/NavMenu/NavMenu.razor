@@ -1,4 +1,5 @@
 ﻿@using GPNA.AlarmControlSystem.Shared.NavMenu.Components
+@using GPNA.AlarmControlSystem.Interfaces
 
 <header class="header">
     <div class="logo">
@@ -10,13 +11,13 @@
     </div>
 
     <ul class="top-menu">
-        <NavMenuItem Title="Главная" Href="" NavLinkMatch="NavLinkMatch.All"/>
-        <NavMenuItem Title="Мониторинг" Href="Arm"/>
-        <NavMenuItem Title="Задачи" Href="alarms-at-work"/>
-        <NavMenuItem Title="Отчеты" Href="reports"/>
-        <NavMenuItem Title="Таблица переменных" Href="tagtable"/>
+        <NavMenuItem Title="Главная" Href="" LinksDictionary="FieldLinksDictionary" NavLinkMatch="NavLinkMatch.All"/>
+        <NavMenuItem Title="Мониторинг" LinksDictionary="FieldLinksDictionary" Href="Arm"/>
+        <NavMenuItem Title="Задачи" LinksDictionary="FieldLinksDictionary" Href="alarms-at-work"/>
+        <NavMenuItem Title="Отчеты" LinksDictionary="FieldLinksDictionary" Href="reports"/>
+        <NavMenuItem Title="Таблица переменных" LinksDictionary="FieldLinksDictionary" Href="tagtable"/>
         <NavMenuItem Title="Справочники" Href="directory" WithSubmenu="false"/>
-        <NavMenuItem Title="Настройки" Href="settings"/>
+        <NavMenuItem Title="Настройки" LinksDictionary="FieldLinksDictionary" Href="settings"/>
     </ul>
 
     <div class="header-right-side">
@@ -25,5 +26,30 @@
 </header>
 
 @code {
+    [Inject]
+    private IFieldService? FieldService { get; set; }
     
+    private IDictionary<string, string>? FieldLinksDictionary { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await GetFields();
+
+        await base.OnInitializedAsync();
+    }
+    
+    private async Task GetFields()
+    {
+        if (FieldService != null)
+        {
+            var result = await FieldService.GetList();
+
+            if (result.Success)
+            {
+                var fields = result.Payload.ToArray();
+                
+                FieldLinksDictionary = fields.ToDictionary(field => field.Name, field => $"/?fieldId={field.Id}");
+            }
+        }
+    }
 }

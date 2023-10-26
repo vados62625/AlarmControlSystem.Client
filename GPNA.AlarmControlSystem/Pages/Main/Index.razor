@@ -3,22 +3,29 @@
 @using GPNA.AlarmControlSystem.Models.Dto.Field
 @using GPNA.AlarmControlSystem.Interfaces
 @using GPNA.AlarmControlSystem.Models.Dto.Queries
+@using GPNA.AlarmControlSystem.Models.Dto.Workstation
 @using GPNA.AlarmControlSystem.Services
 @inject IJSRuntime JsRuntime
 
 
 <div class="page-main">
-    <div class="page-title">
-        <ButtonNavigation Title="Меретояхинское"/>
+    <div class="page-title justify-content-center">
+        @if (_fields is {Length: > 2 })
+        {
+            <ButtonNavigation Title="@_fields[2].Name" Href="@("/?fieldId=" + _fields[2].Id)"/>
+        }
         <div class="d-flex align-items-center">
-            <p>ЖУРНАЛ СИГНАЛИЗАЦИЙ ЗА @DateTime.ToString("dd MMMM") МЕРЕТОЯХА <b>@(_field?.Name ?? "N/A")</b></p>
-            <SelectObject Object="dto"/>
+            <p>ЖУРНАЛ СИГНАЛИЗАЦИЙ ЗА @DateTime.ToString("dd MMMM") МЕРЕТОЯХА <b>@(_fields?.FirstOrDefault(f => f.Id == FieldId)?.Name ?? "N/A")</b></p>
+            <SelectObject Object="dto" LinksDictionary="ArmLinksDictionary"/>
         </div>
-        <ButtonNavigation Title="Северо-Самбурское" Navigation="right"/>
+        @if (_fields is {Length: > 1 })
+        {
+            <ButtonNavigation Title="@_fields[1].Name" Href="@("/?fieldId=" + _fields[1].Id)" Navigation="right"/>
+        }
     </div>
-    @if (_field != default)
+    @if (_workstations != default)
     {
-        foreach (var workstation in _field.Workstations)
+        foreach (var workstation in _workstations)
         {
             <WorkStationView Workstation="workstation"/>
         }
@@ -35,49 +42,82 @@
     private IFieldService? FieldService { get; set; }
 
     [Inject]
+    private IWorkStationService? WorkStationService { get; set; }
+
+    [Inject]
     protected ISpinnerService SpinnerService { get; set; } = default!;
 
     [Parameter]
     public DateTimeOffset DateTime { get; set; } = new(2023, 8, 3, 22, 0, 0, DateTimeOffset.Now.Offset);
 
-    // public DateTimeOffset DateTime { get; set; } = DateTimeOffset.Now;
-
     [Parameter]
     [SupplyParameterFromQuery]
     public int? FieldId { get; set; }
-    
+
     private bool IsEnableRenderChart { get; set; }
 
+    private FieldDto[]? _fields;
 
-    private FieldMainPageDto? _field;
+    private WorkstationMainPageDto[]? _workstations;
+
+    private IDictionary<string, string>? ArmLinksDictionary { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         IsEnableRenderChart = false;
         SpinnerService.Show();
-        
-        await InitializeFieldModel();
-        
+
+        await InitializePageAsync();
+
         SpinnerService.Hide();
         IsEnableRenderChart = true;
 
         await base.OnInitializedAsync();
     }
 
-    private async Task InitializeFieldModel()
+    private async Task InitializePageAsync()
     {
-        FieldId ??= 1;
+        await GetFields();
 
+        FieldId ??= _fields?.FirstOrDefault()?.Id ?? 1;
+
+        await GetWorkstations();
+
+        FillArmLinks();
+    }
+
+    private async Task GetFields()
+    {
         if (FieldService != null)
         {
-            var query = new GetAlarmsCountForFieldQuery { FieldId = FieldId.Value, ActivationFrom = DateTime.AddDays(-7), ActivationTo = DateTime };
-
-            var result = await FieldService.GetField(query);
+            var result = await FieldService.GetList();
 
             if (result.Success)
             {
-                _field = result.Payload;
+                _fields = result.Payload.ToArray();
             }
+        }
+    }
+
+    private async Task GetWorkstations()
+    {
+        if (WorkStationService != null && FieldId != null)
+        {
+            var query = new GetAlarmsCountForFieldQuery { FieldId = FieldId.Value, ActivationFrom = DateTime.AddDays(-7), ActivationTo = DateTime };
+            var result = await WorkStationService.GetWorkstationsWithStatistics(query);
+
+            if (result.Success)
+            {
+                _workstations = result.Payload.ToArray();
+            }
+        }
+    }
+
+    private void FillArmLinks()
+    {
+        if (_fields != null && _fields.Any())
+        {
+            ArmLinksDictionary = _fields.ToDictionary(field => field.Name, field => $"/?fieldId={field.Id}");
         }
     }
 

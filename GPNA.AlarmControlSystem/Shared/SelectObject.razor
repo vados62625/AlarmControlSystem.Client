@@ -5,27 +5,17 @@
         </svg>
     </button>
     <div class="select-dto-content">
-        @if (Object == "dto")
+        @if (LinksDictionary != null)
         {
-            <a href="#">Тазовское</a>
-            <a href="#">Месторождение 2</a>
-            <a href="#">Месторождение 3</a>
-            <a href="#">Отгрузка нефти</a>
-        }
-        else
-        {
-            <a href="#">УПНГ</a>
-            <a href="#">Энергоцентр</a>
-            <a href="#">ПСП</a>
-            <a href="#">ННП+ГВТ+УП</a>
-            <a href="#">УПНГ(БМУПН)</a>
-            <a href="#">ЦДНГ</a>
-            <a href="#">УКПГ</a>
-            <a href="#">АГРС</a>
+            foreach (var link in LinksDictionary)
+            {
+                <a href="@link.Value">@link.Key</a>
+            }
         }
     </div>
 </div>
 
 @code {
     [Parameter] public string? Object { get; set; }
+    [Parameter] public IDictionary<string, string>? LinksDictionary { get; set; }
 }
