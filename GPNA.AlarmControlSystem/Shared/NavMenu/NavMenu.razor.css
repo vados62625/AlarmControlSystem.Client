@@ -70,6 +70,5 @@
 }
 
 .header-right-side{
-    margin-left: auto;
-    margin-right: 20px;
+    margin: auto 20px auto auto;
 }

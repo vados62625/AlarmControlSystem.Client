@@ -12,6 +12,9 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
         [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
         [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
 
+        [Parameter]
+        [SupplyParameterFromQuery]
+        public int? FieldId { get; set; }
         [Parameter] public DateTimeOffset From { get; set; }
         [Parameter] public DateTimeOffset To { get; set; }
         static int inputKpi = 12;
@@ -66,7 +69,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
             StateHasChanged();
         }
 
-        async void SetDateTime(int days)
+        private async Task SetDateTime(int days)
         {
             To = DateTimeOffset.Now.AddDays(-1);
             To = new DateTimeOffset(To.Year, To.Month, To.Day, 23, 59, 59,
@@ -110,6 +113,11 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
             }
             
             return -1;
+        }
+        
+        private async Task DownloadFileFromStream()
+        {
+            
         }
     }
 }

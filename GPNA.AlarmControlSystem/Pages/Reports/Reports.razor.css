@@ -1,0 +1,18 @@
+.chart-title {
+    color: #002033;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    text-transform: uppercase;
+    margin: 0;
+    height: 19px;
+    line-height: 19px;
+}
+
+.chart-container {
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    height: 340px;
+}

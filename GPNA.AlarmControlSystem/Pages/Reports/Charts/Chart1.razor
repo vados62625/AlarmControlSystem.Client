@@ -1,5 +1,6 @@
 ﻿@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 @using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
+@using GPNA.AlarmControlSystem.Models
 @inject IJSRuntime JSRuntime
 
 <canvas id="@Id"></canvas>
@@ -26,92 +27,133 @@
 
     [Parameter] public bool IsEnableRenderChart { get; set; } = true;
 
+    //Получить по айди филда все армы(workStation)
+    //
+    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (IncomingAlarms != null && IncomingAlarms.Count > 0)
         {
-            var Arm1 = new int[IncomingAlarms.Count];
-            var kpi = new int[IncomingAlarms.Count];
-            var numTime = new string[IncomingAlarms.Count];
+            var arm1 = new PointChart[IncomingAlarms.Count];
+            var kpi = new PointChart[IncomingAlarms.Count];
             int i = 0;
 
             foreach (var alarmsOnHour in IncomingAlarms)
             {
-                numTime[i] = (alarmsOnHour.Key.ToString("M") + " " + alarmsOnHour.Key.ToString("t"));
-                Arm1[i] = alarmsOnHour.Value.Length;
-                kpi[i] = Kpi;
+                var time = alarmsOnHour.Key.ToString("M") + " " + alarmsOnHour.Key.ToString("t");
+                arm1[i] = new PointChart()
+                {
+                    x = time,
+                    y = alarmsOnHour.Value.Length
+                };
+                
+                kpi[i] = new PointChart()
+                {
+                    x = time,
+                    y = Kpi
+                };
+                
                 i++;
             }
 
-            var config = new
+            var datasets = new Dataset[]
             {
-                Type = "line",
-                Options = new
+                new Dataset()
                 {
-                    Responsive = true,
-                    MaintainAspectRatio = false,
-
-                    Interaction = new
-                    {
-                        Mode = "index"
-                    },
-                    Scales = new
-                    {
-                        y = new
-                        {
-                            Display = true
-                        },
-                        x = new
-                        {
-                            Display = true,
-                            Ticks = new
-                            {
-                                maxRotation = 25
-                            }
-
-                        }
-                    },
-                    Plugins = new
-                    {
-
-                        Tooltip = new
-                        {
-
-                            Intersect = false,
-
-                            BackgroundColor = "#fff",
-                            BodyColor = "#11273B",
-                            BorderWidth = 1,
-                            BorderColor = "#97B2C4",
-                            DisplayColors = true,
-                            TitleColor = "#11273B",
-                            TitleFont = new
-                            {Size ="16"}
-                        },
-                        Legend = new
-                        {
-                            Display = true,
-                            Position = "top"
-                        },
-                    },
+                    Data = arm1, 
+                    BorderColor = "#65C1E4", 
+                    BackgroundColor = "#65C1E4", 
+                    Label = "УПНГ"
                 },
-                Data = new
+                new Dataset()
                 {
-                    Datasets = new[]
-                    {
-                        new { Data = Arm1, BackgroundColor= "#56B9F2", BorderColor = "#56B9F2", BorderWidth = "2",PointRadius="0",Label = "УПНГ", borderDash = new []{0, 0}},
-                        new { Data = Data2, BackgroundColor= "#20B55F", BorderColor = "#20B55F", BorderWidth = "2",PointRadius="0",Label = "БМУПН", borderDash = new []{0, 0}},
-                        new { Data = Data3, BackgroundColor= "#B556FF", BorderColor = "#B556FF", BorderWidth = "2",PointRadius="0",Label = "Скважины", borderDash = new []{0, 0}},
-                        new { Data = Data4, BackgroundColor= "#F2C94C", BorderColor = "#F2C94C", BorderWidth = "2",PointRadius="0",Label = "Энергетика", borderDash = new []{0, 0}},
-                        new { Data = kpi, BackgroundColor= "#EB3333", BorderColor = "#EB3333", BorderWidth = "2",PointRadius="0",Label = "KPI", borderDash = new []{5, 5}}
-                    },
-                    Labels = numTime
+                    Data = kpi, 
+                    BorderColor = "#EB5757", 
+                    BackgroundColor = "#EB5757", 
+                    BorderDash = new []{5, 5},
+                    Label = "KPI"
                 }
             };
+            
+            var config = GetConfig(datasets);
             await JSRuntime.InvokeVoidAsync("setup3", Id!, config);
-        }        
-        
-        
+        }
     }
+    
+    private object GetConfig(Dataset[]? datasets)
+    {
+        var config = new
+        {
+            Type = "line",
+            Options = new
+            {
+                Responsive = true,
+                MaintainAspectRatio = false,
+                Interaction = new
+                {
+                    mode = "nearest",
+                    intersect = false
+                },
+                Scales = new
+                {
+                    y = new
+                    {
+                        Display = true
+                    },
+                    x = new
+                    {
+                        Display = true,
+                        Ticks = new
+                        {
+                            maxRotation = 25
+                        }
+
+                    }
+                },
+                Plugins = new
+                {
+                    Tooltip = new
+                    {
+                        Intersect = false,
+                        BackgroundColor = "#fff",
+                        BodyColor = "#11273B",
+                        BorderWidth = 1,
+                        BorderColor = "#97B2C4",
+                        DisplayColors = true,
+                        TitleColor = "#11273B",
+                        TitleFont = new
+                        {Size ="16"}
+                    },
+                    Legend = new
+                    {
+                        Display = true,
+                        Position = "top",
+                        Labels = new
+                        {
+                            BoxWidth = 40,
+                            BoxHeight = 11,
+                            Color = "rgba(0, 32, 51, 0.70)",
+                            Font = new
+                            {
+                                Family = "Inter",
+                                Size = "14px",
+                                
+                            },
+                            UsePointStyle = true,
+                            Padding = 20
+                        }
+                    },
+                },
+            },
+            Data = new
+            {
+                Datasets = datasets
+            }
+        };
+        return config;
+    }
+    
+        
+    
 }
 

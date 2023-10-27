@@ -1,122 +1,58 @@
 ﻿@page "/reports"
 @using GPNA.AlarmControlSystem.Pages.Reports.Charts
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Components
 @inject IJSRuntime JSRuntime
 
-@if (IsEnableRenderChart)
-{
-    <div style="display:flex;align-items: center;    justify-content: center; ">  
-        <div style="display:flex;gap:8px;">
-            <div class="stat-box">
-                <div class="stat-box__numbers">
-                    <span>@GeneralCount</span>
-                    <span style="color:#09B37B">+0%</span>
-                </div>
-                <span class="stat-box__desc">Общее количество сигнализаций</span>
-            </div>
-            <div class="stat-box">
-                <div class="stat-box__numbers">
-                    <span title="Среднее количествово критичных сигнализаций за последние 720 часов">@AverageUrgent</span>
-                    <span style="color:#09B37B">+0%</span>
-                </div>
-                <span class="stat-box__desc" title="Среднее количествово критичных сигнализаций за последние @IncomingAlarms.Count часов">Среднее количествово критичных</span>
-            </div>
-            <div class="stat-box">
-                <div class="stat-box__numbers">
-                    <span>@GeneralCount</span>
-                    <span style="color:#09B37B">+0%</span>
-                </div>
-                <span class="stat-box__desc">УПНГ</span>
-            </div>
-            <div class="stat-box">
-                <div class="stat-box__numbers">
-                    <span>N/A</span>
-                    <span style="color:#09B37B">+0%</span>
-                </div>
-                <span class="stat-box__desc">БМУПН</span>
-            </div>
-            <div class="stat-box">
-                <div class="stat-box__numbers">
-                    <span>N/A</span>
-                    <span style="color:#09B37B">+0%</span>
-                </div>
-                <span class="stat-box__desc">Скважины</span>
-            </div>
-            <div class="stat-box">
-                <div class="stat-box__numbers">
-                    <span>N/A</span>
-                    <span style="color:#09B37B">+0%</span>
-                </div>
-                <span class="stat-box__desc">Энергетика</span>
-            </div>
-        </div>
-        <div style="position: absolute;    right: 20px;">
-            <span style="margin-right:10px;">KPI:</span><input type="number" @bind="inputKpi"/>
-        </div>    
+<div class="page-header">
+    <div class="d-flex date-period-select">
+        <input type="datetime-local" @bind="From" @bind:event="oninput" @onchange="async () => await OnParametersSetAsync()">
+        <input type="datetime-local" @bind="To" @bind:event="oninput" @onchange="async () => await OnParametersSetAsync()">
     </div>
-}
+    <p class="page-title">УПНГ отчеты меретояха
+        <b style="margin-left: 5px;">ТАЗОВСКОЕ</b>
+        </p>
+    <div class="d-flex gap-2">
+        <TitleBarButton Title="Экспорт" FunctionButton="export" Action="DownloadFileFromStream"/>
+    </div>
+</div>
+<div class="d-flex justify-content-between overflow-auto" style="padding-bottom: 26px;">
+    <div class="priority-alarm-container">
+        <PriorityAlarm Title="Общее кол-во сигнализаций" Value="@GeneralCount" Priority="total"/>
+        <PriorityAlarm Title="Среднее кол-во критичных" Value="@AverageUrgent" Priority="critical"/>
+        <PriorityAlarm Title="Title" Value="225" Priority="total"/>
+    </div>
+</div>
 
-<div>
-    <div style="display: flex;    align-items: center;    gap: 10px;    margin: 10px 0 0 0;">
-        <h4>Количество сигнализаций</h4>
-        <a style="margin-left:20px;">C :</a>
-        <input  type="datetime-local" @bind="From">
-        <a>По :</a>
-        <input  type="datetime-local" @bind="To">
-        <img src="img/icons/refresh.svg" style="cursor:pointer" @onclick="(()=>OnParametersSetAsync())" />
-        <button class="btn-primary" @onclick="()=>SetDateTime(1)">1 день</button>
-        <button class="btn-primary" @onclick="()=>SetDateTime(7)">Неделя</button>
-    </div>
-    
-    @if (!IsEnableRenderChart)
-    {
-        <Loader/>
-    }
-    else
-    {
-        if (IncomingAlarms != null && IncomingAlarms.Count > 0)
+<div class="position-relative">
+    <h4 class="chart-title position-absolute">Количество сигнализаций</h4>
+    <div class="chart-container" style="margin-bottom: 30px;">
+        @if (IncomingAlarms != null && IncomingAlarms.Count > 0)
         {
-            <div style="height:340px;">
             <Chart1 Kpi="@inputKpi" IncomingAlarms="@IncomingAlarms"/>
-            </div>
         }
         else
         {
-            <div style="height:340px;display:flex; align-items:center; justify-content:center;">
-                <p>Нет данных.</p>
-            </div>
+            <p>Нет данных.</p>
         }
+    </div>
 
-    }    
-        
-    <div style="display:flex;gap:20px;">
-        <h4>Количество сигнализаций на АРМе</h4>
-        <select >        
+    <div class="d-flex gap-4 position-absolute">
+        <h4 class="chart-title">Количество сигнализаций на АРМе</h4>
+        <select>        
             <option value="УПНГ">УПНГ</option>
             <option value="БМУПН">БМУПН</option>
             <option value="Скважины">Скважины</option>
             <option value="Энергетика">Энергетика</option>
         </select>
     </div>
-
-    @if (!IsEnableRenderChart)
-    {
-        <Loader/>
-    }
-    else
-    {
-        
-        if (IncomingAlarms != null && IncomingAlarms.Count > 0)
+    <div class="chart-container">
+        @if (IncomingAlarms != null && IncomingAlarms.Count > 0)
         {
-            <div style="height:340px;">
-                <Chart2 IncomingAlarms="@IncomingAlarms"/>
-             </div>
+            <Chart2 IncomingAlarms="@IncomingAlarms"/>
         }
         else
         {
-            <div style="height:340px;display:flex; align-items:center; justify-content:center;">
-                <p>Нет данных.</p>
-            </div>
+            <p>Нет данных.</p>
         }
-    }
-
+    </div>
 </div>

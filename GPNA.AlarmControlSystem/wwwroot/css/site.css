@@ -398,16 +398,23 @@ p {
     gap: 10px;
 }
 
-.page-title {
+.page-header {
     display: flex;
     justify-content: space-between;
     padding-bottom: 10px;
     align-content: center;
 }
-    .page-title > p {
+    .page-header > p {
         text-transform: uppercase;
         font-weight: 400;
     }
+    
+.page-title{
+    position: absolute;
+    display: flex;
+    width: -webkit-fill-available;
+    justify-content: center;
+}
 
 .date-period-select input {
     border: 1px solid var(--border-calendar-light-grey);
@@ -439,4 +446,9 @@ p {
 ::-webkit-scrollbar-thumb {
     background-color: rgb(0 32 51 / 30%);
     border-radius: 10px;
+}
+
+.priority-alarm-container {
+    display: flex;
+    gap: 8px;
 }
