@@ -1,4 +1,4 @@
-﻿<button class="bg-navigation @Navigation">
+﻿<a href="@Href" class="bg-navigation @Navigation">
     <svg>
         @if (Navigation != null)
         {
@@ -10,9 +10,13 @@
         }   
     </svg>
     <p>@Title</p>    
-</button>
+</a>
 
 @code {
     [Parameter] public string? Navigation { get; set; }
     [Parameter] public string? Title { get; set; }
+
+    [Parameter]
+    public string? Href { get; set; } = "#";
+
 }

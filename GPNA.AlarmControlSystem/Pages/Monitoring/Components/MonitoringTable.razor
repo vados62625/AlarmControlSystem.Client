@@ -1,4 +1,5 @@
 ﻿@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
+@using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms
 <table class="bg-monitoring-table ">
     <thead>
@@ -47,7 +48,7 @@
             <div>
                 <p>Статус</p>
                 <div>
-                    <button>
+                    <button data-bs-toggle="modal" data-bs-target="#stateFilterModal">
                         <svg>
                             <use href="/img/icons/icons.svg#filter"></use>
                         </svg>
@@ -106,6 +107,74 @@
     </tbody>
 </table>
 
+<div id="filterModals">
+
+    <div class="modal fade" id="stateFilterModal">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="stateFilterRadio" id="stateFilterRadio-1" checked="@(StateFilter == null)" onchange="@(async () => await SetStateFilter(null))">
+                        @* <InputRadio Value="@(-1)"/> *@
+                        <label class="form-check-label" for="stateFilterRadio-1">
+                            Все
+                        </label>
+                    </div>
+
+                    @foreach (var state in Enum.GetValues<StateType>())
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="stateFilterRadio" id="stateFilterRadio@((int)state)" checked="@(StateFilter == state)" onchange="@(async () => await SetStateFilter(state))">
+                            @* <InputRadio Value="state"/> *@
+                            <label class="form-check-label" for="stateFilterRadio@((int)state)">
+                                @state.ToString()
+                            </label>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="priorityFilterModal">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+    
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="stateFilterRadio" id="priorityFilterRadio-1" checked="@(PriorityFilter == null)" onchange="@(async () => await OnPriorityFilterChanged.InvokeAsync(null))">
+                            @* <InputRadio Value="@(-1)"/> *@
+                            <label class="form-check-label" for="stateFilterRadio-1">
+                                Все
+                            </label>
+                        </div>
+    
+                        @foreach (var priority in Enum.GetValues<PriorityType>())
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="stateFilterRadio" id="priorityFilterRadio@((int)priority)" checked="@(PriorityFilter == priority)" onchange="@(async () => await OnPriorityFilterChanged.InvokeAsync(priority))">
+                                @* <InputRadio Value="state"/> *@
+                                <label class="form-check-label" for="stateFilterRadio@((int)priority)">
+                                    @priority.ToString()
+                                </label>
+                            </div>
+                        }
+    
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</div>
+
 @code {
 
     [Parameter]
@@ -113,5 +182,22 @@
 
     [Parameter]
     public IncomingAlarmDto[][]? Alarms { get; set; }
+
+    [CascadingParameter(Name = nameof(StateFilter))]
+    public StateType? StateFilter { get; set; }
+    
+    [CascadingParameter(Name = nameof(PriorityFilter))]
+    public PriorityType? PriorityFilter { get; set; }
+
+    [Parameter]
+    public EventCallback<StateType?> OnStateFilterChanged { get; set; }
+    
+    [Parameter]
+    public EventCallback<PriorityType?> OnPriorityFilterChanged { get; set; }
+
+    private async Task SetStateFilter(StateType? state)
+    {
+        await OnStateFilterChanged.InvokeAsync(state);
+    }
 
 }

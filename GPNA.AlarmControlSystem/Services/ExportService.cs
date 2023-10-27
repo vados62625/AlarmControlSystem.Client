@@ -1,9 +1,10 @@
-﻿using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
+﻿using GPNA.AlarmControlSystem.Interfaces;
+using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
 using GPNA.RestClient.Models;
 
 namespace GPNA.AlarmControlSystem.Services;
 
-public class ExportService
+public class ExportService : IExportService
 {
     protected readonly IAlarmControlSystemApiBroker _apiBroker;
 

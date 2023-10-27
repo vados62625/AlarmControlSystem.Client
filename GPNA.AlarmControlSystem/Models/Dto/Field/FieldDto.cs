@@ -2,8 +2,7 @@
 
 namespace GPNA.AlarmControlSystem.Models.Dto.Field;
 
-public class FieldMainPageDto
+public class FieldDto : EntityDtoBase
 {
     public string Name { get; set; }
-    public ICollection<WorkstationMainPageDto> Workstations { get; set; } = new HashSet<WorkstationMainPageDto>();
 }
