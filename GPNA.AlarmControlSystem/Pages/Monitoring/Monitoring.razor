@@ -19,17 +19,12 @@
                         <div class="d-flex date-period-select">
                             <input type="datetime-local" @bind="From" @bind:event="oninput">
                             <input type="datetime-local" @bind="To" @bind:event="oninput">
-                            <button class="btn p-0 ms-2 d-flex" @onclick="async () => await InitializePageAsync()">
+                            <button class="btn p-0 ms-2 d-flex shadow-none@(_spinnerClass)" id="button-refresh" @onclick="async () => await RefreshBySpinner()">
                                 <svg class="w-100 h-100">
                                     <use href="/img/icons/icons.svg#refresh"></use>
                                 </svg>
                             </button>
                             <div class="d-flex tagname-filter position-relative ms-2">
-                                @* <div class="input-group ms-2"> *@
-                                @*     <span class="input-group-text" id="tagname-addon">Тег</span> *@
-                                @*     <input type="text" class="form-control" aria-describedby="tagname-addon" @bind="TagNameFilter" @bind:event="oninput" @onchange="async () => await InitializePageAsync()"> *@
-                                @* </div> *@
-                                
                                 <input placeholder="Поиск по Tag" type="text" name="tagname" @bind="TagNameFilter" @bind:event="oninput" @onchange="async () => await InitializePageAsync()">
                             </div>
                         </div>
@@ -73,7 +68,7 @@
                         </div>
                     </div>
                     <div style="border-radius: 6px;">
-                        <MonitoringTable Alarms="AlarmsCollection?.Items" OnStateFilterChanged="SetStateFilter"></MonitoringTable>
+                        <MonitoringTable Alarms="AlarmsCollection?.Items" OnStateFilterChanged="SetStateFilter" OnPriorityFilterChanged="SetPriorityFilter"></MonitoringTable>
                     </div>
                 </div>
 
@@ -131,7 +126,7 @@
     [CascadingParameter(Name = nameof(PriorityFilter))]
     public PriorityType? PriorityFilter { get; set; }
 
-    private bool FiltersOn => !string.IsNullOrWhiteSpace(TagNameFilter);
+    private bool FiltersOn => !string.IsNullOrWhiteSpace(TagNameFilter) || StateFilter != default || PriorityFilter != default;
 
     private AlarmsCollection<IncomingAlarmDto>? AlarmsCollection { get; set; }
 
@@ -142,6 +137,8 @@
     private IDictionary<string, string>? FieldLinksDictionary { get; set; }
     
     private IDictionary<string, string>? ArmLinksDictionary { get; set; }
+
+    private string _spinnerClass = "";
 
     protected override async Task OnParametersSetAsync()
     {
@@ -278,6 +275,27 @@
     {
         PriorityFilter = priority;
         await InitializePageAsync();
+    }
+
+    private async Task RefreshBySpinner()
+    {
+        await EnableSpinner();
+
+        await InitializePageAsync();
+        
+        await DisableSpinner();
+    }
+    
+    private async Task EnableSpinner()
+    {
+        // await JS.InvokeVoidAsync("addClass", new { elementId = "button-refresh", className = "active" });
+        _spinnerClass = " active";
+    }
+    
+    private async Task DisableSpinner()
+    {
+        // await JS.InvokeVoidAsync("removeClass", new { elementId = "button-refresh", className = "active" });
+        _spinnerClass = string.Empty;
     }
 
 }

@@ -1,6 +1,12 @@
-.date-period-select .btn[b-xi0hytn6mp]{
+.date-period-select .btn#button-refresh{
     width: 25px;
     height: 25px;
+}
+
+.date-period-select .btn#button-refresh.active {
+    -webkit-animation:spin 1.5s linear infinite;
+    -moz-animation:spin 1.5s linear infinite;
+    animation:spin 1.5s linear infinite;
 }
 
 .tagname-filter input {
@@ -20,4 +26,17 @@
     width: 13px;
     background: url("/img/icons/icon-search.svg") center / contain no-repeat;
     height: 13px;
+}
+
+@-moz-keyframes spin {
+    100% { -moz-transform: rotate(-360deg); }
+}
+@-webkit-keyframes spin {
+    100% { -webkit-transform: rotate(-360deg); }
+}
+@keyframes spin {
+    100% {
+        -webkit-transform: rotate(-360deg);
+        transform:rotate(-360deg);
+    }
 }

@@ -84,7 +84,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
 
                 foreach (var alarmsOnHour in IncomingAlarms)
                 {
-                    if (alarmsOnHour.Value != null && alarmsOnHour.Value.Length > 0)
+                    if (alarmsOnHour.Value is { Length: > 0 })
                     {
                         GeneralCount += alarmsOnHour.Value.Length;
                         AlarmsCountArm1 += alarmsOnHour.Value.Length;
@@ -132,12 +132,12 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
         {
             if (_fields != null)
             {
-                FieldLinksDictionary = _fields.ToDictionary(field => field.Name, field => $"/Arm/?fieldId={field.Id}");
+                FieldLinksDictionary = _fields.ToDictionary(field => field.Name, field => $"/reports/?fieldId={field.Id}");
             }
         
             if (_workstations != null)
             {
-                ArmLinksDictionary = _workstations.ToDictionary(workStation => workStation.Name, workStation => $"/Arm/?fieldId={FieldId}&armId={workStation.Id}");
+                ArmLinksDictionary = _workstations.ToDictionary(workStation => workStation.Name, workStation => $"/reports/?fieldId={FieldId}&armId={workStation.Id}");
             }
         }
         
@@ -170,7 +170,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
                 
                 foreach (var alarmsOnHour in incomingAlarms)
                 {
-                    if (alarmsOnHour.Value != null && alarmsOnHour.Value.Length > 0)
+                    if (alarmsOnHour.Value is { Length: > 0 })
                         foreach (var alarm in alarmsOnHour.Value)
                         {
                             if (alarm.Priority == PriorityType.Urgent)
