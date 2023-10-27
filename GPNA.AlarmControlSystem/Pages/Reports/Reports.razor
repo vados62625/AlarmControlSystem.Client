@@ -4,14 +4,16 @@
 @inject IJSRuntime JSRuntime
 
 <div class="page-header">
-    <div class="d-flex date-period-select">
+    <div class="d-flex date-period-select" style="z-index: 1;">
         <input type="datetime-local" @bind="From" @bind:event="oninput" @onchange="async () => await OnParametersSetAsync()">
         <input type="datetime-local" @bind="To" @bind:event="oninput" @onchange="async () => await OnParametersSetAsync()">
     </div>
     <p class="page-title">УПНГ отчеты меретояха
         <b style="margin-left: 5px;">ТАЗОВСКОЕ</b>
-        </p>
-    <div class="d-flex gap-2">
+        <SelectObject Object="dto" LinksDictionary="FieldLinksDictionary"/>
+    </p>
+    
+    <div class="d-flex gap-2" style="z-index: 1;">
         <TitleBarButton Title="Экспорт" FunctionButton="export" Action="DownloadFileFromStream"/>
     </div>
 </div>
@@ -38,12 +40,11 @@
 
     <div class="d-flex gap-4 position-absolute">
         <h4 class="chart-title">Количество сигнализаций на АРМе</h4>
-        <select>        
-            <option value="УПНГ">УПНГ</option>
-            <option value="БМУПН">БМУПН</option>
-            <option value="Скважины">Скважины</option>
-            <option value="Энергетика">Энергетика</option>
-        </select>
+        <p style="margin-left:15px;">
+            <b>@ArmName</b>
+        </p>
+        <SelectObject LinksDictionary="ArmLinksDictionary"/>
+        
     </div>
     <div class="chart-container">
         @if (IncomingAlarms != null && IncomingAlarms.Count > 0)
