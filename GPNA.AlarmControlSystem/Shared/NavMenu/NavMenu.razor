@@ -1,12 +1,14 @@
 ﻿@using GPNA.AlarmControlSystem.Shared.NavMenu.Components
 @using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Options
+@using Microsoft.Extensions.Options
 
 <header class="header">
     <div class="logo">
         <span class="logo-img"></span>
         <span class="logo-title">
             Модуль СУС <br/>
-            Меретояха
+            @(Options?.Value.DoName ?? "N/A")
         </span>
     </div>
 
@@ -26,6 +28,9 @@
 </header>
 
 @code {
+    [Inject]
+    private IOptions<AcsModuleOptions>? Options { get; set; }
+    
     [Inject]
     private IFieldService? FieldService { get; set; }
     

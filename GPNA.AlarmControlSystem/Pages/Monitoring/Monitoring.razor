@@ -8,6 +8,9 @@
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Services
 @using GPNA.AlarmControlSystem.Extensions
+@using GPNA.AlarmControlSystem.Models.Dto.Tag
+@using GPNA.AlarmControlSystem.Options
+@using Microsoft.Extensions.Options
 @inject IJSRuntime JS
 
 <CascadingValue Name="@nameof(From)" Value="@From">
@@ -30,7 +33,7 @@
                             </div>
                         </div>
                         <div class="d-flex">
-                            <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ ЗА ПЕРИОД С DP МЕРЕТОЯХА <b>ТАЗОВСКОЕ</b></p>
+                            <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ ЗА ПЕРИОД С DP @(Options?.Value.DoName ?? "N/A") <b>@FieldName</b></p>
                             <SelectObject Object="dto" LinksDictionary="FieldLinksDictionary"/>
                             <p style="margin-left:15px;">
                                 <b>@ArmName</b>
@@ -79,6 +82,9 @@
 </CascadingValue>
 
 @code {
+
+    [Inject]
+    private IOptions<AcsModuleOptions>? Options { get; set; }
 
     [Inject]
     private IIncomingAlarmService? IncomingAlarmService { get; set; }
@@ -175,6 +181,8 @@
 
         FieldId ??= _fields?.FirstOrDefault()?.Id;
 
+        FieldName = _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name;
+        
         ArmId ??= _workstations?.FirstOrDefault()?.Id;
 
         ArmName = _workstations?.FirstOrDefault(ws => ws.Id == ArmId)?.Name;
@@ -220,6 +228,8 @@
                 ActivationTo = To,
                 State = StateFilter,
                 Priority = PriorityFilter,
+                OrderPropertyName = nameof(TagDto.State),
+                OrderByDescending = true
             });
 
             if (request.Success)

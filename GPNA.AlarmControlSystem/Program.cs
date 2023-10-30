@@ -31,6 +31,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("console", policy => policy.RequireRole("BUILTIN\\Пользователи журналов производительности"));
 });
 
+builder.Services.Configure<AcsModuleOptions>(configuration.GetSection("AcsModuleConfig"));
 builder.Services.AddRazorPages();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddServerSideBlazor();

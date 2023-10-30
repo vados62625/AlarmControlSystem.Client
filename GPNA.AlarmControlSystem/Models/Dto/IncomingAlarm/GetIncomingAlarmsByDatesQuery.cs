@@ -38,5 +38,25 @@ namespace GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
         /// Состояние
         /// </summary>
         public StateType? State { get; set; }
+        
+        /// <summary>
+        /// Страница
+        /// </summary>
+        public int? Page { get; set; }
+    
+        /// <summary>
+        /// Количество элементов на странице
+        /// </summary>
+        public int? CountOnPage { get; set; }
+    
+        /// <summary>
+        /// Имя поля для сортировки
+        /// </summary>
+        public string? OrderPropertyName { get; set; }
+    
+        /// <summary>
+        /// Сортировать по убыванию
+        /// </summary>
+        public bool OrderByDescending { get; set; }
     }
 }

@@ -3,13 +3,18 @@ using GPNA.AlarmControlSystem.Models.Dto.Field;
 using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
 using GPNA.AlarmControlSystem.Models.Dto.Workstation;
 using GPNA.AlarmControlSystem.Models.Enums;
+using GPNA.AlarmControlSystem.Options;
 using GPNA.AlarmControlSystem.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Options;
 
 namespace GPNA.AlarmControlSystem.Pages.Reports
 {
     public partial class Reports : ComponentBase
     {
+        [Inject]
+        private IOptions<AcsModuleOptions>? Options { get; set; }
+        
         [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
         [Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
         [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
@@ -33,6 +38,8 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
         
         [Parameter]
         public string? ArmName { get; set; }
+
+        private string? FieldName => _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name ?? "N/A";
         
         static int inputKpi = 12;
         private IDictionary<string, string>? FieldLinksDictionary { get; set; }

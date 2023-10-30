@@ -8,8 +8,8 @@
         <input type="datetime-local" @bind="From" @bind:event="oninput" @onchange="async () => await OnParametersSetAsync()">
         <input type="datetime-local" @bind="To" @bind:event="oninput" @onchange="async () => await OnParametersSetAsync()">
     </div>
-    <p class="page-title">УПНГ отчеты меретояха
-        <b style="margin-left: 5px;">ТАЗОВСКОЕ</b>
+    <p class="page-title">@ArmName отчеты @(Options?.Value.DoName ?? "N/A")
+        <b style="margin-left: 5px;">@FieldName</b>
         <SelectObject Object="dto" LinksDictionary="FieldLinksDictionary"/>
     </p>
     
@@ -28,9 +28,9 @@
 <div class="position-relative">
     <h4 class="chart-title position-absolute">Количество сигнализаций</h4>
     <div class="chart-container" style="margin-bottom: 30px;">
-        @if (IncomingAlarms != null && IncomingAlarms.Count > 0)
+        @if (IncomingAlarms is {Count: > 0 })
         {
-            <Chart1 Kpi="@inputKpi" IncomingAlarms="@IncomingAlarms"/>
+            <Chart1 Kpi="@inputKpi" IncomingAlarms="@IncomingAlarms" ArmName="@ArmName"/>
         }
         else
         {

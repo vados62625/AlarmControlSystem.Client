@@ -4,7 +4,9 @@
 @using GPNA.AlarmControlSystem.Interfaces
 @using GPNA.AlarmControlSystem.Models.Dto.Queries
 @using GPNA.AlarmControlSystem.Models.Dto.Workstation
+@using GPNA.AlarmControlSystem.Options
 @using GPNA.AlarmControlSystem.Services
+@using Microsoft.Extensions.Options
 @inject IJSRuntime JsRuntime
 
 
@@ -15,7 +17,7 @@
             <ButtonNavigation Title="@_fields[2].Name" Href="@("/?fieldId=" + _fields[2].Id)"/>
         }
         <div class="d-flex align-items-center">
-            <p>ЖУРНАЛ СИГНАЛИЗАЦИЙ ЗА @DateTime.ToString("dd MMMM") МЕРЕТОЯХА <b>@(_fields?.FirstOrDefault(f => f.Id == FieldId)?.Name ?? "N/A")</b></p>
+            <p>ЖУРНАЛ СИГНАЛИЗАЦИЙ ЗА @DateTime.ToString("dd MMMM") @(Options?.Value.DoName ?? "N/A") <b>@(_fields?.FirstOrDefault(f => f.Id == FieldId)?.Name ?? "N/A")</b></p>
             <SelectObject Object="dto" LinksDictionary="ArmLinksDictionary"/>
         </div>
         @if (_fields is {Length: > 1 })
@@ -38,6 +40,9 @@
 
 @code {
 
+    [Inject]
+    private IOptions<AcsModuleOptions>? Options { get; set; }
+    
     [Inject]
     private IFieldService? FieldService { get; set; }
 
