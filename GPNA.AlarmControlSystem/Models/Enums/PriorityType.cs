@@ -12,7 +12,7 @@ namespace GPNA.AlarmControlSystem.Models.Enums
         Low = 2,
         [Description("Высокий")]
         High = 3,
-        [Description("Критический")]
+        [Description("Критичный")]
         Urgent = 4
     }
 }
