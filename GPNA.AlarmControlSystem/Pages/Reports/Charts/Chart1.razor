@@ -7,7 +7,8 @@
 
 @code {
 
-    [Parameter] public Dictionary<DateTimeOffset, IncomingAlarmDto[]>? IncomingAlarms {get;set;}
+    [Parameter]
+    public Dictionary<string, Dictionary<DateTimeOffset, IncomingAlarmDto[]>>? IncomingAlarms { get; set; }
 
     [Parameter]
     public string? Id { get; set; } = "chart1";
@@ -23,66 +24,91 @@
 
     [Parameter]
     public int[]? Data4 { get; set; }
-    
+
     [Parameter]
     public string? DataSetTitle { get; set; }
 
-    [Parameter] public bool IsEnableRenderChart { get; set; } = true;
+    [Parameter]
+    public bool IsEnableRenderChart { get; set; } = true;
 
     //Получить по айди филда все армы(workStation)
     //
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (IncomingAlarms != null && IncomingAlarms.Count > 0)
+        if (IncomingAlarms is {Count: > 0 })
         {
-            var arm1 = new PointChart[IncomingAlarms.Count];
-            var kpi = new PointChart[IncomingAlarms.Count];
-            int i = 0;
+            var datasets = new List<Dataset>();
 
-            foreach (var alarmsOnHour in IncomingAlarms)
+            var kpi = new PointChart[IncomingAlarms.FirstOrDefault().Value.Count];
+
+            foreach (var alarmsDataset in IncomingAlarms)
             {
-                var time = alarmsOnHour.Key.ToString("M") + " " + alarmsOnHour.Key.ToString("t");
-                arm1[i] = new PointChart()
+                var arm1 = new PointChart[alarmsDataset.Value.Count];
+                kpi = new PointChart[alarmsDataset.Value.Count];
+                int i = 0;
+
+                foreach (var alarmsOnHour in alarmsDataset.Value)
                 {
-                    x = time,
-                    y = alarmsOnHour.Value.Length
-                };
-                
-                kpi[i] = new PointChart()
+                    var time = alarmsOnHour.Key.ToString("M") + " " + alarmsOnHour.Key.ToString("t");
+                    arm1[i] = new PointChart()
+                    {
+                        x = time,
+                        y = alarmsOnHour.Value.Length
+                    };
+
+                    kpi[i] = new PointChart()
+                    {
+                        x = time,
+                        y = Kpi
+                    };
+
+                    i++;
+                }
+                datasets.Add(new Dataset()
                 {
-                    x = time,
-                    y = Kpi
-                };
-                
-                i++;
+                    Data = arm1,
+                    BorderColor = "#65C1E4",
+                    BackgroundColor = "#65C1E4",
+                    Label = DataSetTitle ?? "N/A"
+                });
             }
 
-            var datasets = new Dataset[]
+            datasets.Add(new Dataset()
             {
-                new Dataset()
-                {
-                    Data = arm1, 
-                    BorderColor = "#65C1E4", 
-                    BackgroundColor = "#65C1E4", 
-                    Label = DataSetTitle ?? "N/A"
-                },
-                new Dataset()
-                {
-                    Data = kpi, 
-                    BorderColor = "#EB5757", 
-                    BackgroundColor = "#EB5757", 
-                    BorderDash = new []{5, 5},
-                    Label = "KPI"
-                }
-            };
-            
+                Data = kpi,
+                BorderColor = "#EB5757",
+                BackgroundColor = "#EB5757",
+                BorderDash = new[] { 5, 5 },
+                Label = "KPI"
+            });
+
+
+    // var datasets = new Dataset[]
+    // {
+    //     new Dataset()
+    //     {
+    //         Data = arm1, 
+    //         BorderColor = "#65C1E4", 
+    //         BackgroundColor = "#65C1E4", 
+    //         Label = DataSetTitle ?? "N/A"
+    //     },
+    //     new Dataset()
+    //     {
+    //         Data = kpi, 
+    //         BorderColor = "#EB5757", 
+    //         BackgroundColor = "#EB5757", 
+    //         BorderDash = new []{5, 5},
+    //         Label = "KPI"
+    //     }
+    // };
+
             var config = GetConfig(datasets);
             await JSRuntime.InvokeVoidAsync("setup3", Id!, config);
         }
     }
-    
-    private object GetConfig(Dataset[]? datasets)
+
+    private object GetConfig(IEnumerable<Dataset>? datasets)
     {
         var config = new
         {
@@ -109,7 +135,6 @@
                         {
                             maxRotation = 25
                         }
-
                     }
                 },
                 Plugins = new
@@ -124,7 +149,7 @@
                         DisplayColors = true,
                         TitleColor = "#11273B",
                         TitleFont = new
-                        {Size ="16"}
+                        { Size = "16" }
                     },
                     Legend = new
                     {
@@ -139,7 +164,6 @@
                             {
                                 Family = "Inter",
                                 Size = "14px",
-                                
                             },
                             UsePointStyle = true,
                             Padding = 20
@@ -154,8 +178,7 @@
         };
         return config;
     }
-    
-        
-    
-}
 
+
+
+}

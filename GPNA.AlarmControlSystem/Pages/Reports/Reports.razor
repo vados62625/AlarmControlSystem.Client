@@ -8,11 +8,14 @@
         <input type="datetime-local" @bind="From" @bind:event="oninput" @onchange="async () => await OnParametersSetAsync()">
         <input type="datetime-local" @bind="To" @bind:event="oninput" @onchange="async () => await OnParametersSetAsync()">
     </div>
-    <p class="page-title">@ArmName отчеты @(Options?.Value.DoName ?? "N/A")
+    <p class="page-title">
+        отчеты @(Options?.Value.DoName ?? "N/A")
         <b style="margin-left: 5px;">@FieldName</b>
         <SelectObject Object="dto" LinksDictionary="FieldLinksDictionary"/>
+        <b class="ps-2">@ArmName</b>
+        <SelectObject LinksDictionary="ArmLinksDictionary"/>
     </p>
-    
+
     <div class="d-flex gap-2" style="z-index: 1;">
         <TitleBarButton Title="Экспорт" FunctionButton="export" Action="DownloadFileFromStream"/>
     </div>
@@ -21,7 +24,13 @@
     <div class="priority-alarm-container">
         <PriorityAlarm Title="Общее кол-во сигнализаций" Value="@GeneralCount" Priority="total"/>
         <PriorityAlarm Title="Среднее кол-во критичных" Value="@AverageUrgent" Priority="critical"/>
-        <PriorityAlarm Title="Title" Value="225" Priority="total"/>
+        @if (IncomingAlarms != default && _workstations != null)
+        {
+            foreach (var workstation in _workstations)
+            {
+                <PriorityAlarm Title="@workstation.Name" Value="@(IncomingAlarms.TryGetValue(workstation.Name ?? string.Empty, out var alarms) ? alarms.Sum(c => c.Value.Length) : 0)" Priority="total"/>
+            }
+        }
     </div>
 </div>
 
@@ -44,12 +53,12 @@
             <b>@ArmName</b>
         </p>
         <SelectObject LinksDictionary="ArmLinksDictionary"/>
-        
+
     </div>
     <div class="chart-container">
-        @if (IncomingAlarms != null && IncomingAlarms.Count > 0)
+        @if (IncomingAlarms is {Count: > 0 })
         {
-            <Chart2 IncomingAlarms="@IncomingAlarms"/>
+            <Chart2 IncomingAlarms="@(IncomingAlarms.TryGetValue(ArmName ?? string.Empty, out var alarms) ? alarms : null)"/>
         }
         else
         {

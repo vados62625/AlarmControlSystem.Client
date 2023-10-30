@@ -54,7 +54,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
         int GeneralCount, AverageUrgent, AlarmsCountArm1, AlarmsCountArm2, AlarmsCountArm3, AlarmsCountArm4;
 
         [Parameter] public bool IsEnableRenderChart { get; set; } = false;
-        public Dictionary<DateTimeOffset, IncomingAlarmDto[]>? IncomingAlarms { get; set; }
+        public Dictionary<string, Dictionary<DateTimeOffset, IncomingAlarmDto[]>>? IncomingAlarms { get; set; } = new();
 
         protected override async Task OnInitializedAsync()
         {
@@ -77,27 +77,33 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
             await SetFieldWithArm();
             GeneralCount = 0;
             AverageUrgent = await SetAverageUrgent();
-            
-            var incomingAlarmsResult = await IncomingAlarmService.GetCountInHour(new GetIncomingAlarmsByDatesQuery
-            {
-                WorkStationId = 1,
-                ActivationFrom = From,
-                ActivationTo = To,
-            });
-            
-            if (incomingAlarmsResult.Success)
-            {
-                IncomingAlarms = incomingAlarmsResult.Payload;
 
-                foreach (var alarmsOnHour in IncomingAlarms)
+            if (_workstations != null)
+                foreach (var workStation in _workstations)
                 {
-                    if (alarmsOnHour.Value is { Length: > 0 })
+                    var incomingAlarmsResult = await IncomingAlarmService.GetCountInHour(
+                        new GetIncomingAlarmsByDatesQuery
+                        {
+                            WorkStationId = workStation.Id,
+                            ActivationFrom = From,
+                            ActivationTo = To,
+                        });
+
+                    if (incomingAlarmsResult.Success)
                     {
-                        GeneralCount += alarmsOnHour.Value.Length;
-                        AlarmsCountArm1 += alarmsOnHour.Value.Length;
+                        IncomingAlarms[workStation.Name] = incomingAlarmsResult.Payload;
+
+                        foreach (var alarmsOnHour in incomingAlarmsResult.Payload)
+                        {
+                            if (alarmsOnHour.Value is { Length: > 0 })
+                            {
+                                GeneralCount += alarmsOnHour.Value.Length;
+                                AlarmsCountArm1 += alarmsOnHour.Value.Length;
+                            }
+                        }
                     }
                 }
-            }
+
 
             SpinnerService.Hide();
             IsEnableRenderChart = true;
