@@ -185,12 +185,16 @@
     {
         if (_fields != null)
         {
-            FieldLinksDictionary = _fields.ToDictionary(field => field.Name, field => $"/Arm/?fieldId={field.Id}");
+            FieldLinksDictionary = _fields.ToDictionary(field => 
+                field.Name, 
+                field => $"/Arm/?fieldId={field.Id}");
         }
         
         if (_workstations != null)
         {
-            ArmLinksDictionary = _workstations.ToDictionary(workStation => workStation.Name, workStation => $"/Arm/?fieldId={FieldId}&armId={workStation.Id}");
+            ArmLinksDictionary = _workstations.ToDictionary(workStation => 
+                workStation.Name ?? Guid.NewGuid().ToString(), 
+                workStation => $"/Arm/?fieldId={FieldId}&armId={workStation.Id}");
         }
     }
 
@@ -279,23 +283,10 @@
 
     private async Task RefreshBySpinner()
     {
-        await EnableSpinner();
+        _spinnerClass = " active";
 
         await InitializePageAsync();
         
-        await DisableSpinner();
-    }
-    
-    private async Task EnableSpinner()
-    {
-        // await JS.InvokeVoidAsync("addClass", new { elementId = "button-refresh", className = "active" });
-        _spinnerClass = " active";
-    }
-    
-    private async Task DisableSpinner()
-    {
-        // await JS.InvokeVoidAsync("removeClass", new { elementId = "button-refresh", className = "active" });
         _spinnerClass = string.Empty;
     }
-
 }
