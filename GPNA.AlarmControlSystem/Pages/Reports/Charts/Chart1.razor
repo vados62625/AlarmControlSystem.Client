@@ -17,15 +17,6 @@
     public int Kpi { get; set; }
 
     [Parameter]
-    public int[]? Data2 { get; set; }
-
-    [Parameter]
-    public int[]? Data3 { get; set; }
-
-    [Parameter]
-    public int[]? Data4 { get; set; }
-
-    [Parameter]
     public string? DataSetTitle { get; set; }
 
     [Parameter]
@@ -44,20 +35,20 @@
 
             foreach (var alarmsDataset in IncomingAlarms)
             {
-                var arm1 = new PointChart[alarmsDataset.Value.Count];
+                var data = new PointChart[alarmsDataset.Value.Count];
                 kpi = new PointChart[alarmsDataset.Value.Count];
                 int i = 0;
 
                 foreach (var alarmsOnHour in alarmsDataset.Value)
                 {
                     var time = alarmsOnHour.Key.ToString("M") + " " + alarmsOnHour.Key.ToString("t");
-                    arm1[i] = new PointChart()
+                    data[i] = new PointChart
                     {
                         x = time,
                         y = alarmsOnHour.Value.Length
                     };
 
-                    kpi[i] = new PointChart()
+                    kpi[i] = new PointChart
                     {
                         x = time,
                         y = Kpi
@@ -65,16 +56,22 @@
 
                     i++;
                 }
-                datasets.Add(new Dataset()
+                
+                var random = new Random();
+                var color = $"#{random.Next(0x1000000):X6}";
+                
+                datasets.Add(new Dataset
                 {
-                    Data = arm1,
-                    BorderColor = "#65C1E4",
-                    BackgroundColor = "#65C1E4",
-                    Label = DataSetTitle ?? "N/A"
+                    Data = data,
+                    // BorderColor = "#65C1E4",
+                    // BackgroundColor = "#65C1E4",
+                    BorderColor = color,
+                    BackgroundColor = color,
+                    Label = alarmsDataset.Key
                 });
             }
 
-            datasets.Add(new Dataset()
+            datasets.Add(new Dataset
             {
                 Data = kpi,
                 BorderColor = "#EB5757",
@@ -82,27 +79,7 @@
                 BorderDash = new[] { 5, 5 },
                 Label = "KPI"
             });
-
-
-    // var datasets = new Dataset[]
-    // {
-    //     new Dataset()
-    //     {
-    //         Data = arm1, 
-    //         BorderColor = "#65C1E4", 
-    //         BackgroundColor = "#65C1E4", 
-    //         Label = DataSetTitle ?? "N/A"
-    //     },
-    //     new Dataset()
-    //     {
-    //         Data = kpi, 
-    //         BorderColor = "#EB5757", 
-    //         BackgroundColor = "#EB5757", 
-    //         BorderDash = new []{5, 5},
-    //         Label = "KPI"
-    //     }
-    // };
-
+            
             var config = GetConfig(datasets);
             await JSRuntime.InvokeVoidAsync("setup3", Id!, config);
         }

@@ -22,8 +22,8 @@
 </div>
 <div class="d-flex justify-content-between overflow-auto" style="padding-bottom: 26px;">
     <div class="priority-alarm-container">
-        <PriorityAlarm Title="Общее кол-во сигнализаций" Value="@GeneralCount" Priority="total"/>
-        <PriorityAlarm Title="Среднее кол-во критичных" Value="@AverageUrgent" Priority="critical"/>
+        <PriorityAlarm Title="Общее кол-во сигнализаций" Value="@_generalCount" Priority="total"/>
+        <PriorityAlarm Title="Среднее кол-во критичных" Value="@_averageUrgent" Priority="critical"/>
         @if (IncomingAlarms != default && _workstations != null)
         {
             foreach (var workstation in _workstations)

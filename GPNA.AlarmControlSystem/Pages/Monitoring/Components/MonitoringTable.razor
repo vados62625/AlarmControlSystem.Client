@@ -7,7 +7,7 @@
         <th class="bg-monitoring-table-button" style="min-width: 90px;">
             <div>
                 <p>Дата</p>
-                <button>
+                <button onclick="@(async () => await OnOrderingChanged.InvokeAsync(nameof(IncomingAlarmDto.DateTimeActivation)))">
                     <svg>
                         <use href="/img/icons/icons.svg#sorting"></use>
                     </svg>
@@ -27,7 +27,7 @@
         <th class="bg-monitoring-table-button" style="min-width: 120px;">
             <div>
                 <p>Повторений</p>
-                <button>
+                <button onclick="@(async () => await OnOrderingChanged.InvokeAsync("Count"))">
                     <svg>
                         <use href="/img/icons/icons.svg#sorting"></use>
                     </svg>
@@ -53,7 +53,7 @@
                             <use href="/img/icons/icons.svg#filter"></use>
                         </svg>
                     </button>
-                    <button>
+                    <button onclick="@(async () => await OnOrderingChanged.InvokeAsync(nameof(IncomingAlarmDto.State)))">
                         <svg>
                             <use href="/img/icons/icons.svg#sorting"></use>
                         </svg>
@@ -73,7 +73,7 @@
                             <use href="/img/icons/icons.svg#filter"></use>
                         </svg>
                     </button>
-                    <button>
+                    <button onclick="@(async () => await OnOrderingChanged.InvokeAsync(nameof(IncomingAlarmDto.Priority)))">
                         <svg>
                             <use href="/img/icons/icons.svg#sorting"></use>
                         </svg>
@@ -87,7 +87,7 @@
         <th class="bg-monitoring-table-button" style="min-width: 90px;">
             <div>
                 <p>В задачи</p>
-                <button>
+                <button onclick="@(async () => await OnOrderingChanged.InvokeAsync(nameof(IncomingAlarmDto.StatusAlarm)))">
                     <svg>
                         <use href="/img/icons/icons.svg#sorting"></use>
                     </svg>
@@ -190,6 +190,9 @@
     
     [Parameter]
     public EventCallback<PriorityType?> OnPriorityFilterChanged { get; set; }
+    
+    [Parameter]
+    public EventCallback<string> OnOrderingChanged { get; set; }
 
     private async Task SetStateFilter(StateType? state)
     {
