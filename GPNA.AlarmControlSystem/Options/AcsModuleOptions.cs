@@ -2,5 +2,5 @@
 
 public class AcsModuleOptions
 {
-    public string DoName { get; set; }
+    public string BranchName { get; set; }
 }
