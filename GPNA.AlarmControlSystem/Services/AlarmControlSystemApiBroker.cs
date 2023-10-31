@@ -24,9 +24,7 @@ public class AlarmControlSystemApiBroker : ApiBrokerBase, IAlarmControlSystemApi
     private readonly IToastService _toastService;
 
     private readonly AuthenticationStateProvider _authenticationState;
-
-    private Lazy<string> token;
-
+    
     private readonly ILogger<AlarmControlSystemApiBroker> _logger;
 
     public AlarmControlSystemApiBroker(HttpClient httpClient, IToastService toastService,
