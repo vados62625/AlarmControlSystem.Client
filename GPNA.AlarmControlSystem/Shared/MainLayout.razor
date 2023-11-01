@@ -33,11 +33,11 @@
 
 
 @code {
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!await AuthorizationService.GetAuthorizationStatus())
-        {
-            ToastService.ShowError("Не удалось авторизоваться на сервере");
-        }
-    }
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if (!await AuthorizationService.GetAuthorizationStatus())
+    //     {
+    //         ToastService.ShowError("Не удалось авторизоваться на сервере");
+    //     }
+    // }
 }

@@ -23,8 +23,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseNLog();
 
-builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
-    .AddNegotiate();
+// builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
+//     .AddNegotiate();
 
 builder.Services.AddAuthorization(options =>
 {
@@ -77,11 +77,11 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapBlazorHub()
-    .RequireAuthorization(new AuthorizeAttribute()
-    {
-        AuthenticationSchemes = NegotiateDefaults.AuthenticationScheme,
-    });
+app.MapBlazorHub();
+    // .RequireAuthorization(new AuthorizeAttribute()
+    // {
+    //     AuthenticationSchemes = NegotiateDefaults.AuthenticationScheme,
+    // });
 
 app.MapFallbackToPage("/_Host");
 

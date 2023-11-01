@@ -73,17 +73,17 @@ public class AlarmControlSystemApiBroker : ApiBrokerBase, IAlarmControlSystemApi
         {
             var result = await method();
 
-            if (result.Error.Contains("401"))
-            {
-                var apiToken = await GetApiToken();
-                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-                result = await method();
-            }
+            // if (result.Error.Contains("401"))
+            // {
+            //     var apiToken = await GetApiToken();
+            //     HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+            //     result = await method();
+            // }
 
             if (result.Success)
                 return result;
 
-            _toastService.ShowError(result.Error.Contains("403") ? $"Доступ запрещен" : $"Ошибка запроса");
+            _toastService.ShowError(result.Error.Contains("403") || result.Error.Contains("401") ? $"Доступ запрещен" : $"Ошибка запроса");
 
             return new Result<T>("Ошибка запроса");
         }
@@ -105,16 +105,19 @@ public class AlarmControlSystemApiBroker : ApiBrokerBase, IAlarmControlSystemApi
         var authState = await _authenticationState.GetAuthenticationStateAsync();
         var login = authState?.User?.Identity?.Name;
 
-        var query = HttpUtility.ParseQueryString("");
-        query["Login"] = login;
-        query["JwtSecretKey"] = JwtOptions.KEY;
-        var uri = query.ToString();
-
-        var response = await base.Get<JwtDto>("/api/Authorization/GetBearerToken?" + uri);
-
-        if (response.Success)
+        if (!string.IsNullOrWhiteSpace(login))
         {
-            return response.Payload.Token;
+            var query = HttpUtility.ParseQueryString("");
+            query["Login"] = login;
+            query["JwtSecretKey"] = JwtOptions.KEY;
+            var uri = query.ToString();
+
+            var response = await base.Get<JwtDto>("/api/Authorization/GetBearerToken?" + uri);
+
+            if (response.Success)
+            {
+                return response.Payload.Token;
+            }
         }
 
         _logger.LogError($"Failed to get bearer token for login {login}");
