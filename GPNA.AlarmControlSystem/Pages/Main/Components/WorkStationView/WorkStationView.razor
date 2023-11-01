@@ -7,8 +7,8 @@
         <p>@Workstation.Name</p>
         <WorkStationViewIconContainer Fire="Workstation.Fire" Gas="Workstation.Gas"/>
     </div>
-    <WorkStationViewPieChart Title="Общее количество за" CountAlarms="_countAlarms"/>
-    <WorkStationViewPieChart Title="Уникальные" CountAlarms="_countUniqueAlarms"/>
+    <WorkStationViewPieChart Title="Общее количество за" CountAlarms="_countAlarms" DateTime="Workstation.CountIncomingAlarms.Keys.Max()"/>
+    <WorkStationViewPieChart Title="Уникальные" CountAlarms="_countUniqueAlarms" DateTime="Workstation.CountIncomingAlarms.Keys.Max()"/>
 
     <div class="bg-table-container">
         <WorkStationViewTable AlarmsCount="Workstation.CountIncomingAlarms" VisibleTablePriority="true" Title="ВХОДЯЩИЕ СИГНАЛИЗАЦИИ"/>

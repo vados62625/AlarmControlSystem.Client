@@ -39,6 +39,14 @@
                 kpi = new PointChart[alarmsDataset.Value.Count];
                 int i = 0;
 
+                var times = alarmsDataset.Value.Keys.Select(c => $"{c:M} {c:t}");
+                
+                var sss = alarmsDataset.Value.Select(c => new PointChart
+                {
+                    x = c.Key.ToString("M t"),// + " " + alarmsOnHour.Key.ToString("t"),
+                    y = c.Value.Length
+                });
+
                 foreach (var alarmsOnHour in alarmsDataset.Value)
                 {
                     var time = alarmsOnHour.Key.ToString("M") + " " + alarmsOnHour.Key.ToString("t");

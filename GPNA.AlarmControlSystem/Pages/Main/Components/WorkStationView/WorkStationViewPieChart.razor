@@ -3,11 +3,11 @@
 @using GPNA.AlarmControlSystem.Pages.Main.Components.Charts
 <div class="pie-chart">
     <p>
-        @Title <b>@DateTime.Now.ToString("dd MMMM")</b>
+        @Title <b>@DateTime.ToString("dd MMMM")</b>
     </p>
     <div class="d-flex">
         <div class="pie-chart-diagram">
-            <DoughnutChart Id="@Title.Replace(' ', '_')" Data1="AllAlarmsCount" />
+            <DoughnutChart Id="@Title.Replace(' ', '_')" Data1="AllAlarmsCount"/>
         </div>
 
         <div class="d-flex flex-column justify-content-between ps-3">
@@ -39,7 +39,7 @@
 @code {
 
     [Parameter]
-    public DateTime DateTime { get; set; }
+    public DateTimeOffset DateTime { get; set; }
 
     [Parameter]
     public string? Title { get; set; }
@@ -48,15 +48,13 @@
     public Dictionary<PriorityType, int>? CountAlarms { get; set; }
 
     private string[] AllAlarmsCount { get; set; } = new string[3];
-    
+
     protected override void OnParametersSet()
     {
-        if (CountAlarms != default)
-        {
-            AllAlarmsCount[0] = CountAlarms[PriorityType.Urgent].ToString();
-            AllAlarmsCount[1] = CountAlarms[PriorityType.High].ToString();
-            AllAlarmsCount[2] = CountAlarms[PriorityType.Low].ToString();
-        }
+        AllAlarmsCount[0] = CountAlarms?[PriorityType.Urgent].ToString() ?? "0";
+        AllAlarmsCount[1] = CountAlarms?[PriorityType.High].ToString() ?? "0";
+        AllAlarmsCount[2] = CountAlarms?[PriorityType.Low].ToString() ?? "0";
+
         base.OnParametersSet();
     }
 
