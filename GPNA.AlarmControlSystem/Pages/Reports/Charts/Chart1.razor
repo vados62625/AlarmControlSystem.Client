@@ -32,6 +32,7 @@
     {
         if (IncomingAlarms is {Count: > 0 })
         {
+            _datasets = new List<Dataset>();
             var random = new Random();
 
             foreach (var alarmsDataset in IncomingAlarms)
@@ -47,8 +48,8 @@
                 _datasets.Add(new Dataset
                 {
                     Data = data,
-                    // BorderColor = "#65C1E4",
-                    // BackgroundColor = "#65C1E4",
+    // BorderColor = "#65C1E4",
+    // BackgroundColor = "#65C1E4",
                     BorderColor = color,
                     BackgroundColor = color,
                     Label = alarmsDataset.Key
