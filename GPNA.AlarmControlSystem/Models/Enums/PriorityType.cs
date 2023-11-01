@@ -6,7 +6,7 @@ namespace GPNA.AlarmControlSystem.Models.Enums
     {
         [Description("Отсутствует")]
         None = 0,
-        [Description("Информационный")]
+        [Description("Инфо")]
         Information = 1,
         [Description("Низкий")]
         Low = 2,

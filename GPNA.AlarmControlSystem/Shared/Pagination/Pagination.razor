@@ -1,0 +1,72 @@
+﻿<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        <li class="page-item">
+            <button class="page-link" onclick="@(async () => await OnPageClick.InvokeAsync(CurrentPage - 1))" aria-label="Previous" disabled="@(CurrentPage == 1)">
+                <span aria-hidden="true">&laquo;</span>
+            </button>
+        </li>
+        @if (PagesToShow != default)
+        {
+            @foreach (var pageIndex in PagesToShow)
+            {
+                <li class="page-item">
+                    @if (pageIndex != 0)
+                    {
+                        <button page="@pageIndex" class="page-link@(pageIndex == CurrentPage ? " active" : string.Empty)" onclick="@(async () => await OnPageClick.InvokeAsync(pageIndex))">@pageIndex</button>
+                    }
+                    else
+                    {
+                        <div class="page-link">...</div>
+                    }
+                </li>
+            }
+        }
+        <li class="page-item">
+            <button class="page-link" onclick="@(async () => await OnPageClick.InvokeAsync(CurrentPage + 1))" aria-label="Next" disabled="@(CurrentPage == PagesCount)">
+                <span aria-hidden="true">&raquo;</span>
+            </button>
+        </li>
+    </ul>
+</nav>
+
+@code {
+
+    [Parameter]
+    public int PagesCount { get; set; }
+
+    [Parameter]
+    public int CurrentPage { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnPageClick { get; set; }
+
+    private int[]? PagesToShow { get; set; }
+
+    protected override void OnInitialized()
+    {
+        PagesToShow = GetPagesToShow();
+
+        base.OnInitialized();
+    }
+
+    private int[] GetPagesToShow()
+    {
+        if (PagesCount <= 10)
+        {
+            return Enumerable.Range(1, PagesCount).ToArray();
+        }
+
+        if (CurrentPage == 1 || CurrentPage == 2)
+        {
+            return new[] { 1, 2, 0, PagesCount };
+        }
+   
+        if (CurrentPage == PagesCount || CurrentPage == PagesCount - 1)
+        {
+            return new[] { 1, 0, PagesCount - 1, PagesCount };
+        }
+
+        return new[] { 1, 0, CurrentPage, 0, PagesCount };
+    }
+
+}

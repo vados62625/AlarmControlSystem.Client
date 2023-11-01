@@ -30,8 +30,8 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
 
         [Parameter] [SupplyParameterFromQuery] public int? ArmId { get; set; }
 
-        [Parameter] public DateTimeOffset From { get; set; }
-        [Parameter] public DateTimeOffset To { get; set; }
+        [Parameter] public DateTimeOffset From { get; set; } = DateTimeOffset.Now.AddDays(-2);
+        [Parameter] public DateTimeOffset To { get; set; }= DateTimeOffset.Now.AddDays(-1);
 
         [Parameter] public string? ArmName { get; set; }
 
@@ -54,7 +54,6 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
 
         protected override async Task OnInitializedAsync()
         {
-            SetDateTime();
         }
 
         protected override async Task OnParametersSetAsync()
@@ -143,18 +142,18 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
             }
         }
 
-        private void SetDateTime()
-        {
-            To = DateTimeOffset.Now.AddDays(-1);
-            To = new DateTimeOffset(To.Year, To.Month, To.Day, 23, 59, 59,
-                TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
-            From = DateTimeOffset.Now.AddDays(-1);
-            From = new DateTimeOffset(From.Year, From.Month, From.Day, 0, 0, 0,
-                TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
-
-            To = new DateTimeOffset(2023, 8, 7, 22, 0, 0, DateTimeOffset.Now.Offset);
-            From = new DateTimeOffset(2023, 8, 1, 22, 0, 0, DateTimeOffset.Now.Offset);
-        }
+        // private void SetDateTime()
+        // {
+        //     To = DateTimeOffset.Now.AddDays(-1);
+        //     To = new DateTimeOffset(To.Year, To.Month, To.Day, 23, 59, 59,
+        //         TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
+        //     From = DateTimeOffset.Now.AddDays(-1);
+        //     From = new DateTimeOffset(From.Year, From.Month, From.Day, 0, 0, 0,
+        //         TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
+        //
+        //     To = new DateTimeOffset(2023, 8, 7, 22, 0, 0, DateTimeOffset.Now.Offset);
+        //     From = new DateTimeOffset(2023, 8, 1, 22, 0, 0, DateTimeOffset.Now.Offset);
+        // }
 
         private async Task<int> SetAverageUrgent()
         {

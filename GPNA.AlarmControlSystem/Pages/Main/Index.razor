@@ -49,8 +49,7 @@
     protected ISpinnerService SpinnerService { get; set; } = default!;
 
     [Parameter]
-    public DateTimeOffset DateTime { get; set; } = DateTimeOffset.Now;
-    // public DateTimeOffset DateTime { get; set; } = new(2023, 8, 3, 22, 0, 0, DateTimeOffset.Now.Offset);
+    public DateTimeOffset DateTime { get; set; } = DateTimeOffset.Now.AddDays(-1);
 
     [Parameter]
     [SupplyParameterFromQuery]

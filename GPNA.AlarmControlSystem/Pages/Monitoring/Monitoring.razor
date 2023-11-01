@@ -1,5 +1,6 @@
 ﻿@page "/Arm"
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
+@using GPNA.AlarmControlSystem.Shared.Pagination
 @using GPNA.AlarmControlSystem.Interfaces
 @using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 @using GPNA.AlarmControlSystem.Models.Dto.Field
@@ -7,8 +8,6 @@
 @using GPNA.AlarmControlSystem.Models.Dto.Workstation
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Services
-@using GPNA.AlarmControlSystem.Extensions
-@using GPNA.AlarmControlSystem.Models.Dto.Tag
 @using GPNA.AlarmControlSystem.Options
 @using Microsoft.Extensions.Options
 @inject IJSRuntime JS
@@ -73,6 +72,7 @@
                     </div>
                     <div style="border-radius: 6px;">
                         <MonitoringTable Alarms="AlarmsCollection?.Items" OnStateFilterChanged="SetStateFilter" OnPriorityFilterChanged="SetPriorityFilter" OnOrderingChanged="OnOrderingChanged"></MonitoringTable>
+                        <Pagination CurrentPage="CurrentPage" PagesCount="@(100)" OnPageClick="OnPageChanged"></Pagination>
                     </div>
                 </div>
 
@@ -118,11 +118,17 @@
     [Parameter]
     public string? FieldName { get; set; }
 
-    [CascadingParameter(Name = "From")]
+    [CascadingParameter(Name = nameof(From))]
     public DateTimeOffset From { get; set; }
 
-    [CascadingParameter(Name = "To")]
+    [CascadingParameter(Name = nameof(To))]
     public DateTimeOffset To { get; set; }
+
+    [CascadingParameter(Name = nameof(PagesCount))]
+    public int PagesCount { get; set; }
+
+    [CascadingParameter(Name = nameof(CurrentPage))]
+    public int CurrentPage { get; set; } = 1;
 
     [Parameter]
     public string TagNameFilter { get; set; } = string.Empty;
@@ -151,11 +157,14 @@
     
     private bool _orderByDesc = true;
 
+    protected override void OnInitialized()
+    {
+        SetDates();
+        base.OnInitialized();
+    }
+
     protected override async Task OnParametersSetAsync()
     {
-        To = new DateTimeOffset(2023, 8, 2, 22, 0, 0, DateTimeOffset.Now.Offset);
-        From = new DateTimeOffset(2023, 8, 1, 22, 0, 0, DateTimeOffset.Now.Offset);
-        
         await SetFieldWithArm();
 
         await InitializePageAsync();
@@ -220,6 +229,12 @@
         SpinnerService?.Hide();
     }
 
+    private void SetDates()
+    {
+        To = DateTimeOffset.Now;
+        From = new DateTimeOffset(To.Year, To.Month, To.Day, 8, 0, 0, 0, To.Offset);
+    }
+
     private async Task UpdateAlarms()
     {
         if (IncomingAlarmService != null)
@@ -233,7 +248,9 @@
                 State = StateFilter,
                 Priority = PriorityFilter,
                 OrderPropertyName = _orderBy,
-                OrderByDescending = _orderByDesc
+                OrderByDescending = _orderByDesc,
+                Page = CurrentPage,
+                CountOnPage = 15
             });
 
             if (request.Success)
@@ -313,4 +330,11 @@
         
         await InitializePageAsync();
     }
+
+    private async Task OnPageChanged(int page)
+    {
+        CurrentPage = page;
+        await InitializePageAsync();
+    }
+    
 }
