@@ -72,7 +72,7 @@
                         </div>
                     </div>
                     <div style="border-radius: 6px;">
-                        <MonitoringTable Alarms="AlarmsCollection?.Items" OnStateFilterChanged="SetStateFilter" OnPriorityFilterChanged="SetPriorityFilter"></MonitoringTable>
+                        <MonitoringTable Alarms="AlarmsCollection?.Items" OnStateFilterChanged="SetStateFilter" OnPriorityFilterChanged="SetPriorityFilter" OnOrderingChanged="OnOrderingChanged"></MonitoringTable>
                     </div>
                 </div>
 
@@ -146,6 +146,10 @@
     private IDictionary<string, string>? ArmLinksDictionary { get; set; }
 
     private string _spinnerClass = "";
+    
+    private string _orderBy = "";
+    
+    private bool _orderByDesc = true;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -228,8 +232,8 @@
                 ActivationTo = To,
                 State = StateFilter,
                 Priority = PriorityFilter,
-                OrderPropertyName = nameof(TagDto.State),
-                OrderByDescending = true
+                OrderPropertyName = _orderBy,
+                OrderByDescending = _orderByDesc
             });
 
             if (request.Success)
@@ -299,5 +303,14 @@
         await InitializePageAsync();
         
         _spinnerClass = string.Empty;
+    }
+
+    private async Task OnOrderingChanged(string orderBy)
+    {
+        if (_orderBy == orderBy) _orderByDesc = !_orderByDesc;
+
+        _orderBy = orderBy;
+        
+        await InitializePageAsync();
     }
 }

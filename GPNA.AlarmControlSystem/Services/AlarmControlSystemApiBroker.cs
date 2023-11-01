@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using System.Net.Http.Headers;
 using System.Web;
 using Blazored.Toast.Services;
@@ -23,7 +24,7 @@ public class AlarmControlSystemApiBroker : ApiBrokerBase, IAlarmControlSystemApi
     private readonly IToastService _toastService;
 
     private readonly AuthenticationStateProvider _authenticationState;
-
+    
     private readonly ILogger<AlarmControlSystemApiBroker> _logger;
 
     public AlarmControlSystemApiBroker(HttpClient httpClient, IToastService toastService,
@@ -34,23 +35,50 @@ public class AlarmControlSystemApiBroker : ApiBrokerBase, IAlarmControlSystemApi
         _toastService = toastService;
         _authenticationState = authenticationState;
         _logger = logger;
-
-        try
-        {
-            var apiToken = Task.Run(GetApiToken).Result;
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
-        }
-        catch
-        {
-            _toastService.ShowError("Нет связи с сервером. Не удалось получить токен авторизации");
-        }
     }
 
     public async Task<Result<T>> Get<T>(string uri, object? content = null)
     {
+        return await HandleMethod(() => base.Get<T>(uri, content));
+    }
+
+    public async Task<Result<T>> Post<T>(string uri, object? content = null)
+    {
+        return await HandleMethod(() => base.Post<T>(uri, content));
+    }
+
+    public async Task<Result<T>> Put<T>(string uri, object? content = null)
+    {
+        return await HandleMethod(() => base.Put<T>(uri, content));
+    }
+    
+    public async Task<Result<T>> Patch<T>(string uri, object? content = null)
+    {
+        return await HandleMethod(() => base.Patch<T>(uri, content));
+    }
+
+    public async Task<byte[]> GetFile(string uri, object? content = null)
+    {
+        using (var response = await HttpClient.GetAsync(uri + content.ToQueryString()))
+        {
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsByteArrayAsync();
+        }
+    }
+
+    private async Task<Result<T>> HandleMethod<T>(Func<Task<Result<T>>> method)
+    {
         try
         {
-            var result = await base.Get<T>(uri, content);
+            var result = await method();
+
+            if (result.Error.Contains("401"))
+            {
+                var apiToken = await GetApiToken();
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiToken);
+                result = await method();
+            }
 
             if (result.Success)
                 return result;
@@ -64,21 +92,11 @@ public class AlarmControlSystemApiBroker : ApiBrokerBase, IAlarmControlSystemApi
             ex is System.Net.Http.HttpRequestException
         )
         {
-            _toastService.ShowError($"Нет связи с сервером. Ошибка получения данных с источника {uri.Split("?")[0]}");
+            _toastService.ShowError($"Нет связи с сервером");
 
             _logger.LogError(ex.Message);
 
             return new Result<T>("Нет связи с сервером");
-        }
-    }
-
-    public async Task<byte[]> GetFile(string uri, object? content = null)
-    {
-        using (var response = await HttpClient.GetAsync(uri + content.ToQueryString()))
-        {
-            response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadAsByteArrayAsync();
         }
     }
 

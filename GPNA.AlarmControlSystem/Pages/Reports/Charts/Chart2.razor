@@ -16,7 +16,7 @@
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (IncomingAlarms != null && IncomingAlarms.Count > 0)
+        if (IncomingAlarms is {Count: > 0 })
         {
             var numTime = new string[IncomingAlarms.Count];
 
@@ -29,9 +29,9 @@
 
             foreach (var alarmsOnHour in IncomingAlarms)
             {
-                numTime[i] = (alarmsOnHour.Key.ToString("M") + " " + alarmsOnHour.Key.ToString("t"));
+                numTime[i] = alarmsOnHour.Key.ToString("M") + " " + alarmsOnHour.Key.ToString("t");
                 
-                 if (alarmsOnHour.Value!=null && alarmsOnHour.Value.Length > 0)
+                 if (alarmsOnHour.Value != null && alarmsOnHour.Value.Length > 0)
                     foreach (var alarm in alarmsOnHour.Value)
                     {
                         if (alarm.Priority == PriorityType.Low)
