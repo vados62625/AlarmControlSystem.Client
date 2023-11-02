@@ -6,6 +6,8 @@ public class AlarmsCollection<TItem> where TItem : BufferAlarmDto
 {
 
     public TItem[][]? Items { get; set; }
+    
+    public int PagesCount { get; set; }
 
     public int TotalCount { get; set; }
 
