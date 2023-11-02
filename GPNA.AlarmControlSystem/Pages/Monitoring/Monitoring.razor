@@ -72,7 +72,7 @@
                     </div>
                     <div style="border-radius: 6px;">
                         <MonitoringTable Alarms="AlarmsCollection?.Items" OnStateFilterChanged="SetStateFilter" OnPriorityFilterChanged="SetPriorityFilter" OnOrderingChanged="OnOrderingChanged"></MonitoringTable>
-                        <Pagination CurrentPage="CurrentPage" PagesCount="@(100)" OnPageClick="OnPageChanged"></Pagination>
+                        <Pagination CurrentPage="CurrentPage" PagesCount="PagesCount" OnPageClick="OnPageChanged"></Pagination>
                     </div>
                 </div>
 
@@ -151,9 +151,9 @@
     
     private IDictionary<string, string>? ArmLinksDictionary { get; set; }
 
-    private string _spinnerClass = "";
+    private string _spinnerClass = string.Empty;
     
-    private string _orderBy = "";
+    private string _orderBy = string.Empty;
     
     private bool _orderByDesc = true;
 
@@ -256,6 +256,7 @@
             if (request.Success)
             {
                 AlarmsCollection = request.Payload;
+                PagesCount = AlarmsCollection.PagesCount;
             }
         }
     }
@@ -327,6 +328,8 @@
         if (_orderBy == orderBy) _orderByDesc = !_orderByDesc;
 
         _orderBy = orderBy;
+
+        CurrentPage = 1;
         
         await InitializePageAsync();
     }

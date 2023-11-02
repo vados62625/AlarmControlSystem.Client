@@ -5,8 +5,13 @@
 
 <div class="page-header">
     <div class="d-flex date-period-select" style="z-index: 1;">
-        <input type="datetime-local" @bind="From" @bind:event="oninput" @onchange="async () => await OnParametersSetAsync()">
-        <input type="datetime-local" @bind="To" @bind:event="oninput" @onchange="async () => await OnParametersSetAsync()">
+        <input type="datetime-local" @bind="From" @bind:event="oninput">
+        <input type="datetime-local" @bind="To" @bind:event="oninput">
+        <button class="btn p-0 ms-2 d-flex shadow-none@(_spinnerClass)" id="button-refresh" @onclick="async () => await RefreshBySpinner()">
+            <svg class="w-100 h-100">
+                <use href="/img/icons/icons.svg#refresh"></use>
+            </svg>
+        </button>
     </div>
     <p class="page-title">
         отчеты @(Options?.Value.BranchName ?? "N/A")

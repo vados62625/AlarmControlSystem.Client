@@ -34,7 +34,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
         [Parameter] public DateTimeOffset To { get; set; }= DateTimeOffset.Now.AddDays(-1);
 
         [Parameter] public string? ArmName { get; set; }
-
+        
         private string? FieldName => _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name ?? "N/A";
 
         static int inputKpi = 12;
@@ -48,6 +48,8 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
 
         // Значения в плитках
         int _generalCount, _averageUrgent;
+        
+        private string _spinnerClass = string.Empty;
 
         [Parameter] public bool IsEnableRenderChart { get; set; } = false;
         public Dictionary<string, Dictionary<DateTimeOffset, IncomingAlarmDto[]>>? IncomingAlarms { get; set; } = new();
@@ -57,6 +59,11 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
         }
 
         protected override async Task OnParametersSetAsync()
+        {
+            await InitializePageAsync();
+        }
+
+        private async Task InitializePageAsync()
         {
             IsEnableRenderChart = false;
             SpinnerService.Show();
@@ -142,19 +149,6 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
             }
         }
 
-        // private void SetDateTime()
-        // {
-        //     To = DateTimeOffset.Now.AddDays(-1);
-        //     To = new DateTimeOffset(To.Year, To.Month, To.Day, 23, 59, 59,
-        //         TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
-        //     From = DateTimeOffset.Now.AddDays(-1);
-        //     From = new DateTimeOffset(From.Year, From.Month, From.Day, 0, 0, 0,
-        //         TimeZoneInfo.Local.GetUtcOffset(DateTime.Now));
-        //
-        //     To = new DateTimeOffset(2023, 8, 7, 22, 0, 0, DateTimeOffset.Now.Offset);
-        //     From = new DateTimeOffset(2023, 8, 1, 22, 0, 0, DateTimeOffset.Now.Offset);
-        // }
-
         private async Task<int> SetAverageUrgent()
         {
             var incomingAlarmsResult = await IncomingAlarmService.GetCountInHour(new GetIncomingAlarmsByDatesQuery
@@ -217,6 +211,15 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
             await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
 
             SpinnerService?.Hide();
+        }
+        
+        private async Task RefreshBySpinner()
+        {
+            _spinnerClass = " active";
+
+            await InitializePageAsync();
+        
+            _spinnerClass = string.Empty;
         }
     }
 }

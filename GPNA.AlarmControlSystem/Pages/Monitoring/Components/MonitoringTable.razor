@@ -97,7 +97,7 @@
     </tr>
     </thead>
     <tbody>
-    @if (Alarms != null)
+    @if (Alarms != null && Alarms.Any())
     {
         foreach (var alarmArray in Alarms)
         {
@@ -106,6 +106,13 @@
     }
     </tbody>
 </table>
+
+@if (Alarms == null || !Alarms.Any())
+{
+    <div class="p-4 text-center">
+        <p>Нет данных</p>
+    </div>
+}
 
 <div id="filterModals">
 
@@ -138,36 +145,36 @@
             </div>
         </div>
     </div>
-    
+
     <div class="modal fade" id="priorityFilterModal">
-            <div class="modal-dialog modal-sm modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="priorityFilterRadio" id="priorityFilterRadio-1" checked="@(PriorityFilter == null)" onchange="@(async () => await OnPriorityFilterChanged.InvokeAsync(null))">
+                        <label class="form-check-label" for="priorityFilterRadio-1">
+                            Все
+                        </label>
                     </div>
-                    <div class="modal-body">
-    
+
+                    @foreach (var priority in Enum.GetValues<PriorityType>())
+                    {
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="priorityFilterRadio" id="priorityFilterRadio-1" checked="@(PriorityFilter == null)" onchange="@(async () => await OnPriorityFilterChanged.InvokeAsync(null))">
-                            <label class="form-check-label" for="priorityFilterRadio-1">
-                                Все
+                            <input class="form-check-input" type="radio" name="priorityFilterRadio" id="priorityFilterRadio@((int)priority)" checked="@(PriorityFilter == priority)" onchange="@(async () => await OnPriorityFilterChanged.InvokeAsync(priority))">
+                            <label class="form-check-label" for="priorityFilterRadio@((int)priority)">
+                                @priority.ToString()
                             </label>
                         </div>
-    
-                        @foreach (var priority in Enum.GetValues<PriorityType>())
-                        {
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="priorityFilterRadio" id="priorityFilterRadio@((int)priority)" checked="@(PriorityFilter == priority)" onchange="@(async () => await OnPriorityFilterChanged.InvokeAsync(priority))">
-                                <label class="form-check-label" for="priorityFilterRadio@((int)priority)">
-                                    @priority.ToString()
-                                </label>
-                            </div>
-                        }
-    
-                    </div>
+                    }
+
                 </div>
             </div>
         </div>
+    </div>
 
 </div>
 
@@ -181,16 +188,16 @@
 
     [CascadingParameter(Name = nameof(StateFilter))]
     public StateType? StateFilter { get; set; }
-    
+
     [CascadingParameter(Name = nameof(PriorityFilter))]
     public PriorityType? PriorityFilter { get; set; }
 
     [Parameter]
     public EventCallback<StateType?> OnStateFilterChanged { get; set; }
-    
+
     [Parameter]
     public EventCallback<PriorityType?> OnPriorityFilterChanged { get; set; }
-    
+
     [Parameter]
     public EventCallback<string> OnOrderingChanged { get; set; }
 

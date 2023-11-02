@@ -24,6 +24,9 @@
     public bool IsEnableRenderChart { get; set; } = true;
 
     private List<Dataset> _datasets = new();
+    
+    private static readonly string[] COLORS = {"#65c1e4", "#56b368", "#ba8fdb", "#ebca62", "#0078d2", "#f2994a"};
+
 
     //Получить по айди филда все армы(workStation)
     //
@@ -33,7 +36,8 @@
         if (IncomingAlarms is {Count: > 0 })
         {
             _datasets = new List<Dataset>();
-            var random = new Random();
+
+            var i = 0;
 
             foreach (var alarmsDataset in IncomingAlarms)
             {
@@ -43,17 +47,17 @@
                     y = c.Value.Length
                 }).ToArray();
 
-                var color = $"#{random.Next(0x1000000):X6}";
-
+                var color = COLORS[i];
+                
                 _datasets.Add(new Dataset
                 {
                     Data = data,
-    // BorderColor = "#65C1E4",
-    // BackgroundColor = "#65C1E4",
                     BorderColor = color,
                     BackgroundColor = color,
                     Label = alarmsDataset.Key
                 });
+
+                i++;
             }
 
             AddKpiDataset();
