@@ -20,8 +20,18 @@
                 <div class="page-main">
                     <div class="page-header">
                         <div class="d-flex date-period-select">
-                            <input type="datetime-local" @bind="From" @bind:event="oninput">
-                            <input type="datetime-local" @bind="To" @bind:event="oninput">
+                            <div>
+                                <input type="datetime-local" @bind="From" @bind:event="oninput">
+                                <svg>
+                                    <use href="/img/icons/icons.svg#calendar"></use>
+                                </svg>
+                            </div>
+                            <div>
+                                <input type="datetime-local" @bind="To" @bind:event="oninput">
+                                <svg>
+                                    <use href="/img/icons/icons.svg#calendar"></use>
+                                </svg>
+                            </div>
                             <button class="btn p-0 ms-2 d-flex shadow-none@(_spinnerClass)" id="button-refresh" @onclick="async () => await RefreshBySpinner()">
                                 <svg class="w-100 h-100">
                                     <use href="/img/icons/icons.svg#refresh"></use>

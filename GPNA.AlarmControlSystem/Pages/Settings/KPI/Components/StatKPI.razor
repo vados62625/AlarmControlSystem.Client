@@ -1,0 +1,11 @@
+﻿<div class="d-flex flex-column">
+    <p class="stat-title">@Title</p>
+    <div class="stat-bg-value">
+        <p class="stat-value">@Value</p>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public int Value { get; set; } = 256;
+}

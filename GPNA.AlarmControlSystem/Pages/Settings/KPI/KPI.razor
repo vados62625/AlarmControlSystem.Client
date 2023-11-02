@@ -1,0 +1,104 @@
+﻿@page "/settings/KPI"
+@using GPNA.AlarmControlSystem.Pages.Main.Components.WorkStationView
+@using GPNA.AlarmControlSystem.Models.Dto.Field
+@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.Queries
+@using GPNA.AlarmControlSystem.Models.Dto.Workstation
+@using GPNA.AlarmControlSystem.Options
+@using GPNA.AlarmControlSystem.Services
+@using Microsoft.Extensions.Options
+@using GPNA.AlarmControlSystem.Pages.Settings.KPI.Components
+@inject IJSRuntime JsRuntime
+
+
+<div class="page-main">
+    <div class="page-header justify-content-center">
+       <div class="d-flex align-items-center">
+            <p>НАСТРОЙКИ KPI ЦЕХА <b>@ArmName</b></p>
+            <SelectObject LinksDictionary="ArmLinksDictionary" />
+        </div>        
+    </div>
+    <div class="settings-container">
+        <div class="bg">
+            <p class="title">ЖУРНАЛ СИГНАЛИЗАЦИЙ</p>
+            <div class="stats-container">
+                <StatKPI Title="Критичный приоритет" Value="29"></StatKPI>
+                <StatKPI Title="Высокий приоритет"></StatKPI>
+                <StatKPI Title="Низкий приоритет"></StatKPI>
+            </div>
+        </div>
+        <div class="bg">
+            <p class="title">МОНИТОРИНГ</p>
+            <div class="stats-container">
+                <StatKPI Title="Входящие сигнализаци. Количество повторений" Value="29"></StatKPI>
+                <StatKPI Title="Активные сигнализации. Длительность,ч"></StatKPI>
+                <StatKPI Title="Имитационные параметры. Длительность,ч"></StatKPI>
+                <StatKPI Title="Подавленные сигнализации. Длительность,ч"></StatKPI>
+            </div>
+        </div>
+        <div class="bg">
+            <p class="title">ЗАДАЧИ</p>
+            <div class="stats-container">
+                <StatKPI Title="Время ответа на задачу, сутки" Value="29"></StatKPI>
+                <StatKPI Title="Просроченные"></StatKPI>
+                <StatKPI Title="Выполненные вовремя"></StatKPI>
+            </div>
+        </div>
+        <div class="bg">
+            <p class="title">ОТЧЕТЫ</p>
+            <div class="stats-container">
+                <div class="d-flex justify-content-between">
+                    <StatKPI Title="В час" Value="29"></StatKPI>
+                    <StatKPI Title="Сутки"></StatKPI>
+                </div>                
+                <StatKPI Title="Просроченные активные"></StatKPI>
+                <StatKPI Title="Просроченные имитационные"></StatKPI>
+                <StatKPI Title="Просроченные подавленные"></StatKPI>
+            </div>
+        </div>        
+        <div class="bg">
+            <p class="title">ТАБЛИЦА ПЕРЕМЕННЫХ</p>
+            <div class="stats-container">
+                <StatKPI Title="Заполненность оценки рисков, %" Value="50"></StatKPI>
+            </div>
+        </div>        
+    </div>    
+</div>
+
+@code {
+    [Parameter] public int Value { get; set; } = 256;
+
+    [Parameter]
+    public string? ArmName { get; set; } = "УПНГ";
+    
+    [Inject]
+    private IFieldService? FieldService { get; set; }   
+
+    private FieldDto[]? _fields;
+   
+
+    private IDictionary<string, string>? ArmLinksDictionary { get; set; }
+   
+
+    private async Task GetFields()
+    {
+        if (FieldService != null)
+        {
+            var result = await FieldService.GetList();
+
+            if (result.Success)
+            {
+                _fields = result.Payload.ToArray();
+            }
+        }
+    }
+    
+    private void FillArmLinks()
+    {
+        if (_fields != null && _fields.Any())
+        {
+            ArmLinksDictionary = _fields.ToDictionary(field => field.Name, field => $"/?fieldId={field.Id}");
+        }
+    }
+
+}
