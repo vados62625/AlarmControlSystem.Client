@@ -41,7 +41,7 @@
 }
 
 .bg-table-priority tbody tr:not(:last-child) {
-    border-bottom: 0.5px solid var(--border-grey));
+    border-bottom: 0.5px solid var(--border-grey);
 }
 
 .bg-table-priority tbody tr:first-child {

@@ -9,6 +9,7 @@
     align-items: center;
     gap: 2px;
     padding: 5px 0 9px 0;
+    user-select: none;
 }
     .bg.total {
         border: 0.5px solid var(--border-light-grey);
