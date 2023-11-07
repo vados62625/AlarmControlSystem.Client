@@ -14,8 +14,8 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
     public partial class Reports : ComponentBase
     {
         [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
-        
-        [Inject] private IJSRuntime? JS { get; set; } 
+
+        [Inject] private IJSRuntime? JS { get; set; }
 
         [Inject] private IBufferAlarmService AlarmService { get; set; } = null!;
         [Inject] private IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
@@ -31,10 +31,10 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
         [Parameter] [SupplyParameterFromQuery] public int? ArmId { get; set; }
 
         [Parameter] public DateTimeOffset From { get; set; } = DateTimeOffset.Now.AddDays(-2);
-        [Parameter] public DateTimeOffset To { get; set; }= DateTimeOffset.Now.AddDays(-1);
+        [Parameter] public DateTimeOffset To { get; set; } = DateTimeOffset.Now.AddDays(-1);
 
         [Parameter] public string? ArmName { get; set; }
-        
+
         private string? FieldName => _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name ?? "N/A";
 
         static int inputKpi = 12;
@@ -48,7 +48,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
 
         // Значения в плитках
         int _generalCount, _averageUrgent;
-        
+
         private string _spinnerClass = string.Empty;
 
         [Parameter] public bool IsEnableRenderChart { get; set; } = false;
@@ -73,6 +73,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
             _averageUrgent = await SetAverageUrgent();
 
             if (_workstations != null)
+            {
                 foreach (var workStation in _workstations)
                 {
                     var incomingAlarmsResult = await IncomingAlarmService.GetCountInHour(
@@ -86,16 +87,11 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
                     if (incomingAlarmsResult.Success)
                     {
                         IncomingAlarms[workStation.Name] = incomingAlarmsResult.Payload;
-
-                        foreach (var alarmsOnHour in incomingAlarmsResult.Payload)
-                        {
-                            if (alarmsOnHour.Value is { Length: > 0 })
-                            {
-                                _generalCount += alarmsOnHour.Value.Length;
-                            }
-                        }
                     }
                 }
+
+                _generalCount = IncomingAlarms?.Sum(c => c.Value.Sum(x => x.Value.Length)) ?? 0;
+            }
 
 
             SpinnerService.Hide();
@@ -212,13 +208,13 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
 
             SpinnerService?.Hide();
         }
-        
+
         private async Task RefreshBySpinner()
         {
             _spinnerClass = " active";
 
             await InitializePageAsync();
-        
+
             _spinnerClass = string.Empty;
         }
     }

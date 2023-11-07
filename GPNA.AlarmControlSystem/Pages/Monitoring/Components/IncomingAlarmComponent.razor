@@ -7,7 +7,7 @@
 @using GPNA.AlarmControlSystem.Extensions
 @inject IJSRuntime JSRuntime
 
-@if(Alarm!=null && Alarm.Description!="ПЕРЕСМЕНКА")
+@if(Alarm!=null && Alarm.Description!="ПЕРЕДАЧА СМЕНЫ")
 {    
     string bgColor = ""; if (IsChildren) { bgColor = "rgba(0, 32, 51, 0.05);"; } 
     
@@ -66,7 +66,7 @@
     }
 
 } 
-else if (Alarm is {Description: "ПЕРЕСМЕНКА" })
+else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
 {
     <tr class="monitoring-table-shift">        
         <td>@Alarm.DateTimeActivation.ToString("d")</td>

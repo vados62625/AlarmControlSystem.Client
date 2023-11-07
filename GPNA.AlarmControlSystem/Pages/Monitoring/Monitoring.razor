@@ -64,8 +64,10 @@
                             <PriorityAlarm Title="Критичный" Value="AlarmsCollection?.CountByPriority?[PriorityType.Urgent]" Priority="critical"/>
                             <PriorityAlarm Title="Высокий" Value="AlarmsCollection?.CountByPriority?[PriorityType.High]" Priority="high"/>
                             <PriorityAlarm Title="Низкий" Value="AlarmsCollection?.CountByPriority?[PriorityType.Low]" Priority="low"/>
-                            <PriorityAlarm Title="Инфо" Value="AlarmsCollection?.CountByPriority?[PriorityType.Information]" Priority="info"/>
                             <PriorityAlarm Title="Без приоритета" Value="AlarmsCollection?.CountByPriority?[PriorityType.None]" Priority="none-priority"/>
+                            <div class="ps-5">
+                                <PriorityAlarm Title="Инфо" Value="AlarmsCollection?.CountByPriority?[PriorityType.Information]" StatusActive="opacity-50" Priority="info"/>
+                            </div>
                         </div>
                         <div class="priority-alarm-container">
                             <PriorityAlarm Title="HH" Value="AlarmsCollection?.CountByState?[StateType.HH]" Status="hh"/>
@@ -260,7 +262,8 @@
                 OrderPropertyName = _orderBy,
                 OrderByDescending = _orderByDesc,
                 Page = CurrentPage,
-                CountOnPage = 15
+                CountOnPage = 15,
+                DisplayShifts = !FiltersOn && _orderBy == nameof(IncomingAlarmDto.DateTimeActivation)
             });
 
             if (request.Success)
@@ -276,6 +279,8 @@
         TagNameFilter = string.Empty;
         StateFilter = null;
         PriorityFilter = null;
+        CurrentPage = 1;
+        
         return InitializePageAsync();
     }
 
@@ -315,19 +320,24 @@
     private async Task SetStateFilter(StateType? state)
     {
         StateFilter = state;
+        CurrentPage = 1;
+        
         await InitializePageAsync();
     }
 
     private async Task SetPriorityFilter(PriorityType? priority)
     {
         PriorityFilter = priority;
+        CurrentPage = 1;
+        
         await InitializePageAsync();
     }
 
     private async Task RefreshBySpinner()
     {
         _spinnerClass = " active";
-
+        CurrentPage = 1;
+        
         await InitializePageAsync();
         
         _spinnerClass = string.Empty;
@@ -338,7 +348,6 @@
         if (_orderBy == orderBy) _orderByDesc = !_orderByDesc;
 
         _orderBy = orderBy;
-
         CurrentPage = 1;
         
         await InitializePageAsync();
