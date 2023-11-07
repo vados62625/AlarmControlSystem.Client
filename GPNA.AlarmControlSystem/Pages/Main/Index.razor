@@ -17,7 +17,7 @@
             <ButtonNavigation Title="@_fields[2].Name" Href="@("/?fieldId=" + _fields[2].Id)"/>
         }
         <div class="d-flex align-items-center">
-            <p>ЖУРНАЛ СИГНАЛИЗАЦИЙ ЗА @DateTime.ToString("dd MMMM") @(Options?.Value.DoName ?? "N/A") <b>@(_fields?.FirstOrDefault(f => f.Id == FieldId)?.Name ?? "N/A")</b></p>
+            <p>ОТЧЕТ ПО СИГНАЛИЗАЦИЯМ ЗА @DateTime.ToString("dd MMMM") @(Options?.Value.DoName ?? "N/A") <b>@(_fields?.FirstOrDefault(f => f.Id == FieldId)?.Name ?? "N/A")</b></p>
             <SelectObject Object="dto" LinksDictionary="ArmLinksDictionary"/>
         </div>
         @if (_fields is {Length: > 1 })

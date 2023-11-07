@@ -27,9 +27,6 @@
                                     <use href="/img/icons/icons.svg#refresh"></use>
                                 </svg>
                             </button>
-                            <div class="d-flex tagname-filter position-relative ms-2">
-                                <input placeholder="Поиск по Tag" type="text" name="tagname" @bind="TagNameFilter" @bind:event="oninput" @onchange="async () => await InitializePageAsync()">
-                            </div>
                         </div>
                         <div class="d-flex">
                             <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ ЗА ПЕРИОД С DP @(Options?.Value.DoName ?? "N/A") <b>@FieldName</b></p>
@@ -59,7 +56,12 @@
                                 <PriorityAlarm Title="Инфо" Value="AlarmsCollection?.CountByPriority?[PriorityType.Information]" StatusActive="opacity-50" Priority="info"/>
                             </div>
                         </div>
+                        <div class="d-flex align-items-center tagname-filter position-relative mx-5">
+                            <input placeholder="Поиск по Tag" type="text" name="tagname" @bind="TagNameFilter" @bind:event="oninput" @onchange="async () => await InitializePageAsync()">
+                        </div>
                         <div class="priority-alarm-container">
+                            <PriorityAlarm Title="Пожар" StatusActive="@(AlarmsCollection?.Fire ?? false ? "active" : "")" Status="fire"/>
+                            <PriorityAlarm Title="Загазованность" StatusActive="@(AlarmsCollection?.Gas ?? false ? "active" : "")" Status="gas"/>
                             <PriorityAlarm Title="HH" Value="AlarmsCollection?.CountByState?[StateType.HH]" Status="hh"/>
                             <PriorityAlarm Title="H" Value="AlarmsCollection?.CountByState?[StateType.H]" Status="h"/>
                             <PriorityAlarm Title="LL" Value="AlarmsCollection?.CountByState?[StateType.LL]" Status="ll"/>
@@ -68,8 +70,6 @@
                             <PriorityAlarm Title="RSHI" Value="AlarmsCollection?.CountByState?[StateType.RSHI]" Status="rshi"/>
                             <PriorityAlarm Title="RSLO" Value="AlarmsCollection?.CountByState?[StateType.RSLO]" Status="rslo"/>
                             <PriorityAlarm Title="NoneState" Value="AlarmsCollection?.CountByState?[StateType.none]" Status="none-state"/>
-                            <PriorityAlarm Title="Пожар" StatusActive="@(AlarmsCollection?.Fire ?? false ? "active" : "")" Status="fire"/>
-                            <PriorityAlarm Title="Загазованность" StatusActive="@(AlarmsCollection?.Gas ?? false ? "active" : "")" Status="gas"/>
                         </div>
                     </div>
                     <div style="border-radius: 6px;">
