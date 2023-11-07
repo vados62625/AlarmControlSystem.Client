@@ -58,5 +58,10 @@ namespace GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
         /// Сортировать по убыванию
         /// </summary>
         public bool OrderByDescending { get; set; }
+        
+        /// <summary>
+        /// Выводить передачи смены
+        /// </summary>
+        public bool DisplayShifts { get; set; }
     }
 }
