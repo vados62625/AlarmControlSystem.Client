@@ -42,7 +42,7 @@
     <div class="chart-container" style="margin-bottom: 30px;">
         @if (IncomingAlarms is {Count: > 0 })
         {
-            <Chart1 Kpi="@inputKpi" IncomingAlarms="@IncomingAlarms" DataSetTitle="@ArmName"/>
+            <Chart1 Kpi="@inputKpi" IncomingAlarms="@IncomingAlarms"/>
         }
         else
         {

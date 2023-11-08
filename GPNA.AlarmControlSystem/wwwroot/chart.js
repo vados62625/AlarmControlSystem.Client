@@ -88,14 +88,20 @@ window.setup = (id, config) => {
     if (chartStatus != undefined) {
         chartStatus.destroy();
     }
-    var ctx = document.getElementById(id).getContext('2d');
-    new Chart(ctx, config);
+    let el = document.getElementById(id)
+    if(el) {
+        let ctx = el.getContext('2d');
+        new Chart(ctx, config);
+    }
 }
 
 window.setup2 = (id, config) => {
-    var ctx = document.getElementById(id).getContext('2d');
-    config.options.scales.y = { min: 0, max:100 };
-    new Chart(ctx, config);
+    let el = document.getElementById(id)
+    if(el) {
+        let ctx = el.getContext('2d');
+        config.options.scales.y = {min: 0, max: 100};
+        new Chart(ctx, config);
+    }
 }
 
 
@@ -104,8 +110,11 @@ window.setup3 = (id,config) => {
     if (chartStatus != undefined) {
         chartStatus.destroy();
     }
-    var ctx = document.getElementById(id).getContext('2d');
-    config.options.scales.y = { min: 0};
-    new Chart(ctx, config);
+    let el = document.getElementById(id)
+    if(el){
+        let ctx = el.getContext('2d');
+        config.options.scales.y = { min: 0};
+        new Chart(ctx, config);
+    }
     
 }

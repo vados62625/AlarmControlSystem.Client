@@ -18,9 +18,6 @@
     public int Kpi { get; set; }
 
     [Parameter]
-    public string? DataSetTitle { get; set; }
-
-    [Parameter]
     public bool IsEnableRenderChart { get; set; } = true;
 
     private List<Dataset> _datasets = new();
@@ -31,7 +28,7 @@
     //Получить по айди филда все армы(workStation)
     //
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnParametersSetAsync()
     {
         if (IncomingAlarms is {Count: > 0 })
         {
@@ -41,7 +38,7 @@
 
             foreach (var alarmsDataset in IncomingAlarms)
             {
-                var data = IncomingAlarms.FirstOrDefault().Value.Select(c => new PointChart
+                var data = alarmsDataset.Value.Select(c => new PointChart
                 {
                     x = $"{c.Key:M} {c.Key:t}",
                     y = c.Value.Length

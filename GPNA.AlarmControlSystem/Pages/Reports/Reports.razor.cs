@@ -70,7 +70,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
             StateHasChanged();
             await SetFieldWithArm();
             _generalCount = 0;
-            _averageUrgent = await SetAverageUrgent();
+            // _averageUrgent = await SetAverageUrgent();
 
             if (_workstations != null)
             {
@@ -91,6 +91,8 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
                 }
 
                 _generalCount = IncomingAlarms?.Sum(c => c.Value.Sum(x => x.Value.Length)) ?? 0;
+                _averageUrgent = (IncomingAlarms?.Sum(c =>
+                    c.Value.Sum(x => x.Value.Count(alarm => alarm.Priority == PriorityType.Urgent))) ?? 0)/(IncomingAlarms?.FirstOrDefault().Value.Keys.Count ?? 1);
             }
 
 
@@ -143,40 +145,6 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
                 ArmLinksDictionary = _workstations.ToDictionary(workStation => workStation.Name,
                     workStation => $"/reports/?fieldId={FieldId}&armId={workStation.Id}");
             }
-        }
-
-        private async Task<int> SetAverageUrgent()
-        {
-            var incomingAlarmsResult = await IncomingAlarmService.GetCountInHour(new GetIncomingAlarmsByDatesQuery
-            {
-                WorkStationId = 1,
-                ActivationFrom = From,
-                ActivationTo = To,
-            });
-
-            if (incomingAlarmsResult.Success)
-            {
-                var incomingAlarms = incomingAlarmsResult.Payload;
-
-                int countUrgent = 0;
-
-                foreach (var alarmsOnHour in incomingAlarms)
-                {
-                    if (alarmsOnHour.Value is { Length: > 0 })
-                        foreach (var alarm in alarmsOnHour.Value)
-                        {
-                            if (alarm.Priority == PriorityType.Urgent)
-                            {
-                                countUrgent += 1;
-                            }
-                        }
-                }
-
-                if (incomingAlarms.Count > 0)
-                    return countUrgent / incomingAlarms.Count;
-            }
-
-            return -1;
         }
 
         private async Task<Stream?> GetFileStream()
