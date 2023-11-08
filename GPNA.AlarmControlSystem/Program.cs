@@ -1,25 +1,20 @@
-using System.Net;
-using System.Security.Principal;
 using Blazored.Modal;
 using Blazored.Toast;
 using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Options;
 using GPNA.AlarmControlSystem.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.Negotiate;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.IdentityModel.Tokens;
 using NLog.Web;
 using IAuthorizationService = GPNA.AlarmControlSystem.Interfaces.IAuthorizationService;
 
+var builder = WebApplication.CreateBuilder(args);
+
 IConfiguration configuration = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json")
+    .AddJsonFile("appsettings.json", optional: false, true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, true)
     .Build();
 
 double timeOut = 1000;
 double.TryParse(configuration["ConnectionConfig:AlarmControlSystemWebApi:TimeOut"], out timeOut);
-
-var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseNLog();
 
