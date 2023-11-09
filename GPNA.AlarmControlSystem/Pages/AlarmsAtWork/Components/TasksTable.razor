@@ -1,0 +1,254 @@
+﻿@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
+@using GPNA.AlarmControlSystem.Models.Enums
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Components
+@*@using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms*@
+
+<table class="bg-task-table ">
+    <thead>
+    <tr>
+        <th class="bg-task-table-button" style="min-width: 60px;">
+            <div>
+                <svg class="task-table-status-icon">
+                    <use href="/img/icons/icons.svg#task-process"></use>
+                </svg>
+                <button>
+                    <svg>
+                        <use href="/img/icons/icons.svg#filter"></use>
+                    </svg>
+                </button>
+            </div>
+        </th>
+        <th class="bg-task-table-button" style="min-width: 95px;">
+            <div>
+                <p>Задача</p>
+                <button>
+                    <svg>
+                        <use href="/img/icons/icons.svg#sorting"></use>
+                    </svg>
+                </button>
+            </div>
+        </th>
+        <th class="bg-task-table-button" style="min-width: 90px;">
+            <div>
+                <p>Дата</p>
+                <button onclick="@(async () => await OnOrderingChanged.InvokeAsync(nameof(IncomingAlarmDto.DateTimeActivation)))">
+                    <svg>
+                        <use href="/img/icons/icons.svg#sorting"></use>
+                    </svg>
+                </button>
+            </div>
+        </th>
+        <th class="bg-task-table-button" style="min-width: 90px;">
+            <div>
+                <p>Время</p>
+                <button>
+                    <svg>
+                        <use href="/img/icons/icons.svg#sorting"></use>
+                    </svg>
+                </button>
+            </div>
+        </th>
+        <th class="bg-task-table-button" style="min-width: 120px;">
+            <div>
+                <p>Повторений</p>
+                <button onclick="@(async () => await OnOrderingChanged.InvokeAsync("Count"))">
+                    <svg>
+                        <use href="/img/icons/icons.svg#sorting"></use>
+                    </svg>
+                </button>
+            </div>
+        </th>
+        <th class="bg-task-table-button" style="min-width: 230px;">
+            <div>
+                <p>Таг</p>
+                <button>
+                    <svg>
+                        <use href="/img/icons/icons.svg#search"></use>
+                    </svg>
+                </button>
+            </div>
+        </th>
+        <th class="bg-task-table-button" style="min-width: 120px;">
+            <div>
+                <p>Статус</p>
+                <div>
+                    <button data-bs-toggle="modal" data-bs-target="#stateFilterModal">
+                        <svg>
+                            <use href="/img/icons/icons.svg#filter"></use>
+                        </svg>
+                    </button>
+                    <button onclick="@(async () => await OnOrderingChanged.InvokeAsync(nameof(IncomingAlarmDto.State)))">
+                        <svg>
+                            <use href="/img/icons/icons.svg#sorting"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </th>
+        <th style="min-width: 790px;">
+            <p>Описание</p>
+        </th>
+        <th class="bg-task-table-button" style="min-width: 120px;">
+            <div>
+                <p>Приоритет</p>
+                <div>
+                    <button data-bs-toggle="modal" data-bs-target="#priorityFilterModal">
+                        <svg>
+                            <use href="/img/icons/icons.svg#filter"></use>
+                        </svg>
+                    </button>
+                    <button onclick="@(async () => await OnOrderingChanged.InvokeAsync(nameof(IncomingAlarmDto.Priority)))">
+                        <svg>
+                            <use href="/img/icons/icons.svg#sorting"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </th>
+        <th style="min-width: 150px;">
+            <p>Уставка/значение</p>
+        </th>        
+    </tr>
+    </thead>
+    <tbody>        
+        <tr>
+            <td>
+                <div class="d-flex gap-2 align-items-center">
+                    <svg class="task-table-status-icon">
+                        <use href="/img/icons/icons.svg#task-@TaskStatus"></use>
+                    </svg>
+                    <p class="task-table-status-comment @TaskStatus">2/3</p>
+                </div>                
+            </td>
+            <td>#@TaskNumber</td>
+            <td>дата</td>
+            <td>время</td>
+            <td>1</td>
+            <td>еф</td>
+            <td><MonitoringTableStatus Title="HH/LL" Status="hh"></MonitoringTableStatus></td>
+            <td>описание</td>
+            <td><MonitoringTableStatus Title="КРИТИЧНЫЙ" Priority="urgent"></MonitoringTableStatus></td>
+            <td>уставка</td>
+        </tr>
+        
+            <tr class="task-table-comment @Border">
+                <td colspan="10">
+                    @*<input type="text" placeholder="Текст комментария" />*@
+                    <div><p>Текст комментария</p></div>
+                </td>
+            </tr>    
+        
+    @*@if (Alarms != null && Alarms.Any())
+    {
+        foreach (var alarmArray in Alarms)
+        {
+            <IncomingAlarmComponent Alarm="alarmArray.Last()" List="@alarmArray"/>
+        }
+    }*@
+    </tbody>
+</table>
+
+@*@if (Alarms == null || !Alarms.Any())
+{
+    <div class="p-4 text-center">
+        <p>Нет данных</p>
+    </div>
+}*@
+
+<div id="filterModals">
+
+    <div class="modal fade" id="stateFilterModal">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="stateFilterRadio" id="stateFilterRadio-1" checked="@(StateFilter == null)" onchange="@(async () => await SetStateFilter(null))">
+                        <label class="form-check-label" for="stateFilterRadio-1">
+                            Все
+                        </label>
+                    </div>
+
+                    @foreach (var state in Enum.GetValues<StateType>())
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="stateFilterRadio" id="stateFilterRadio@((int)state)" checked="@(StateFilter == state)" onchange="@(async () => await SetStateFilter(state))">
+                            <label class="form-check-label" for="stateFilterRadio@((int)state)">
+                                @state.ToString()
+                            </label>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="priorityFilterModal">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="priorityFilterRadio" id="priorityFilterRadio-1" checked="@(PriorityFilter == null)" onchange="@(async () => await OnPriorityFilterChanged.InvokeAsync(null))">
+                        <label class="form-check-label" for="priorityFilterRadio-1">
+                            Все
+                        </label>
+                    </div>
+
+                    @foreach (var priority in Enum.GetValues<PriorityType>())
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="priorityFilterRadio" id="priorityFilterRadio@((int)priority)" checked="@(PriorityFilter == priority)" onchange="@(async () => await OnPriorityFilterChanged.InvokeAsync(priority))">
+                            <label class="form-check-label" for="priorityFilterRadio@((int)priority)">
+                                @priority.ToString()
+                            </label>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@code {
+
+    [Parameter]
+    public string? ButtonArrow { get; set; } = "arrow-down";
+
+    [Parameter] public string? TaskStatus { get; set; } = "new";
+    [Parameter] public int TaskNumber { get; set; } = 1256;   
+    [Parameter] public string? Border { get; set; }
+
+    [Parameter]
+    public IncomingAlarmDto[][]? Alarms { get; set; }
+
+    [CascadingParameter(Name = nameof(StateFilter))]
+    public StateType? StateFilter { get; set; }
+
+    [CascadingParameter(Name = nameof(PriorityFilter))]
+    public PriorityType? PriorityFilter { get; set; }
+
+    [Parameter]
+    public EventCallback<StateType?> OnStateFilterChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<PriorityType?> OnPriorityFilterChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnOrderingChanged { get; set; }
+
+    private async Task SetStateFilter(StateType? state)
+    {
+        await OnStateFilterChanged.InvokeAsync(state);
+    }
+
+}

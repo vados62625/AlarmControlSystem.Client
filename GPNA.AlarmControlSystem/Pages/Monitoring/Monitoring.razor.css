@@ -1,14 +1,3 @@
-.date-period-select .btn#button-refresh{
-    width: 25px;
-    height: 25px;
-}
-
-.date-period-select .btn#button-refresh.active {
-    -webkit-animation:spin 1.5s linear infinite;
-    -moz-animation:spin 1.5s linear infinite;
-    animation:spin 1.5s linear infinite;
-}
-
 .tagname-filter input {
     height: 24px;
     width: 225px;
