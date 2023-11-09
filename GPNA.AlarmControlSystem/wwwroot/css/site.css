@@ -52,6 +52,7 @@
     --text-black: #002033;
     --text-button-navigation-grey: #96A5AE;
     --text-grey-table-status: #8199A7;
+    --text-green: #22C38E;
 }
 
 .page.light-theme {
@@ -401,7 +402,7 @@ p {
 .page-header {
     display: flex;
     justify-content: space-between;
-    padding-bottom: 10px;
+    /*padding-bottom: 10px;*/
     align-content: center;
     white-space: nowrap;
     gap: 10px;
@@ -482,3 +483,14 @@ p {
     display: flex;
     gap: 8px;
 }
+
+.date-period-select .btn#button-refresh {
+    width: 25px;
+    height: 25px;
+}
+
+    .date-period-select .btn#button-refresh.active {
+        -webkit-animation: spin 1.5s linear infinite;
+        -moz-animation: spin 1.5s linear infinite;
+        animation: spin 1.5s linear infinite;
+    }

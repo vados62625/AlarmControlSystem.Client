@@ -1,0 +1,102 @@
+﻿@page "/alarms-at-work/task-number"
+@using GPNA.AlarmControlSystem.Pages.AlarmsAtWork.Components
+
+<div class="page-main">
+    <div class="page-header ">       
+        <a href="/alarms-at-work" class="bg-navigation">
+            <svg>
+                <use href="/img/icons/icons.svg#arrow-left"></use>
+            </svg>
+            <p>К списку задач</p>
+        </a>
+            <p>ЗАДАЧА <b># @TaskNumber</b></p>
+            
+        <div class="d-flex gap-2">
+            @*@if (FiltersOn)
+            {
+                <TitleBarButton Title="Фильтрация" FunctionButton="filtration" Action="DropFilters" />
+            }
+            <TitleBarButton Title="Экспорт" FunctionButton="export" Action="DownloadFileFromStream" />
+        *@</div>
+
+    </div>
+    <div class="d-flex flex-column overflow-auto gap-2">
+        <TasksTable Border="border-none"></TasksTable>
+        <div class="mesage-container w-100">
+            <div class=" mesage-container flex-column">
+                <div class="bg-message message-correspondents">
+                    <p>Кому:</p>
+                    <form>
+                        <label><input type="checkbox" />Технолог (промысел)</label>
+                        <label><input type="checkbox" />Технолог (офис)</label>
+                        <label><input type="checkbox" />Инженер АСУТП (промысел)</label>
+                        <label><input type="checkbox" />Инженер АСУТП (офис)</label>
+                        <label><input type="checkbox" />Начальник смены</label>
+                        <label><input type="checkbox" />Начальник цеха</label>
+                    </form>                     
+                </div>
+                <div class="bg-message message-body">
+                    <p> Тело письма:</p>
+                    <textarea type="text" placeholder="Текст письма" />
+                    <div class="d-flex align-self-end gap-2">
+                        <button>
+                            <svg>
+                                <use href="/img/icons/icons.svg#task-message-cancel"></use>
+                            </svg>
+                            <p>Отменить</p>
+                        </button>
+                        <button>
+                            <svg>
+                                <use href="/img/icons/icons.svg#task-message-send"></use>
+                            </svg>
+                            <p>Разослать</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-message message-story">
+                <p>История</p>
+                <div class="message-story-container">                    
+                    <div class="message-story-item">
+                        <div class="d-flex gap-2 align-items-center">
+                            <p>Технолог</p>
+                            <svg>
+                                <use href="/img/icons/icons.svg#task-message-arrow-right"></use>
+                            </svg>
+                            <p>Инженер</p>
+                        </div>
+                        <p>Текст сообщения Текст сообщения Текст сообщения Текст сообщения Текст сообщения Текст сообщения Текст сообщения Текст сообщения</p>
+                        <p class="message-story-item-date">04.06.2023 14:15</p>
+                    </div>
+
+                    <div class="message-story-item">
+                        <div class="d-flex gap-2 align-items-center">
+                            <p>Технолог</p>
+                            <svg>
+                                <use href="/img/icons/icons.svg#task-message-arrow-right"></use>
+                            </svg>
+                            <p>Инженер</p>
+                        </div>
+                        <p>Текст сообщения Текст сообщения Текст сообщения Текст сообщения Текст сообщения</p>
+                        <p class="message-story-item-date">04.06.2023 14:15</p>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    @*<div style="border-radius: 6px;">
+        <TasksTable></TasksTable>
+        @*<Pagination CurrentPage="CurrentPage" PagesCount="PagesCount" OnPageClick="OnPageChanged"></Pagination>
+        </div>*@
+</div>
+
+
+
+
+
+@code {
+
+    [Parameter] public int TaskNumber { get; set; }
+
+}

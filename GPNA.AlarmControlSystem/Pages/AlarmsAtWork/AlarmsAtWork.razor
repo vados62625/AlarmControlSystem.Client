@@ -1,13 +1,360 @@
 ﻿@page "/alarms-at-work"
-@using GPNA.AlarmControlSystem.Services
 @using GPNA.AlarmControlSystem.Pages.AlarmsAtWork.Alarms
-@using GPNA.AlarmControlSystem.Models.Enums
-@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Components
+@using GPNA.AlarmControlSystem.Pages.AlarmsAtWork.Components
+@using GPNA.AlarmControlSystem.Shared.Pagination
 @using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
+@using GPNA.AlarmControlSystem.Models.Dto.Field
 @using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
+@using GPNA.AlarmControlSystem.Models.Dto.Workstation
+@using GPNA.AlarmControlSystem.Models.Enums
+@using GPNA.AlarmControlSystem.Services
+@using GPNA.AlarmControlSystem.Options
+@using Microsoft.Extensions.Options
+@inject IJSRuntime JS
 
+<CascadingValue Name="@nameof(From)" Value="@From">
+    <CascadingValue Name="@nameof(To)" Value="@To">
+        <CascadingValue Name="@nameof(StateFilter)" Value="@StateFilter">
+            <CascadingValue Name="@nameof(PriorityFilter)" Value="@PriorityFilter">
 
-<h3>Задачи</h3>
+                <div class="page-main">
+                    <div class="page-header">
+                        <div class="d-flex date-period-select">
+                            <div>
+                                <input type="datetime-local" @bind="From" @bind:event="oninput">
+                                <svg>
+                                    <use href="/img/icons/icons.svg#calendar"></use>
+                                </svg>
+                            </div>
+                            <div>
+                                <input type="datetime-local" @bind="To" @bind:event="oninput">
+                                <svg>
+                                    <use href="/img/icons/icons.svg#calendar"></use>
+                                </svg>
+                            </div>
+                            <button class="btn p-0 ms-2 d-flex shadow-none@(_spinnerClass)" id="button-refresh" @onclick="async () => await RefreshBySpinner()">
+                                <svg class="w-100 h-100">
+                                    <use href="/img/icons/icons.svg#refresh"></use>
+                                </svg>
+                            </button>
+                            <div class="d-flex tagname-filter position-relative ms-2">
+                                <input placeholder="Поиск по Tag" type="text" name="tagname" @bind="TagNameFilter" @bind:event="oninput" @onchange="async () => await InitializePageAsync()">
+                            </div>
+                        </div>
+                        <div class="d-flex">
+                            <p>ЗАДАЧИ МЕРЕТОЯХА @(Options?.Value.BranchName ?? "N/A") <b>@FieldName</b></p>
+                            <SelectObject Object="dto" LinksDictionary="FieldLinksDictionary" />
+                            <p style="margin-left:15px;">
+                                <b>@ArmName</b>
+                            </p>
+                            <SelectObject LinksDictionary="ArmLinksDictionary" />
+                        </div>
+                        <div class="d-flex gap-2">
+                            @if (FiltersOn)
+                            {
+                                <TitleBarButton Title="Фильтрация" FunctionButton="filtration" Action="DropFilters" />
+                            }
+                            <TitleBarButton Title="Экспорт" FunctionButton="export" Action="DownloadFileFromStream" />
+                        </div>
+
+                    </div>
+                    <div class="d-flex justify-content-between overflow-auto">
+                        <div class="priority-alarm-container">
+                            <PriorityAlarm Title="Всего" Value="AlarmsCollection?.TotalCount" Priority="total" />
+                            <PriorityAlarm Title="Критичный" Value="AlarmsCollection?.CountByPriority?[PriorityType.Urgent]" Priority="critical" />
+                            <PriorityAlarm Title="Высокий" Value="AlarmsCollection?.CountByPriority?[PriorityType.High]" Priority="high" />
+                            <PriorityAlarm Title="Низкий" Value="AlarmsCollection?.CountByPriority?[PriorityType.Low]" Priority="low" />
+                            <PriorityAlarm Title="Инфо" Value="AlarmsCollection?.CountByPriority?[PriorityType.Information]" Priority="info" />
+                            <PriorityAlarm Title="Без приоритета" Value="AlarmsCollection?.CountByPriority?[PriorityType.None]" Priority="none-priority" />
+                        </div>
+                        <div class="priority-alarm-container">
+                            <PriorityAlarm Title="HH" Value="AlarmsCollection?.CountByState?[StateType.HH]" Status="hh" />
+                            <PriorityAlarm Title="H" Value="AlarmsCollection?.CountByState?[StateType.H]" Status="h" />
+                            <PriorityAlarm Title="LL" Value="AlarmsCollection?.CountByState?[StateType.LL]" Status="ll" />
+                            <PriorityAlarm Title="L" Value="AlarmsCollection?.CountByState?[StateType.L]" Status="l" />
+                            <PriorityAlarm Title="DISCR" Value="AlarmsCollection?.CountByState?[StateType.Discr]" Status="discr" />
+                            <PriorityAlarm Title="RSHI" Value="AlarmsCollection?.CountByState?[StateType.RSHI]" Status="rshi" />
+                            <PriorityAlarm Title="RSLO" Value="AlarmsCollection?.CountByState?[StateType.RSLO]" Status="rslo" />
+                            <PriorityAlarm Title="NoneState" Value="AlarmsCollection?.CountByState?[StateType.none]" Status="none-state" />
+                            <PriorityAlarm Title="Пожар" StatusActive="@(AlarmsCollection?.Fire ?? false ? "active" : "")" Status="fire" />
+                            <PriorityAlarm Title="Загазованность" StatusActive="@(AlarmsCollection?.Gas ?? false ? "active" : "")" Status="gas" />
+                        </div>
+                    </div>
+                    <div style="border-radius: 6px;">
+                        <TasksTable></TasksTable>
+                        @*<Pagination CurrentPage="CurrentPage" PagesCount="PagesCount" OnPageClick="OnPageChanged"></Pagination>*@
+                    </div>
+                </div>
+
+            </CascadingValue>
+        </CascadingValue>
+    </CascadingValue>
+</CascadingValue>
+
+@code {
+
+    [Inject]
+    private IOptions<AcsModuleOptions>? Options { get; set; }
+
+    [Inject]
+    private IIncomingAlarmService? IncomingAlarmService { get; set; }
+
+    [Inject]
+    private IFieldService? FieldService { get; set; }
+
+    [Inject]
+    private IWorkStationService? WorkStationService { get; set; }
+
+    [Inject]
+    private IExportService? ExportService { get; set; }
+
+    [Inject]
+    private ISpinnerService? SpinnerService { get; set; }
+
+    [Parameter]
+    public DateTime DateTime { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int? ArmId { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int? FieldId { get; set; }
+
+    [Parameter]
+    public string? ArmName { get; set; }
+
+    [Parameter]
+    public string? FieldName { get; set; }
+
+    [CascadingParameter(Name = nameof(From))]
+    public DateTimeOffset From { get; set; }
+
+    [CascadingParameter(Name = nameof(To))]
+    public DateTimeOffset To { get; set; }
+
+    [CascadingParameter(Name = nameof(PagesCount))]
+    public int PagesCount { get; set; }
+
+    [CascadingParameter(Name = nameof(CurrentPage))]
+    public int CurrentPage { get; set; } = 1;
+
+    [Parameter]
+    public string TagNameFilter { get; set; } = string.Empty;
+
+    [CascadingParameter(Name = nameof(StateFilter))]
+    public StateType? StateFilter { get; set; }
+
+    [CascadingParameter(Name = nameof(PriorityFilter))]
+    public PriorityType? PriorityFilter { get; set; }
+
+    private bool FiltersOn => !string.IsNullOrWhiteSpace(TagNameFilter) || StateFilter != default || PriorityFilter != default;
+
+    private AlarmsCollection<IncomingAlarmDto>? AlarmsCollection { get; set; }
+
+    private FieldDto[]? _fields;
+
+    private WorkStationDto[]? _workstations;
+
+    private IDictionary<string, string>? FieldLinksDictionary { get; set; }
+
+    private IDictionary<string, string>? ArmLinksDictionary { get; set; }
+
+    private string _spinnerClass = string.Empty;
+
+    private string _orderBy = string.Empty;
+
+    private bool _orderByDesc = true;
+
+    protected override void OnInitialized()
+    {
+        SetDates();
+        base.OnInitialized();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await SetFieldWithArm();
+
+        await InitializePageAsync();
+    }
+
+    private async Task SetFieldWithArm()
+    {
+        if (FieldService != null)
+        {
+            var fields = await FieldService.GetList();
+
+            if (fields.Success)
+            {
+                _fields = fields.Payload.ToArray();
+            }
+        }
+
+        if (WorkStationService != null)
+        {
+            var workstations = await WorkStationService.GetList(new { FieldId });
+
+            if (workstations.Success)
+            {
+                _workstations = workstations.Payload.ToArray();
+            }
+        }
+
+        FieldId ??= _fields?.FirstOrDefault()?.Id;
+
+        FieldName = _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name;
+
+        ArmId ??= _workstations?.FirstOrDefault()?.Id;
+
+        ArmName = _workstations?.FirstOrDefault(ws => ws.Id == ArmId)?.Name;
+
+        FillLinks();
+    }
+
+    private void FillLinks()
+    {
+        if (_fields != null)
+        {
+            FieldLinksDictionary = _fields.ToDictionary(field =>
+                field.Name,
+                field => $"/Arm/?fieldId={field.Id}");
+        }
+
+        if (_workstations != null)
+        {
+            ArmLinksDictionary = _workstations.ToDictionary(workStation =>
+                workStation.Name ?? Guid.NewGuid().ToString(),
+                workStation => $"/Arm/?fieldId={FieldId}&armId={workStation.Id}");
+        }
+    }
+
+    private async Task InitializePageAsync()
+    {
+        SpinnerService?.Show();
+
+        await UpdateAlarms();
+
+        SpinnerService?.Hide();
+    }
+
+    private void SetDates()
+    {
+        To = DateTimeOffset.Now;
+        From = new DateTimeOffset(To.Year, To.Month, To.Day, 8, 0, 0, 0, To.Offset);
+    }
+
+    private async Task UpdateAlarms()
+    {
+        if (IncomingAlarmService != null)
+        {
+            var request = await IncomingAlarmService.GetAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
+                {
+                    WorkStationId = ArmId ?? 0,
+                    TagName = TagNameFilter,
+                    ActivationFrom = From,
+                    ActivationTo = To,
+                    State = StateFilter,
+                    Priority = PriorityFilter,
+                    OrderPropertyName = _orderBy,
+                    OrderByDescending = _orderByDesc,
+                    Page = CurrentPage,
+                    CountOnPage = 15
+                });
+
+            if (request.Success)
+            {
+                AlarmsCollection = request.Payload;
+                PagesCount = AlarmsCollection.PagesCount;
+            }
+        }
+    }
+
+    private Task DropFilters()
+    {
+        TagNameFilter = string.Empty;
+        StateFilter = null;
+        PriorityFilter = null;
+        return InitializePageAsync();
+    }
+
+    private async Task<Stream?> GetFileStream()
+    {
+        var result = await ExportService.ExportIncomingAlarms(new ExportIncomingAlarmsByDatesQuery
+            {
+                DocumentType = ExportDocumentType.Excel,
+                WorkStationId = ArmId ?? 0,
+                TagName = TagNameFilter,
+                ActivationFrom = From,
+                ActivationTo = To,
+                State = StateFilter,
+                Priority = PriorityFilter,
+            });
+
+        return new MemoryStream(result);
+    }
+
+    private async Task DownloadFileFromStream()
+    {
+        SpinnerService?.Show();
+
+        var fileStream = await GetFileStream();
+
+        if (fileStream == null) return;
+
+        var fileName = "export.xlsx";
+
+        using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+
+        SpinnerService?.Hide();
+    }
+
+    private async Task SetStateFilter(StateType? state)
+    {
+        StateFilter = state;
+        await InitializePageAsync();
+    }
+
+    private async Task SetPriorityFilter(PriorityType? priority)
+    {
+        PriorityFilter = priority;
+        await InitializePageAsync();
+    }
+
+    private async Task RefreshBySpinner()
+    {
+        _spinnerClass = " active";
+
+        await InitializePageAsync();
+
+        _spinnerClass = string.Empty;
+    }
+
+    private async Task OnOrderingChanged(string orderBy)
+    {
+        if (_orderBy == orderBy) _orderByDesc = !_orderByDesc;
+
+        _orderBy = orderBy;
+
+        CurrentPage = 1;
+
+        await InitializePageAsync();
+    }
+
+    private async Task OnPageChanged(int page)
+    {
+        CurrentPage = page;
+        await InitializePageAsync();
+    }
+
+}
+
+@*<h3>Задачи</h3>
 <div style="display:flex; justify-content:flex-end; gap: 10px; color: var(--color-typo-primary);">
     <span>Всего: <b>@countAll</b></span>
     <span>Критический: <b>@countUrgent</b></span>
@@ -156,3 +503,4 @@
     }
 
 }
+*@
