@@ -17,6 +17,9 @@
 
     [Parameter]
     public ChartType? Type { get; set; }
+    
+    [Parameter]
+    public string? CenterText { get; set; }
 
     [Parameter]
     public string[]? Data1 { get; set; }
@@ -60,7 +63,7 @@
                 {
                     Center = new
                     {
-                        Text = (Data1?.Sum(count => int.Parse(count)) ?? 0).ToString(),
+                        Text = CenterText,
                         Color = "#000", // Default is #000000
                         FontStyle = "Arial", // Default is Arial
                         SidePadding = 20, // Default is 20 (as a percentage)
