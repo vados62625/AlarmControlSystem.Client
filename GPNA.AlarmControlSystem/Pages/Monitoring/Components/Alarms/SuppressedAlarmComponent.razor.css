@@ -1,0 +1,103 @@
+.bg-monitoring-table thead tr th {
+    height: 40px;
+    padding-left: 10px;
+    padding-right: 6px;
+}
+
+.bg-monitoring-table thead tr th:not(:last-child) {
+    border-right: 0.5px solid var(--border--light-grey-table);
+}
+
+.bg-monitoring-table thead tr th:not(.bg-monitoring-table-button) {
+    text-align: start;
+}
+
+.bg-monitoring-table-button div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bg-monitoring-table-button button {
+    border: none;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    padding: 0;
+}
+
+.bg-monitoring-table-button button:nth-child(2) {
+    margin-left: 10px;
+}
+
+.bg-monitoring-table-button svg {
+    width: 10px;
+    height: 8px;
+}
+
+.bg-monitoring-table tbody {
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.bg-monitoring-table tbody tr {
+    height: 40px;
+    align-items: center;
+}
+
+.bg-monitoring-table tbody tr:first-child {
+    height: 60px;
+}
+
+.bg-monitoring-table tbody tr:not(:has(+ .monitoring-table-comment)) {
+    border-bottom: 0.5px solid rgba(0, 32, 51, 0.15);
+}
+
+.bg-monitoring-table tbody tr td {
+    padding: 0 10px;
+}
+
+.bg-monitoring-table tbody tr td:nth-child(3) div {
+    padding-left: 37px;
+    height: 32px;
+    align-items: center;
+}
+
+.bg-monitoring-table tbody tr td:nth-child(3) div button {
+    border: none;
+    background-color: transparent;
+    margin-left: 13px;
+    padding: 0;
+}
+
+.bg-monitoring-table tbody tr td:nth-child(3) div button svg {
+    width: 11px;
+    height: 11px;
+    margin-bottom: 3px;
+}
+
+.bg-monitoring-table tbody tr td:nth-child(5), .bg-monitoring-table tbody tr td:nth-child(7), .bg-monitoring-table tbody tr td:nth-child(8), .bg-monitoring-table tbody tr td:nth-child(9) {
+    text-align: center;
+}
+
+.bg-monitoring-table tbody .monitoring-table-comment td {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.monitoring-table-comment td input {
+    width: 100%;
+    border: 0.5px solid var(--border--light-grey-table);
+    border-radius: 6px;
+    min-height: 28px;
+    padding: 7px 10px;
+    margin-bottom: 5px;
+}
+
+.monitoring-table-comment td input:focus-visible {
+    outline: none;
+}
+
+.monitoring-table-shift td:last-child {
+    text-align: center;
+}

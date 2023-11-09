@@ -100,7 +100,7 @@ else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
         {
             if (Alarm?.Comment != null)
             {
-                await AlarmService.AddComment(new AddCommentInAlarmCommand(){Id = Alarm.Id, Comment = Alarm.Comment});
+                await AlarmService.AddComment(new AddCommentInAlarmCommand {Id = Alarm.Id, Comment = Alarm.Comment});
                 await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
             }
         }
@@ -111,7 +111,7 @@ else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
         if (Alarm != null)
         {
             Alarm.StatusAlarm = Alarm is {StatusAlarm: StatusAlarmType.Undefined } ? StatusAlarmType.InWork : StatusAlarmType.Undefined;
-            await AlarmService.ChangeStatus(new ChangeStatusAlarmCommand() {Id = Alarm.Id, StatusAlarm = Alarm.StatusAlarm});
+            await AlarmService.ChangeStatus(new ChangeStatusAlarmCommand {Id = Alarm.Id, StatusAlarm = Alarm.StatusAlarm});
             await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
         }
         

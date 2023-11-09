@@ -14,78 +14,72 @@ namespace GPNA.AlarmControlSystem.Pages.Monitoring;
 
 public partial class Monitoring : ComponentBase
 {
-    [Inject]
-    private IOptions<AcsModuleOptions>? Options { get; set; }
+    [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
 
-    [Inject]
-    private IIncomingAlarmService? IncomingAlarmService { get; set; }
+    [Inject] private IIncomingAlarmService? IncomingAlarmService { get; set; }
+    
+    [Inject] private IActiveAlarmService? ActiveAlarmService { get; set; }
+    
+    [Inject] private ISuppressedAlarmService? SuppressedAlarmService { get; set; }
 
-    [Inject]
-    private IFieldService? FieldService { get; set; }
+    [Inject] private IFieldService? FieldService { get; set; }
 
-    [Inject]
-    private IWorkStationService? WorkStationService { get; set; }
+    [Inject] private IWorkStationService? WorkStationService { get; set; }
 
-    [Inject]
-    private IExportService? ExportService { get; set; }
+    [Inject] private IExportService? ExportService { get; set; }
 
-    [Inject]
-    private ISpinnerService? SpinnerService { get; set; }
+    [Inject] private ISpinnerService? SpinnerService { get; set; }
 
-    [Parameter]
-    public DateTime DateTime { get; set; }
+    [Parameter] public DateTime DateTime { get; set; }
 
-    [Parameter]
-    [SupplyParameterFromQuery]
-    public int? ArmId { get; set; }
+    [Parameter] [SupplyParameterFromQuery] public int? ArmId { get; set; }
 
-    [Parameter]
-    [SupplyParameterFromQuery]
-    public int? FieldId { get; set; }
+    [Parameter] [SupplyParameterFromQuery] public int? FieldId { get; set; }
+
+    [Parameter] public string? ArmName { get; set; }
+
+    [Parameter] public string? FieldName { get; set; }
 
     [Parameter]
-    public string? ArmName { get; set; }
-
-    [Parameter]
-    public string? FieldName { get; set; }
-
-    [CascadingParameter(Name = nameof(From))]
     public DateTimeOffset From { get; set; }
 
-    [CascadingParameter(Name = nameof(To))]
+    [Parameter]
     public DateTimeOffset To { get; set; }
 
-    [CascadingParameter(Name = nameof(PagesCount))]
+    [Parameter]
     public int PagesCount { get; set; }
 
-    [CascadingParameter(Name = nameof(CurrentPage))]
+    [Parameter]
     public int CurrentPage { get; set; } = 1;
 
-    [Parameter]
-    public string TagNameFilter { get; set; } = string.Empty;
+    [Parameter] public string TagNameFilter { get; set; } = string.Empty;
 
-    [CascadingParameter(Name = nameof(StateFilter))]
+    [Parameter]
     public StateType? StateFilter { get; set; }
 
-    [CascadingParameter(Name = nameof(PriorityFilter))]
+    [Parameter]
     public PriorityType? PriorityFilter { get; set; }
 
-    private bool FiltersOn => !string.IsNullOrWhiteSpace(TagNameFilter) || StateFilter != default || PriorityFilter != default;
+    [Parameter]
+    public AlarmType AlarmType { get; set; } = AlarmType.Incoming;
+
+    private bool FiltersOn =>
+        !string.IsNullOrWhiteSpace(TagNameFilter) || StateFilter != default || PriorityFilter != default;
 
     private AlarmsCollection<IncomingAlarmDto>? AlarmsCollection { get; set; }
 
     private FieldDto[]? _fields;
 
     private WorkStationDto[]? _workstations;
-    
+
     private IDictionary<string, string>? FieldLinksDictionary { get; set; }
-    
+
     private IDictionary<string, string>? ArmLinksDictionary { get; set; }
 
     private string _spinnerClass = string.Empty;
-    
+
     private string _orderBy = string.Empty;
-    
+
     private bool _orderByDesc = true;
 
     protected override void OnInitialized()
@@ -126,11 +120,11 @@ public partial class Monitoring : ComponentBase
         FieldId ??= _fields?.FirstOrDefault()?.Id;
 
         FieldName = _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name;
-        
+
         ArmId ??= _workstations?.FirstOrDefault()?.Id;
 
         ArmName = _workstations?.FirstOrDefault(ws => ws.Id == ArmId)?.Name;
-        
+
         FillLinks();
     }
 
@@ -138,15 +132,15 @@ public partial class Monitoring : ComponentBase
     {
         if (_fields != null)
         {
-            FieldLinksDictionary = _fields.ToDictionary(field => 
-                field.Name, 
+            FieldLinksDictionary = _fields.ToDictionary(field =>
+                    field.Name,
                 field => $"/Arm/?fieldId={field.Id}");
         }
-        
+
         if (_workstations != null)
         {
-            ArmLinksDictionary = _workstations.ToDictionary(workStation => 
-                workStation.Name ?? Guid.NewGuid().ToString(), 
+            ArmLinksDictionary = _workstations.ToDictionary(workStation =>
+                    workStation.Name ?? Guid.NewGuid().ToString(),
                 workStation => $"/Arm/?fieldId={FieldId}&armId={workStation.Id}");
         }
     }
@@ -154,7 +148,7 @@ public partial class Monitoring : ComponentBase
     private async Task InitializePageAsync()
     {
         SpinnerService?.Show();
-        
+
         await UpdateAlarms();
 
         SpinnerService?.Hide();
@@ -170,7 +164,7 @@ public partial class Monitoring : ComponentBase
     {
         if (IncomingAlarmService != null)
         {
-            var request = await IncomingAlarmService.GetAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
+            var request = await IncomingAlarmService.GetAlarmsPerDate(new GetAlarmsCollectionQuery
             {
                 WorkStationId = ArmId ?? 0,
                 TagName = TagNameFilter,
@@ -199,13 +193,13 @@ public partial class Monitoring : ComponentBase
         StateFilter = null;
         PriorityFilter = null;
         CurrentPage = 1;
-        
+
         return InitializePageAsync();
     }
 
     private async Task<Stream?> GetFileStream()
     {
-        var result = await ExportService.ExportIncomingAlarms(new ExportIncomingAlarmsByDatesQuery
+        var result = await ExportService.ExportIncomingAlarms(new ExportAlarmsCollectionQuery
         {
             DocumentType = ExportDocumentType.Excel,
             WorkStationId = ArmId ?? 0,
@@ -240,7 +234,7 @@ public partial class Monitoring : ComponentBase
     {
         StateFilter = state;
         CurrentPage = 1;
-        
+
         await InitializePageAsync();
     }
 
@@ -248,7 +242,7 @@ public partial class Monitoring : ComponentBase
     {
         PriorityFilter = priority;
         CurrentPage = 1;
-        
+
         await InitializePageAsync();
     }
 
@@ -256,9 +250,9 @@ public partial class Monitoring : ComponentBase
     {
         _spinnerClass = " active";
         CurrentPage = 1;
-        
+
         await InitializePageAsync();
-        
+
         _spinnerClass = string.Empty;
     }
 
@@ -268,7 +262,7 @@ public partial class Monitoring : ComponentBase
 
         _orderBy = orderBy;
         CurrentPage = 1;
-        
+
         await InitializePageAsync();
     }
 
