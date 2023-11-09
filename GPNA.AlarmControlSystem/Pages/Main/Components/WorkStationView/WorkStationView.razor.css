@@ -10,7 +10,8 @@
     gap: 14px;
     justify-content: space-between;
     user-select: none;
-    overflow: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 .bg-fire-container {
