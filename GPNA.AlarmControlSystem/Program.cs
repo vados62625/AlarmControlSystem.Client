@@ -43,6 +43,7 @@ builder.Services
     .AddScoped<ITagService, TagService>()
     .AddScoped<IEmailService, EmailService>()
     .AddScoped<IExportService, ExportService>()
+    .AddScoped<AlarmJournalSettingsService>()
     .AddScoped<IFieldService, FieldService>();
 
 builder.Services.AddHttpClient<IAlarmControlSystemApiBroker, AlarmControlSystemApiBroker>(client =>

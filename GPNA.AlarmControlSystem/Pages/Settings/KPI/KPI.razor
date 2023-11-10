@@ -14,19 +14,32 @@
 <div class="page-main">
     <div class="page-header justify-content-center">
        <div class="d-flex align-items-center">
-            <p>НАСТРОЙКИ KPI ЦЕХА <b>@ArmName</b></p>
+           <p>НАСТРОЙКИ KPI 
+               
+               <b>@FieldName</b> М/Р 
+            <SelectObject LinksDictionary="FieldLinksDictionary" />
+               
+               ЦЕХА <b>@ArmName</b></p>
             <SelectObject LinksDictionary="ArmLinksDictionary" />
         </div>        
     </div>
+    
     <div class="settings-container">
-        <div class="bg">
-            <p class="title">ЖУРНАЛ СИГНАЛИЗАЦИЙ</p>
-            <div class="stats-container">
-                <StatKPI Title="Критичный приоритет" Value="29"></StatKPI>
-                <StatKPI Title="Высокий приоритет"></StatKPI>
-                <StatKPI Title="Низкий приоритет"></StatKPI>
+        @if (_journalSettings != default)
+        {
+            <div class="bg">
+                <p class="title">ЖУРНАЛ СИГНАЛИЗАЦИЙ</p>
+                <div class="btn-group">
+                        <button class="btn btn-success" onclick="@(() => SetEditingJournalSettings(true))" disabled="@_editingJournalSettings">Изменить</button>
+                        <button class="btn btn-warning" onclick="@(async () => await UpdateJournalSettings())" disabled="@(!_editingJournalSettings)">Сохранить</button>
+                </div>
+                <div class="stats-container">
+                    <StatKPI Title="Критичный приоритет" @bind-Value="@(_journalSettings.UrgentPriority)" Enabled="_editingJournalSettings"></StatKPI>
+                    <StatKPI Title="Высокий приоритет" @bind-Value="@(_journalSettings.HighPriority)" Enabled="_editingJournalSettings"></StatKPI>
+                    <StatKPI Title="Низкий приоритет" @bind-Value="@(_journalSettings.LowPriority)" Enabled="_editingJournalSettings"></StatKPI>
+                </div>
             </div>
-        </div>
+        }
         <div class="bg">
             <p class="title">МОНИТОРИНГ</p>
             <div class="stats-container">
@@ -50,55 +63,17 @@
                 <div class="d-flex justify-content-between">
                     <StatKPI Title="В час" Value="29"></StatKPI>
                     <StatKPI Title="Сутки"></StatKPI>
-                </div>                
+                </div>
                 <StatKPI Title="Просроченные активные"></StatKPI>
                 <StatKPI Title="Просроченные имитационные"></StatKPI>
                 <StatKPI Title="Просроченные подавленные"></StatKPI>
             </div>
-        </div>        
+        </div>
         <div class="bg">
             <p class="title">ТАБЛИЦА ПЕРЕМЕННЫХ</p>
             <div class="stats-container">
                 <StatKPI Title="Заполненность оценки рисков, %" Value="50"></StatKPI>
             </div>
-        </div>        
+        </div>
     </div>    
 </div>
-
-@code {
-    [Parameter] public int Value { get; set; } = 256;
-
-    [Parameter]
-    public string? ArmName { get; set; } = "УПНГ";
-    
-    [Inject]
-    private IFieldService? FieldService { get; set; }   
-
-    private FieldDto[]? _fields;
-   
-
-    private IDictionary<string, string>? ArmLinksDictionary { get; set; }
-   
-
-    private async Task GetFields()
-    {
-        if (FieldService != null)
-        {
-            var result = await FieldService.GetList();
-
-            if (result.Success)
-            {
-                _fields = result.Payload.ToArray();
-            }
-        }
-    }
-    
-    private void FillArmLinks()
-    {
-        if (_fields != null && _fields.Any())
-        {
-            ArmLinksDictionary = _fields.ToDictionary(field => field.Name, field => $"/?fieldId={field.Id}");
-        }
-    }
-
-}
