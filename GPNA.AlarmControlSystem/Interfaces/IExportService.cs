@@ -4,6 +4,6 @@ namespace GPNA.AlarmControlSystem.Interfaces;
 
 public interface IExportService
 {
-    Task<byte[]> ExportIncomingAlarms(ExportIncomingAlarmsByDatesQuery query);
-    Task<byte[]> ExportActiveAlarmsReport(ExportIncomingAlarmsByDatesQuery query);
+    Task<byte[]> ExportIncomingAlarms(ExportAlarmsCollectionQuery query);
+    Task<byte[]> ExportActiveAlarmsReport(ExportAlarmsCollectionQuery query);
 }

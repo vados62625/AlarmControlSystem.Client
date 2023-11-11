@@ -1,6 +1,7 @@
 ﻿@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 @using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
 @using GPNA.AlarmControlSystem.Models
+@using GPNA.AlarmControlSystem.Models.Enums
 @using Microsoft.VisualBasic
 @inject IJSRuntime JSRuntime
 
@@ -41,7 +42,7 @@
                 var data = alarmsDataset.Value.Select(c => new PointChart
                 {
                     x = $"{c.Key:M} {c.Key:t}",
-                    y = c.Value.Length
+                    y = c.Value.Count(alarm => alarm.Priority is PriorityType.High or PriorityType.Low or PriorityType.Urgent)
                 }).ToArray();
 
                 var color = COLORS[i];

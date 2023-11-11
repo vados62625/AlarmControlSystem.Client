@@ -15,12 +15,12 @@ public class ExportService : IExportService
         _apiBroker = apiBroker;
     }
 
-    public async Task<byte[]> ExportIncomingAlarms(ExportIncomingAlarmsByDatesQuery query)
+    public async Task<byte[]> ExportIncomingAlarms(ExportAlarmsCollectionQuery query)
     {
         return await _apiBroker.GetFile($"{URL}/ExportIncomingAlarms", query);
     }
     
-    public async Task<byte[]> ExportActiveAlarmsReport(ExportIncomingAlarmsByDatesQuery query)
+    public async Task<byte[]> ExportActiveAlarmsReport(ExportAlarmsCollectionQuery query)
     {
         return await _apiBroker.GetFile($"{URL}/ExportActiveAlarmsReport", query);
     }

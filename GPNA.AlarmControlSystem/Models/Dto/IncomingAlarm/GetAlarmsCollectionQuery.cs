@@ -2,7 +2,7 @@
 
 namespace GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
 {
-    public class GetIncomingAlarmsByDatesQuery
+    public class GetAlarmsCollectionQuery
     {
         /// <summary>
         /// Id рабочей станции
