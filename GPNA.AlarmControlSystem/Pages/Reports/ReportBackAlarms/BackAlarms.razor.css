@@ -1,0 +1,49 @@
+﻿.back-alarm-table-container {
+    border: 1px solid #D9DEE0;
+    border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    overflow: auto;
+}
+
+.back-alarm-table {    
+    border-collapse: collapse;
+    width: 100%;
+}
+
+    .back-alarm-table tr {
+        height: 84px;
+    }
+
+        .back-alarm-table tr th {
+            min-width: 207px;
+        }
+
+    .back-alarm-table thead tr th {
+        font-weight: 700;
+        font-size: 20px;
+        color: #99A6AD;
+        text-align: center;
+        border-bottom: 0.5px solid #E5E9EB;
+    }
+
+    .back-alarm-table thead tr th:not(:last-child) {
+        border-right: 0.5px solid #E5E9EB;
+    }
+    
+    .back-alarm-table tbody tr td:first-child {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 120%;
+        color: #99A6AD;
+        width: 207px;
+        padding-left: 20px;
+    }   
+   
+    .back-alarm-table tbody tr:not(:last-child) {
+        border-bottom: 0.5px solid #E5E9EB;
+    }
+    .back-alarm-table tbody tr td:not(:last-child) {
+        border-right: 0.5px solid #E5E9EB;
+    }
+

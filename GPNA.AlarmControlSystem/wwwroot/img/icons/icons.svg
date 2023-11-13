@@ -98,12 +98,10 @@
 			<path d="M15.2528 10.3176L10.0586 5.5" stroke="#006FBA" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
 		</symbol>
 
-
-
-
-
-
-
-
+		<symbol id="back-alarm-table-stat-arrow" viewBox="0 0 8 10" fill="none">
+			<path d="M4.16675 9L4.16675 1M4.16675 1L1.16675 4M4.16675 1L7.16675 4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+		</symbol>
+		
+		
 	</defs>
 </svg>
