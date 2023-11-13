@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 IConfiguration configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", optional: false, true)
-    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, true)
+    //.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, true)
     .Build();
 
 double timeOut = 1000;

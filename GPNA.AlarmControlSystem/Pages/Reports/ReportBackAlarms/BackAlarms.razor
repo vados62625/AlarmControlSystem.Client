@@ -5,63 +5,10 @@
 <div class="page-main">
     <div class="page-header justify-content-center">        
         <div class="d-flex align-items-center">
-            <p>ОТЧЕТ О КОЛИЧЕСТВЕ ПРОСРОЧЕННЫХ СИГНАЛИЗАЦИЙ МЕРЕТОЯХА <b>НА @DateTime.ToString("dd MMMM") @(_fields?.FirstOrDefault(f => f.Id == FieldId)?.Name ?? "N/A")</b></p>
+            <p>ОТЧЕТ О КОЛИЧЕСТВЕ ПРОСРОЧЕННЫХ СИГНАЛИЗАЦИЙ МЕРЕТОЯХА <b>@(_fields?.FirstOrDefault(f => f.Id == FieldId)?.Name ?? "N/A")</b></p>
             <SelectObject Object="dto" LinksDictionary="ArmLinksDictionary"/>
+            <p class="ms-2"><b>НА @DateTime.ToString("dd MMMM")</b></p>
         </div>        
     </div>
-    <div class="back-alarm-table-container">
-        <table class="back-alarm-table">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>УПНГ</th>
-                    <th>Энергоцентр</th>
-                    <th>ПСП</th>
-                    <th>ННП+ГВТ+УП</th>
-                    <th>УПНГ(БМУПН)</th>
-                    <th>ЦДНГ</th>
-                    <th>УКПГ</th>
-                    <th>АГРС</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Просроченные<br /> активные<br /> сигнализации</td>
-                    <td>
-                        <StatComponent></StatComponent>
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Просроченные<br /> имитационные<br /> параметры</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Просроченные<br /> подавленные<br /> сигнализации</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    
+    <TableBackAlarms></TableBackAlarms> 
 </div>
