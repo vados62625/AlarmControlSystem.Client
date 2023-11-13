@@ -21,9 +21,4 @@ public class AlarmJournalSettingsService : CrudBase<AlarmJournalSettingsDto>
     {
         return _apiBroker.Get<AlarmJournalSettingsDto>(URL, new { WorkStationId = workStationId });
     }
-    
-    public Task<Result<AlarmJournalSettingsDto>> UpdateSettings(AlarmJournalSettingsDto settingsDto)
-    {
-        return _apiBroker.Patch<AlarmJournalSettingsDto>(URL, settingsDto);
-    }
 }

@@ -77,7 +77,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
                 foreach (var workStation in _workstations)
                 {
                     var incomingAlarmsResult = await IncomingAlarmService.GetCountInHour(
-                        new GetAlarmsCollectionQuery
+                        new GetIncomingAlarmsByDatesQuery
                         {
                             WorkStationId = workStation.Id,
                             ActivationFrom = From,
@@ -149,7 +149,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
 
         private async Task<Stream?> GetFileStream()
         {
-            var result = await ExportService.ExportActiveAlarmsReport(new ExportAlarmsCollectionQuery
+            var result = await ExportService.ExportActiveAlarmsReport(new ExportIncomingAlarmsByDatesQuery
             {
                 DocumentType = ExportDocumentType.Excel,
                 WorkStationId = ArmId ?? 0,

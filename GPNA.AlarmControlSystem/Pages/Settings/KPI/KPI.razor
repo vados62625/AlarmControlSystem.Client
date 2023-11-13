@@ -13,25 +13,27 @@
 
 <div class="page-main">
     <div class="page-header justify-content-center">
-       <div class="d-flex align-items-center">
-           <p>НАСТРОЙКИ KPI 
-               
-               <b>@FieldName</b> М/Р 
-            <SelectObject LinksDictionary="FieldLinksDictionary" />
-               
-               ЦЕХА <b>@ArmName</b></p>
-            <SelectObject LinksDictionary="ArmLinksDictionary" />
-        </div>        
+        <div class="d-flex align-items-center">
+            <p>
+                НАСТРОЙКИ KPI
+
+                <b>@FieldName</b> М/Р
+                <SelectObject LinksDictionary="FieldLinksDictionary"/>
+
+                ЦЕХА <b>@ArmName</b>
+            </p>
+            <SelectObject LinksDictionary="ArmLinksDictionary"/>
+        </div>
     </div>
-    
+
     <div class="settings-container">
         @if (_journalSettings != default)
         {
             <div class="bg">
                 <p class="title">ЖУРНАЛ СИГНАЛИЗАЦИЙ</p>
                 <div class="btn-group">
-                        <button class="btn btn-success" onclick="@(() => SetEditingJournalSettings(true))" disabled="@_editingJournalSettings">Изменить</button>
-                        <button class="btn btn-warning" onclick="@(async () => await UpdateJournalSettings())" disabled="@(!_editingJournalSettings)">Сохранить</button>
+                    <button class="btn btn-success" onclick="@(() => SetEditingJournalSettings(true))" disabled="@_editingJournalSettings">Изменить</button>
+                    <button class="btn btn-warning" onclick="@(async () => await UpdateJournalSettings())" disabled="@(!_editingJournalSettings)">Сохранить</button>
                 </div>
                 <div class="stats-container">
                     <StatKPI Title="Критичный приоритет" @bind-Value="@(_journalSettings.UrgentPriority)" Enabled="_editingJournalSettings"></StatKPI>
@@ -41,39 +43,67 @@
             </div>
         }
         <div class="bg">
-            <p class="title">МОНИТОРИНГ</p>
-            <div class="stats-container">
-                <StatKPI Title="Входящие сигнализаци. Количество повторений" Value="29"></StatKPI>
-                <StatKPI Title="Активные сигнализации. Длительность,ч"></StatKPI>
-                <StatKPI Title="Имитационные параметры. Длительность,ч"></StatKPI>
-                <StatKPI Title="Подавленные сигнализации. Длительность,ч"></StatKPI>
-            </div>
-        </div>
-        <div class="bg">
-            <p class="title">ЗАДАЧИ</p>
-            <div class="stats-container">
-                <StatKPI Title="Время ответа на задачу, сутки" Value="29"></StatKPI>
-                <StatKPI Title="Просроченные"></StatKPI>
-                <StatKPI Title="Выполненные вовремя"></StatKPI>
-            </div>
-        </div>
-        <div class="bg">
-            <p class="title">ОТЧЕТЫ</p>
-            <div class="stats-container">
-                <div class="d-flex justify-content-between">
-                    <StatKPI Title="В час" Value="29"></StatKPI>
-                    <StatKPI Title="Сутки"></StatKPI>
+            @if (_monitoringSettings != default)
+            {
+                <p class="title">МОНИТОРИНГ</p>
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="@(() => SetEditingMonitoringSettings(true))" disabled="@_editingMonitoringSettings">Изменить</button>
+                    <button class="btn btn-warning" onclick="@(async () => await UpdateMonitoringSettings())" disabled="@(!_editingMonitoringSettings)">Сохранить</button>
                 </div>
-                <StatKPI Title="Просроченные активные"></StatKPI>
-                <StatKPI Title="Просроченные имитационные"></StatKPI>
-                <StatKPI Title="Просроченные подавленные"></StatKPI>
-            </div>
+                <div class="stats-container">
+                    <StatKPI Title="Входящие сигнализаци. Количество повторений" bind-Value="_monitoringSettings.RepeatCount" Enabled="_editingMonitoringSettings"></StatKPI>
+                    <StatKPI Title="Активные сигнализации. Длительность,ч" bind-Value="_monitoringSettings.ActiveAlarms" Enabled="_editingMonitoringSettings"></StatKPI>
+                    <StatKPI Title="Имитационные параметры. Длительность,ч" bind-Value="_monitoringSettings.ImitationParams" Enabled="_editingMonitoringSettings"></StatKPI>
+                    <StatKPI Title="Подавленные сигнализации. Длительность,ч" bind-Value="_monitoringSettings.SuppressedAlarms" Enabled="_editingMonitoringSettings"></StatKPI>
+                </div>
+            }
         </div>
         <div class="bg">
-            <p class="title">ТАБЛИЦА ПЕРЕМЕННЫХ</p>
-            <div class="stats-container">
-                <StatKPI Title="Заполненность оценки рисков, %" Value="50"></StatKPI>
-            </div>
+            @if (_taskSettings != default)
+            {
+                <p class="title">ЗАДАЧИ</p>
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="@(() => SetEditingTaskSettings(true))" disabled="@_editingTaskSettings">Изменить</button>
+                    <button class="btn btn-warning" onclick="@(async () => await UpdateTaskSettings())" disabled="@(!_editingTaskSettings)">Сохранить</button>
+                </div>
+                <div class="stats-container">
+                    <StatKPI Title="Время ответа на задачу, сутки" bind-Value="_taskSettings.ResponseDays" Enabled="_editingTaskSettings"></StatKPI>
+                    <StatKPI Title="Просроченные" bind-Value="_taskSettings.Overdue" Enabled="_editingTaskSettings"></StatKPI>
+                    <StatKPI Title="Выполненные вовремя" bind-Value="_taskSettings.CompletedOnTime" Enabled="_editingTaskSettings"></StatKPI>
+                </div>
+            }
         </div>
-    </div>    
+        <div class="bg">
+            @if (_reportSettings != default)
+            {
+                <p class="title">ОТЧЕТЫ</p>
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="@(() => SetEditingReportSettings(true))" disabled="@_editingReportSettings">Изменить</button>
+                    <button class="btn btn-warning" onclick="@(async () => await UpdateReportSettings())" disabled="@(!_editingReportSettings)">Сохранить</button>
+                </div>
+                <div class="stats-container">
+                    <div class="d-flex justify-content-between">
+                        <StatKPI Title="В час" bind-Value="_reportSettings.InHour" Enabled="_editingReportSettings"></StatKPI>
+                        <StatKPI Title="Сутки" bind-Value="_reportSettings.Days" Enabled="_editingReportSettings"></StatKPI>
+                    </div>
+                    <StatKPI Title="Просроченные активные" bind-Value="_reportSettings.ActiveOverdue" Enabled="_editingReportSettings"></StatKPI>
+                    <StatKPI Title="Просроченные имитационные" bind-Value="_reportSettings.ImitationOverdue" Enabled="_editingReportSettings"></StatKPI>
+                    <StatKPI Title="Просроченные подавленные" bind-Value="_reportSettings.SuppressedOverdue" Enabled="_editingReportSettings"></StatKPI>
+                </div>
+            }
+        </div>
+        <div class="bg">
+            @if (_tagTableSettings != default)
+            {
+                <p class="title">ТАБЛИЦА ПЕРЕМЕННЫХ</p>
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="@(() => SetEditingTagTableSettings(true))" disabled="@_editingTagTableSettings">Изменить</button>
+                    <button class="btn btn-warning" onclick="@(async () => await UpdateTagTableSettings())" disabled="@(!_editingTagTableSettings)">Сохранить</button>
+                </div>
+                <div class="stats-container">
+                    <StatKPI Title="Заполненность оценки рисков, %" bind-Value="_tagTableSettings.RiskAssessment" Enabled="_editingTagTableSettings"></StatKPI>
+                </div>
+            }
+        </div>
+    </div>
 </div>

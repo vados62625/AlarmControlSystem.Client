@@ -102,7 +102,7 @@
     protected override async Task OnInitializedAsync()
     {
     //Получить список всех аварий Входящих/Активных/Подавленных за промежуток From - To        
-        var incomingAlarms = await IncomingAlarmService.GetCountIncomingAlarmsByDates(new GetAlarmsCollectionQuery() { WorkStationId = 1, ActivationFrom = From, ActivationTo = To });
+        var incomingAlarms = await IncomingAlarmService.GetCountIncomingAlarmsByDates(new GetIncomingAlarmsByDatesQuery() { WorkStationId = 1, ActivationFrom = From, ActivationTo = To });
         if (!incomingAlarms.Success) return;
         var i = 0;
         foreach (var alarm in incomingAlarms.Payload)

@@ -164,7 +164,7 @@ public partial class Monitoring : ComponentBase
     {
         if (IncomingAlarmService != null)
         {
-            var request = await IncomingAlarmService.GetAlarmsPerDate(new GetAlarmsCollectionQuery
+            var request = await IncomingAlarmService.GetAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
             {
                 WorkStationId = ArmId ?? 0,
                 TagName = TagNameFilter,
@@ -199,7 +199,7 @@ public partial class Monitoring : ComponentBase
 
     private async Task<Stream?> GetFileStream()
     {
-        var result = await ExportService.ExportIncomingAlarms(new ExportAlarmsCollectionQuery
+        var result = await ExportService.ExportIncomingAlarms(new ExportIncomingAlarmsByDatesQuery
         {
             DocumentType = ExportDocumentType.Excel,
             WorkStationId = ArmId ?? 0,

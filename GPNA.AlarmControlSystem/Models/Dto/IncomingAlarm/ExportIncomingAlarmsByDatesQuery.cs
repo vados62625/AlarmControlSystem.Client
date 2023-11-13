@@ -2,7 +2,7 @@
 
 namespace GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
 {
-    public class ExportAlarmsCollectionQuery : GetAlarmsCollectionQuery
+    public class ExportIncomingAlarmsByDatesQuery : GetIncomingAlarmsByDatesQuery
     {
         public ExportDocumentType DocumentType { get; set; }
     }
