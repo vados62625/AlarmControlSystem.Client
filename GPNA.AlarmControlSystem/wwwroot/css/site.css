@@ -408,9 +408,9 @@ p {
     gap: 10px;
     margin-top: 5px;
 }
-    .page-header > p {
+    .page-header > p, .page-header > div p {
         text-transform: uppercase;
-        font-weight: 400;        
+        font-weight: 400;
     }
     
 .page-title{

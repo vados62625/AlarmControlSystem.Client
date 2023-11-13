@@ -1,0 +1,41 @@
+﻿.stat-container {
+    display: flex;
+    justify-content: center;
+}
+
+    .stat-container div p {
+        font-weight: 600;
+        font-size: 20px;
+        color: #064E86;
+    }
+        .stat-container div p:last-child {
+            color: #99A6AD;
+        }
+
+    .stat-container svg {
+        width: 9px;
+        height: 10px;
+        margin-top: 5px;
+        margin-left: 8px;
+        margin-right: 2px;
+    }
+        .stat-container svg.red {
+            color: #EB5757;
+        }
+        .stat-container svg.green {
+            color: #24B72A;
+            transform: rotate(180deg);
+        }
+
+        .stat-container p {
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 20px;
+            
+        }
+            .stat-container p.red {
+                color: #EB5757;
+            }
+            .stat-container p.green {
+                color: #24B72A;
+            }

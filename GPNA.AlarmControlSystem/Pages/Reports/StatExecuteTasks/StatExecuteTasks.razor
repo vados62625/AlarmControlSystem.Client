@@ -1,0 +1,16 @@
+﻿@page "/reports/execute-tasks"
+
+@using GPNA.AlarmControlSystem.Pages.Reports.StatExecuteTasks.Components;
+
+<div class="page-main">
+    <div class="page-header justify-content-center">        
+        <div class="d-flex align-items-center">
+            <p>СТАТИСТИКА ВЫПОЛНЕНИЯ ЗАДАЧ МЕРЕТОЯХА <b>@(_fields?.FirstOrDefault(f => f.Id == FieldId)?.Name ?? "N/A")</b></p>
+            <SelectObject Object="dto" LinksDictionary="ArmLinksDictionary"/>
+            <p class="ms-2"><b>НА @DateTime.ToString("dd MMMM")</b></p>
+        </div>        
+    </div>
+    <div class="d-flex flex-wrap gap-4">        
+        <TableExecuteTasks></TableExecuteTasks>
+    </div>
+</div>
