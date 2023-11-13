@@ -12,69 +12,45 @@ using Microsoft.JSInterop;
 
 namespace GPNA.AlarmControlSystem.Pages.Monitoring;
 
-public partial class Monitoring : ComponentBase
+public partial class MonitoringIncomingPage : ComponentBase
 {
     [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
-
     [Inject] private IIncomingAlarmService? IncomingAlarmService { get; set; }
-    
-    [Inject] private IActiveAlarmService? ActiveAlarmService { get; set; }
-    
-    [Inject] private ISuppressedAlarmService? SuppressedAlarmService { get; set; }
-
     [Inject] private IFieldService? FieldService { get; set; }
-
     [Inject] private IWorkStationService? WorkStationService { get; set; }
-
     [Inject] private IExportService? ExportService { get; set; }
+    [Inject] private ISpinnerService SpinnerService { get; set; } = default!;
 
-    [Inject] private ISpinnerService? SpinnerService { get; set; }
-
-    [Parameter] public DateTime DateTime { get; set; }
-
-    [Parameter] [SupplyParameterFromQuery] public int? ArmId { get; set; }
-
+    [Parameter] [SupplyParameterFromQuery] public int? WorkstationId { get; set; }
     [Parameter] [SupplyParameterFromQuery] public int? FieldId { get; set; }
 
-    [Parameter] public string? ArmName { get; set; }
+    private string? _workstationName, _fieldName;
 
-    [Parameter] public string? FieldName { get; set; }
+    private WorkStationDto[]? _workstations;
+    private FieldDto[]? _fields;
+    
+    private DateTimeOffset _from, _to;
 
-    [Parameter]
-    public DateTimeOffset From { get; set; }
+    private int _pagesCount, _totalCount;
+    private int _currentPage = 1;
 
-    [Parameter]
-    public DateTimeOffset To { get; set; }
+    private string _tagNameFilter = string.Empty;
+    private string? _fireStatus, _gasStatus;
+    
+    private StateType? _stateFilter;
+    private PriorityType? _priorityFilter;
 
-    [Parameter]
-    public int PagesCount { get; set; }
-
-    [Parameter]
-    public int CurrentPage { get; set; } = 1;
-
-    [Parameter] public string TagNameFilter { get; set; } = string.Empty;
-
-    [Parameter]
-    public StateType? StateFilter { get; set; }
-
-    [Parameter]
-    public PriorityType? PriorityFilter { get; set; }
-
-    [Parameter]
-    public AlarmType AlarmType { get; set; } = AlarmType.Incoming;
-
-    private bool FiltersOn =>
-        !string.IsNullOrWhiteSpace(TagNameFilter) || StateFilter != default || PriorityFilter != default;
+    private bool FiltersOn => !string.IsNullOrWhiteSpace(_tagNameFilter) || _stateFilter != default || _priorityFilter != default;
 
     private AlarmsCollection<IncomingAlarmDto>? AlarmsCollection { get; set; }
 
-    private FieldDto[]? _fields;
+    private IDictionary<string, string>? _fieldLinksDictionary;
 
-    private WorkStationDto[]? _workstations;
+    private IDictionary<string, string>? _armLinksDictionary;
 
-    private IDictionary<string, string>? FieldLinksDictionary { get; set; }
+    private Dictionary<PriorityType, int>? _countByPriority;
 
-    private IDictionary<string, string>? ArmLinksDictionary { get; set; }
+    private Dictionary<StateType, int>? _countByState;
 
     private string _spinnerClass = string.Empty;
 
@@ -85,7 +61,6 @@ public partial class Monitoring : ComponentBase
     protected override void OnInitialized()
     {
         SetDates();
-        base.OnInitialized();
     }
 
     protected override async Task OnParametersSetAsync()
@@ -100,64 +75,65 @@ public partial class Monitoring : ComponentBase
         if (FieldService != null)
         {
             var fields = await FieldService.GetList();
-
             if (fields.Success)
-            {
                 _fields = fields.Payload.ToArray();
-            }
         }
 
         if (WorkStationService != null)
         {
-            var workstations = await WorkStationService.GetList(new { FieldId });
-
+            var workstations = await WorkStationService.GetList(new { FieldId = FieldId });
             if (workstations.Success)
-            {
                 _workstations = workstations.Payload.ToArray();
-            }
         }
 
         FieldId ??= _fields?.FirstOrDefault()?.Id;
-
-        FieldName = _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name;
-
-        ArmId ??= _workstations?.FirstOrDefault()?.Id;
-
-        ArmName = _workstations?.FirstOrDefault(ws => ws.Id == ArmId)?.Name;
-
+        _fieldName = _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name;
+        
+        WorkstationId ??= _workstations?.FirstOrDefault()?.Id;
+        _workstationName = _workstations?.FirstOrDefault(ws => ws.Id == WorkstationId)?.Name;
+        
+        StateHasChanged();
+        
         FillLinks();
     }
 
+    private void SetAlarmsCounts<T>(AlarmsCollection<T> alarms) where T : BufferAlarmDto
+    {
+        _totalCount = alarms.TotalCount;
+        _pagesCount = alarms.PagesCount;
+        _fireStatus = alarms.Fire ? "active" : "";
+        _gasStatus = alarms.Gas ? "active" : "";
+        _countByPriority = alarms.CountByPriority;
+        _countByState = alarms.CountByState;
+    }
+    
     private void FillLinks()
     {
         if (_fields != null)
         {
-            FieldLinksDictionary = _fields.ToDictionary(field =>
-                    field.Name,
-                field => $"/Arm/?fieldId={field.Id}");
+            _fieldLinksDictionary = _fields.ToDictionary(field => 
+                    field.Name, 
+                field => $"/monitoring/incoming/?fieldId={field.Id}");
         }
 
         if (_workstations != null)
         {
-            ArmLinksDictionary = _workstations.ToDictionary(workStation =>
-                    workStation.Name ?? Guid.NewGuid().ToString(),
-                workStation => $"/Arm/?fieldId={FieldId}&armId={workStation.Id}");
+            _armLinksDictionary = _workstations.ToDictionary(workStation => 
+                    workStation.Name ?? Guid.NewGuid().ToString(), 
+                workStation => $"/monitoring/incoming/?fieldId={FieldId}&armId={workStation.Id}");
         }
     }
 
     private async Task InitializePageAsync()
     {
-        SpinnerService?.Show();
-
-        await UpdateAlarms();
-
-        SpinnerService?.Hide();
+        await SpinnerService.Load(UpdateAlarms);
     }
 
     private void SetDates()
     {
-        To = DateTimeOffset.Now;
-        From = new DateTimeOffset(To.Year, To.Month, To.Day, 8, 0, 0, 0, To.Offset);
+        _to = DateTimeOffset.Now;
+        var hourOfDay = (_to.Hour % 8) * 8; // 0 8 16 часов. Выставление времени с Начала смены.
+        _from = new DateTimeOffset(_to.Year, _to.Month, _to.Day, hourOfDay, 0, 0, 0, _to.Offset);
     }
 
     private async Task UpdateAlarms()
@@ -166,15 +142,15 @@ public partial class Monitoring : ComponentBase
         {
             var request = await IncomingAlarmService.GetAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
             {
-                WorkStationId = ArmId ?? 0,
-                TagName = TagNameFilter,
-                ActivationFrom = From,
-                ActivationTo = To,
-                State = StateFilter,
-                Priority = PriorityFilter,
+                WorkStationId = WorkstationId ?? 0,
+                TagName = _tagNameFilter,
+                ActivationFrom = _from,
+                ActivationTo = _to,
+                State = _stateFilter,
+                Priority = _priorityFilter,
                 OrderPropertyName = _orderBy,
                 OrderByDescending = _orderByDesc,
-                Page = CurrentPage,
+                Page = _currentPage,
                 CountOnPage = 15,
                 DisplayShifts = !FiltersOn && _orderBy == nameof(IncomingAlarmDto.DateTimeActivation)
             });
@@ -182,18 +158,20 @@ public partial class Monitoring : ComponentBase
             if (request.Success)
             {
                 AlarmsCollection = request.Payload;
-                PagesCount = AlarmsCollection.PagesCount;
+                _pagesCount = AlarmsCollection.PagesCount;
             }
         }
+
+        if (AlarmsCollection != null) SetAlarmsCounts(AlarmsCollection);
     }
 
     private Task DropFilters()
     {
-        TagNameFilter = string.Empty;
-        StateFilter = null;
-        PriorityFilter = null;
-        CurrentPage = 1;
-
+        _tagNameFilter = string.Empty;
+        _stateFilter = null;
+        _priorityFilter = null;
+        _currentPage = 1;
+        
         return InitializePageAsync();
     }
 
@@ -202,12 +180,12 @@ public partial class Monitoring : ComponentBase
         var result = await ExportService.ExportIncomingAlarms(new ExportIncomingAlarmsByDatesQuery
         {
             DocumentType = ExportDocumentType.Excel,
-            WorkStationId = ArmId ?? 0,
-            TagName = TagNameFilter,
-            ActivationFrom = From,
-            ActivationTo = To,
-            State = StateFilter,
-            Priority = PriorityFilter,
+            WorkStationId = WorkstationId ?? 0,
+            TagName = _tagNameFilter,
+            ActivationFrom = _from,
+            ActivationTo = _to,
+            State = _stateFilter,
+            Priority = _priorityFilter,
         });
 
         return new MemoryStream(result);
@@ -232,25 +210,25 @@ public partial class Monitoring : ComponentBase
 
     private async Task SetStateFilter(StateType? state)
     {
-        StateFilter = state;
-        CurrentPage = 1;
-
+        _stateFilter = state;
+        _currentPage = 1;
+        
         await InitializePageAsync();
     }
 
     private async Task SetPriorityFilter(PriorityType? priority)
     {
-        PriorityFilter = priority;
-        CurrentPage = 1;
-
+        _priorityFilter = priority;
+        _currentPage = 1;
+        
         await InitializePageAsync();
     }
 
     private async Task RefreshBySpinner()
     {
         _spinnerClass = " active";
-        CurrentPage = 1;
-
+        _currentPage = 1;
+        
         await InitializePageAsync();
 
         _spinnerClass = string.Empty;
@@ -261,14 +239,14 @@ public partial class Monitoring : ComponentBase
         if (_orderBy == orderBy) _orderByDesc = !_orderByDesc;
 
         _orderBy = orderBy;
-        CurrentPage = 1;
-
+        _currentPage = 1;
+        
         await InitializePageAsync();
     }
 
     private async Task OnPageChanged(int page)
     {
-        CurrentPage = page;
+        _currentPage = page;
         await InitializePageAsync();
     }
 }

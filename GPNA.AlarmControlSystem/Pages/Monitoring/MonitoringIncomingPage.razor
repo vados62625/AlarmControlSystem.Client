@@ -1,0 +1,98 @@
+﻿@page "/monitoring/incoming"
+
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Components
+@using GPNA.AlarmControlSystem.Shared.Pagination
+@using GPNA.AlarmControlSystem.Models.Enums
+@inject IJSRuntime JS
+
+<CascadingValue Name="@nameof(_from)" Value="@_from">
+    <CascadingValue Name="@nameof(_to)" Value="@_to">
+        <CascadingValue Name="@nameof(_stateFilter)" Value="@_stateFilter">
+            <CascadingValue Name="@nameof(_priorityFilter)" Value="@_priorityFilter">
+
+                <div class="page-main">
+                    <div class="page-header">
+                        <div class="d-flex date-period-select">
+                            <div>
+                                <input type="datetime-local" @bind="_from" @bind:event="oninput">
+                                <svg>
+                                    <use href="/img/icons/icons.svg#calendar"></use>
+                                </svg>
+                            </div>
+                            <div>
+                                <input type="datetime-local" @bind="_to" @bind:event="oninput">
+                                <svg>
+                                    <use href="/img/icons/icons.svg#calendar"></use>
+                                </svg>
+                            </div>
+                            <button class="btn p-0 ms-2 d-flex shadow-none@(_spinnerClass)" id="button-refresh" @onclick="async () => await RefreshBySpinner()">
+                                <svg class="w-100 h-100">
+                                    <use href="/img/icons/icons.svg#refresh"></use>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="d-flex">
+                            <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ ЗА ПЕРИОД С DP @(Options?.Value.BranchName ?? "N/A") <b>@_fieldName</b></p>
+                            <SelectObject Object="dto" LinksDictionary="_fieldLinksDictionary"/>
+                            <p style="margin-left:15px;">
+                                <b>@_workstationName</b>
+                            </p>
+                            <SelectObject LinksDictionary="_armLinksDictionary"/>
+                        </div>
+                        <div class="d-flex gap-2">
+                            @if (FiltersOn)
+                            {
+                                <TitleBarButton Title="Фильтрация" FunctionButton="filtration" Action="DropFilters"/>
+                            }
+                            <TitleBarButton Title="Экспорт" FunctionButton="export" Action="DownloadFileFromStream"/>
+                        </div>
+
+                    </div>
+                    <div class="d-flex justify-content-between overflow-auto">
+                        <div class="priority-alarm-container">
+                            <PriorityAlarm Title="Всего" Value="_totalCount" Priority="total"/>
+                            <PriorityAlarm Title="Критичный" Value="_countByPriority?[PriorityType.Urgent]" Priority="critical"/>
+                            <PriorityAlarm Title="Высокий" Value="_countByPriority?[PriorityType.High]" Priority="high"/>
+                            <PriorityAlarm Title="Низкий" Value="_countByPriority?[PriorityType.Low]" Priority="low"/>
+                            <PriorityAlarm Title="Без приоритета" Value="_countByPriority?[PriorityType.None]" Priority="none-priority"/>
+                            <div class="ps-5">
+                                <PriorityAlarm Title="Инфо" Value="_countByPriority?[PriorityType.Information]" StatusActive="opacity-50" Priority="info"/>
+                            </div>
+                        </div>
+                        <div class="priority-alarm-container">
+                            <PriorityAlarm Title="Пожар" StatusActive="@_fireStatus" Status="fire"/>
+                            <PriorityAlarm Title="Загазованность" StatusActive="@_gasStatus" Status="gas"/>
+                            <PriorityAlarm Title="HH" Value="_countByState?[StateType.HH]" Status="hh"/>
+                            <PriorityAlarm Title="H" Value="_countByState?[StateType.H]" Status="h"/>
+                            <PriorityAlarm Title="LL" Value="_countByState?[StateType.LL]" Status="ll"/>
+                            <PriorityAlarm Title="L" Value="_countByState?[StateType.L]" Status="l"/>
+                            <PriorityAlarm Title="DISCR" Value="_countByState?[StateType.Discr]" Status="discr"/>
+                            <PriorityAlarm Title="RSHI" Value="_countByState?[StateType.RSHI]" Status="rshi"/>
+                            <PriorityAlarm Title="RSLO" Value="_countByState?[StateType.RSLO]" Status="rslo"/>
+                            <PriorityAlarm Title="NoneState" Value="_countByState?[StateType.none]" Status="none-state"/>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center tagname-filter position-relative mx-5">
+                        <input placeholder="Поиск по Tag" type="text" name="tagname" @bind="_tagNameFilter" @bind:event="oninput" @onchange="async () => await InitializePageAsync()">
+                    </div>
+                    <div style="border-radius: 6px;">
+                        <div class="d-flex">
+                            <CascadingValue Name="@nameof(WorkstationId)" Value="@WorkstationId">
+                                <CascadingValue Name="@nameof(FieldId)" Value="@FieldId">
+                                    <ItemTabs Title="Входящие" IsActive="true"/>
+                                    <ItemTabs Title="Активные"/>
+                                    <ItemTabs Title="Имитация параметров"/>
+                                    <ItemTabs Title="Подавленные"/>
+                                </CascadingValue>
+                            </CascadingValue>
+                        </div>
+                        <MonitoringTable Alarms="AlarmsCollection?.Items" OnStateFilterChanged="SetStateFilter" OnPriorityFilterChanged="SetPriorityFilter" OnOrderingChanged="OnOrderingChanged"></MonitoringTable>
+                        <Pagination CurrentPage="_currentPage" PagesCount="_pagesCount" OnPageClick="OnPageChanged"></Pagination>
+                    </div>
+                </div>
+
+            </CascadingValue>
+            </CascadingValue>
+        </CascadingValue>
+    </CascadingValue>
+</CascadingValue>

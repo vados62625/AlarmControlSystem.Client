@@ -460,6 +460,40 @@ p {
         outline: none;
     }
 
+.tagname-filter input {
+    position: relative;
+    height: 24px;
+    min-width: 225px;
+    border: 1px solid rgba(0, 66, 105, 0.28);
+    border-radius: 4px;
+    padding: 0 25px 0 5px;
+    font-size: 12px;
+}
+
+.tagname-filter:after{
+    content: "";
+    position: relative;
+    right: 20px;
+    top: 40%;
+    bottom: 0;
+    width: 13px;
+    background: url("/img/icons/icon-search.svg") center / contain no-repeat;
+    height: 13px;
+}
+
+@-moz-keyframes spin {
+    100% { -moz-transform: rotate(-360deg); }
+}
+@-webkit-keyframes spin {
+    100% { -webkit-transform: rotate(-360deg); }
+}
+@keyframes spin {
+    100% {
+        -webkit-transform: rotate(-360deg);
+        transform:rotate(-360deg);
+    }
+}
+
 ::-webkit-calendar-picker-indicator {
     /*filter: invert(1);*/
     z-index: 2;
