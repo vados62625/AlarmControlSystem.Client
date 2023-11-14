@@ -10,6 +10,14 @@ public class AlarmsCollection<TItem> where TItem : BufferAlarmDto
     public int PagesCount { get; set; }
 
     public int TotalCount { get; set; }
+    
+    public int IncomingAlarmsCount { get; set; }
+    
+    public int ActiveAlarmsCount { get; set; }
+    
+    public int ImitationParamsCount { get; set; }
+    
+    public int SuppressedAlarmsCount { get; set; }
 
     public bool Fire { get; set; }
 
