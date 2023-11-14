@@ -33,8 +33,8 @@
                             </button>
                         </div>
                         <div class="d-flex">
-                            <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ ЗА ПЕРИОД С DP @(Options?.Value.BranchName ?? "N/A") <b>@_fieldName</b></p>
-                            <SelectObject Object="dto" LinksDictionary="_fieldLinksDictionary"/>
+                            <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ ЗА ПЕРИОД С DP @(Options?.Value.BranchName ?? "N/A") <b>@FieldName М/Р</b></p>
+                            <SelectObject Object="dto" LinksDictionary="FieldLinksDictionary"/>
                             <p style="margin-left:15px;">
                                 <b>@_workstationName</b>
                             </p>
@@ -60,17 +60,8 @@
                                 <PriorityAlarm Title="Инфо" Value="_countByPriority?[PriorityType.Information]" StatusActive="opacity-50" Priority="info"/>
                             </div>
                         </div>
-                        <div class="priority-alarm-container">
-                            <PriorityAlarm Title="Пожар" StatusActive="@_fireStatus" Status="fire"/>
-                            <PriorityAlarm Title="Загазованность" StatusActive="@_gasStatus" Status="gas"/>
-                            <PriorityAlarm Title="HH" Value="_countByState?[StateType.HH]" Status="hh"/>
-                            <PriorityAlarm Title="H" Value="_countByState?[StateType.H]" Status="h"/>
-                            <PriorityAlarm Title="LL" Value="_countByState?[StateType.LL]" Status="ll"/>
-                            <PriorityAlarm Title="L" Value="_countByState?[StateType.L]" Status="l"/>
-                            <PriorityAlarm Title="DISCR" Value="_countByState?[StateType.Discr]" Status="discr"/>
-                            <PriorityAlarm Title="RSHI" Value="_countByState?[StateType.RSHI]" Status="rshi"/>
-                            <PriorityAlarm Title="RSLO" Value="_countByState?[StateType.RSLO]" Status="rslo"/>
-                            <PriorityAlarm Title="NoneState" Value="_countByState?[StateType.none]" Status="none-state"/>
+                        <div class="d-flex align-items-center tagname-filter position-relative mx-5">
+                            <input placeholder="Поиск по Tag" type="text" name="tagname" @bind="TagNameFilter" @bind:event="oninput" @onchange="async () => await InitializePageAsync()">
                         </div>
                     </div>
                     <div class="d-flex align-items-center tagname-filter position-relative mx-5">
