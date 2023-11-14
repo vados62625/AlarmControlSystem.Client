@@ -1,12 +1,13 @@
 ﻿<div class="d-flex flex-column">
     <p class="stat-title">@Title</p>
-    <div class="stat-bg-value">
-        <input name="@InputName" type="text" class="stat-value" @bind="@Value" disabled="@(!Enabled)"/>
-    </div>
+    <input name="@InputName" type="text" class="stat-value stat-bg-value" @bind="@Value" disabled="@(!Enabled)"/>
 </div>
 
 @code {
-    [Parameter] public string? Title { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
     private int _value;
 
     [Parameter]
@@ -15,14 +16,19 @@
         get => _value;
         set
         {
-            if (_value == value ) return;
+            if (_value == value) return;
             _value = value;
             ValueChanged.InvokeAsync(value);
         }
     }
 
     [Parameter]
-    public EventCallback<int> ValueChanged { get; set; } 
-    [Parameter] public string? InputName { get; set; }
-    [Parameter] public bool Enabled { get; set; }
+    public EventCallback<int> ValueChanged { get; set; }
+
+    [Parameter]
+    public string? InputName { get; set; }
+
+    [Parameter]
+    public bool Enabled { get; set; } = true;
+
 }
