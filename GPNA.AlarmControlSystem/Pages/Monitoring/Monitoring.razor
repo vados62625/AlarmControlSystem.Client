@@ -32,7 +32,7 @@
                             </button>
                         </div>
                         <div class="d-flex">
-                            <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ ЗА ПЕРИОД С DP @(Options?.Value.BranchName ?? "N/A") <b>@FieldName</b></p>
+                            <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ ЗА ПЕРИОД С DP @(Options?.Value.BranchName ?? "N/A") <b>@FieldName М/Р</b></p>
                             <SelectObject Object="dto" LinksDictionary="FieldLinksDictionary"/>
                             <p style="margin-left:15px;">
                                 <b>@ArmName</b>
@@ -60,7 +60,7 @@
                             </div>
                         </div>
                         <div class="d-flex align-items-center tagname-filter position-relative mx-5">
-                            <input placeholder="Поиск по Tag" type="text" name="tagname" @bind="TagNameFilter" @bind:event="oninput" @onchange="async () => await InitializePageAsync()">
+                            <input placeholder="Поиск по Tag" type="text" name="tagname" @bind="TagNameFilter" @bind:event="oninput" @onchange="async () => await Search()">
                         </div>
                         <div class="priority-alarm-container">
                             <PriorityAlarm Title="Пожар" StatusActive="@(AlarmsCollection?.Fire ?? false ? "active" : "")" Status="fire"/>

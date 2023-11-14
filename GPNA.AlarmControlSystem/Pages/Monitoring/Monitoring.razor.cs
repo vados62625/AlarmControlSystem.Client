@@ -176,7 +176,7 @@ public partial class Monitoring : ComponentBase
                 OrderByDescending = _orderByDesc,
                 Page = CurrentPage,
                 CountOnPage = 15,
-                DisplayShifts = !FiltersOn && _orderBy == nameof(IncomingAlarmDto.DateTimeActivation)
+                DisplayShifts = !FiltersOn && (_orderBy == nameof(IncomingAlarmDto.DateTimeActivation) || _orderBy == string.Empty)
             });
 
             if (request.Success)
@@ -269,6 +269,12 @@ public partial class Monitoring : ComponentBase
     private async Task OnPageChanged(int page)
     {
         CurrentPage = page;
+        await InitializePageAsync();
+    }
+    
+    private async Task Search()
+    {
+        CurrentPage = 1;
         await InitializePageAsync();
     }
 }
