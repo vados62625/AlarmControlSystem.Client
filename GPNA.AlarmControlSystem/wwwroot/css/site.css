@@ -45,7 +45,7 @@
     --text-purple: #BA8FDB;
     --text-grey: rgba(0, 32, 51, 0.7);
     --text-light-grey: rgba(0, 32, 51, 0.5);
-    --text-calendar-light-grey: rgba(0, 32, 51, 0.35);
+    --text-calendar-light-grey: rgba(0, 32, 51, 0.92);
     --text-lighter-grey: rgba(0, 32, 51, 0.2);
     --text-blue-status: #0078D2;
     --text-grey-status: #ABC2CF;
@@ -423,6 +423,8 @@ p {
 .date-period-select input {
     /*border: 1px solid var(--border-calendar-light-grey);
     height: 24px;*/
+    opacity: 75%;
+    z-index: 2;
     display: flex;
     position: relative;
 }
