@@ -1,0 +1,54 @@
+﻿<table class="tasks-table">
+    <thead>
+        <tr>
+            <th>УПНГ</th>
+            <th>Всего</th>
+            <th>Выполнено</th>
+            <th>Ожидают ответа</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Технолог (Промысел)</td>
+            <td><p>@ValueTotal</p></td>
+            <td>
+                <div class="d-flex gap-1">
+                    <p>@ValueComleted</p>
+                    <p>(@ValueComletedPct %)</p>
+                </div>
+            </td>
+            <td>
+                <div class="d-flex gap-1">
+                    <p>@ValueWaitAns</p>
+                    <p>(@ValueWaitAnsPct %)</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Технолог (Офис)</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Инженер АСУ ТП (Промысел)</td>
+        </tr>
+        <tr>
+            <td>Инженер АСУ ТП (Офис)</td>
+        </tr>
+        <tr>
+            <td>Начальник смены</td>
+        </tr>
+        <tr>
+            <td>Начальник цеха</td>
+        </tr>
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public int ValueTotal { get; set; }
+    [Parameter] public int ValueComleted { get; set; }
+    [Parameter] public int ValueComletedPct { get; set; }
+    [Parameter] public int ValueWaitAns { get; set; }
+    [Parameter] public int ValueWaitAnsPct { get; set; }
+}
