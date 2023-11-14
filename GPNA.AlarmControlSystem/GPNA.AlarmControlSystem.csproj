@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
 	  <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>10</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,6 +36,12 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Pages\Main\Charts\DoughnutChart.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Pages\Settings\KPI\KPI.cs">
+      <DependentUpon>KPI.razor</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 
