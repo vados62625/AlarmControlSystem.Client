@@ -1,10 +1,12 @@
 ﻿@page "/tagtable"
 @using GPNA.AlarmControlSystem.Pages.TagTable.Components
+@using GPNA.AlarmControlSystem.Pages.TagTable.Components.Modals
 
 <h3>Таблица переменных</h3>
 <div class="actions">
     <input type="text" id="myInput" @onkeypress="@Enter" @bind-value="input" placeholder="Поиск по TagName">
     <button class="actions-add-tag btn-primary" @onclick="AddTag">Добавить Tag</button>
+    <button class="actions-add-tag btn-primary" @onclick="OpenAddTagModal">Добавить Tag</button>
 </div>
 
 
@@ -26,15 +28,34 @@ else
                 </tr>
             </thead>
             <tbody>
-                <Virtualize Items="AlarmsTagTable">
+                @*<Virtualize Items="AlarmsTagTable">
                     <ItemContent>
                         <TagOnTable @key="context.Id" Tag="@context" EditTag="@EditTag" DeleteTag="@DeleteTag"/>                        
                     </ItemContent>
                     <Placeholder>
                         <Loader/>
                     </Placeholder>
-                </Virtualize>
+                </Virtualize>*@
+               @*<AddTagComponent @ref="addTagModal" OnCancel="OnCancel" OnSave="OnSave"></AddTagComponent>*@
             </tbody>
         </table>
     </div>   
+}
+
+@code {
+    AddTagComponent? addTagModal;
+
+    void OpenAddTagModal()
+    {
+        addTagModal.Show();
+    }
+
+    void OnSave()
+    {
+        addTagModal.Hide();
+    }
+    void OnCancel()
+    {
+        addTagModal.Hide();
+    }
 }
