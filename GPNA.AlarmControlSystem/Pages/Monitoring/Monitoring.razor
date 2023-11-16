@@ -72,11 +72,24 @@
                             @foreach (AlarmTypeEnum alarmType in Enum.GetValues(typeof(AlarmTypeEnum)))
                             {
                                 <ItemTabs AlarmTypeEnum="alarmType"
+                                          Count="@(_tabAlarmsCount.TryGetValue(alarmType, out var tabCount) ? tabCount : 0)"
                                           WorkstationId="WorkstationId" FieldId="FieldId"
                                           IsActive="@((int)alarmType==AlarmType)"/>
                             }
                         </div>
-                        <IncomingMonitoringTable Alarms="_incomingAlarmsCollection?.Items" OnStateFilterChanged="SetStateFilter" OnPriorityFilterChanged="SetPriorityFilter" OnOrderingChanged="OnOrderingChanged"/>
+                        @switch ((AlarmTypeEnum)AlarmType)
+                        {
+                            case AlarmTypeEnum.Active:
+                            {
+                                <ActiveMonitoringTable Alarms="_activeAlarmsCollection?.Items" OnStateFilterChanged="SetStateFilter" OnPriorityFilterChanged="SetPriorityFilter" OnOrderingChanged="OnOrderingChanged"/>
+                                break;
+                            }
+                            case AlarmTypeEnum.Incoming:
+                            {
+                                <IncomingMonitoringTable Alarms="_incomingAlarmsCollection?.Items" OnStateFilterChanged="SetStateFilter" OnPriorityFilterChanged="SetPriorityFilter" OnOrderingChanged="OnOrderingChanged"/>
+                                break;
+                            }
+                        }
                         <Pagination CurrentPage="_currentPage" PagesCount="_pagesCount" OnPageClick="OnPageChanged"/>
                     </div>
                 </div>

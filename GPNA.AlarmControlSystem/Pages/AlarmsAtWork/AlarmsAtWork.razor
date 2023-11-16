@@ -153,7 +153,7 @@
 
     private bool FiltersOn => !string.IsNullOrWhiteSpace(TagNameFilter) || StateFilter != default || PriorityFilter != default;
 
-    private AlarmsCollection<IncomingAlarmDto>? AlarmsCollection { get; set; }
+    private AlarmsCollection<IncomingAlarmDto[]>? AlarmsCollection { get; set; }
 
     private FieldDto[]? _fields;
 

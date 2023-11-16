@@ -2,10 +2,10 @@
 
 namespace GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
 
-public class AlarmsCollection<TItem> where TItem : BufferAlarmDto
+public class AlarmsCollection<TItem>
 {
 
-    public TItem[][]? Items { get; set; }
+    public TItem[]? Items { get; set; }
     
     public int PagesCount { get; set; }
 

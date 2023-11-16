@@ -45,7 +45,7 @@ public partial class Monitoring : ComponentBase
 
     private bool FiltersOn => !string.IsNullOrWhiteSpace(_tagNameFilter) || _stateFilter != default || _priorityFilter != default;
 
-    private AlarmsCollection<IncomingAlarmDto>? _incomingAlarmsCollection;
+    private AlarmsCollection<IncomingAlarmDto[]>? _incomingAlarmsCollection;
     private AlarmsCollection<ActiveAlarmDto>? _activeAlarmsCollection;
 
     private IDictionary<string, string>? _fieldLinksDictionary;
@@ -61,6 +61,8 @@ public partial class Monitoring : ComponentBase
     private string _orderBy = string.Empty;
 
     private bool _orderByDesc = true;
+
+    private Dictionary<AlarmTypeEnum, int> _tabAlarmsCount = new ();
 
     protected override void OnInitialized()
     {
@@ -101,7 +103,7 @@ public partial class Monitoring : ComponentBase
         FillLinks();
     }
 
-    private void SetAlarmsCounts<T>(AlarmsCollection<T> alarms) where T : BufferAlarmDto
+    private void SetAlarmsCounts<T>(AlarmsCollection<T> alarms)
     {
         _totalCount = alarms.TotalCount;
         _pagesCount = alarms.PagesCount;
@@ -109,6 +111,12 @@ public partial class Monitoring : ComponentBase
         _gasStatus = alarms.Gas ? "active" : "";
         _countByPriority = alarms.CountByPriority;
         _countByState = alarms.CountByState;
+        
+                        
+        _tabAlarmsCount[AlarmTypeEnum.Active] = alarms.ActiveAlarmsCount;
+        _tabAlarmsCount[AlarmTypeEnum.Incoming] = alarms.IncomingAlarmsCount;
+        _tabAlarmsCount[AlarmTypeEnum.Simulation] = alarms.ImitationParamsCount;
+        _tabAlarmsCount[AlarmTypeEnum.Suppressed] = alarms.SuppressedAlarmsCount;
     }
     
     private void FillLinks()
@@ -184,29 +192,34 @@ public partial class Monitoring : ComponentBase
     
     private async Task UpdateActiveAlarms()
     {
-        // if (ActiveAlarmService != null)
-        // {
-        //     var request = await ActiveAlarmService.GetCollection(new GetActiveAlarmsListQuery
-        //     {
-        //         WorkStationId = WorkstationId ?? 0,
-        //         TagName = _tagNameFilter,
-        //         ActivationFrom = _from,
-        //         ActivationTo = _to,
-        //         State = _stateFilter,
-        //         Priority = _priorityFilter,
-        //         Page = _currentPage
-        //     });
-        //
-        //     if (request.Success)
-        //     {
-        //         _incomingAlarmsCollection = request.Payload;
-        //         _pagesCount = _incomingAlarmsCollection.PagesCount;
-        //     }
-        // }
-        //
-        // if (_incomingAlarmsCollection != null) SetAlarmsCounts(_incomingAlarmsCollection);
-    }
+        if (ActiveAlarmService != null)
+        {
+            var request = await ActiveAlarmService.GetActiveAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
+            {
+                WorkStationId = WorkstationId ?? 0,
+                TagName = _tagNameFilter,
+                ActivationFrom = _from,
+                ActivationTo = _to,
+                State = _stateFilter,
+                Priority = _priorityFilter,
+                OrderPropertyName = _orderBy,
+                OrderByDescending = _orderByDesc,
+                Page = _currentPage,
+                CountOnPage = 15,
+                DisplayShifts = false
+                // DisplayShifts = !FiltersOn && (_orderBy == nameof(IncomingAlarmDto.DateTimeActivation) || _orderBy == string.Empty)
+            });
 
+            if (request.Success)
+            {
+                _activeAlarmsCollection = request.Payload;
+                _pagesCount = _activeAlarmsCollection.PagesCount;
+            }
+        }
+        
+        if (_activeAlarmsCollection != null) SetAlarmsCounts(_activeAlarmsCollection);
+    }
+    
     private Task DropFilters()
     {
         _tagNameFilter = string.Empty;
