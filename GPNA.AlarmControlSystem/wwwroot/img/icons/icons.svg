@@ -111,6 +111,18 @@
 		<symbol id="tag-modal-close" viewBox="0 0 8 8" fill="none">
 			<path fill-rule="evenodd" clip-rule="evenodd" d="M1 0L0 1L3 4L0 7L1 8L4 5L7 8L8 7L5 4L8 1L7 0L4 3L1 0Z" fill="#33617D" fill-opacity="0.6"/>
 		</symbol>
+		<symbol id="tag-modal-add" viewBox="0 0 11 11" fill="none">
+			<path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 -1.18385e-08C5.77614 -5.30028e-09 6 0.108825 6 0.243068L6 10.7569C6 10.8912 5.77614 11 5.5 11C5.22386 11 5 10.8912 5 10.7569L5 0.243068C5 0.108825 5.22386 -1.83767e-08 5.5 -1.18385e-08Z" fill="#00C800"/>
+			<path fill-rule="evenodd" clip-rule="evenodd" d="M1.18385e-08 5.5C5.30028e-09 5.77614 0.108825 6 0.243068 6L10.7569 6C10.8912 6 11 5.77614 11 5.5C11 5.22386 10.8912 5 10.7569 5L0.243068 5C0.108825 5 1.83767e-08 5.22386 1.18385e-08 5.5Z" fill="#00C800"/>
+		</symbol>
+		<symbol id="tag-modal-send" viewBox="0 0 16 11" fill="none">
+			<path d="M14.7142 0.5H1.28585C0.851835 0.5 0.5 0.85127 0.5 1.28458V9.71542C0.5 10.1487 0.851835 10.5 1.28585 10.5H14.7142C15.1482 10.5 15.5 10.1487 15.5 9.71542V1.28458C15.5 0.85127 15.1482 0.5 14.7142 0.5Z" stroke="#006FBA" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+			<path d="M0.832031 0.678711L7.9977 7.24444L15.253 0.785387" stroke="#006FBA" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+			<path d="M0.835938 10.3176L6.0301 5.5" stroke="#006FBA" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+			<path d="M15.2528 10.3176L10.0586 5.5" stroke="#006FBA" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+		</symbol>
+
+
 
 
 

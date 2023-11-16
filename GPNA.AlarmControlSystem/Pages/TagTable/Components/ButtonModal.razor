@@ -1,0 +1,18 @@
+﻿<button @onclick="Click" class="@ButtonType">
+	<svg>
+		<use href="/img/icons/icons.svg#tag-modal-@ActionSvg"></use>
+	</svg>
+	<p>@Title</p>
+</button>
+
+@code {
+    [Parameter] public EventCallback<bool> ClickEvent { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? ActionSvg { get; set; }
+    [Parameter] public string? ButtonType { get; set; }
+
+    private async Task Click()
+    {
+        await ClickEvent.InvokeAsync(true);
+    }
+}

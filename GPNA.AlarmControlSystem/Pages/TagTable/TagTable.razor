@@ -5,8 +5,8 @@
 <h3>Таблица переменных</h3>
 <div class="actions">
     <input type="text" id="myInput" @onkeypress="@Enter" @bind-value="input" placeholder="Поиск по TagName">
-    <button class="actions-add-tag btn-primary" @onclick="AddTag">Добавить Tag</button>
-    <button class="actions-add-tag btn-primary" @onclick="OpenAddTagModal">Добавить Tag</button>
+    @*<button class="actions-add-tag btn-primary" @onclick="AddTag">Добавить Tag</button>*@
+    <button class="actions-add-tag btn-primary" @onclick="OpenCorrectorTagModal">Добавить Tag</button>
 </div>
 
 
@@ -28,34 +28,48 @@ else
                 </tr>
             </thead>
             <tbody>
-                @*<Virtualize Items="AlarmsTagTable">
+                <Virtualize Items="AlarmsTagTable">
                     <ItemContent>
-                        <TagOnTable @key="context.Id" Tag="@context" EditTag="@EditTag" DeleteTag="@DeleteTag"/>                        
+                        <TagOnTable @key="context.Id" Tag="@context" EditTag="@EditTag" DeleteTag="@DeleteTag"/>                                           
                     </ItemContent>
                     <Placeholder>
                         <Loader/>
                     </Placeholder>
-                </Virtualize>*@
-               @*<AddTagComponent @ref="addTagModal" OnCancel="OnCancel" OnSave="OnSave"></AddTagComponent>*@
+                </Virtualize>
+               <AddTagComponent @ref="AddTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></AddTagComponent>
+               <EditTagComponent @ref="EditTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></EditTagComponent>
+               <CorrectorTagComponent @ref="CorrectorTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></CorrectorTagComponent>
             </tbody>
         </table>
     </div>   
 }
 
 @code {
-    AddTagComponent? addTagModal;
+    AddTagComponent? AddTagModal;
+    EditTagComponent? EditTagModal;
+    CorrectorTagComponent? CorrectorTagModal;
 
     void OpenAddTagModal()
     {
-        addTagModal.Show();
+        AddTagModal.Show();
     }
 
-    void OnSave()
+    void OpenEditTagModal()
     {
-        addTagModal.Hide();
+        EditTagModal.Show();
     }
-    void OnCancel()
+    void OpenCorrectorTagModal()
     {
-        addTagModal.Hide();
+        CorrectorTagModal.Show();
+    }
+
+    public async Task SaveTag()
+        {
+        CorrectorTagModal.Hide();
+        }
+    
+    public async Task CloseTag()
+    {
+        CorrectorTagModal.Hide();
     }
 }

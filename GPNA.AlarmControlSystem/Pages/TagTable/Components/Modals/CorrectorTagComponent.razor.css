@@ -1,6 +1,6 @@
 ﻿.bg {
-    width: 595px;
-    height: 664px;
+    width: 1250px;
+    height: 772px;
     background: #FFFFFF;
     padding: 20px;
     border-radius: 10px;   
@@ -15,8 +15,9 @@
     font-weight: 400;
     font-size: 12px;
     color: rgba(0, 32, 51, 0.6);
-    
+    overflow-y: auto;    
 }
+
 .modal-button-close {
     position: absolute;
     top: 10px;
@@ -39,13 +40,20 @@
         color: #002033;
         padding-left: 6px;
     }
+        .item-container.red input, .item-container.red textarea {
+            border: 1px solid #E25757;
+            color: #E25757;
+        }
+        .item-container.red p {           
+            color: #E25757;
+        }
         .bg textarea {
             min-height: 40px;
             resize: none;
         }
 
         .bg .small {
-            min-width: 265px;
+            min-width: 260px;
         }
 
     .bg input:focus-visible, .bg textarea:focus-visible, .small select:focus-visible, .small select option:focus-visible {        
@@ -54,6 +62,10 @@
         .bg input::placeholder, .bg textarea::placeholder {
             color: rgba(0, 32, 51, 0.25);
         }
+
+    .item-container.red input:focus-visible, .item-container.red textarea:focus-visible {
+        outline: 1px solid #E25757;
+    }
 
 .item-container {
     display: flex;
@@ -66,7 +78,11 @@
 
 .small select {
     appearance: none;
-    min-width: 265px;
+    width: 260px;
+}
+
+.x2 {
+    width: 555px;
 }
 
 .custom-select {    
@@ -131,3 +147,47 @@
     margin-top: 30px;
 }
 
+.bg-tag-info {
+    width: 595px;
+    min-height: 244px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 0.5px solid rgba(0, 32, 51, 0.25);
+    font-weight: 400;
+    font-size: 12px;
+    color: rgba(0, 32, 51, 0.6);
+}
+
+.bg-tag-info .title {
+    margin-bottom: 7px;
+}
+
+.bg-tag-info.big {
+    width: 100%;
+    min-height: 230px;
+}
+
+    .button-adressee-add {
+        width: 103px;
+        height: 22px;
+        background: #F0F2F3;
+        border-radius: 4px;
+        border: none;        
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .button-adressee-add svg {
+        width: 11px;
+        height: 11px;        
+    }
+    .button-adressee-add p {
+        font-weight: 400;
+        font-size: 12px;
+        margin-left: 8px;
+    }

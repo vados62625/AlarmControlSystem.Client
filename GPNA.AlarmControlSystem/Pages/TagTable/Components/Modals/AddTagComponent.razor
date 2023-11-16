@@ -3,7 +3,10 @@
 	<div class="modal-backdrop show"></div>
 
 		<div class="modal bg">
-			<p class="title">ОКНО ВВОДА НОВОГО TAGA</p>
+			<div class="modal-button-close">			
+			<ButtonModal ActionSvg="close" ClickEvent="ClickCloseTag" ButtonType="close"></ButtonModal>
+			</div>
+			<p class="title">ОКНО ВВОДА НОВОГО TЕГА</p>
 			<div class="w-100 h-100 p-0 d-flex flex-column gap-2 justify-content-between">
 				<div class="d-flex justify-content-between">
 					<div class="item-container">
@@ -72,19 +75,9 @@
 					<p>Время на реакцию</p>
 					<input type="text" placeholder="Введите время на реакцию">
 				</div>
-				<div class="button-container">
-					<button @onclick="OnSave">
-						<svg>
-							<use href="/img/icons/icons.svg#tag-modal-save"></use>
-						</svg>
-						<p>Сохранить</p>
-					</button>
-					<button @onclick="OnCancel">
-						<svg>
-							<use href="/img/icons/icons.svg#tag-modal-cancel"></use>
-						</svg>
-						<p>Отменить</p>
-					</button>
+				<div class="button-container">					
+					<ButtonModal Title="Сохранить" ActionSvg="save" ClickEvent="ClickSaveTag"></ButtonModal>
+					<ButtonModal Title="Отменить" ActionSvg="cancel" ClickEvent="ClickCloseTag"></ButtonModal>					
 				</div>			
 		</div>
 	</div>		
@@ -95,9 +88,19 @@
 @code {
 	bool displayAddTagModal = false;
 
-	[Parameter] public EventCallback OnSave { get; set; }
-	[Parameter] public EventCallback OnCancel { get; set; }
+	[Parameter] public EventCallback SaveTag { get; set; }
+	[Parameter] public EventCallback CloseTag { get; set; }	
 
 	public void Show() => displayAddTagModal = true;
 	public void Hide() => displayAddTagModal = false;
+
+	private async Task ClickSaveTag()
+	{
+		displayAddTagModal = false;
+	}
+
+	private async Task ClickCloseTag()
+	{
+		displayAddTagModal = false;
+	}
 }
