@@ -3,6 +3,7 @@
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
 
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Components.Alarms
 <table class="bg-monitoring-table ">
     <thead>
     <tr>
@@ -103,7 +104,27 @@
     {
         foreach (var alarmArray in Alarms)
         {
-            <IncomingAlarmComponent Alarm="alarmArray.Last()" List="@alarmArray"/>
+            switch (AlarmType)
+            {
+                case Models.Enums.AlarmType.Incoming:
+                {
+                    <IncomingAlarmComponent Alarm="alarmArray.Last()" List="@alarmArray"/>
+                    
+                    break;
+                }
+                case Models.Enums.AlarmType.Active:
+                {
+                    <ActiveAlarmComponent Alarm="alarmArray.Last()"/>
+                    
+                    break;
+                }
+                case Models.Enums.AlarmType.Suppressed:
+                {
+                    <SuppressedAlarmComponent Alarm="alarmArray.Last()"/>
+                    
+                    break;
+                }
+            }
         }
     }
     </tbody>
@@ -193,6 +214,9 @@
 
     [CascadingParameter(Name = nameof(PriorityFilter))]
     public PriorityType? PriorityFilter { get; set; }
+    
+    [CascadingParameter(Name = nameof(AlarmType))]
+    public AlarmType? AlarmType { get; set; }
 
     [Parameter]
     public EventCallback<StateType?> OnStateFilterChanged { get; set; }

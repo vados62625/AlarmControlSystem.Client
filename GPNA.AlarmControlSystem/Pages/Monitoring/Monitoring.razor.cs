@@ -57,9 +57,9 @@ public partial class Monitoring : ComponentBase
     private Dictionary<StateType, int>? _countByState;
 
     private string _spinnerClass = string.Empty;
-    
+
     private string _orderBy = string.Empty;
-    
+
     private bool _orderByDesc = true;
 
     protected override void OnInitialized()
@@ -169,7 +169,7 @@ public partial class Monitoring : ComponentBase
                 OrderByDescending = _orderByDesc,
                 Page = _currentPage,
                 CountOnPage = 15,
-                DisplayShifts = !FiltersOn && _orderBy == nameof(IncomingAlarmDto.DateTimeActivation)
+                DisplayShifts = !FiltersOn && (_orderBy == nameof(IncomingAlarmDto.DateTimeActivation) || _orderBy == string.Empty)
             });
 
             if (request.Success)
@@ -289,6 +289,12 @@ public partial class Monitoring : ComponentBase
     private async Task OnPageChanged(int page)
     {
         _currentPage = page;
+        await InitializePageAsync();
+    }
+    
+    private async Task Search()
+    {
+        _currentPage = 1;
         await InitializePageAsync();
     }
 }

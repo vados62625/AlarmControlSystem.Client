@@ -17,7 +17,7 @@
 
     [Parameter]
     public ChartType? Type { get; set; }
-    
+
     [Parameter]
     public string? CenterText { get; set; }
 
@@ -50,7 +50,7 @@
     {
         BackgroundColors = new string[3]
         {
-            "#EB5757FF", "#F2994AFF", "#1C7B99FF" 
+            "#EB5757FF", "#F2994AFF", "#1C7B99FF"
         };
 
 
@@ -84,6 +84,12 @@
                 },
                 Plugins = new
                 {
+                    emptyDoughnut = new
+                    {
+                        color = "rgba(255, 128, 0, 0.5)",
+                        width = 2,
+                        radiusDecrease = 20
+                    },
                     Tooltip = new
                     {
                         Intersect = false,

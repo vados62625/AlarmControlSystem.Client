@@ -1,0 +1,56 @@
+﻿.tasks-table {
+    border-collapse: collapse;
+}
+
+    .tasks-table thead {
+        background: rgba(0, 32, 51, 0.3);
+    }
+
+    .tasks-table tr {
+        height: 39px
+    }
+
+    .tasks-table thead tr th {
+        color: #FFFFFF;
+        font-weight: 700;
+        font-size: 16px;
+        padding-left: 20px;
+        width: 274px;
+    }
+
+        .tasks-table thead tr th:not(:first-child) {
+            width: 217px;
+        }
+
+        .tasks-table thead tr th:not(:last-child) {
+            border-right: 0.5px solid #E5E9EB;
+        }
+
+    .tasks-table tbody {
+        border: 0.5px solid #E5E9EB;
+        border-top: none;
+    }
+
+        .tasks-table tbody tr td {
+            padding-left: 20px;
+            color: rgba(0, 32, 51, 0.7);
+        }
+
+            .tasks-table tbody tr td:first-child {
+                font-weight: 400;
+                font-size: 16px;
+                color: rgba(0, 32, 51, 0.7);
+            }
+
+            .tasks-table tbody tr td p:first-child {
+                font-weight: 700;
+                font-size: 16px;
+            }
+
+            .tasks-table tbody tr td:not(:last-child) {
+                border-right: 0.5px solid #E5E9EB;
+            }
+
+        .tasks-table tbody tr:not(:last-child) {
+            border-bottom: 0.5px solid #E5E9EB;
+        }

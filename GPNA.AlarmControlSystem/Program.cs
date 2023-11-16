@@ -1,6 +1,7 @@
 using Blazored.Modal;
 using Blazored.Toast;
 using GPNA.AlarmControlSystem.Interfaces;
+using GPNA.AlarmControlSystem.Models.Dto.KpiSettings;
 using GPNA.AlarmControlSystem.Options;
 using GPNA.AlarmControlSystem.Services;
 using NLog.Web;
@@ -43,6 +44,11 @@ builder.Services
     .AddScoped<ITagService, TagService>()
     .AddScoped<IEmailService, EmailService>()
     .AddScoped<IExportService, ExportService>()
+    .AddScoped<AlarmJournalSettingsService>()
+    .AddScoped<MonitoringSettingsService>()
+    .AddScoped<ReportSettingsService>()
+    .AddScoped<TagTableSettingsService>()
+    .AddScoped<TaskSettingsService>()
     .AddScoped<IFieldService, FieldService>();
 
 builder.Services.AddHttpClient<IAlarmControlSystemApiBroker, AlarmControlSystemApiBroker>(client =>

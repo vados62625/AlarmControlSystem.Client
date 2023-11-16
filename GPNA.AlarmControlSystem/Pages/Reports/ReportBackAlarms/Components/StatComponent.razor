@@ -1,0 +1,14 @@
+﻿<div class="stat-container">
+    <div class="d-flex flex-column align-items-end gap-1">
+        <p>654612</p>
+        <p>5461</p>
+    </div>
+    <svg class="@ColorStatus">
+        <use href="/img/icons/icons.svg#back-alarm-table-stat-arrow"></use>
+    </svg>
+    <p class="@ColorStatus">102</p>
+</div>
+
+@code {
+    [Parameter] public string? ColorStatus { get; set; } = "green";
+}
