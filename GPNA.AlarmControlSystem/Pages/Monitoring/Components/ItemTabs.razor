@@ -1,4 +1,6 @@
-﻿@inject NavigationManager NavigationManager
+﻿@using GPNA.AlarmControlSystem.Models.Enums
+@using GPNA.AlarmControlSystem.Extensions
+@inject NavigationManager NavigationManager
 
 @if (IsActive)
 {
@@ -19,39 +21,24 @@ else
 }
 
 @code {
-    [CascadingParameter (Name = "FieldId")] public int? FieldId { get; set; }
-    [CascadingParameter (Name = "ArmId")] public int? ArmId { get; set; }
-    
-    [Parameter] public string Title { get; set; } = string.Empty;
+    [Parameter] public int? FieldId { get; set; }
+    [Parameter] public int? WorkstationId { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public AlarmTypeEnum AlarmTypeEnum { get; set; }
     [Parameter] public int Count { get; set; }
     [Parameter] public bool IsActive { get; set; }
     
+
+    private string _href = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        _href = $"/monitoring/?alarmType={(int)AlarmTypeEnum}&fieldId={FieldId}&workstationId={WorkstationId}";
+        Title ??= AlarmTypeEnum.GetDescription();
+    }
+
     void Click()
     {
-        var href = "";
-        switch (Title)
-        {
-            case "Входящие":
-            {
-                href = $"/monitoring/incoming/?fieldId={FieldId}&armId={ArmId}";
-                break;
-            }
-            case "Активные":
-            {
-                href = $"/monitoring/active/?fieldId={FieldId}&armId={ArmId}";
-                break;
-            }
-            case "Подавленные":
-            {
-                href = $"/monitoring/suppressed/?fieldId={FieldId}&armId={ArmId}";
-                break;
-            }
-            case "Архив":
-            {
-                href = $"/monitoring/archive/?fieldId={FieldId}&armId={ArmId}";
-                break;
-            }
-        }
-        NavigationManager.NavigateTo(href);
+        NavigationManager.NavigateTo(_href);
     }
 }

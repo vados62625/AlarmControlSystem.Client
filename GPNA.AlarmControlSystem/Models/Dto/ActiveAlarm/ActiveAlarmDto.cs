@@ -1,37 +1,14 @@
-﻿using GPNA.AlarmControlSystem.Models.Enums;
+﻿using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
 
 namespace GPNA.AlarmControlSystem.Models.Dto.ActiveAlarm;
 
 /// <summary>
 /// Активные сигнализации
 /// </summary>
-public class ActiveAlarmDto : AlarmBaseDto
+public class ActiveAlarmDto : BufferAlarmDto
 {
-    /// <summary>
-    /// Время события активации сигнализации
-    /// </summary>
-    public DateTimeOffset DateTimeActivation { get; set; }
-
     /// <summary>
     /// Длительность
     /// </summary>
-    public TimeSpan? Duration
-    {
-        get => DateTime.Now - DateTimeActivation.DateTime;
-        set
-        {
-
-        }
-
-    }
-
-    /// <summary>
-    /// Комментарии
-    /// </summary>
-    public string? Comment { get; set; }
-
-    /// <summary>
-    /// Статус сигнализации
-    /// </summary>
-    public StatusAlarmType StatusAlarm { get; set; }
+    public TimeSpan? Duration => DateTime.Now - DateTimeActivation.DateTime;
 }
