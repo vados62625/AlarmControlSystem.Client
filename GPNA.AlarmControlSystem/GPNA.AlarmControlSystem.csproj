@@ -44,6 +44,10 @@
     </Compile>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Dto\Task\" />
+  </ItemGroup>
+
 
 
 

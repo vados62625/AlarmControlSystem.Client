@@ -2,7 +2,7 @@
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Interfaces
 @using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
-@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
+@using GPNA.AlarmControlSystem.Models.Dto.ActiveAlarm
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
 @using GPNA.AlarmControlSystem.Extensions
 @inject IJSRuntime JSRuntime
@@ -16,18 +16,8 @@
         
         <td @onclick="ShowMoreAttributes">@Alarm.DateTimeActivation.ToString("HH:mm")</td>
         
-        <td @onclick="ShowListAlarms">
-            @if (!IsChildren)
-            {
-                <div class="d-flex">
-                    <p>@(List?.Length ?? -1)</p>
-                    <button>
-                        <svg>
-                            <use href="/img/icons/icons.svg#@ButtonArrow"></use>
-                        </svg>
-                    </button>
-                </div>
-            }
+        <td @onclick="ShowMoreAttributes">
+            @((DateTimeOffset.Now - Alarm.DateTimeActivation).Hours)
         </td>
 
         <td @onclick="ShowMoreAttributes">@(Alarm.TagName)</td>
@@ -56,15 +46,6 @@
         </tr>
     }
 
-    @if (_displayList && List?.Length > 1)
-    {
-        for (int i = List.Length - 2; i >=0; i--)
-        {
-           <IncomingAlarmComponent Alarm="List[i]" IsChildren = "true"/> 
-        }
-        
-    }
-
 } 
 else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
 {
@@ -78,8 +59,8 @@ else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
 {
     [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
 
-    [Parameter] public IncomingAlarmDto[]? List { get; set; } = Array.Empty<IncomingAlarmDto>();
-    [Parameter] public IncomingAlarmDto? Alarm { get; set; }
+    [Parameter] public ActiveAlarmDto[]? List { get; set; } = Array.Empty<ActiveAlarmDto>();
+    [Parameter] public ActiveAlarmDto? Alarm { get; set; }
     [Parameter] public bool IsChildren { get; set; }
     const string? ButtonArrow = "arrow-down";
 

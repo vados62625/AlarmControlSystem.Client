@@ -13,7 +13,7 @@ namespace GPNA.AlarmControlSystem.Interfaces
         
         Task<Result<CountAlarmsOnPriority[]>> GetCountIncomingAlarmsByPriorities(GetIncomingAlarmsByDatesQuery content);
 
-        Task<Result<AlarmsCollection<IncomingAlarmDto>>> GetAlarmsPerDate(GetIncomingAlarmsByDatesQuery content);
+        Task<Result<AlarmsCollection<IncomingAlarmDto[]>>> GetAlarmsPerDate(GetIncomingAlarmsByDatesQuery content);
 
         Task<Result<Dictionary<DateTimeOffset, IncomingAlarmDto[]>>> GetCountInHour(
             GetIncomingAlarmsByDatesQuery content);
