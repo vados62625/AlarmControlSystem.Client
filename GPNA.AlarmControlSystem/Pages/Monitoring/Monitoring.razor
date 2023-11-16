@@ -10,43 +10,43 @@
     <CascadingValue Name="@nameof(_to)" Value="@_to">
         <CascadingValue Name="@nameof(_stateFilter)" Value="@_stateFilter">
             <CascadingValue Name="@nameof(_priorityFilter)" Value="@_priorityFilter">
-
-                <div class="page-main">
-                    <div class="page-header">
-                        <div class="d-flex date-period-select">
-                            <div>
-                                <input type="datetime-local" @bind="_from" @bind:event="oninput">
-                                <svg>
-                                    <use href="/img/icons/icons.svg#calendar"></use>
-                                </svg>
+                <CascadingValue Name="@nameof(AlarmType)" Value="@AlarmType">
+                    <div class="page-main">
+                        <div class="page-header">
+                            <div class="d-flex date-period-select">
+                                <div>
+                                    <input type="datetime-local" @bind="_from" @bind:event="oninput">
+                                    <svg>
+                                        <use href="/img/icons/icons.svg#calendar"></use>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <input type="datetime-local" @bind="_to" @bind:event="oninput">
+                                    <svg>
+                                        <use href="/img/icons/icons.svg#calendar"></use>
+                                    </svg>
+                                </div>
+                                <button class="btn p-0 ms-2 d-flex shadow-none@(_spinnerClass)" id="button-refresh" @onclick="async () => await RefreshBySpinner()">
+                                    <svg class="w-100 h-100">
+                                        <use href="/img/icons/icons.svg#refresh"></use>
+                                    </svg>
+                                </button>
                             </div>
-                            <div>
-                                <input type="datetime-local" @bind="_to" @bind:event="oninput">
-                                <svg>
-                                    <use href="/img/icons/icons.svg#calendar"></use>
-                                </svg>
+                            <div class="d-flex">
+                                <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ ЗА ПЕРИОД С DP @(Options?.Value.BranchName ?? "N/A") <b>@_fieldName</b></p>
+                                <SelectObject Object="dto" LinksDictionary="_fieldLinksDictionary"/>
+                                <p style="margin-left:15px;">
+                                    <b>@_workstationName</b>
+                                </p>
+                                <SelectObject LinksDictionary="_armLinksDictionary"/>
                             </div>
-                            <button class="btn p-0 ms-2 d-flex shadow-none@(_spinnerClass)" id="button-refresh" @onclick="async () => await RefreshBySpinner()">
-                                <svg class="w-100 h-100">
-                                    <use href="/img/icons/icons.svg#refresh"></use>
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="d-flex">
-                            <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ ЗА ПЕРИОД С DP @(Options?.Value.BranchName ?? "N/A") <b>@FieldName М/Р</b></p>
-                            <SelectObject Object="dto" LinksDictionary="FieldLinksDictionary"/>
-                            <p style="margin-left:15px;">
-                                <b>@_workstationName</b>
-                            </p>
-                            <SelectObject LinksDictionary="_armLinksDictionary"/>
-                        </div>
-                        <div class="d-flex gap-2">
-                            @if (FiltersOn)
-                            {
-                                <TitleBarButton Title="Фильтрация" FunctionButton="filtration" Action="DropFilters"/>
-                            }
-                            <TitleBarButton Title="Экспорт" FunctionButton="export" Action="DownloadFileFromStream"/>
-                        </div>
+                            <div class="d-flex gap-2">
+                                @if (FiltersOn)
+                                {
+                                    <TitleBarButton Title="Фильтрация" FunctionButton="filtration" Action="DropFilters"/>
+                                }
+                                <TitleBarButton Title="Экспорт" FunctionButton="export" Action="DownloadFileFromStream"/>
+                            </div>
 
                     </div>
                     <div class="d-flex justify-content-between overflow-auto">
@@ -60,8 +60,17 @@
                                 <PriorityAlarm Title="Инфо" Value="_countByPriority?[PriorityType.Information]" StatusActive="opacity-50" Priority="info"/>
                             </div>
                         </div>
-                        <div class="d-flex align-items-center tagname-filter position-relative mx-5">
-                            <input placeholder="Поиск по Tag" type="text" name="tagname" @bind="TagNameFilter" @bind:event="oninput" @onchange="async () => await InitializePageAsync()">
+                        <div class="priority-alarm-container">
+                            <PriorityAlarm Title="Пожар" StatusActive="@_fireStatus" Status="fire"/>
+                            <PriorityAlarm Title="Загазованность" StatusActive="@_gasStatus" Status="gas"/>
+                            <PriorityAlarm Title="HH" Value="_countByState?[StateType.HH]" Status="hh"/>
+                            <PriorityAlarm Title="H" Value="_countByState?[StateType.H]" Status="h"/>
+                            <PriorityAlarm Title="LL" Value="_countByState?[StateType.LL]" Status="ll"/>
+                            <PriorityAlarm Title="L" Value="_countByState?[StateType.L]" Status="l"/>
+                            <PriorityAlarm Title="DISCR" Value="_countByState?[StateType.Discr]" Status="discr"/>
+                            <PriorityAlarm Title="RSHI" Value="_countByState?[StateType.RSHI]" Status="rshi"/>
+                            <PriorityAlarm Title="RSLO" Value="_countByState?[StateType.RSLO]" Status="rslo"/>
+                            <PriorityAlarm Title="NoneState" Value="_countByState?[StateType.none]" Status="none-state"/>
                         </div>
                     </div>
                     <div class="d-flex align-items-center tagname-filter position-relative" style="min-width: 250px">
@@ -94,7 +103,7 @@
                     </div>
                 </div>
 
-            </CascadingValue>
+                </CascadingValue>
             </CascadingValue>
         </CascadingValue>
     </CascadingValue>

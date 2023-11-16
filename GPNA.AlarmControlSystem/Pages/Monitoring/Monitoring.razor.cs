@@ -3,6 +3,7 @@ using GPNA.AlarmControlSystem.Models.Dto.ActiveAlarm;
 using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
 using GPNA.AlarmControlSystem.Models.Dto.Field;
 using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
+using GPNA.AlarmControlSystem.Models.Dto.SuppressedAlarm;
 using GPNA.AlarmControlSystem.Models.Dto.Workstation;
 using GPNA.AlarmControlSystem.Models.Enums;
 using GPNA.AlarmControlSystem.Options;
@@ -18,6 +19,7 @@ public partial class Monitoring : ComponentBase
     [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
     [Inject] private IIncomingAlarmService? IncomingAlarmService { get; set; }
     [Inject] private IActiveAlarmService? ActiveAlarmService { get; set; }
+    [Inject] private ISuppressedAlarmService? SuppressedAlarmService { get; set; }
     [Inject] private IFieldService? FieldService { get; set; }
     [Inject] private IWorkStationService? WorkStationService { get; set; }
     [Inject] private IExportService? ExportService { get; set; }
@@ -47,6 +49,7 @@ public partial class Monitoring : ComponentBase
 
     private AlarmsCollection<IncomingAlarmDto[]>? _incomingAlarmsCollection;
     private AlarmsCollection<ActiveAlarmDto>? _activeAlarmsCollection;
+    private AlarmsCollection<SuppressedAlarmDto>? _suppressedAlarmsCollection;
 
     private IDictionary<string, string>? _fieldLinksDictionary;
 
@@ -150,6 +153,11 @@ public partial class Monitoring : ComponentBase
                 await SpinnerService.Load(UpdateActiveAlarms);
                 break;
             }
+            case AlarmTypeEnum.Suppressed:
+            {
+                await SpinnerService.Load(UpdateSuppressedAlarms);
+                break;
+            }
         }
         
     }
@@ -218,6 +226,36 @@ public partial class Monitoring : ComponentBase
         }
         
         if (_activeAlarmsCollection != null) SetAlarmsCounts(_activeAlarmsCollection);
+    }
+    
+    private async Task UpdateSuppressedAlarms()
+    {
+        if (SuppressedAlarmService != null)
+        {
+            var request = await SuppressedAlarmService.GetSuppressedAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
+            {
+                WorkStationId = WorkstationId ?? 0,
+                TagName = _tagNameFilter,
+                ActivationFrom = _from,
+                ActivationTo = _to,
+                State = _stateFilter,
+                Priority = _priorityFilter,
+                OrderPropertyName = _orderBy,
+                OrderByDescending = _orderByDesc,
+                Page = _currentPage,
+                CountOnPage = 15,
+                DisplayShifts = false
+                // DisplayShifts = !FiltersOn && (_orderBy == nameof(IncomingAlarmDto.DateTimeActivation) || _orderBy == string.Empty)
+            });
+
+            if (request.Success)
+            {
+                _suppressedAlarmsCollection = request.Payload;
+                _pagesCount = _suppressedAlarmsCollection.PagesCount;
+            }
+        }
+        
+        if (_suppressedAlarmsCollection != null) SetAlarmsCounts(_suppressedAlarmsCollection);
     }
     
     private Task DropFilters()

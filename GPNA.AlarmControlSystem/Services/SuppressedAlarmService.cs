@@ -1,5 +1,7 @@
 ﻿using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto;
+using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
+using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
 using GPNA.AlarmControlSystem.Models.Dto.SuppressedAlarm;
 using GPNA.RestClient.Models;
 using GPNA.RestClient.Services.Base;
@@ -32,6 +34,15 @@ namespace GPNA.AlarmControlSystem.Services
         public async Task<Result<CountAlarmsOnDate[]>> GetCountSuppressedAlarmsByDates(GetCountSuppressedAlarmsByDatesQuery content)
         {
             return await _apiBroker.Get<CountAlarmsOnDate[]>($"{URL}/GetCountSuppressedAlarmsByDates", content);
+        }
+        
+        /// <summary>
+        /// Получить количество активных сигнализаций за дату в рамках заданного периода
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Result<AlarmsCollection<SuppressedAlarmDto>>> GetSuppressedAlarmsPerDate(GetIncomingAlarmsByDatesQuery content)
+        {
+            return await _apiBroker.Get<AlarmsCollection<SuppressedAlarmDto>>($"{URL}/GetSuppressedAlarmsPerDate", content);
         }
     }
 }

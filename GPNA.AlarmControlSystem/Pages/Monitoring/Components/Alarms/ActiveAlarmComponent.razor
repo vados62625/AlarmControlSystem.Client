@@ -9,15 +9,13 @@
 
 @if(Alarm!=null && Alarm.Description!="ПЕРЕДАЧА СМЕНЫ")
 {    
-    string bgColor = ""; if (IsChildren) { bgColor = "rgba(0, 32, 51, 0.05);"; } 
-    
     <tr>
         <td @onclick="ShowMoreAttributes">@Alarm.DateTimeActivation.ToString("dd.MM.yyyy")</td>
         
         <td @onclick="ShowMoreAttributes">@Alarm.DateTimeActivation.ToString("HH:mm")</td>
         
         <td @onclick="ShowMoreAttributes">
-            @((DateTimeOffset.Now - Alarm.DateTimeActivation).Hours)
+            @(Alarm.Duration?.Hours.ToString() ?? "N/A")
         </td>
 
         <td @onclick="ShowMoreAttributes">@(Alarm.TagName)</td>
@@ -59,20 +57,12 @@ else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
 {
     [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
 
-    [Parameter] public ActiveAlarmDto[]? List { get; set; } = Array.Empty<ActiveAlarmDto>();
     [Parameter] public ActiveAlarmDto? Alarm { get; set; }
-    [Parameter] public bool IsChildren { get; set; }
-    const string? ButtonArrow = "arrow-down";
 
     bool _displayComment = false;
-    bool _displayList = false;
 
     protected override void OnInitialized()
     {
-        if (!(List?.Length > 0)) return;
-        Alarm ??= List[^1];  
-            
-        List = List.OrderByDescending(c => c.DateTimeActivation).ToArray();
     }
 
     private async Task SaveComment(KeyboardEventArgs e)
@@ -102,10 +92,5 @@ else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
     void ShowMoreAttributes()
     {
         _displayComment = !_displayComment;
-    }
-
-    void ShowListAlarms()
-    {
-        _displayList = !_displayList;
     }
 }
