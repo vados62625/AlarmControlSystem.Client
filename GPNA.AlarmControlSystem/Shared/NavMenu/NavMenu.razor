@@ -16,7 +16,7 @@
         <NavMenuItem Title="Главная" Href="" LinksDictionary="FieldLinksDictionary" NavLinkMatch="NavLinkMatch.All"/>
         <NavMenuItem Title="Мониторинг" LinksDictionary="FieldLinksDictionary" Href="monitoring"/>
         <NavMenuItem Title="Задачи" LinksDictionary="FieldLinksDictionary" Href="alarms-at-work"/>
-        <NavMenuItem Title="Отчеты" LinksDictionary="FieldLinksDictionary" Href="reports"/>
+        <NavMenuItem Title="Отчеты" LinksDictionary="ReportLinksDictionary" Href="reports"/>
         <NavMenuItem Title="Таблица переменных" LinksDictionary="FieldLinksDictionary" Href="tagtable"/>
         <NavMenuItem Title="Справочники" Href="directory" WithSubmenu="false"/>
         <NavMenuItem Title="Настройки" LinksDictionary="FieldLinksDictionary" Href="settings/KPI"/>
@@ -35,9 +35,17 @@
     private IFieldService? FieldService { get; set; }
     
     private IDictionary<string, string>? FieldLinksDictionary { get; set; }
-    
+    private IDictionary<string, string>? ReportLinksDictionary { get; set; }
     protected override async Task OnInitializedAsync()
     {
+        ReportLinksDictionary = new Dictionary<string, string>()
+        {
+            { "Общий отчёт", "" },
+            { "Отчёт о количестве", "/back-alarms" },
+            { "Статистика выполения", "/execute-tasks" },
+        };
+        
+        
         await GetFields();
 
         await base.OnInitializedAsync();
