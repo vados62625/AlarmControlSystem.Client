@@ -73,7 +73,7 @@
                             <PriorityAlarm Title="NoneState" Value="_countByState?[StateType.none]" Status="none-state"/>
                         </div>
                     </div>
-                    <div class="d-flex align-items-center tagname-filter position-relative mx-5">
+                    <div class="d-flex align-items-center tagname-filter position-relative" style="min-width: 250px">
                         <input placeholder="Поиск по Tag" type="text" name="tagname" @bind="_tagNameFilter" @bind:event="oninput" @onchange="async () => await InitializePageAsync()">
                     </div>
                     <div style="border-radius: 6px;">

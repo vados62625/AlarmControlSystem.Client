@@ -19,7 +19,7 @@
         <NavMenuItem Title="Отчеты" LinksDictionary="ReportLinksDictionary" Href="reports"/>
         <NavMenuItem Title="Таблица переменных" LinksDictionary="FieldLinksDictionary" Href="tagtable"/>
         <NavMenuItem Title="Справочники" Href="directory" WithSubmenu="false"/>
-        <NavMenuItem Title="Настройки" LinksDictionary="FieldLinksDictionary" Href="settings/KPI"/>
+        <NavMenuItem Title="Настройки" LinksDictionary="SettingsLinksDictionary" Href="settings"/>
     </ul>
 
     <div class="header-right-side">
@@ -36,6 +36,8 @@
     
     private IDictionary<string, string>? FieldLinksDictionary { get; set; }
     private IDictionary<string, string>? ReportLinksDictionary { get; set; }
+    private IDictionary<string, string>? SettingsLinksDictionary { get; set; }
+    
     protected override async Task OnInitializedAsync()
     {
         ReportLinksDictionary = new Dictionary<string, string>()
@@ -45,6 +47,11 @@
             { "Статистика выполения", "/execute-tasks" },
         };
         
+        SettingsLinksDictionary = new Dictionary<string, string>()
+        {
+            { "KPI", "/kpi" },
+            { "Ответственные", "/permissions" }
+        };
         
         await GetFields();
 
