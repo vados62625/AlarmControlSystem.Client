@@ -1,6 +1,7 @@
-﻿@page "/monitoring/incoming"
+﻿@page "/monitoring"
 
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Tables
 @using GPNA.AlarmControlSystem.Shared.Pagination
 @using GPNA.AlarmControlSystem.Models.Enums
 @inject IJSRuntime JS
@@ -77,17 +78,15 @@
                     </div>
                     <div style="border-radius: 6px;">
                         <div class="d-flex">
-                            <CascadingValue Name="@nameof(WorkstationId)" Value="@WorkstationId">
-                                <CascadingValue Name="@nameof(FieldId)" Value="@FieldId">
-                                    <ItemTabs Title="Входящие" IsActive="true"/>
-                                    <ItemTabs Title="Активные"/>
-                                    <ItemTabs Title="Имитация параметров"/>
-                                    <ItemTabs Title="Подавленные"/>
-                                </CascadingValue>
-                            </CascadingValue>
+                            @foreach (AlarmTypeEnum alarmType in Enum.GetValues(typeof(AlarmTypeEnum)))
+                            {
+                                <ItemTabs AlarmTypeEnum="alarmType"
+                                          WorkstationId="WorkstationId" FieldId="FieldId"
+                                          IsActive="@((int)alarmType==AlarmType)"/>
+                            }
                         </div>
-                        <MonitoringTable Alarms="AlarmsCollection?.Items" OnStateFilterChanged="SetStateFilter" OnPriorityFilterChanged="SetPriorityFilter" OnOrderingChanged="OnOrderingChanged"></MonitoringTable>
-                        <Pagination CurrentPage="_currentPage" PagesCount="_pagesCount" OnPageClick="OnPageChanged"></Pagination>
+                        <IncomingMonitoringTable Alarms="_incomingAlarmsCollection?.Items" OnStateFilterChanged="SetStateFilter" OnPriorityFilterChanged="SetPriorityFilter" OnOrderingChanged="OnOrderingChanged"/>
+                        <Pagination CurrentPage="_currentPage" PagesCount="_pagesCount" OnPageClick="OnPageChanged"/>
                     </div>
                 </div>
 

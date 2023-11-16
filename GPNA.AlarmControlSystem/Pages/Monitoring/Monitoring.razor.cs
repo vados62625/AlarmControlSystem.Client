@@ -1,4 +1,5 @@
 ﻿using GPNA.AlarmControlSystem.Interfaces;
+using GPNA.AlarmControlSystem.Models.Dto.ActiveAlarm;
 using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
 using GPNA.AlarmControlSystem.Models.Dto.Field;
 using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
@@ -12,10 +13,11 @@ using Microsoft.JSInterop;
 
 namespace GPNA.AlarmControlSystem.Pages.Monitoring;
 
-public partial class MonitoringIncomingPage : ComponentBase
+public partial class Monitoring : ComponentBase
 {
     [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
     [Inject] private IIncomingAlarmService? IncomingAlarmService { get; set; }
+    [Inject] private IActiveAlarmService? ActiveAlarmService { get; set; }
     [Inject] private IFieldService? FieldService { get; set; }
     [Inject] private IWorkStationService? WorkStationService { get; set; }
     [Inject] private IExportService? ExportService { get; set; }
@@ -23,7 +25,8 @@ public partial class MonitoringIncomingPage : ComponentBase
 
     [Parameter] [SupplyParameterFromQuery] public int? WorkstationId { get; set; }
     [Parameter] [SupplyParameterFromQuery] public int? FieldId { get; set; }
-
+    [Parameter] [SupplyParameterFromQuery] public int AlarmType { get; set; } = 1;
+    
     private string? _workstationName, _fieldName;
 
     private WorkStationDto[]? _workstations;
@@ -42,7 +45,8 @@ public partial class MonitoringIncomingPage : ComponentBase
 
     private bool FiltersOn => !string.IsNullOrWhiteSpace(_tagNameFilter) || _stateFilter != default || _priorityFilter != default;
 
-    private AlarmsCollection<IncomingAlarmDto>? AlarmsCollection { get; set; }
+    private AlarmsCollection<IncomingAlarmDto>? _incomingAlarmsCollection;
+    private AlarmsCollection<ActiveAlarmDto>? _activeAlarmsCollection;
 
     private IDictionary<string, string>? _fieldLinksDictionary;
 
@@ -113,26 +117,39 @@ public partial class MonitoringIncomingPage : ComponentBase
         {
             _fieldLinksDictionary = _fields.ToDictionary(field => 
                     field.Name, 
-                field => $"/monitoring/incoming/?fieldId={field.Id}");
+                field => $"/monitoring/?alarmType={(int)AlarmType}&fieldId={field.Id}");
         }
 
         if (_workstations != null)
         {
             _armLinksDictionary = _workstations.ToDictionary(workStation => 
                     workStation.Name ?? Guid.NewGuid().ToString(), 
-                workStation => $"/monitoring/incoming/?fieldId={FieldId}&armId={workStation.Id}");
+                workStation => $"/monitoring/?alarmType={(int)AlarmType}&fieldId={FieldId}&armId={workStation.Id}");
         }
     }
 
     private async Task InitializePageAsync()
     {
-        await SpinnerService.Load(UpdateAlarms);
+        switch ((AlarmTypeEnum)AlarmType)
+        {
+            case AlarmTypeEnum.Incoming:
+            {
+                await SpinnerService.Load(UpdateAlarms);
+                break;
+            }
+            case AlarmTypeEnum.Active:
+            {
+                await SpinnerService.Load(UpdateActiveAlarms);
+                break;
+            }
+        }
+        
     }
 
     private void SetDates()
     {
         _to = DateTimeOffset.Now;
-        var hourOfDay = (_to.Hour % 8) * 8; // 0 8 16 часов. Выставление времени с Начала смены.
+        var hourOfDay = (_to.Hour / 8) * 8; // 0 8 16 часов. Выставление времени с Начала смены.
         _from = new DateTimeOffset(_to.Year, _to.Month, _to.Day, hourOfDay, 0, 0, 0, _to.Offset);
     }
 
@@ -157,12 +174,37 @@ public partial class MonitoringIncomingPage : ComponentBase
 
             if (request.Success)
             {
-                AlarmsCollection = request.Payload;
-                _pagesCount = AlarmsCollection.PagesCount;
+                _incomingAlarmsCollection = request.Payload;
+                _pagesCount = _incomingAlarmsCollection.PagesCount;
             }
         }
 
-        if (AlarmsCollection != null) SetAlarmsCounts(AlarmsCollection);
+        if (_incomingAlarmsCollection != null) SetAlarmsCounts(_incomingAlarmsCollection);
+    }
+    
+    private async Task UpdateActiveAlarms()
+    {
+        // if (ActiveAlarmService != null)
+        // {
+        //     var request = await ActiveAlarmService.GetCollection(new GetActiveAlarmsListQuery
+        //     {
+        //         WorkStationId = WorkstationId ?? 0,
+        //         TagName = _tagNameFilter,
+        //         ActivationFrom = _from,
+        //         ActivationTo = _to,
+        //         State = _stateFilter,
+        //         Priority = _priorityFilter,
+        //         Page = _currentPage
+        //     });
+        //
+        //     if (request.Success)
+        //     {
+        //         _incomingAlarmsCollection = request.Payload;
+        //         _pagesCount = _incomingAlarmsCollection.PagesCount;
+        //     }
+        // }
+        //
+        // if (_incomingAlarmsCollection != null) SetAlarmsCounts(_incomingAlarmsCollection);
     }
 
     private Task DropFilters()
