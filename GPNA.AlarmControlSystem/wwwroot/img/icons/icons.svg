@@ -121,6 +121,10 @@
 			<path d="M0.835938 10.3176L6.0301 5.5" stroke="#006FBA" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
 			<path d="M15.2528 10.3176L10.0586 5.5" stroke="#006FBA" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
 		</symbol>
+		<symbol id="tag-modal-delete" viewBox="0 0 15 11" fill="none">
+			<path fill-rule="evenodd" clip-rule="evenodd" d="M5.97001 8.94303L0.938913 4.72143L0 5.84039L6.14899 11L14.592 0.938022L13.4741 0L5.97001 8.94303Z" fill="#002033"/>
+		</symbol>
+
 
 
 

@@ -1,0 +1,246 @@
+﻿.bg {
+    width: 371px;
+    height: 200px;
+    background: linear-gradient(0deg, rgba(226, 87, 87, 0.1), rgba(226, 87, 87, 0.1)), #FFFFFF;
+    box-shadow: 0px 2px 5px rgba(0, 32, 51, 0.2);
+    border-radius: 10px;
+    padding: 30px;    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0px -1px 1px rgba(0, 32, 51, 0.07), 0px 2px 2px rgba(0, 32, 51, 0.07), 0px 1px 1px rgba(0, 32, 51, 0.07), 0px 8px 16px rgba(0, 32, 51, 0.07);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 400;
+    font-size: 12px;
+    color: rgba(0, 32, 51, 0.6);
+    gap: 10px;
+}
+
+.bg p:not(.title) {
+    align-self: start;
+    padding: 0;
+}
+.modal-button-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    padding: 0;
+}
+
+    .title {
+        color: #002033;
+        padding: 0;
+       /* margin-bottom: 10px;*/
+    }    
+
+        .button-container button {
+            background: #DDF1FC;
+            border-radius: 6px;
+            border: none;
+            width: 135px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+.button-container button:hover {
+    background: #D0EDFD;
+}
+        /*.button-container button:last-child {            
+            background: #FFFFFF;
+        }
+            .button-container button:last-child:hover {
+                background: #E8E8E8;
+            }*/
+
+    .button-container button svg {
+        width: 15px;
+        height: 12px;
+    }
+        .button-container button p {
+            font-weight: 400;
+            font-size: 12px;
+            margin-left: 13px;
+        }
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 0;
+    /*margin-top: 4px;*/
+}
+
+
+/* Отправить в задачи */
+
+position: relative;
+width: 371px;
+height: 200px;
+left: 24583px;
+top: 2003px;
+
+background: linear-gradient(0deg, rgba(226, 87, 87, 0.1), rgba(226, 87, 87, 0.1)), #FFFFFF;
+box-shadow: 0px 2px 5px rgba(0, 32, 51, 0.2);
+border-radius: 10px;
+/* Окно удаления параметра */
+position: absolute;
+width: 180px;
+height: 14px;
+left: calc(50% - 180px/2 - 0.5px);
+top: 34px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 120%;
+/* or 14px */
+display: flex;
+align-items: center;
+text-align: center;
+text-transform: uppercase;
+
+color: #002033;
+/* close */
+position: absolute;
+width: 38px;
+height: 38px;
+right: 0px;
+top: 0px;
+/* close */
+position: absolute;
+left: 39.47%;
+right: 39.47%;
+top: 39.47%;
+bottom: 39.47%;
+
+background: rgba(51, 97, 125, 0.6);
+/* Вы уверены, что хотите удалить параметр? (В случае активности, будет отображаться, как новый) */
+position: absolute;
+width: 310px;
+height: 60px;
+left: calc(50% - 310px/2 + 0.5px);
+top: 61px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 120%;
+/* or 14px */
+color: rgba(0, 32, 51, 0.6);
+/* Buttons */
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: flex-end;
+align-items: center;
+padding: 0px;
+gap: 8px;
+
+position: absolute;
+width: 278px;
+height: 38px;
+right: 46px;
+top: 132px;
+/* Save */
+width: 135px;
+height: 38px;
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+/* Rectangle 5441 */
+position: absolute;
+left: 0%;
+right: 0%;
+top: 0%;
+bottom: 0%;
+
+background: #E25757;
+border-radius: 6px;
+/* Удалить */
+position: absolute;
+width: 49px;
+height: 14px;
+right: 40px;
+top: calc(50% - 14px/2 + 1px);
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 120%;
+/* or 14px */
+display: flex;
+align-items: center;
+
+color: #002033;
+/* IconCheck */
+position: absolute;
+width: 14.59px;
+height: 11px;
+left: 18px;
+top: 15px;
+/* Vector */
+position: absolute;
+width: 14.59px;
+height: 11px;
+left: calc(50% - 14.59px/2 - 42.2px);
+top: calc(50% - 11px/2 + 1.5px);
+
+background: #002033;
+/* Export */
+width: 135px;
+height: 38px;
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+/* Rectangle 5441 */
+position: absolute;
+left: 0%;
+right: 0%;
+top: 0%;
+bottom: 0%;
+
+background: #FFFFFF;
+border-radius: 6px;
+/* Отменить */
+position: absolute;
+width: 59px;
+height: 14px;
+right: 28px;
+top: calc(50% - 14px/2 + 1px);
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 120%;
+/* or 14px */
+display: flex;
+align-items: center;
+
+color: #002033;
+/* Close */
+position: absolute;
+width: 24px;
+height: 24px;
+left: 13px;
+top: 7px;
+/* vector */
+position: absolute;
+left: 25%;
+right: 25%;
+top: 29.17%;
+bottom: 25%;
+/* bg/alert
+
+Компоненты с ошибкой
+*/
+background: #EB5757;

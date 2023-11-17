@@ -6,7 +6,7 @@
 <div class="actions">
     <input type="text" id="myInput" @onkeypress="@Enter" @bind-value="input" placeholder="Поиск по TagName">
     @*<button class="actions-add-tag btn-primary" @onclick="AddTag">Добавить Tag</button>*@
-    <button class="actions-add-tag btn-primary" @onclick="OpenCorrectorTagModal">Добавить Tag</button>
+    <button class="actions-add-tag btn-primary" @onclick="OpenDeleteTagModal">Добавить Tag</button>
 </div>
 
 
@@ -39,7 +39,8 @@ else
                <AddTagComponent @ref="AddTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></AddTagComponent>
                <EditTagComponent @ref="EditTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></EditTagComponent>
                <CorrectorTagComponent @ref="CorrectorTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></CorrectorTagComponent>
-            </tbody>
+               <DeleteTagComponent @ref="DeleteTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></DeleteTagComponent>
+           </tbody>
         </table>
     </div>   
 }
@@ -48,6 +49,7 @@ else
     AddTagComponent? AddTagModal;
     EditTagComponent? EditTagModal;
     CorrectorTagComponent? CorrectorTagModal;
+    DeleteTagComponent? DeleteTagModal;
 
     void OpenAddTagModal()
     {
@@ -62,14 +64,18 @@ else
     {
         CorrectorTagModal.Show();
     }
+    void OpenDeleteTagModal()
+    {
+        DeleteTagModal.Show();
+    }
 
     public async Task SaveTag()
         {
-        CorrectorTagModal.Hide();
+        DeleteTagModal.Hide();
         }
     
     public async Task CloseTag()
     {
-        CorrectorTagModal.Hide();
+        DeleteTagModal.Hide();
     }
 }

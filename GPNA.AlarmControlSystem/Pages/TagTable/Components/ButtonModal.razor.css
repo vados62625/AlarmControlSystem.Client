@@ -24,6 +24,30 @@ button p {
     margin-left: 13px;
 }
 
+    button.cancel{
+        background: #F0F2F3;
+    }
+
+    button.cancel:hover {
+        background: #E8E8E8;
+    }
+
+    button.cancel-delete {
+        background: #FFFFFF;
+    }
+
+        button.cancel-delete:hover {
+            background: #FFFFFF;
+        }
+
+    button.delete {
+        background: #E25757;
+    }
+
+        button.delete:hover {
+            background: #E25757;
+        }
+
     button.close {
         border: none;
         background: none;
