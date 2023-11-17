@@ -37,7 +37,7 @@ button p {
     }
 
         button.cancel-delete:hover {
-            background: #FFFFFF;
+            background: #F9F9F9;
         }
 
     button.delete {
@@ -45,7 +45,7 @@ button p {
     }
 
         button.delete:hover {
-            background: #E25757;
+            background: #D75353;
         }
 
     button.close {

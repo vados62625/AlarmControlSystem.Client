@@ -182,10 +182,14 @@
         justify-content: center;
     }
 
-    .button-adressee-add svg {
-        width: 11px;
-        height: 11px;        
-    }
+        .button-adressee-add:hover {
+            background: #E8E8E8;
+        }
+
+        .button-adressee-add svg {
+            width: 11px;
+            height: 11px;
+        }
     .button-adressee-add p {
         font-weight: 400;
         font-size: 12px;
