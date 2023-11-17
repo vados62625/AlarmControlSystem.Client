@@ -12,7 +12,7 @@ public partial class KPI : ComponentBase
 {
     [Parameter] public int Value { get; set; } = 256;
 
-    [Parameter] [SupplyParameterFromQuery] public int? ArmId { get; set; }
+    [Parameter] [SupplyParameterFromQuery] public int? WorkstationId { get; set; }
 
     [Parameter] [SupplyParameterFromQuery] public int? FieldId { get; set; }
 
@@ -29,7 +29,7 @@ public partial class KPI : ComponentBase
     [Inject] private TaskSettingsService? TaskSettingsService { get; set; }
 
     private string? FieldName { get; set; } = "N/A";
-    private string? ArmName { get; set; } = "N/A";
+    private string? WorkstationName { get; set; } = "N/A";
 
     private FieldDto[]? _fields;
 
@@ -43,12 +43,12 @@ public partial class KPI : ComponentBase
 
     private IDictionary<string, string>? FieldLinksDictionary { get; set; }
 
-    private IDictionary<string, string>? ArmLinksDictionary { get; set; }
+    private IDictionary<string, string>? WorkstationLinksDictionary { get; set; }
 
 
     protected override async Task OnInitializedAsync()
     {
-        await SetFieldWithArm();
+        await SetFieldWithWorkstation();
 
         await InitializePageAsync();
 
@@ -62,23 +62,23 @@ public partial class KPI : ComponentBase
 
     private async Task SetSettings()
     {
-        if (ArmId != null)
+        if (WorkstationId != null)
         {
             _journalSettings = await GetJournalSettings() ??
-                               new AlarmJournalSettingsDto { WorkStationId = ArmId.Value };
+                               new AlarmJournalSettingsDto { WorkStationId = WorkstationId.Value };
             _monitoringSettings = await GetMonitoringSettings() ??
-                                  new MonitoringSettingsDto { WorkStationId = ArmId.Value };
-            _reportSettings = await GetReportSettings() ?? new ReportSettingsDto { WorkStationId = ArmId.Value };
-            _tagTableSettings = await GetTagTableSettings() ?? new TagTableSettingsDto { WorkStationId = ArmId.Value };
-            _taskSettings = await GetTaskSettings() ?? new TaskSettingsDto { WorkStationId = ArmId.Value };
+                                  new MonitoringSettingsDto { WorkStationId = WorkstationId.Value };
+            _reportSettings = await GetReportSettings() ?? new ReportSettingsDto { WorkStationId = WorkstationId.Value };
+            _tagTableSettings = await GetTagTableSettings() ?? new TagTableSettingsDto { WorkStationId = WorkstationId.Value };
+            _taskSettings = await GetTaskSettings() ?? new TaskSettingsDto { WorkStationId = WorkstationId.Value };
         }
     }
 
     private async Task<AlarmJournalSettingsDto?> GetJournalSettings()
     {
-        if (AlarmJournalSettingsService != default && ArmId != default)
+        if (AlarmJournalSettingsService != default && WorkstationId != default)
         {
-            var result = await AlarmJournalSettingsService.GetSettings(ArmId.Value);
+            var result = await AlarmJournalSettingsService.GetSettings(WorkstationId.Value);
 
             if (result.Success) return result.Payload;
         }
@@ -88,9 +88,9 @@ public partial class KPI : ComponentBase
 
     private async Task<MonitoringSettingsDto?> GetMonitoringSettings()
     {
-        if (MonitoringSettingsService != default && ArmId != default)
+        if (MonitoringSettingsService != default && WorkstationId != default)
         {
-            var result = await MonitoringSettingsService.GetSettings(ArmId.Value);
+            var result = await MonitoringSettingsService.GetSettings(WorkstationId.Value);
 
             if (result.Success) return result.Payload;
         }
@@ -100,9 +100,9 @@ public partial class KPI : ComponentBase
 
     private async Task<ReportSettingsDto?> GetReportSettings()
     {
-        if (ReportSettingsService != default && ArmId != default)
+        if (ReportSettingsService != default && WorkstationId != default)
         {
-            var result = await ReportSettingsService.GetSettings(ArmId.Value);
+            var result = await ReportSettingsService.GetSettings(WorkstationId.Value);
 
             if (result.Success) return result.Payload;
         }
@@ -112,9 +112,9 @@ public partial class KPI : ComponentBase
 
     private async Task<TagTableSettingsDto?> GetTagTableSettings()
     {
-        if (TagTableSettingsService != default && ArmId != default)
+        if (TagTableSettingsService != default && WorkstationId != default)
         {
-            var result = await TagTableSettingsService.GetSettings(ArmId.Value);
+            var result = await TagTableSettingsService.GetSettings(WorkstationId.Value);
 
             if (result.Success) return result.Payload;
         }
@@ -124,9 +124,9 @@ public partial class KPI : ComponentBase
 
     private async Task<TaskSettingsDto?> GetTaskSettings()
     {
-        if (TaskSettingsService != default && ArmId != default)
+        if (TaskSettingsService != default && WorkstationId != default)
         {
-            var result = await TaskSettingsService.GetSettings(ArmId.Value);
+            var result = await TaskSettingsService.GetSettings(WorkstationId.Value);
 
             if (result.Success) return result.Payload;
         }
@@ -134,7 +134,7 @@ public partial class KPI : ComponentBase
         return null;
     }
 
-    private async Task SetFieldWithArm()
+    private async Task SetFieldWithWorkstation()
     {
         if (FieldService != null)
         {
@@ -160,9 +160,9 @@ public partial class KPI : ComponentBase
 
         FieldName = _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name;
 
-        ArmId ??= _workstations?.FirstOrDefault()?.Id;
+        WorkstationId ??= _workstations?.FirstOrDefault()?.Id;
 
-        ArmName = _workstations?.FirstOrDefault(ws => ws.Id == ArmId)?.Name;
+        WorkstationName = _workstations?.FirstOrDefault(ws => ws.Id == WorkstationId)?.Name;
 
         FillLinks();
     }
@@ -178,9 +178,9 @@ public partial class KPI : ComponentBase
 
         if (_workstations != null)
         {
-            ArmLinksDictionary = _workstations.ToDictionary(workStation =>
+            WorkstationLinksDictionary = _workstations.ToDictionary(workStation =>
                     workStation.Name ?? Guid.NewGuid().ToString(),
-                workStation => $"/settings/KPI/?fieldId={FieldId}&armId={workStation.Id}");
+                workStation => $"/settings/KPI/?fieldId={FieldId}&workstationId={workStation.Id}");
         }
     }
 

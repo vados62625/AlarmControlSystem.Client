@@ -12,7 +12,7 @@ public partial class UserPermissions : ComponentBase
 {
     [Parameter] public int Value { get; set; } = 256;
 
-    [Parameter] [SupplyParameterFromQuery] public int? ArmId { get; set; }
+    [Parameter] [SupplyParameterFromQuery] public int? WorkstationId { get; set; }
 
     [Parameter] [SupplyParameterFromQuery] public int? FieldId { get; set; }
 
@@ -29,7 +29,7 @@ public partial class UserPermissions : ComponentBase
     [Inject] private TaskSettingsService? TaskSettingsService { get; set; }
 
     private string? FieldName { get; set; } = "N/A";
-    private string? ArmName { get; set; } = "N/A";
+    private string? WorkstationName { get; set; } = "N/A";
 
     private FieldDto[]? _fields;
 
@@ -43,12 +43,12 @@ public partial class UserPermissions : ComponentBase
 
     private IDictionary<string, string>? FieldLinksDictionary { get; set; }
 
-    private IDictionary<string, string>? ArmLinksDictionary { get; set; }
+    private IDictionary<string, string>? WorkstationLinksDictionary { get; set; }
 
 
     protected override async Task OnInitializedAsync()
     {
-        await SetFieldWithArm();
+        await SetFieldWithWorkstation();
 
         await InitializePageAsync();
 
@@ -59,7 +59,7 @@ public partial class UserPermissions : ComponentBase
     {
     }
 
-    private async Task SetFieldWithArm()
+    private async Task SetFieldWithWorkstation()
     {
         if (FieldService != null)
         {
@@ -85,9 +85,9 @@ public partial class UserPermissions : ComponentBase
 
         FieldName = _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name;
 
-        ArmId ??= _workstations?.FirstOrDefault()?.Id;
+        WorkstationId ??= _workstations?.FirstOrDefault()?.Id;
 
-        ArmName = _workstations?.FirstOrDefault(ws => ws.Id == ArmId)?.Name;
+        WorkstationName = _workstations?.FirstOrDefault(ws => ws.Id == WorkstationId)?.Name;
 
         FillLinks();
     }
@@ -103,9 +103,9 @@ public partial class UserPermissions : ComponentBase
 
         if (_workstations != null)
         {
-            ArmLinksDictionary = _workstations.ToDictionary(workStation =>
+            WorkstationLinksDictionary = _workstations.ToDictionary(workStation =>
                     workStation.Name ?? Guid.NewGuid().ToString(),
-                workStation => $"/settings/KPI/?fieldId={FieldId}&armId={workStation.Id}");
+                workStation => $"/settings/KPI/?fieldId={FieldId}&workstationId={workStation.Id}");
         }
     }
 
