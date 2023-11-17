@@ -46,7 +46,7 @@ public partial class KPI : ComponentBase
     private IDictionary<string, string>? WorkstationLinksDictionary { get; set; }
 
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         await SetFieldWithWorkstation();
 
