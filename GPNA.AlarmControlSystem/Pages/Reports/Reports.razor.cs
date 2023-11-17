@@ -28,19 +28,19 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
 
         [Parameter] [SupplyParameterFromQuery] public int? FieldId { get; set; }
 
-        [Parameter] [SupplyParameterFromQuery] public int? ArmId { get; set; }
+        [Parameter] [SupplyParameterFromQuery] public int? WorkstationId { get; set; }
 
         [Parameter] public DateTimeOffset From { get; set; } = DateTimeOffset.Now.AddDays(-2);
         [Parameter] public DateTimeOffset To { get; set; } = DateTimeOffset.Now.AddDays(-1);
 
-        [Parameter] public string? ArmName { get; set; }
+        [Parameter] public string? WorkstationName { get; set; }
 
         private string? FieldName => _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name ?? "N/A";
 
         static int inputKpi = 12;
         private IDictionary<string, string>? FieldLinksDictionary { get; set; }
 
-        private IDictionary<string, string>? ArmLinksDictionary { get; set; }
+        private IDictionary<string, string>? WorkstationLinksDictionary { get; set; }
 
         private FieldDto[]? _fields;
 
@@ -68,7 +68,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
             IsEnableRenderChart = false;
             SpinnerService.Show();
             StateHasChanged();
-            await SetFieldWithArm();
+            await SetFieldWithWorkstation();
             _generalCount = 0;
             // _averageUrgent = await SetAverageUrgent();
 
@@ -101,7 +101,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
             StateHasChanged();
         }
 
-        private async Task SetFieldWithArm()
+        private async Task SetFieldWithWorkstation()
         {
             if (FieldService != null)
             {
@@ -125,9 +125,9 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
 
             FieldId ??= _fields?.FirstOrDefault()?.Id;
 
-            ArmId ??= _workstations?.FirstOrDefault()?.Id;
+            WorkstationId ??= _workstations?.FirstOrDefault()?.Id;
 
-            ArmName = _workstations?.FirstOrDefault(ws => ws.Id == ArmId)?.Name;
+            WorkstationName = _workstations?.FirstOrDefault(ws => ws.Id == WorkstationId)?.Name;
 
             FillLinks();
         }
@@ -142,8 +142,8 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
 
             if (_workstations != null)
             {
-                ArmLinksDictionary = _workstations.ToDictionary(workStation => workStation.Name,
-                    workStation => $"/reports/?fieldId={FieldId}&armId={workStation.Id}");
+                WorkstationLinksDictionary = _workstations.ToDictionary(workStation => workStation.Name,
+                    workStation => $"/reports/?fieldId={FieldId}&workstationId={workStation.Id}");
             }
         }
 
@@ -152,7 +152,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports
             var result = await ExportService.ExportActiveAlarmsReport(new ExportIncomingAlarmsByDatesQuery
             {
                 DocumentType = ExportDocumentType.Excel,
-                WorkStationId = ArmId ?? 0,
+                WorkStationId = WorkstationId ?? 0,
                 ActivationFrom = From,
                 ActivationTo = To,
             });

@@ -74,12 +74,12 @@ public partial class Monitoring : ComponentBase
 
     protected override async Task OnParametersSetAsync()
     {
-        await SetFieldWithArm();
+        await SetFieldWithWorkstation();
 
         await InitializePageAsync();
     }
 
-    private async Task SetFieldWithArm()
+    private async Task SetFieldWithWorkstation()
     {
         if (FieldService != null)
         {
@@ -135,7 +135,7 @@ public partial class Monitoring : ComponentBase
         {
             _armLinksDictionary = _workstations.ToDictionary(workStation => 
                     workStation.Name ?? Guid.NewGuid().ToString(), 
-                workStation => $"/monitoring/?alarmType={(int)AlarmType}&fieldId={FieldId}&armId={workStation.Id}");
+                workStation => $"/monitoring/?alarmType={(int)AlarmType}&fieldId={FieldId}&workstationId={workStation.Id}");
         }
     }
 

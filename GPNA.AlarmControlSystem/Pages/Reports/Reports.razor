@@ -63,15 +63,15 @@
     <div class="d-flex gap-4 position-absolute">
         <h4 class="chart-title">Количество сигнализаций на АРМе</h4>
         <p style="margin-left:15px;">
-            <b>@ArmName</b>
+            <b>@WorkstationName</b>
         </p>
-        <SelectObject LinksDictionary="ArmLinksDictionary"/>
+        <SelectObject LinksDictionary="WorkstationLinksDictionary"/>
 
     </div>
     <div class="chart-container">
         @if (IncomingAlarms is {Count: > 0 })
         {
-            <Chart2 IncomingAlarms="@(IncomingAlarms.TryGetValue(ArmName ?? string.Empty, out var alarms) ? alarms : null)"/>
+            <Chart2 IncomingAlarms="@(IncomingAlarms.TryGetValue(WorkstationName ?? string.Empty, out var alarms) ? alarms : null)"/>
         }
         else
         {

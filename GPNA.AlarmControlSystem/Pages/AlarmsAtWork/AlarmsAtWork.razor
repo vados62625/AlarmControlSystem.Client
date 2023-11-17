@@ -47,9 +47,9 @@
                             <p>ЗАДАЧИ МЕРЕТОЯХА @(Options?.Value.BranchName ?? "N/A") М/Р <b>@FieldName</b></p>
                             <SelectObject Object="dto" LinksDictionary="FieldLinksDictionary" />
                             <p style="margin-left:15px;">
-                                <b>@ArmName</b>
+                                <b>@WorkstationName</b>
                             </p>
-                            <SelectObject LinksDictionary="ArmLinksDictionary" />
+                            <SelectObject LinksDictionary="WorkstationLinksDictionary" />
                         </div>
                         <div class="d-flex gap-2">
                             @if (FiltersOn)
@@ -118,14 +118,14 @@
 
     [Parameter]
     [SupplyParameterFromQuery]
-    public int? ArmId { get; set; }
+    public int? WorkstationId { get; set; }
 
     [Parameter]
     [SupplyParameterFromQuery]
     public int? FieldId { get; set; }
 
     [Parameter]
-    public string? ArmName { get; set; }
+    public string? WorkstationName { get; set; }
 
     [Parameter]
     public string? FieldName { get; set; }
@@ -161,7 +161,7 @@
 
     private IDictionary<string, string>? FieldLinksDictionary { get; set; }
 
-    private IDictionary<string, string>? ArmLinksDictionary { get; set; }
+    private IDictionary<string, string>? WorkstationLinksDictionary { get; set; }
 
     private string _spinnerClass = string.Empty;
 
@@ -177,12 +177,12 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        await SetFieldWithArm();
+        await SetFieldWithWorkstation();
 
         await InitializePageAsync();
     }
 
-    private async Task SetFieldWithArm()
+    private async Task SetFieldWithWorkstation()
     {
         if (FieldService != null)
         {
@@ -208,9 +208,9 @@
 
         FieldName = _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name;
 
-        ArmId ??= _workstations?.FirstOrDefault()?.Id;
+        WorkstationId ??= _workstations?.FirstOrDefault()?.Id;
 
-        ArmName = _workstations?.FirstOrDefault(ws => ws.Id == ArmId)?.Name;
+        WorkstationName = _workstations?.FirstOrDefault(ws => ws.Id == WorkstationId)?.Name;
 
         FillLinks();
     }
@@ -226,9 +226,9 @@
 
         if (_workstations != null)
         {
-            ArmLinksDictionary = _workstations.ToDictionary(workStation =>
+            WorkstationLinksDictionary = _workstations.ToDictionary(workStation =>
                 workStation.Name ?? Guid.NewGuid().ToString(),
-                workStation => $"/Arm/?fieldId={FieldId}&armId={workStation.Id}");
+                workStation => $"/Arm/?fieldId={FieldId}&workstationId={workStation.Id}");
         }
     }
 
@@ -253,7 +253,7 @@
         {
             var request = await IncomingAlarmService.GetAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
                 {
-                    WorkStationId = ArmId ?? 0,
+                    WorkStationId = WorkstationId ?? 0,
                     TagName = TagNameFilter,
                     ActivationFrom = From,
                     ActivationTo = To,
@@ -286,7 +286,7 @@
         var result = await ExportService.ExportIncomingAlarms(new ExportIncomingAlarmsByDatesQuery
             {
                 DocumentType = ExportDocumentType.Excel,
-                WorkStationId = ArmId ?? 0,
+                WorkStationId = WorkstationId ?? 0,
                 TagName = TagNameFilter,
                 ActivationFrom = From,
                 ActivationTo = To,

@@ -22,7 +22,7 @@ public class SuppressedAlarmDto : AlarmBaseDto
     /// </summary>
     public TimeSpan? Duration
     {
-        get => DateTime.Now - DateTimeSuppression.DateTime;
+        get => DateTimeOffset.Now - DateTimeSuppression;
         set
         {
 

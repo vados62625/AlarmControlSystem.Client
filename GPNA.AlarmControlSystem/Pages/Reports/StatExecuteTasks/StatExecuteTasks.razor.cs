@@ -36,7 +36,7 @@ public partial class StatExecuteTasks : ComponentBase
 
     private WorkstationMainPageDto[]? _workstations;
 
-    private IDictionary<string, string>? ArmLinksDictionary { get; set; }
+    private IDictionary<string, string>? WorkstationLinksDictionary { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -59,7 +59,7 @@ public partial class StatExecuteTasks : ComponentBase
 
         await GetWorkstations();
 
-        FillArmLinks();
+        FillWorkstationLinks();
     }
 
     private async Task GetFields()
@@ -89,11 +89,11 @@ public partial class StatExecuteTasks : ComponentBase
         }
     }
 
-    private void FillArmLinks()
+    private void FillWorkstationLinks()
     {
         if (_fields != null && _fields.Any())
         {
-            ArmLinksDictionary = _fields.ToDictionary(field => field.Name, field => $"/?fieldId={field.Id}");
+            WorkstationLinksDictionary = _fields.ToDictionary(field => field.Name, field => $"/?fieldId={field.Id}");
         }
     }
 }

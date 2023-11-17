@@ -10,7 +10,7 @@
         }
         <div class="d-flex align-items-center">
             <p>ОТЧЕТ ПО СИГНАЛИЗАЦИЯМ ЗА @DateTime.ToString("dd MMMM") @(Options?.Value.BranchName ?? "N/A") <b>@(_fields?.FirstOrDefault(f => f.Id == FieldId)?.Name ?? "N/A") М/Р</b></p>
-            <SelectObject Object="dto" LinksDictionary="ArmLinksDictionary"/>
+            <SelectObject Object="dto" LinksDictionary="WorkstationLinksDictionary"/>
         </div>
         @if (_fields is {Length: > 1 })
         {

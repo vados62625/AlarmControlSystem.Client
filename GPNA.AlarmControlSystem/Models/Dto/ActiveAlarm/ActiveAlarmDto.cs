@@ -10,5 +10,5 @@ public class ActiveAlarmDto : BufferAlarmDto
     /// <summary>
     /// Длительность
     /// </summary>
-    public TimeSpan? Duration => DateTime.Now - DateTimeActivation.DateTime;
+    public TimeSpan? Duration => DateTimeOffset.Now - DateTimeActivation;
 }

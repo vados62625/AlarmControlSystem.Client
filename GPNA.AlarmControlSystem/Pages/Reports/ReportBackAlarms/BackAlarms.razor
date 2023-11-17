@@ -6,7 +6,7 @@
     <div class="page-header justify-content-center">        
         <div class="d-flex align-items-center">
             <p>ОТЧЕТ О КОЛИЧЕСТВЕ ПРОСРОЧЕННЫХ СИГНАЛИЗАЦИЙ МЕРЕТОЯХА <b>@(_fields?.FirstOrDefault(f => f.Id == FieldId)?.Name ?? "N/A")</b></p>
-            <SelectObject Object="dto" LinksDictionary="ArmLinksDictionary"/>
+            <SelectObject Object="dto" LinksDictionary="WorkstationLinksDictionary"/>
             <p class="ms-2"><b>НА @DateTime.ToString("dd MMMM")</b></p>
         </div>        
     </div>
