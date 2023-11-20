@@ -1,5 +1,7 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 @import url('open-iconic/font/css/inter.css');
+@import url('ButtonModals.css');
+@import url('TagTableModals.css');
 
 :root {
     --color-bg-caution: #F2C94C;

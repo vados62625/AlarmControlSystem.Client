@@ -1,10 +1,12 @@
 ﻿@page "/tagtable"
 @using GPNA.AlarmControlSystem.Pages.TagTable.Components
+@using GPNA.AlarmControlSystem.Pages.TagTable.Components.Modals
 
 <h3>Таблица переменных</h3>
 <div class="actions">
     <input type="text" id="myInput" @onkeypress="@Enter" @bind-value="input" placeholder="Поиск по TagName">
-    <button class="actions-add-tag btn-primary" @onclick="AddTag">Добавить Tag</button>
+    @*<button class="actions-add-tag btn-primary" @onclick="AddTag">Добавить Tag</button>*@
+    <button class="actions-add-tag btn-primary" @onclick="OpenEditTagModal">Добавить Tag</button>
 </div>
 
 
@@ -28,13 +30,53 @@ else
             <tbody>
                 <Virtualize Items="AlarmsTagTable">
                     <ItemContent>
-                        <TagOnTable @key="context.Id" Tag="@context" EditTag="@EditTag" DeleteTag="@DeleteTag"/>                        
+                        <TagOnTable @key="context.Id" Tag="@context" EditTag="@EditTag" DeleteTag="@DeleteTag"/>                                           
                     </ItemContent>
                     <Placeholder>
                         <Loader/>
                     </Placeholder>
                 </Virtualize>
-            </tbody>
+               </tbody>
         </table>
-    </div>   
+    </div>
+    
+    <AddTagModal @ref="AddTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></AddTagModal>
+    <EditTagModal @ref="EditTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></EditTagModal>
+    <CorrectTagModal @ref="CorrectorTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></CorrectTagModal>
+    <DeleteTagModal @ref="DeleteTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></DeleteTagModal>
+}
+
+@code {
+    AddTagModal? AddTagModal;
+    EditTagModal? EditTagModal;
+    CorrectTagModal? CorrectorTagModal;
+    DeleteTagModal? DeleteTagModal;
+
+    void OpenAddTagModal()
+    {
+        AddTagModal.Show();
+    }
+
+    void OpenEditTagModal()
+    {
+        EditTagModal.Show();
+    }
+    void OpenCorrectTagModal()
+    {
+        CorrectorTagModal.Show();
+    }
+    void OpenDeleteTagModal()
+    {
+        DeleteTagModal.Show();
+    }
+
+    public async Task SaveTag()
+        {
+        DeleteTagModal.Hide();
+        }
+    
+    public async Task CloseTag()
+    {
+        DeleteTagModal.Hide();
+    }
 }

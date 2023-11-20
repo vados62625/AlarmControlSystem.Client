@@ -1,0 +1,16 @@
+﻿<div class="button-modal-container">
+    <button @onclick="Click" class="button-modal close">
+	    <svg>
+		    <use href="/img/icons/icons.svg#tag-modal-close"></use>
+	    </svg>	
+    </button>
+</div>
+
+@code {
+    [Parameter] public EventCallback<bool> ClickEvent { get; set; }    
+
+    private async Task Click()
+    {
+        await ClickEvent.InvokeAsync(true);
+    }
+}

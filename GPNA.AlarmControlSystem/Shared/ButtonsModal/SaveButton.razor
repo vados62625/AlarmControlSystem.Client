@@ -1,0 +1,15 @@
+﻿<button @onclick="Click" class="button-modal save">
+	<svg>
+		<use href="/img/icons/icons.svg#tag-modal-save"></use>
+	</svg>
+	<p>Сохранить</p>
+</button>
+
+@code {
+    [Parameter] public EventCallback<bool> ClickEvent { get; set; }    
+
+    private async Task Click()
+    {
+        await ClickEvent.InvokeAsync(true);
+    }
+}
