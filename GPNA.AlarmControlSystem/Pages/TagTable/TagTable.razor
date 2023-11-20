@@ -6,7 +6,7 @@
 <div class="actions">
     <input type="text" id="myInput" @onkeypress="@Enter" @bind-value="input" placeholder="Поиск по TagName">
     @*<button class="actions-add-tag btn-primary" @onclick="AddTag">Добавить Tag</button>*@
-    <button class="actions-add-tag btn-primary" @onclick="OpenDeleteTagModal">Добавить Tag</button>
+    <button class="actions-add-tag btn-primary" @onclick="OpenEditTagModal">Добавить Tag</button>
 </div>
 
 
@@ -36,20 +36,21 @@ else
                         <Loader/>
                     </Placeholder>
                 </Virtualize>
-               <AddTagComponent @ref="AddTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></AddTagComponent>
-               <EditTagComponent @ref="EditTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></EditTagComponent>
-               <CorrectorTagComponent @ref="CorrectorTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></CorrectorTagComponent>
-               <DeleteTagComponent @ref="DeleteTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></DeleteTagComponent>
-           </tbody>
+               </tbody>
         </table>
-    </div>   
+    </div>
+    
+    <AddTagModal @ref="AddTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></AddTagModal>
+    <EditTagModal @ref="EditTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></EditTagModal>
+    <CorrectTagModal @ref="CorrectorTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></CorrectTagModal>
+    <DeleteTagModal @ref="DeleteTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></DeleteTagModal>
 }
 
 @code {
-    AddTagComponent? AddTagModal;
-    EditTagComponent? EditTagModal;
-    CorrectorTagComponent? CorrectorTagModal;
-    DeleteTagComponent? DeleteTagModal;
+    AddTagModal? AddTagModal;
+    EditTagModal? EditTagModal;
+    CorrectTagModal? CorrectorTagModal;
+    DeleteTagModal? DeleteTagModal;
 
     void OpenAddTagModal()
     {
@@ -60,7 +61,7 @@ else
     {
         EditTagModal.Show();
     }
-    void OpenCorrectorTagModal()
+    void OpenCorrectTagModal()
     {
         CorrectorTagModal.Show();
     }

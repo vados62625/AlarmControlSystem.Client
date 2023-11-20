@@ -1,0 +1,51 @@
+﻿<div class="tag-table__modal-info">
+	<p class="tag-table__modal-title">@Title</p>
+	<div class="w-100 h-100 p-0 d-flex flex-column gap-2 justify-content-between">
+		<div class="d-flex justify-content-between">
+			<div class="tag-table__modal-item-container">
+				<p>Позиция по ГП</p>
+				<input class="tag-table__modal-item-input smaller" type="text" placeholder="Введите позицию по ГП">
+			</div>
+			<div class="tag-table__modal-item-container">
+				<p>TagName</p>
+				<input class="tag-table__modal-item-input smaller" type="text" placeholder="313_PIZA_104" readonly>
+			</div>
+		</div>
+		<div class="d-flex justify-content-between">
+			<div class="tag-table__modal-item-container">
+				<p>Состояние</p>
+				<input class="tag-table__modal-item-input smaller" type="text" placeholder="LL" readonly>
+			</div>
+			<div class="tag-table__modal-item-container">
+				<p>Приоритет</p>
+				<div class="tag-table__modal-custom-select">
+					<select class="tag-table__modal-item-select smaller" onchange="this.style.color='#002033'">
+						<option disabled selected hidden>Выберите приоритет</option>
+						<option>Приоритет 1</option>
+						<option>Приоритет 2</option>
+						<option>Приоритет 3</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="tag-table__modal-item-container">
+			<p>Описание</p>
+			<input class="tag-table__modal-item-input" type="text" placeholder="Введите описание">
+		</div>
+		<div class="d-flex justify-content-between">
+			<div class="tag-table__modal-item-container @MeaningDifferentStyle">
+				<p>Уставка</p>
+				<input class="tag-table__modal-item-input smaller" type="text" placeholder="Введите уставку">
+			</div>
+			<div class="tag-table__modal-item-container">
+				<p>Единицы измерения</p>
+				<input class="tag-table__modal-item-input smaller" type="text" placeholder="Введите ед. измерения">
+			</div>
+		</div>
+	</div>
+</div>
+
+@code {
+	[Parameter] public string? Title { get; set; }
+	[Parameter] public string? MeaningDifferentStyle { get; set; }
+}

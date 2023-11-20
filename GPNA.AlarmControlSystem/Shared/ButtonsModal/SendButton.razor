@@ -1,0 +1,15 @@
+﻿<button @onclick="Click" class="button-modal send">
+	<svg>
+		<use href="/img/icons/icons.svg#tag-modal-send"></use>
+	</svg>
+	<p>Разослать</p>
+</button>
+
+@code {
+    [Parameter] public EventCallback<bool> ClickEvent { get; set; }    
+
+    private async Task Click()
+    {
+        await ClickEvent.InvokeAsync(true);
+    }
+}

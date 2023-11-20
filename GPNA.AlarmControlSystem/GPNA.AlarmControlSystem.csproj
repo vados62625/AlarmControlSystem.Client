@@ -37,6 +37,10 @@
     <_ContentIncludedByDefault Remove="Pages\Main\Charts\DoughnutChart.razor" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\css\TagTableModals.css" />
+  </ItemGroup>
+
 
 
 

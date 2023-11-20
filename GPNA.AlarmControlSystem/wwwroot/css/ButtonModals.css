@@ -1,0 +1,73 @@
+﻿.button-modal {
+    border-radius: 6px;
+    border: none;
+    width: 135px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}    
+
+.button-modal svg {
+    width: 15px;
+    height: 12px;
+}
+
+.button-modal p {
+    font-weight: 400;
+    font-size: 12px;
+    margin-left: 13px;
+}
+
+    .button-modal.save, .button-modal.send {
+        background: #DDF1FC;
+    }
+
+    .button-modal.save:hover, .button-modal.send:hover {
+        background: #D0EDFD;
+    }
+
+    .button-modal.cancel {
+        background: #F0F2F3;
+    }
+
+    .button-modal.cancel:hover, .button-modal.cancel.delete:hover {
+        background: #E8E8E8;
+    }
+
+    .button-modal.cancel.delete {
+        background: #FFFFFF;
+    }
+
+    .button-modal.delete {
+        background: #E25757;
+    }
+
+    .button-modal.delete:hover {
+        background: #D75353;
+    }
+
+.button-modal-container {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    padding: 0;
+}
+
+.button-modal.close {
+    border: none;
+    background: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    background-color: transparent;
+    cursor: pointer;
+    display: block;
+    width: 10px;
+    height: 10px;
+}
+
+.button-modal.close svg {
+    width: 8px;
+    height: 8px;
+}

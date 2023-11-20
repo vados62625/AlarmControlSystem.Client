@@ -1,0 +1,39 @@
+﻿@using GPNA.AlarmControlSystem.Shared.ButtonsModal
+
+@if (displayDeleteTagModal)
+{
+	<div class="modal-backdrop show"></div>
+
+	<div class="modal tag-table__modal-bg delete">
+			<CloseButton ClickEvent="ClickCloseTag"></CloseButton>
+			<p class="tag-table__modal-title">ОКНО УДАЛЕНИЯ ПАРАМЕТРА</p>
+			
+			<p class="modal-delete-text">Вы уверены, что хотите удалить параметр?</p>
+			<p class="modal-delete-text">(В случае активности будет отображаться как новый)</p>				
+			<div class="tag-table__modal-button-container">
+				<DeleteButton ClickEvent="ClickSaveTag"></DeleteButton>
+				<CancelButton TypeModal="delete" ClickEvent="ClickCloseTag"></CancelButton>
+			</div>
+		</div>
+}
+
+
+@code {
+	bool displayDeleteTagModal = false;
+
+	[Parameter] public EventCallback SaveTag { get; set; }
+	[Parameter] public EventCallback CloseTag { get; set; }	
+
+	public void Show() => displayDeleteTagModal = true;
+	public void Hide() => displayDeleteTagModal = false;
+
+	private async Task ClickSaveTag()
+	{
+		displayDeleteTagModal = false;
+	}
+
+	private async Task ClickCloseTag()
+	{
+		displayDeleteTagModal = false;
+	}
+}

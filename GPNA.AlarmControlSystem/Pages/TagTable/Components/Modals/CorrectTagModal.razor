@@ -1,0 +1,104 @@
+﻿@using GPNA.AlarmControlSystem.Shared.ButtonsModal
+
+@if (displayCorrectTagModal)
+{
+	<div class="modal-backdrop show"></div>
+
+	<div class="modal tag-table__modal-bg correct">
+		<CloseButton ClickEvent="ClickCloseTag"></CloseButton>			
+			<p class="tag-table__modal-title">ЗАПРОС НА КОРРЕКТИРОВКИ</p>
+			<div class="w-100 h-100 p-0 d-flex flex-column gap-2 justify-content-between">
+				<div class="d-flex flex-column gap-2 align-items-end">
+					<div class="d-flex gap-3 justify-content-end">
+						<div class="tag-table__modal-item-container">
+							<p>ФИО</p>
+							<div class="tag-table__modal-custom-select">
+								<select class="tag-table__modal-item-select small" onchange="this.style.color='#002033'">
+									<option disabled selected hidden>Выберите получателя</option>
+									<option>Получатель 1</option>
+									<option>Получатель 2</option>
+									<option>Получатель 3</option>
+								</select>
+							</div>						
+						</div>
+						<div class="tag-table__modal-item-container">
+							<p>Должность</p>
+							<input class="tag-table__modal-item-input small" type="text" placeholder="Подставится автоматически" readonly>
+						</div>
+					</div>					
+					<button class="button-adressee-add">
+						<svg>
+							<use href="/img/icons/icons.svg#tag-modal-add"></use>
+						</svg>
+						<p>Добавить</p>
+					</button>					
+				</div>
+				<div class="tag-table__modal-item-container">
+					<p>Тело письма</p>
+					<input class="tag-table__modal-item-input" type="text" placeholder="Введите тело письма">
+				</div>
+				<div class="d-flex justify-content-between">
+					<CorrectTagInfoComponent Title="Текущая информация" MeaningDifferentStyle="red"></CorrectTagInfoComponent>
+					<CorrectTagInfoComponent Title="Корректная информация"></CorrectTagInfoComponent>					
+				</div>
+				<div class="tag-table__modal-info big">
+					<p class="tag-table__modal-title">РЕГЛАМЕНТ</p>
+					<div class="d-flex justify-content-between gap-5">
+						<div class="d-flex flex-column gap-2 justify-content-between">
+							<div class="tag-table__modal-item-container">
+								<p>Потенциальные последствия</p>
+							<textarea class="tag-table__modal-item-textarea big" type="text" placeholder="Введите потенциальные последствия"></textarea>
+							</div>
+							<div class="tag-table__modal-item-container">
+								<p>Условия усиления</p>
+							<textarea class="tag-table__modal-item-textarea big" type="text" placeholder="Введите условия усиления"></textarea>
+							</div>
+							<div class="tag-table__modal-item-container">
+								<p>Время на реакцию</p>
+							<input class="tag-table__modal-item-input big" type="text" placeholder="Введите время на реакцию">
+							</div>
+
+						</div>
+						<div class="d-flex flex-column gap-2 justify-content-start">
+							<div class="tag-table__modal-item-container @MeaningDifferentStyle">
+								<p>Действия Полевого оператора</p>
+							<textarea class="tag-table__modal-item-textarea big" type="text" placeholder="Введите действия полевого оператора"></textarea>
+							</div>
+							<div class="tag-table__modal-item-container">
+								<p>Действия оператора АРМ</p>
+							<textarea class="tag-table__modal-item-textarea big" type="text" placeholder="Введите действия оператора АРМ"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>				
+				<div class="tag-table__modal-button-container">					
+					<SendButton ClickEvent="ClickSaveTag"></SendButton>
+					<CancelButton ClickEvent="ClickCloseTag"></CancelButton>					
+				</div>			
+		</div>
+	</div>		
+	
+}
+
+
+@code {
+	[Parameter] public string? MeaningDifferentStyle { get; set; } = "red";
+
+	bool displayCorrectTagModal = false;
+
+	[Parameter] public EventCallback SaveTag { get; set; }
+	[Parameter] public EventCallback CloseTag { get; set; }	
+
+	public void Show() => displayCorrectTagModal = true;
+	public void Hide() => displayCorrectTagModal = false;
+
+	private async Task ClickSaveTag()
+	{
+		displayCorrectTagModal = false;
+	}
+
+	private async Task ClickCloseTag()
+	{
+		displayCorrectTagModal = false;
+	}
+}
