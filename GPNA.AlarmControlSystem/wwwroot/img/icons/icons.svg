@@ -125,6 +125,32 @@
 			<path fill-rule="evenodd" clip-rule="evenodd" d="M5.97001 8.94303L0.938913 4.72143L0 5.84039L6.14899 11L14.592 0.938022L13.4741 0L5.97001 8.94303Z" fill="#002033"/>
 		</symbol>
 
+		<symbol id="tag-table-attention" viewBox="0 0 9 10" fill="none">
+			<circle cx="4.5" cy="5" r="4.5" fill="#EB5757"/>
+			<circle cx="4.5" cy="7" r="0.5" fill="white"/>
+			<rect x="4" y="2.5" width="1" height="3" rx="0.5" fill="white"/>
+		</symbol>
+		<symbol id="tag-table-reglament" viewBox="0 0 15 17" fill="none">
+			<rect x="0.5" y="0.5" width="14" height="16" rx="1.5" stroke="currentColor"/>
+			<path d="M3.5 8.5H9.5" stroke="currentColor" stroke-linecap="round"/>
+			<path d="M3.5 4.5H11.5" stroke="currentColor" stroke-linecap="round"/>
+			<path d="M3.5 12.5H8.5" stroke="currentColor" stroke-linecap="round"/>
+		</symbol>
+		<symbol id="tag-table-add" viewBox="0 0 13 13" fill="none">
+			<path fill-rule="evenodd" clip-rule="evenodd" d="M6.5 0C6.77614 0 7 0.128612 7 0.287262V12.7127C7 12.8714 6.77614 13 6.5 13C6.22386 13 6 12.8714 6 12.7127V0.287262C6 0.128612 6.22386 0 6.5 0Z" fill="white"/>
+			<path fill-rule="evenodd" clip-rule="evenodd" d="M0 6.5C0 6.77614 0.128612 7 0.287262 7H12.7127C12.8714 7 13 6.77614 13 6.5C13 6.22386 12.8714 6 12.7127 6H0.287262C0.128612 6 0 6.22386 0 6.5Z" fill="white"/>
+		</symbol>
+		<symbol id="tag-table-edit" viewBox="0 0 12 12" fill="none">
+			<path d="M12 3L9 0L7.58578 1.41422L10.5858 4.41422L12 3Z" fill="#002033" fill-opacity="0.3"/>
+			<path d="M9.87868 5.12132L6.87868 2.12132L0 9.00001V12H3L9.87868 5.12132Z" fill="#002033" fill-opacity="0.3"/>
+		</symbol>
+		<symbol id="tag-table-correct" viewBox="0 0 14 12" fill="none">
+			<path d="M1.4 0C0.626801 0 0 0.671573 0 1.5V2.35047L7 6.63619L14 2.35047V1.5C14 0.671573 13.3732 0 12.6 0H1.4Z" fill="#0078D2" fill-opacity="0.5"/>
+			<path d="M14 4.0781L7 8.36381L0 4.0781V10.5C0 11.3284 0.626802 12 1.4 12H12.6C13.3732 12 14 11.3284 14 10.5V4.0781Z" fill="#0078D2" fill-opacity="0.5"/>
+		</symbol>
+		<symbol id="tag-table-delete" viewBox="0 0 14 14" fill="none">
+			<path fill-rule="evenodd" clip-rule="evenodd" d="M7 14C10.866 14 14 10.866 14 7C14 3.13401 10.866 0 7 0C3.13401 0 0 3.13401 0 7C0 10.866 3.13401 14 7 14ZM7 5.727L9.4657 3.26022C9.81717 2.90875 10.387 2.90875 10.7385 3.26022C11.09 3.6117 11.09 4.18154 10.7385 4.53302L8.272 7.001L10.7385 9.46999C11.09 9.82146 11.09 10.3913 10.7385 10.7428C10.387 11.0943 9.81717 11.0943 9.4657 10.7428L7 8.275L4.5357 10.7428C4.18423 11.0943 3.61438 11.0943 3.26291 10.7428C2.91144 10.3913 2.91144 9.82146 3.26291 9.46999L5.728 7.001L3.26291 4.53302C2.91144 4.18154 2.91144 3.6117 3.26291 3.26022C3.61438 2.90875 4.18423 2.90875 4.5357 3.26022L7 5.727Z" fill="#EB5757" fill-opacity="0.6"/>
+		</symbol>
 
 
 

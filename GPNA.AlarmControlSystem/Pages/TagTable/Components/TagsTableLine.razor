@@ -1,0 +1,92 @@
+﻿@using GPNA.AlarmControlSystem.Pages.Monitoring.Components
+
+<tr class="@TagStatus">
+    <td @onclick="ShowMoreAttributes">                
+        <div class="tag-table-indicator @TagStatus"></div>                               
+    </td>           
+    <td @onclick="ShowMoreAttributes">20_1_TT_34_BLKKKEY_LL</td>           
+    <td @onclick="ShowMoreAttributes">
+        <div class=" d-flex gap-2 align-items-center">
+            @if (AttentionDescription) {                    
+                <svg class="tag-table-icon-attention">
+                    <use href="/img/icons/icons.svg#tag-table-attention"></use>
+                </svg>                        
+            }
+            <p>Описание</p>
+        </div>                                
+    </td>
+    <td @onclick="ShowMoreAttributes">
+        @if (AttentionPriority) {
+            <div class="position-relative">
+                <div class="tag-table-container-attention priority">
+                    <svg class="tag-table-icon-attention">
+                        <use href="/img/icons/icons.svg#tag-table-attention"></use>
+                    </svg>
+                </div>
+            </div>
+        }                
+        <MonitoringTableStatus Title="КРИТИЧНЫЙ" Priority="urgent"></MonitoringTableStatus></td>
+    <td @onclick="ShowMoreAttributes">
+        @if (AttentionSetting) {
+            <div class="position-relative">
+            <div class="tag-table-container-attention">
+                <svg class="tag-table-icon-attention">
+                    <use href="/img/icons/icons.svg#tag-table-attention"></use>
+                </svg>
+            </div>
+        </div>
+        }                
+        <p>440</p>                
+    </td>
+    <td @onclick="ShowMoreAttributes">
+        <svg class="tag-table-icon-reglament @ReglamentColor">
+            <use href="/img/icons/icons.svg#tag-table-reglament"></use>
+        </svg>
+    </td>
+    <td>
+        <div class="d-flex gap-1 justify-content-center align-items-center">
+            <button class="tag-table-button-modal">
+                <svg>
+                    <use href="/img/icons/icons.svg#tag-table-edit"></use>
+                </svg>
+            </button>
+            <button class="tag-table-button-modal">
+                <svg>
+                    <use href="/img/icons/icons.svg#tag-table-correct"></use>
+                </svg>
+            </button>
+            <button class="tag-table-button-modal">
+                <svg>
+                    <use href="/img/icons/icons.svg#tag-table-delete"></use>
+                </svg>
+            </button>
+                    
+        </div>
+    </td>
+</tr>
+@if (_displayComment)
+{   
+    <TagTableInfo Title="Позиция по ГП" Description="20 БКНС"></TagTableInfo>
+    <TagTableInfo Title="Потенциальные последствия" Description="Разгерметизация оборудования"></TagTableInfo>
+    <TagTableInfo Title="Действия Полевого оператора" Description="Полевой персонал: - произвести осмотр оборудования по месту на предмет целостности и герметичности. В случае наличия разгерметизации действовать согласно ПМЛА: - сравнить показания с техническим манометром по месту; - на дефектном насосе вывесить табличку в ремонте"></TagTableInfo>
+    <TagTableInfo Title="Действия Оператора APM" Description="Оператор АРМ: - проверка уровня в 20-ЕД-1. Прекратить операции по возможному сбросу жидкости в 20-ЕД-1; - вывод дефектного оборудования в ремонт; - сделать заявку на ревизию/ремонт оборудования"></TagTableInfo>
+    <TagTableInfo Title="Условия усиления" Description="В случае разгерметизации - согласно ПМЛА; В случае отказа насоса - механик"></TagTableInfo>
+    <TagTableInfo Title="Время на реакцию" Description="5 минут"></TagTableInfo>
+}
+
+@code {
+
+    [Parameter] public string? TagStatus { get; set; }
+    [Parameter] public string? ReglamentColor { get; set; }
+    [Parameter] public bool AttentionDescription { get; set; } = false;
+    [Parameter] public bool AttentionPriority { get; set; } = false;
+    [Parameter] public bool AttentionSetting { get; set; } = false;
+
+    bool _displayComment = false;
+
+    void ShowMoreAttributes()
+    {
+        _displayComment = !_displayComment;
+    }
+
+}

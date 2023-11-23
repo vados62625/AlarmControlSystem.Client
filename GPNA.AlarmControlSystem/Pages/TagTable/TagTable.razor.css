@@ -5,3 +5,64 @@
 .actions-add-tag {
     margin-left:auto;
 }
+
+.tag-table-search-container {
+    display: flex;
+    justify-content:start;
+    gap: 12px;
+    
+}
+
+
+.tagname-filter {
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.tagname-filter input {   
+    min-width: 207px;      
+}
+    .tagname-filter.description input {
+        min-width: 382px;
+    }
+
+.tagname-filter p {
+    font-weight: 400;
+    font-size: 12px;
+}
+.tagname-filter:after {    
+    right: 30px;    
+}
+
+.tag-table-button-add {
+    margin-left: auto;
+    border: none;
+    outline: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 150px;
+    height: 24px;
+    background: #006FBA;
+    border: 1px solid #006FBA;
+    border-radius: 4px;
+    padding-left: 30px;
+    padding-right: 10px;
+}
+
+    .tag-table-button-add:hover {
+        box-shadow: 0px -1px 1px rgba(0, 32, 51, 0.07), 0px 2px 2px rgba(0, 32, 51, 0.07), 0px 1px 1px rgba(0, 32, 51, 0.07), 0px 8px 16px rgba(0, 32, 51, 0.07);
+    }
+
+    .tag-table-button-add svg {
+        width: 13px;
+        height: 13px;
+    }
+    .tag-table-button-add p {
+        font-weight: 400;
+        font-size: 14px;
+        color: #FFFFFF;
+    }
+

@@ -476,7 +476,7 @@ p {
     content: "";
     position: relative;
     right: 20px;
-    top: 40%;
+   /* top: 40%;*/
     bottom: 0;
     width: 13px;
     background: url("/img/icons/icon-search.svg") center / contain no-repeat;
