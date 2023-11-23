@@ -12,12 +12,12 @@ namespace GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
         /// <summary>
         /// Начало периода
         /// </summary>
-        public DateTimeOffset ActivationFrom { get; set; }
+        public DateTimeOffset DateTimeStart { get; set; }
         
         /// <summary>
         /// Конец периода
         /// </summary>
-        public DateTimeOffset ActivationTo { get; set; }
+        public DateTimeOffset DateTimeEnd { get; set; }
         
         /// <summary>
         /// Статус сигнализации

@@ -79,7 +79,7 @@ public partial class Index : ComponentBase
     {
         if (WorkStationService != null && FieldId != null)
         {
-            var query = new GetAlarmsCountForFieldQuery { FieldId = FieldId.Value, ActivationFrom = DateTime.AddDays(-7), ActivationTo = DateTime };
+            var query = new GetAlarmsCountForFieldQuery { FieldId = FieldId.Value, DateTimeStart = DateTime.AddDays(-7), DateTimeEnd = DateTime };
             var result = await WorkStationService.GetWorkstationsWithStatistics(query);
 
             if (result.Success)

@@ -80,8 +80,8 @@ namespace GPNA.AlarmControlSystem.Pages.Reports.GeneralReport
                         new GetIncomingAlarmsByDatesQuery
                         {
                             WorkStationId = workStation.Id,
-                            ActivationFrom = From,
-                            ActivationTo = To,
+                            DateTimeStart = From,
+                            DateTimeEnd = To,
                         });
 
                     if (incomingAlarmsResult.Success)
@@ -153,8 +153,8 @@ namespace GPNA.AlarmControlSystem.Pages.Reports.GeneralReport
             {
                 DocumentType = ExportDocumentType.Excel,
                 WorkStationId = WorkstationId ?? 0,
-                ActivationFrom = From,
-                ActivationTo = To,
+                DateTimeStart = From,
+                DateTimeEnd = To,
             });
 
             return new MemoryStream(result);

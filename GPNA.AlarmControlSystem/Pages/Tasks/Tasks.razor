@@ -253,8 +253,8 @@
                 {
                     WorkStationId = WorkstationId ?? 0,
                     TagName = TagNameFilter,
-                    ActivationFrom = From,
-                    ActivationTo = To,
+                    DateTimeStart = From,
+                    DateTimeEnd = To,
                     State = StateFilter,
                     Priority = PriorityFilter,
                     OrderPropertyName = _orderBy,
@@ -286,8 +286,8 @@
                 DocumentType = ExportDocumentType.Excel,
                 WorkStationId = WorkstationId ?? 0,
                 TagName = TagNameFilter,
-                ActivationFrom = From,
-                ActivationTo = To,
+                DateTimeStart = From,
+                DateTimeEnd = To,
                 State = StateFilter,
                 Priority = PriorityFilter,
             });

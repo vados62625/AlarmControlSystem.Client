@@ -176,8 +176,8 @@ public partial class Monitoring : ComponentBase
             {
                 WorkStationId = WorkstationId ?? 0,
                 TagName = _tagNameFilter,
-                ActivationFrom = _from,
-                ActivationTo = _to,
+                DateTimeStart = _from,
+                DateTimeEnd = _to,
                 State = _stateFilter,
                 Priority = _priorityFilter,
                 OrderPropertyName = _orderBy,
@@ -205,8 +205,8 @@ public partial class Monitoring : ComponentBase
             {
                 WorkStationId = WorkstationId ?? 0,
                 TagName = _tagNameFilter,
-                ActivationFrom = _from,
-                ActivationTo = _to,
+                DateTimeStart = _from,
+                DateTimeEnd = _to,
                 State = _stateFilter,
                 Priority = _priorityFilter,
                 OrderPropertyName = _orderBy,
@@ -235,8 +235,8 @@ public partial class Monitoring : ComponentBase
             {
                 WorkStationId = WorkstationId ?? 0,
                 TagName = _tagNameFilter,
-                ActivationFrom = _from,
-                ActivationTo = _to,
+                DateTimeStart = _from,
+                DateTimeEnd = _to,
                 State = _stateFilter,
                 Priority = _priorityFilter,
                 OrderPropertyName = _orderBy,
@@ -274,8 +274,8 @@ public partial class Monitoring : ComponentBase
             DocumentType = ExportDocumentType.Excel,
             WorkStationId = WorkstationId ?? 0,
             TagName = _tagNameFilter,
-            ActivationFrom = _from,
-            ActivationTo = _to,
+            DateTimeStart = _from,
+            DateTimeEnd = _to,
             State = _stateFilter,
             Priority = _priorityFilter,
         });
