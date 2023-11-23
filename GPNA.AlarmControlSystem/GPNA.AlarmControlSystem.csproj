@@ -50,6 +50,8 @@
     <_ContentIncludedByDefault Remove="Pages\Main\Tables\IncomingAlarms.razor" />
     <_ContentIncludedByDefault Remove="Pages\Main\Tables\SuppressedAlarms.razor" />
     <_ContentIncludedByDefault Remove="Pages\Main\Tables\SuppressedAlarmsOverdue.razor" />
+    <_ContentIncludedByDefault Remove="Pages\ArchivedAlarms\Alarms\ArchivedAlarm.razor" />
+    <_ContentIncludedByDefault Remove="Pages\ArchivedAlarms\ArchivedAlarms.razor" />
   </ItemGroup>
 
   <ItemGroup>

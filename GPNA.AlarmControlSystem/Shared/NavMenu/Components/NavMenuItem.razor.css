@@ -9,6 +9,8 @@
     height: 35px;
     display: flex;
     position: relative;
+    flex-direction: column;
+    align-items: center;
 }
 
 ::deep .top-menu_link:hover {
@@ -42,7 +44,6 @@
 .sub-menu {
     display: none;
     position: absolute;
-    left: -30px;
     top: 35px;
     background-color: var(--white);
     min-width: 160px;
