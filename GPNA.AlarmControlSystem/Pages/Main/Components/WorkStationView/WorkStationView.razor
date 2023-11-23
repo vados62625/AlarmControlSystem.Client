@@ -2,20 +2,23 @@
 @using GPNA.AlarmControlSystem.Models.Dto.Workstation
 @using GPNA.AlarmControlSystem.Models.Enums
 
-<div class="bg">
-    <div class="bg-fire-container">
-        <p>@Workstation.Name</p>
-        <WorkStationViewIconContainer Fire="Workstation.Fire" Gas="Workstation.Gas"/>
-    </div>
-    <WorkStationViewPieChart Title="Общее количество за" CountAlarms="_countAlarms" DateTime="Workstation.CountIncomingAlarms.Keys.Max()"/>
-    <WorkStationViewPieChart Title="Уникальные" CountAlarms="_countUniqueAlarms" DateTime="Workstation.CountIncomingAlarms.Keys.Max()"/>
+@if(Workstation!=null)
+{
+    <div class="bg">
+        <div class="bg-fire-container">
+            <p>@Workstation.Name</p>
+            <WorkStationViewIconContainer Fire="@Workstation.Fire" Gas="@Workstation.Gas"/>
+        </div>
+        <WorkStationViewPieChart Title="Общее количество за" CountAlarms="_countAlarms" DateTime="Workstation.CountIncomingAlarms.Keys.Max()"/>
+        <WorkStationViewPieChart Title="Уникальные" CountAlarms="_countUniqueAlarms" DateTime="Workstation.CountIncomingAlarms.Keys.Max()"/>
 
-    <div class="bg-table-container">
-        <WorkStationViewTable AlarmsCount="Workstation.CountIncomingAlarms" VisibleTablePriority="true" Title="ВХОДЯЩИЕ СИГНАЛИЗАЦИИ"/>
-        <WorkStationViewTable AlarmsCount="Workstation.CountActiveAlarms" Title="АКТИВНЫЕ СИГНАЛИЗАЦИИ"/>
-        <WorkStationViewTable AlarmsCount="Workstation.CountSuppressedAlarms" Title="ПОДАВЛЕННЫЕ СИГНАЛИЗАЦИ"/>
+        <div class="bg-table-container">
+            <WorkStationViewTable AlarmsCount="Workstation.CountIncomingAlarms" VisibleTablePriority="true" Title="ВХОДЯЩИЕ СИГНАЛИЗАЦИИ"/>
+            <WorkStationViewTable AlarmsCount="Workstation.CountActiveAlarms" Title="АКТИВНЫЕ СИГНАЛИЗАЦИИ"/>
+            <WorkStationViewTable AlarmsCount="Workstation.CountSuppressedAlarms" Title="ПОДАВЛЕННЫЕ СИГНАЛИЗАЦИ"/>
+        </div>
     </div>
-</div>
+}
 
 @code {
 
@@ -39,8 +42,6 @@
                 _countUniqueAlarms = lastDayCount.Value.ToDictionary(c => c.Priority, c => c.CountSensorsDayPriority);
             }
         }
-
-        base.OnInitialized();
     }
 
 }

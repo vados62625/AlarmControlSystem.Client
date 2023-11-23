@@ -145,7 +145,7 @@ public partial class Monitoring : ComponentBase
         {
             case AlarmTypeEnum.Incoming:
             {
-                await SpinnerService.Load(UpdateAlarms);
+                await SpinnerService.Load(UpdateIncomingAlarms);
                 break;
             }
             case AlarmTypeEnum.Active:
@@ -159,7 +159,6 @@ public partial class Monitoring : ComponentBase
                 break;
             }
         }
-        
     }
 
     private void SetDates()
@@ -169,7 +168,7 @@ public partial class Monitoring : ComponentBase
         _from = new DateTimeOffset(_to.Year, _to.Month, _to.Day, hourOfDay, 0, 0, 0, _to.Offset);
     }
 
-    private async Task UpdateAlarms()
+    private async Task UpdateIncomingAlarms()
     {
         if (IncomingAlarmService != null)
         {

@@ -32,10 +32,24 @@
 
   <ItemGroup>
     <AdditionalFiles Include="Pages\Main\Components\Charts\DoughnutChart.razor" />
+    <AdditionalFiles Include="Pages\Reports\GeneralReport\Charts\Chart1.razor" />
+    <AdditionalFiles Include="Pages\Reports\GeneralReport\Charts\Chart2.razor" />
   </ItemGroup>
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Pages\Main\Charts\DoughnutChart.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Reports\Charts\Chart1.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Reports\Charts\Chart2.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Monitoring\Alarms\ActiveAlarmComponentOld.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Monitoring\Alarms\IncomingAlarmComponentOld.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Monitoring\Alarms\SuppressedAlarmComponentOld.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Main\Alarms\ActiveAlarmComponent.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Main\Alarms\SuppressedAlarmComponent.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Main\Tables\ActiveAlarms.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Main\Tables\ActiveAlarmsOverdue.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Main\Tables\IncomingAlarms.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Main\Tables\SuppressedAlarms.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Main\Tables\SuppressedAlarmsOverdue.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,6 +61,7 @@
   <ItemGroup>
     <Folder Include="Models\Dto\Task\" />
   </ItemGroup>
+
 
 
 

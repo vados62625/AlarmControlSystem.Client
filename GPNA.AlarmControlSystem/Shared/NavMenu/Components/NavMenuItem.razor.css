@@ -7,7 +7,7 @@
     color: rgba(0, 32, 51, 0.60);
     text-decoration: none;
     height: 35px;
-    display: block;
+    display: flex;
     position: relative;
 }
 
@@ -36,7 +36,9 @@
 
 .top-menu_link-title {
     margin-right: 6px;
+    text-wrap: nowrap;
 }
+
 .sub-menu {
     display: none;
     position: absolute;

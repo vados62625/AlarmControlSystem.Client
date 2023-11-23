@@ -44,32 +44,6 @@
     padding-inline-start:0;
 }
 
-
-
-.sub-menu {
-    display: none;
-    position: absolute;
-    top: 49px;
-    border: 1px solid var(--color-bg-border);
-    align-items: center;
-    background-color: var(--color-bg-default);
-    list-style:none;
-    padding:0 12px;
-}
-
-.top-menu_item:hover .sub-menu {
-    display: flex;
-    gap: 16px;
-    margin:0;
-}
-
-.sub-menu_item {
-    z-index: 99;
-    display: flex;
-    height: 40px;
-    line-height: 40px;
-}
-
 .header-right-side{
     margin: auto 20px auto auto;
 }

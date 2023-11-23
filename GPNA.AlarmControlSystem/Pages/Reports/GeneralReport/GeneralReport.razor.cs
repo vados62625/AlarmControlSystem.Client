@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
 
-namespace GPNA.AlarmControlSystem.Pages.Reports
+namespace GPNA.AlarmControlSystem.Pages.Reports.GeneralReport
 {
-    public partial class Reports : ComponentBase
+    public partial class GeneralReport : ComponentBase
     {
         [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
 

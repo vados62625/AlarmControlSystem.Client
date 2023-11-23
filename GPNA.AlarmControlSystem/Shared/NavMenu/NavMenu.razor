@@ -15,10 +15,10 @@
     <ul class="top-menu">
         <NavMenuItem Title="Главная" Href="" LinksDictionary="FieldLinksDictionary" NavLinkMatch="NavLinkMatch.All"/>
         <NavMenuItem Title="Мониторинг" LinksDictionary="FieldLinksDictionary" Href="monitoring"/>
-        <NavMenuItem Title="Задачи" LinksDictionary="FieldLinksDictionary" Href="alarms-at-work"/>
+        <NavMenuItem Title="Задачи" LinksDictionary="FieldLinksDictionary" Href="tasks"/>
         <NavMenuItem Title="Отчеты" LinksDictionary="ReportLinksDictionary" Href="reports"/>
         <NavMenuItem Title="Таблица переменных" LinksDictionary="FieldLinksDictionary" Href="tagtable"/>
-        <NavMenuItem Title="Справочники" Href="directory" WithSubmenu="false"/>
+        @* <NavMenuItem Title="Справочники" Href="directory"/> *@
         <NavMenuItem Title="Настройки" LinksDictionary="SettingsLinksDictionary" Href="settings"/>
     </ul>
 
@@ -42,9 +42,9 @@
     {
         ReportLinksDictionary = new Dictionary<string, string>()
         {
-            { "Общий отчёт", "" },
+            { "Общий отчёт", "/general" },
             { "Отчёт о количестве", "/back-alarms" },
-            { "Статистика выполения", "/execute-tasks" },
+            { "Статистика выполнения", "/execute-tasks" },
         };
         
         SettingsLinksDictionary = new Dictionary<string, string>()
@@ -54,8 +54,6 @@
         };
         
         await GetFields();
-
-        await base.OnInitializedAsync();
     }
     
     private async Task GetFields()
