@@ -1,21 +1,16 @@
 ﻿@page "/tagtable"
+
 @using GPNA.AlarmControlSystem.Pages.TagTable.Components
 @using GPNA.AlarmControlSystem.Pages.TagTable.Components.Modals
-
-@using GPNA.AlarmControlSystem.Pages.AlarmsAtWork.Alarms
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
-@using GPNA.AlarmControlSystem.Pages.AlarmsAtWork.Components
-@using GPNA.AlarmControlSystem.Shared.Pagination
 @using GPNA.AlarmControlSystem.Interfaces
 @using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 @using GPNA.AlarmControlSystem.Models.Dto.Field
 @using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
 @using GPNA.AlarmControlSystem.Models.Dto.Workstation
 @using GPNA.AlarmControlSystem.Models.Enums
-@using GPNA.AlarmControlSystem.Services
 @using GPNA.AlarmControlSystem.Options
 @using Microsoft.Extensions.Options
-@inject IJSRuntime JS
 
 
 <div class="page-main">
@@ -260,8 +255,8 @@
                 {
                     WorkStationId = WorkstationId ?? 0,
                     TagName = TagNameFilter,
-                    ActivationFrom = From,
-                    ActivationTo = To,
+                    DateTimeStart = From,
+                    DateTimeEnd = To,
                     State = StateFilter,
                     Priority = PriorityFilter,
                     OrderPropertyName = _orderBy,
@@ -285,8 +280,8 @@
                 DocumentType = ExportDocumentType.Excel,
                 WorkStationId = WorkstationId ?? 0,
                 TagName = TagNameFilter,
-                ActivationFrom = From,
-                ActivationTo = To,
+                DateTimeStart = From,
+                DateTimeEnd = To,
                 State = StateFilter,
                 Priority = PriorityFilter,
             });
