@@ -1,0 +1,15 @@
+﻿<tr class="tag-table-info">
+    <td class="bg-tag-info" colspan="2">       
+        <p class="tag-info-title">@Title</p>                
+    </td>
+    <td class="bg-tag-info" colspan="5">
+        <div class="tag-info-description">
+            <p>@Description</p>
+        </div>            
+    </td>
+</tr>
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Description { get; set; }
+}

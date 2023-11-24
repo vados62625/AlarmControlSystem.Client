@@ -1,0 +1,33 @@
+﻿
+    @if (WidthLarge)
+    {
+        <div class="bg @StatusTags large">
+            <div class="container">
+                <p class="title">@Title</p>
+                <p class="value">@Value</p>
+            </div>
+            <div class="container">
+                <p class="title @NumberLinesTitle">@Title1</p>
+                <p class="value">@Value1%</p>
+            </div>
+        </div>        
+    } else
+    {
+        <div class="bg @StatusTags">
+            <div class="container">
+                <p class="title @NumberLinesTitle">@Title</p>
+                <p class="value">@Value</p>
+            </div>
+        </div>
+    }      
+
+
+@code {
+    [Parameter] public string? StatusTags { get; set; }
+    [Parameter] public bool WidthLarge { get; set; } = false;   
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Title1 { get; set; }
+    [Parameter] public string? NumberLinesTitle { get; set; }
+    [Parameter] public int? Value { get; set; } = 0;
+    [Parameter] public int? Value1 { get; set; } = 0;
+}
