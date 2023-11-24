@@ -21,24 +21,10 @@
 
 @code {
     [Parameter] public string? StatusTags { get; set; }
-    [Parameter] public string? Width { get; set; }
-    //[Parameter] public string? StatusActive { get; set; }
+    [Parameter] public string? Width { get; set; }    
     [Parameter] public string? Title { get; set; }
     [Parameter] public string? Title1 { get; set; }
     [Parameter] public string? NumberLinesTitle { get; set; }
     [Parameter] public int? Value { get; set; } = 0;
     [Parameter] public int? Value1 { get; set; } = 0;
-    //private string? DomClass { get; set; }
-    
-    //protected override void OnParametersSet()
-    //{
-    //    DomClass = string.Empty;
-
-    //    if (!string.IsNullOrEmpty(Priority)) DomClass += $" {Priority}";
-    //    if (!string.IsNullOrEmpty(Status)) DomClass += $" {Status}";
-    //    if (!string.IsNullOrEmpty(StatusActive)) DomClass += $" {StatusActive}";
-        
-    //    base.OnParametersSet();
-    //}
-
 }

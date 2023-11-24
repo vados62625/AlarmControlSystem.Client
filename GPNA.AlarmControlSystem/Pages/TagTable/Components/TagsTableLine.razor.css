@@ -1,12 +1,64 @@
-﻿.bg-tag-table {
-    width: 100%;
-    border-radius: 6px;
-    background: none;
+﻿.tag-table-line {
+    height: 40px;
+    align-items: center;
+    font-weight: 400;
+    font-size: 12px;
 }
+
+    .tag-table-line:first-child {
+        height: 50px;
+    }
+
+    .tag-table-line:first-child td {
+        padding-top: 10px;
+    }
+   
+    .tag-table-line td {
+        padding: 0 10px;
+    }
+        .tag-table-line td:first-child {
+            padding-left: 14px;
+        }
+
+    .tag-table-line td:nth-child(5), .tag-table-line td:nth-child(7), .tag-table-line td:last-child {
+        text-align: center;
+    }
+
+    .tag-table-line:not(:has(+ .tag-table-info)) {
+        border-bottom: 0.5px solid rgba(0, 32, 51, 0.15);
+    }
 
     .bg-tag-table .indicator-container {
         justify-content: end;
     }
+
+    .tag-table-line:hover {
+        background: rgba(204, 217, 224, 0.15);
+    }
+
+    .tag-table-line.incorrect {
+        background: rgba(235, 87, 87, 0.1);
+    }
+
+        .tag-table-line.incorrect:hover {
+            background: linear-gradient(0deg, rgba(235, 87, 87, 0.15), rgba(235, 87, 87, 0.15)), #FFFFFF;
+        }
+
+    .tag-table-line.unverified {
+        background: rgba(242, 201, 76, 0.2);
+    }
+
+        .tag-table-line.unverified:hover {
+            background: linear-gradient(0deg, rgba(242, 201, 76, 0.25), rgba(242, 201, 76, 0.25)), #FFFFFF;
+        }
+
+    .tag-table-line.new {
+        background: rgba(186, 143, 219, 0.2);
+    }
+
+        .tag-table-line.new:hover {
+            background: linear-gradient(0deg, rgba(186, 143, 219, 0.25), rgba(186, 143, 219, 0.25)), #FFFFFF;
+        } 
 
 .tag-table-indicator {
     width: 9px;
@@ -47,15 +99,13 @@
         left: 13px;
     }
 
-.tag-table-icon-attention.none {
-    display: none;
-}
-
 .tag-table-icon-attention {
     width: 10px;
     height: 10px;
 }
-
+    .tag-table-icon-attention.none {
+        display: none;
+    }
 
 .tag-table-button-modal {
     border: none;
@@ -84,64 +134,3 @@
     .tag-table-icon-reglament.red {
         color: #EB5757;
     }
-
-tr:hover {
-    background: rgba(204, 217, 224, 0.15);
-}
-
-tr.incorrect {
-    background: rgba(235, 87, 87, 0.1);    
-}
-
-    tr.incorrect:hover {
-        background: linear-gradient(0deg, rgba(235, 87, 87, 0.15), rgba(235, 87, 87, 0.15)), #FFFFFF;
-    }
-
-tr.unverified {
-    background: rgba(242, 201, 76, 0.2);
-}
-
-    tr.unverified:hover {
-        background: linear-gradient(0deg, rgba(242, 201, 76, 0.25), rgba(242, 201, 76, 0.25)), #FFFFFF;
-    }
-
-tr.new {
-    background: rgba(186, 143, 219, 0.2);
-}
-    tr.new:hover {
-        background: linear-gradient(0deg, rgba(186, 143, 219, 0.25), rgba(186, 143, 219, 0.25)), #FFFFFF;
-    }
-
-        .bg-tag-table tbody tr td:first-child {
-            padding-left: 14px;
-        }
-
-.bg-tag-table tbody {
-    font-weight: 400;
-    font-size: 12px;
-}
-
-    .bg-tag-table tbody tr {
-        height: 40px;
-        align-items: center;
-    }
-
-        .bg-tag-table tbody tr:first-child {
-            height: 50px;
-        }
-
-            .bg-tag-table tbody tr:first-child td {
-                padding-top: 10px;
-            }
-
-        .bg-tag-table tbody tr:not(:has(+ .tag-table-info)) {
-            border-bottom: 0.5px solid rgba(0, 32, 51, 0.15);
-        }
-       
-        .bg-tag-table tbody tr td {
-            padding: 0 10px;
-        }           
-
-        .bg-tag-table tbody tr td:nth-child(5), .bg-tag-table tbody tr td:nth-child(7), .bg-tag-table tbody tr td:last-child {
-            text-align: center;
-        }
