@@ -1,6 +1,7 @@
 ﻿@page "/monitoring"
 
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Modals
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Tables
 @using GPNA.AlarmControlSystem.Shared.Pagination
 @using GPNA.AlarmControlSystem.Models.Enums
@@ -39,7 +40,7 @@
                                     <b>@_workstationName</b>
                                 </p>
                                 <SelectObject LinksDictionary="_armLinksDictionary"/>
-                            </div>
+                            </div>                            
                             <div class="d-flex gap-2">
                                 @if (FiltersOn)
                                 {
@@ -112,7 +113,8 @@
                                 }
                             }
                             <Pagination CurrentPage="_currentPage" PagesCount="_pagesCount" OnPageClick="OnPageChanged"/>
-                        </div>
+                        </div>                        
+                        <SendAlarmModal @ref="SendAlarmModal" SaveTag="@SaveTag"></SendAlarmModal>
                     </div>
 
                 </CascadingValue>
@@ -120,3 +122,17 @@
         </CascadingValue>
     </CascadingValue>
 </CascadingValue>
+
+
+@code {
+    SendAlarmModal? SendAlarmModal;
+
+    void OpenSendAlarmModal()
+    {
+        SendAlarmModal.Show();
+    }
+    public async Task SaveTag()
+    {
+        SendAlarmModal.Hide();
+    }
+}

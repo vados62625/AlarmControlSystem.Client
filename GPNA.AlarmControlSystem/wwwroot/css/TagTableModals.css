@@ -30,13 +30,21 @@
         gap: 10px;
     }
 
+    .tag-table__modal-bg.send-alarm {
+        width: 371px;
+        height: 200px;        
+        box-shadow: 0px 2px 5px rgba(0, 32, 51, 0.2);
+        padding: 30px;
+        gap: 10px;
+    }
+
 .tag-table__modal-title {
     color: #002033;
     margin-bottom: 15px;
     text-transform: uppercase;
 }
 
-.tag-table__modal-bg.delete .tag-table__modal-title {
+.tag-table__modal-bg.delete .tag-table__modal-title, .tag-table__modal-bg.send-alarm .tag-table__modal-title {
     margin-bottom: 0;
 }
 
