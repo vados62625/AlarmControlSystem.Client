@@ -3,6 +3,7 @@
     align-items: center;
     font-weight: 400;
     font-size: 12px;
+    cursor: pointer;
 }
 
     .tag-table-line:first-child {
@@ -64,8 +65,7 @@
     width: 9px;
     height: 9px;
     border: 1px solid #B0C1CB;
-    border-radius: 50%;
-    background: #FFFFFF;
+    border-radius: 50%;    
 }
 
     .tag-table-indicator.new {
@@ -74,7 +74,7 @@
     }
 
     .tag-table-indicator.norma {
-        background: #FFFFFF;
+        background: transparent;
         border-color: #B0C1CB;
     }
 

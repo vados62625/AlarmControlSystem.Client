@@ -37,26 +37,13 @@
     width: 9px;
     height: 9px;
     border: 1px solid #B0C1CB;
-    border-radius: 50%;
-    background: #FFFFFF;    
+    border-radius: 50%;    
 }
 
     .tag-table-indicator.new {
         background: #B0C1CB;
         border-color: #B0C1CB;
-    }
-    .tag-table-indicator.norma {
-        background: #FFFFFF;
-        border-color: #B0C1CB;
-    }
-    .tag-table-indicator.unverified {
-        background: #F2C94C;
-        border-color: #F2C94C;
-    }
-    .tag-table-indicator.incorrect {
-        background: #EB5757;
-        border-color: #EB5757;
-    }
+    }   
 
 .tag-table-container-attention {
     position: absolute;
