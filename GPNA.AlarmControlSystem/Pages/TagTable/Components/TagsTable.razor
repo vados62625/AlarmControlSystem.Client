@@ -1,7 +1,7 @@
 ﻿@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
+@using GPNA.AlarmControlSystem.Models.Dto.Tag
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
-@*@using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms*@
 
 <table class="bg-tag-table ">
     <thead>
@@ -55,26 +55,28 @@
     </tr>
     </thead>
     <tbody>
-        <TagsTableLine AttentionPriority="true"></TagsTableLine>
-        <TagsTableLine AttentionPriority="true"></TagsTableLine>
-        <TagsTableLine AttentionPriority="true"></TagsTableLine>
-        <TagsTableLine AttentionPriority="true"></TagsTableLine>
-        <TagsTableLine TagStatus="unverified" AttentionDescription="true" ReglamentColor="red"></TagsTableLine>
-        <TagsTableLine TagStatus="new"></TagsTableLine>
-        <TagsTableLine TagStatus="incorrect" AttentionSetting="true"></TagsTableLine> 
+    @if (Tags is {Count: > 0 })
+    {
+        @foreach (var tag in Tags)
+        {
+            <TagsTableLine Tag="tag" OnTagDeleted="OnTagDeleted"/>
+        }
+    }
+    
+    @* <TagsTableLine AttentionPriority="true"></TagsTableLine> *@
+    @* <TagsTableLine AttentionPriority="true"></TagsTableLine> *@
+    @* <TagsTableLine AttentionPriority="true"></TagsTableLine> *@
+    @* <TagsTableLine AttentionPriority="true"></TagsTableLine> *@
+    @* <TagsTableLine TagStatus="unverified" AttentionDescription="true" ReglamentColor="red"></TagsTableLine> *@
+    @* <TagsTableLine TagStatus="new"></TagsTableLine> *@
+    @* <TagsTableLine TagStatus="incorrect" AttentionSetting="true"></TagsTableLine> *@
+    
     </tbody>
 </table>
 
 @code {
-
     [Parameter]
-    public string? ButtonArrow { get; set; } = "arrow-down";
-
-    [Parameter] public string? TagTableStatus { get; set; } = "new";
-    [Parameter] public string? Border { get; set; }
-
-    [Parameter]
-    public IncomingAlarmDto[][]? Alarms { get; set; }
+    public List<TagDto>? Tags { get; set; }
 
     [CascadingParameter(Name = nameof(StateFilter))]
     public StateType? StateFilter { get; set; }
@@ -91,6 +93,9 @@
     [Parameter]
     public EventCallback<string> OnOrderingChanged { get; set; }
 
+    [Parameter] 
+    public EventCallback<TagDto> OnTagDeleted { get; set; }
+    
     private async Task SetStateFilter(StateType? state)
     {
         await OnStateFilterChanged.InvokeAsync(state);

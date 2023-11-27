@@ -53,7 +53,7 @@ public partial class Monitoring : ComponentBase
 
     private IDictionary<string, string>? _fieldLinksDictionary;
 
-    private IDictionary<string, string>? _armLinksDictionary;
+    private IDictionary<string, string>? _workstationLinksDictionary;
 
     private Dictionary<PriorityType, int>? _countByPriority;
 
@@ -133,7 +133,7 @@ public partial class Monitoring : ComponentBase
         
         if (_workstations != null)
         {
-            _armLinksDictionary = _workstations.ToDictionary(workStation => 
+            _workstationLinksDictionary = _workstations.ToDictionary(workStation => 
                     workStation.Name ?? Guid.NewGuid().ToString(), 
                 workStation => $"/monitoring/?alarmType={(int)AlarmType}&fieldId={FieldId}&workstationId={workStation.Id}");
         }

@@ -31,5 +31,15 @@ namespace GPNA.AlarmControlSystem.Models.Dto.Tag
         public int? Page { get; set; }
         public int? ItemsOnPage { get; set; }
         public string? Suggest { get; set; }
+        
+        /// <summary>
+        /// Имя поля для сортировки
+        /// </summary>
+        public string? OrderPropertyName { get; set; }
+    
+        /// <summary>
+        /// Сортировать по убыванию
+        /// </summary>
+        public bool OrderByDescending { get; set; }
     }
 }

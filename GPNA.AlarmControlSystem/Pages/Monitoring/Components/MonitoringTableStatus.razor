@@ -1,9 +1,10 @@
-﻿<div class="table-status @Status @Priority">
+﻿@using GPNA.AlarmControlSystem.Models.Enums
+<div class="table-status @Status?.ToString().ToLower() @Priority?.ToString().ToLower()">
 	<p>@Title</p>
 </div>
 
 @code {
-	[Parameter] public string? Title { get; set; } = "H/L";
-	[Parameter] public string? Status { get; set; }
-	[Parameter] public string? Priority { get; set; }
+	[Parameter] public string? Title { get; set; } = "N/A";
+	[Parameter] public StateType? Status { get; set; }
+	[Parameter] public PriorityType? Priority { get; set; }
 }

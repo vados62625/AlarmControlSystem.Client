@@ -1,0 +1,28 @@
+﻿@inject IModalService ModalService
+
+<div>
+    <p>Вы уверены что хотите удалить Tag "@(Name)" из таблицы?</p>
+    
+    <div class="modal-button-group">
+        <button class="button button-primary" @onclick="No">
+            <span class="fa fa-times"></span>
+            Отменить
+        </button>
+        <button class="button button-success"  @onclick="Yes">
+            <span class="fa fa-check" aria-hidden="true"></span>
+            Да
+        </button>
+    </div>
+</div>
+
+@code {
+
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;
+
+    [Parameter] public string Name { get; set; } = "";
+
+    async Task Yes() => await ModalInstance.CloseAsync(ModalResult.Ok());
+
+    async Task No() => await ModalInstance.CancelAsync();
+
+}
