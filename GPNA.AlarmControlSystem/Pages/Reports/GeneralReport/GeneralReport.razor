@@ -24,8 +24,8 @@
         </button>
     </div>
     <p class="page-title">
-        отчеты @(Options?.Value.BranchName ?? "N/A") М/Р
-        <b style="margin-left: 5px;">@FieldName</b>
+        Отчёты
+        <b style="margin-left: 5px;">@FieldName м/р</b>
         <SelectObject Object="dto" LinksDictionary="FieldLinksDictionary"/>
     </p>
 
@@ -52,7 +52,7 @@
     <div class="chart-container" style="margin-bottom: 30px;">
         @if (IncomingAlarms is {Count: > 0 })
         {
-            <Chart1 Kpi="@inputKpi" IncomingAlarms="@IncomingAlarms"/>
+            <Chart1 Kpi="@inputKpi" IncomingAlarms="@IncomingAlarms" IsEnableRenderChart ="IsEnableRenderChart"/>
         }
         else
         {
@@ -71,7 +71,7 @@
     <div class="chart-container">
         @if (IncomingAlarms is {Count: > 0 })
         {
-            <Chart2 IncomingAlarms="@(IncomingAlarms.TryGetValue(WorkstationName ?? string.Empty, out var alarms) ? alarms : null)"/>
+            <Chart2 IncomingAlarms="@(IncomingAlarms.TryGetValue(WorkstationName ?? string.Empty, out var alarms) ? alarms : null)" IsEnableRenderChart ="IsEnableRenderChart"/>
         }
         else
         {

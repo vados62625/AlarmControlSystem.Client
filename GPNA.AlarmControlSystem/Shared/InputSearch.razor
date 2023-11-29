@@ -1,0 +1,16 @@
+﻿<div class="d-flex align-items-center tagname-filter position-relative">
+    <input placeholder="@Placeholder"
+           type="text" name="tagname"
+           @bind="_value"
+           @bind:event="oninput"
+           @onchange="@(() => OnChange.InvokeAsync(_value))"
+           style="min-width: @(MinWidth + "px")">
+</div>
+
+@code {
+    [Parameter] public string Placeholder { get; set; } = "Поиск";
+    [Parameter] public EventCallback<string> OnChange { get; set; }
+    [Parameter] public int? MinWidth { get; set; }
+    
+    private string _value = string.Empty;
+}

@@ -164,8 +164,9 @@ public partial class Monitoring : ComponentBase
     private void SetDates()
     {
         _to = DateTimeOffset.Now;
-        var hourOfDay = (_to.Hour / 8) * 8; // 0 8 16 часов. Выставление времени с Начала смены.
-        _from = new DateTimeOffset(_to.Year, _to.Month, _to.Day, hourOfDay, 0, 0, 0, _to.Offset);
+        var hourOfDay = _to.Hour is > 8 and < 20 ? 8 : 20; // 8 20 часов. Выставление времени с Начала смены.
+        var day = _to.Hour < 8 ? _to.Day - 1 : _to.Day;
+        _from = new DateTimeOffset(_to.Year, _to.Month, day, hourOfDay, 0, 0, 0, _to.Offset);
     }
 
     private async Task UpdateIncomingAlarms()
@@ -342,8 +343,9 @@ public partial class Monitoring : ComponentBase
         await InitializePageAsync();
     }
     
-    private async Task Search()
+    private async Task Search(string tagname)
     {
+        _tagNameFilter = tagname;
         _currentPage = 1;
         await InitializePageAsync();
     }

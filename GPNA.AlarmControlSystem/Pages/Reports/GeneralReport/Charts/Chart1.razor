@@ -19,17 +19,14 @@
     public int Kpi { get; set; }
 
     [Parameter]
-    public bool IsEnableRenderChart { get; set; } = true;
+    public bool IsEnableRenderChart { get; set; }
 
     private List<Dataset> _datasets = new();
     
     private static readonly string[] COLORS = {"#65c1e4", "#56b368", "#ba8fdb", "#ebca62", "#0078d2", "#f2994a"};
-
-
-    //Получить по айди филда все армы(workStation)
-    //
-
-    protected override async Task OnParametersSetAsync()
+    
+    
+    protected override async void OnAfterRender(bool firstRender)
     {
         if (IncomingAlarms is {Count: > 0 })
         {
@@ -61,7 +58,10 @@
             AddKpiDataset();
 
             var config = GetConfig(_datasets);
-            await JSRuntime.InvokeVoidAsync("setup3", Id!, config);
+            if(IsEnableRenderChart || firstRender)
+            {
+                await JSRuntime.InvokeVoidAsync("setup3", Id!, config);
+            }
         }
     }
 
@@ -72,6 +72,8 @@
             Type = "line",
             Options = new
             {
+                Animation = false,
+                Parsing = true,
                 Responsive = true,
                 MaintainAspectRatio = false,
                 Interaction = new

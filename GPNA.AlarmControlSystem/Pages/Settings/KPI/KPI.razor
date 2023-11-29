@@ -12,7 +12,7 @@
             </p>
             <SelectObject LinksDictionary="FieldLinksDictionary"/>
 
-            <p>
+            <p class="mx-lg-1">
                 ЦЕХА <b>@WorkstationName</b>
             </p>
             <SelectObject LinksDictionary="WorkstationLinksDictionary"/>
@@ -32,10 +32,9 @@
                     </div>
                 </div>
                 <div class="stats-container">
-                    <StatKPI Title="Критичный приоритет" @bind-Value="@(_journalSettings.UrgentPriority)"></StatKPI>
-
-                    <StatKPI Title="Низкий приоритет" @bind-Value="@(_journalSettings.LowPriority)"></StatKPI>
-                    <StatKPI Title="Высокий приоритет" @bind-Value="@(_journalSettings.HighPriority)"></StatKPI>
+                    <StatKPI Title="Критичный приоритет" @bind-Value="@(_journalSettings.UrgentPriority)"/>
+                    <StatKPI Title="Низкий приоритет" @bind-Value="@(_journalSettings.LowPriority)"/>
+                    <StatKPI Title="Высокий приоритет" @bind-Value="@(_journalSettings.HighPriority)"/>
                 </div>
             }
         </div>
@@ -70,9 +69,9 @@
                     </div>
                 </div>
                 <div class="stats-container">
-                    <StatKPI Title="Время ответа на задачу, сутки" @bind-Value="_taskSettings.ResponseDays"></StatKPI>
-                    <StatKPI Title="Просроченные" @bind-Value="_taskSettings.Overdue"></StatKPI>
-                    <StatKPI Title="Выполненные вовремя" @bind-Value="_taskSettings.CompletedOnTime"></StatKPI>
+                    <StatKPI Title="Время ответа на задачу, сутки" @bind-Value="_taskSettings.ResponseDays"/>
+                    <StatKPI Title="Просроченные" @bind-Value="_taskSettings.Overdue"/>
+                    <StatKPI Title="Выполненные вовремя" @bind-Value="_taskSettings.CompletedOnTime"/>
                 </div>
             }
         </div>
@@ -89,12 +88,12 @@
                 </div>
                 <div class="stats-container">
                     <div class="d-flex justify-content-between">
-                        <StatKPI Title="В час" @bind-Value="_reportSettings.InHour"></StatKPI>
-                        <StatKPI Title="Сутки" @bind-Value="_reportSettings.Days"></StatKPI>
+                        <StatKPI Title="В час" @bind-Value="_reportSettings.InHour"/>
+                        <StatKPI Title="Сутки" @bind-Value="_reportSettings.Days"/>
                     </div>
-                    <StatKPI Title="Просроченные активные" @bind-Value="_reportSettings.ActiveOverdue"></StatKPI>
-                    <StatKPI Title="Просроченные имитационные" @bind-Value="_reportSettings.ImitationOverdue"></StatKPI>
-                    <StatKPI Title="Просроченные подавленные" @bind-Value="_reportSettings.SuppressedOverdue"></StatKPI>
+                    <StatKPI Title="Просроченные активные" @bind-Value="_reportSettings.ActiveOverdue"/>
+                    <StatKPI Title="Просроченные имитационные" @bind-Value="_reportSettings.ImitationOverdue"/>
+                    <StatKPI Title="Просроченные подавленные" @bind-Value="_reportSettings.SuppressedOverdue"/>
                 </div>
             }
         </div>

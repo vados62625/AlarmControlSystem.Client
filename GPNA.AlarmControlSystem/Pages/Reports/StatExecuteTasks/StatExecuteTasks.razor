@@ -5,7 +5,7 @@
 <div class="page-main">
     <div class="page-header justify-content-center">        
         <div class="d-flex align-items-center">
-            <p>СТАТИСТИКА ВЫПОЛНЕНИЯ ЗАДАЧ @(Options?.Value.BranchName ?? "N/A") <b>@(_fields?.FirstOrDefault(f => f.Id == FieldId)?.Name ?? "N/A")</b></p>
+            <p>СТАТИСТИКА ВЫПОЛНЕНИЯ ЗАДАЧ <b>@(_fields?.FirstOrDefault(f => f.Id == FieldId)?.Name ?? "N/A") М/Р</b></p>
             <SelectObject Object="dto" LinksDictionary="WorkstationLinksDictionary"/>
             <p class="ms-2"><b>НА @DateTime.ToString("dd MMMM")</b></p>
         </div>        

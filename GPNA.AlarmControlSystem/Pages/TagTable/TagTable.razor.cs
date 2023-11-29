@@ -160,8 +160,16 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
             await SpinnerService.Load(GetTags);
         }
     
-        private async Task Search()
+        private async Task SearchTag(string tagName)
         {
+            _query.Suggest = tagName; // TODO: должно быть _query.Suggest 
+            _query.Page = 1;
+            await SpinnerService.Load(GetTags);
+        }
+        
+        private async Task SearchDesc(string description)
+        {
+            _query.Description = description;
             _query.Page = 1;
             await SpinnerService.Load(GetTags);
         }

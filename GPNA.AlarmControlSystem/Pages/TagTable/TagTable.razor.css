@@ -1,38 +1,13 @@
-﻿.actions {
-    display:flex;
-}
-
-.actions-add-tag {
-    margin-left:auto;
-}
-
-.tag-table-search-container {
+﻿.tag-table-search-container {
     display: flex;
-    justify-content:start;
+    align-items: center;
     gap: 12px;
     
 }
 
-.tagname-filter {
-    gap: 10px;
-    display: flex;
-    align-items: center;
-    position: relative;
-}
-
-.tagname-filter input {   
-    min-width: 207px;      
-}
-    .tagname-filter.description input {
-        min-width: 382px;
-    }
-
-.tagname-filter p {
+.tagname-filter-title {
     font-weight: 400;
     font-size: 12px;
-}
-.tagname-filter:after {    
-    right: 30px;    
 }
 
 .tag-table-button-add {

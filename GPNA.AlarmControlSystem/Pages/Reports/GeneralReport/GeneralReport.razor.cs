@@ -13,8 +13,6 @@ namespace GPNA.AlarmControlSystem.Pages.Reports.GeneralReport
 {
     public partial class GeneralReport : ComponentBase
     {
-        [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
-
         [Inject] private IJSRuntime? JS { get; set; }
 
         [Inject] private IBufferAlarmService AlarmService { get; set; } = null!;
@@ -30,8 +28,8 @@ namespace GPNA.AlarmControlSystem.Pages.Reports.GeneralReport
 
         [Parameter] [SupplyParameterFromQuery] public int? WorkstationId { get; set; }
 
-        [Parameter] public DateTimeOffset From { get; set; } = DateTimeOffset.Now.AddDays(-2);
-        [Parameter] public DateTimeOffset To { get; set; } = DateTimeOffset.Now.AddDays(-1);
+        private DateTimeOffset From = DateTimeOffset.Now.AddDays(-2);
+        private DateTimeOffset To  = DateTimeOffset.Now.AddDays(-1);
 
         [Parameter] public string? WorkstationName { get; set; }
 
@@ -56,16 +54,13 @@ namespace GPNA.AlarmControlSystem.Pages.Reports.GeneralReport
 
         protected override async Task OnInitializedAsync()
         {
-        }
-
-        protected override async Task OnParametersSetAsync()
-        {
             await InitializePageAsync();
         }
 
+
         private async Task InitializePageAsync()
         {
-            IsEnableRenderChart = false;
+            IsEnableRenderChart = true;
             SpinnerService.Show();
             StateHasChanged();
             await SetFieldWithWorkstation();
@@ -97,8 +92,10 @@ namespace GPNA.AlarmControlSystem.Pages.Reports.GeneralReport
 
 
             SpinnerService.Hide();
-            IsEnableRenderChart = true;
+            
             StateHasChanged();
+            await Task.Delay(100);
+            IsEnableRenderChart = false;
         }
 
         private async Task SetFieldWithWorkstation()

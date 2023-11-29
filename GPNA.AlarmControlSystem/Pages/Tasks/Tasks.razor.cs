@@ -108,7 +108,7 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
             if (result.Success)
             {
                 _tasks = result.Payload;
-                _pagesCount = 100;
+                _pagesCount = _tasks.PagesCount;
                 StateHasChanged();
             }
         }
@@ -135,8 +135,9 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
             await SpinnerService.Load(GetTasks);
         }
     
-        private async Task Search()
+        private async Task Search(string tagName)
         {
+            _query.TagName = tagName;
             _query.Page = 1;
             await SpinnerService.Load(GetTasks);
         }

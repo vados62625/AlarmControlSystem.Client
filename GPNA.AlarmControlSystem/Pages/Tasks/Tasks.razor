@@ -9,25 +9,24 @@
 
 <div class="page-main">
     <div class="page-header">
-        <div class="d-flex date-period-select">
-            <div class="d-flex tagname-filter position-relative ms-2">
-                <input placeholder="Поиск по Tag" type="text" name="tagname" @bind="_query.TagName" @bind:event="oninput" @onchange="async () => await Search()">
-            </div>
-        </div>
+        <InputSearch 
+            OnChange="Search"
+            Placeholder="Поиск по Tag"/>
+        
         <div class="d-flex">
-            <p>ЗАДАЧИ @(Options?.Value.BranchName ?? "N/A") М/Р <b>@_fieldName</b></p>
-            <SelectObject Object="dto" LinksDictionary="_fieldLinksDictionary" />
+            <p>ЗАДАЧИ <b>@_fieldName М/Р</b></p>
+            <SelectObject Object="dto" LinksDictionary="_fieldLinksDictionary"/>
             <p style="margin-left:15px;">
                 <b>@_workstationName</b>
             </p>
-            <SelectObject LinksDictionary="_workstationLinksDictionary" />
+            <SelectObject LinksDictionary="_workstationLinksDictionary"/>
         </div>
         <div class="d-flex gap-2">
             @if (false)
             {
-                <TitleBarButton Title="Фильтрация" FunctionButton="filtration" Action="DropFilters" />
+                <TitleBarButton Title="Фильтрация" FunctionButton="filtration" Action="DropFilters"/>
             }
-            <TitleBarButton Title="Экспорт" FunctionButton="export" Action="DownloadFileFromStream" />
+            <TitleBarButton Title="Экспорт" FunctionButton="export" Action="DownloadFileFromStream"/>
         </div>
 
     </div>
@@ -60,156 +59,3 @@
         <Pagination CurrentPage="_currentPage" PagesCount="_pagesCount" OnPageClick="OnPageChanged"/>
     </div>
 </div>
-
-
-
-@*<h3>Задачи</h3>
-<div style="display:flex; justify-content:flex-end; gap: 10px; color: var(--color-typo-primary);">
-    <span>Всего: <b>@countAll</b></span>
-    <span>Критический: <b>@countUrgent</b></span>
-    <span>Высокий: <b>@countHigh</b></span>
-    <span>Низкий: <b>@countLow</b></span>
-    <span>Информационный: <b>@countInfo</b></span>
-    <span>Без приоритета: <b>@countNonePriority</b></span>
-    <br />
-    <span>HH: <b>@countHH</b></span>
-    <span>H: <b>@countH</b></span>
-    <span>LL: <b>@countLL</b></span>
-    <span>L: <b>@countL</b></span>
-    <span>Discr: <b>@countDiscr</b></span>
-    <span>RSHI: <b>@countRSHI</b></span>
-    <span>RSLO: <b>@countRSLO</b></span>
-    <span>NoneState: <b>@countNoneState</b></span>
-</div>
-<div class="table-responsive" style="margin-top:10px;height:780px;overflow-y:auto;border-top: 0.5px solid rgba(0, 65, 102, 0.2);border-bottom: 0.5px solid rgba(0, 65, 102, 0.2);">
-    <table class="table table-bordered">
-        <thead class="thead-light">
-            <tr>
-                <th>Дата последней сигнализации</th>
-                <th>Время последней сигнализации</th>
-                <th colspan=3>Таг</th>
-                <th colspan=4>Описание</th>
-                <th>Приоритет 
-                    <select @bind="@Priority" @onclick="OnParametersSetAsync">
-                        <option value="">Все</option>
-                        <option value="@PriorityType.Urgent">Критический</option>
-                        <option value="@PriorityType.High">Высокий</option>
-                        <option value="@PriorityType.Low">Низкий</option>
-                        <option value="@PriorityType.Information">Инфо</option>
-                        <option value="@PriorityType.None">Без приорит.</option>                        
-                    </select>
-                </th>
-                <th>Уставка/Значение</th>                
-                <th>В архив</th>
-            </tr>            
-        </thead>
-        <tbody>
-
-            @if(Alarms == null)
-            {
-                <Loader/>
-            }
-            else
-            {
-                foreach (var context in Alarms)
-                {
-                     <AlarmAtWork @key="context.Id" Tag="@context"/>  
-                }                    
-            }
-        
-        </tbody>
-    </table>
-</div>
-
-@code {
-    [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
-	[Inject] IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
-    [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
-
-    [Parameter] public List<IncomingAlarmDto>? Alarms { get; set; }
-    [Parameter] public PriorityType? Priority { get; set; }
-
-    WorkStationEnum _workStation = WorkStationEnum.Upng;
-    int countL, countLL, countH, countHH, countAll, countUrgent, countHigh, countLow, countInfo, countNonePriority, countDiscr,countRSHI,countRSLO,countComms, countNoneState;
-
-    protected override async Task OnParametersSetAsync()
-    {
-        SpinnerService.Show();
-        Alarms = null;
-        countH = 0; countHH = 0; countL = 0; countLL = 0; countAll = 0; countUrgent = 0; countHigh = 0; countLow = 0; countInfo = 0; countNonePriority=0; countDiscr = 0; countRSHI = 0; countRSLO = 0; countComms = 0; countNoneState = 0;
-        var result = await IncomingAlarmService.GetCollection(new GetIncomingAlarmsListQuery {WorkStationId = (int)_workStation});
-        if (result.Success)
-        {
-            var incomingAlarms = result.Payload.Items;
-            Alarms = incomingAlarms
-	            .Where(c => c.StatusAlarm == StatusAlarmType.InWork)
-	            .OrderByDescending(c => c.DateTimeActivation)
-	            .ToList();
-
-
-            foreach (var x in Alarms)
-            {
-                switch (x.State)
-                {
-                    case StateType.H:
-                        countH += 1;
-                        break;
-                    case StateType.HH:
-                        countHH += 1;
-                        break;
-                    case StateType.L:
-                        countL += 1;
-                        break;
-                    case StateType.LL:
-                        countLL += 1;
-                        break;
-                    case StateType.Discr:
-                        countDiscr += 1;
-                        break;
-                    case StateType.RSHI:
-                        countRSHI += 1;
-                        break;
-                    case StateType.RSLO:
-                        countRSLO += 1;
-                        break;
-                    case StateType.Comms:
-                        countComms += 1;
-                        break;
-                    case StateType.none:
-                        countNoneState += 1;
-                        break;
-                }
-
-                switch (x.Priority)
-                {
-                    case PriorityType.Low:
-                        countLow += 1;
-                        break;
-                    case PriorityType.High:
-                        countHigh += 1;
-                        break;
-                    case PriorityType.Urgent:
-                        countUrgent += 1;
-                        break;
-                    case PriorityType.Information:
-                        countInfo += 1;
-                        break;
-                    case PriorityType.None:
-                        countNonePriority += 1;
-                        break;
-                }
-
-                countAll += 1;
-            }
-
-            if (Priority != null)
-            {
-                var alarms = Alarms.Where(context => Priority == context.Priority || Priority == null).ToList();
-                Alarms = alarms;
-            }
-        }
-        SpinnerService.Hide();
-    }
-
-}
-*@

@@ -8,7 +8,7 @@
 <div class="page-main">
     <div class="page-header justify-content-center position-relative">
         <div class="d-flex">
-            <p>ТАБЛИЦА ПЕРЕМЕННЫХ @(Options?.Value.BranchName ?? "N/A") @(Options?.Value.BranchName ?? "N/A") М/Р <b>@_fieldName</b></p>
+            <p>ТАБЛИЦА ПЕРЕМЕННЫХ <b>@_fieldName М/Р</b></p>
             <SelectObject Object="dto" LinksDictionary="_fieldLinksDictionary" />
             <p style="margin-left:15px;">
                 <b>@_workstationName</b>
@@ -34,20 +34,19 @@
     </div>                            
     
     <div class="tag-table-search-container">
-        <div class="tagname-filter">
-            <p>TagName</p>
-            <input placeholder="Поиск" type="text" name="tagname" @bind="_query.Suggest" @bind:event="oninput" @onchange="async () => await Search()">
-        </div>
-        <div class="tagname-filter description">
-            <p>Описание</p>
-            <input placeholder="Поиск" type="text" name="tagname" @bind="_query.Description" @bind:event="oninput" @onchange="async () => await Search()">
-        </div>
+        @* <p class="tagname-filter-title">TagName</p> *@
+        <InputSearch OnChange="SearchTag" MinWidth="382"/>
+        
+        @* <p class="tagname-filter-title">Описание</p> *@
+        @* <InputSearch OnChange="SearchDesc" MinWidth="382"/> *@
+
         <button class="tag-table-button-add" @onclick="AddTag">
             <p>Новый Таг</p>
             <svg>
                 <use href="/img/icons/icons.svg#tag-table-add"></use>
             </svg>
-        </button>        
+        </button>
+        
     </div>
     
     <TagsTable Tags="_tags" 
@@ -55,6 +54,7 @@
                OnPriorityFilterChanged="SetPriorityFilter" 
                OnOrderingChanged="OnOrderingChanged"
                OnTagDeleted="GetTags"/>
+    
     <Pagination CurrentPage="@(_query.Page ?? 1)" PagesCount="_pagesCount" OnPageClick="OnPageChanged"/>
 </div>
     

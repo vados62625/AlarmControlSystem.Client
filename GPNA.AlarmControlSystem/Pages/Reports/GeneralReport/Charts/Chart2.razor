@@ -16,7 +16,10 @@
     [Parameter]
     public int Kpi { get; set; }
 
-    protected override async Task OnParametersSetAsync()
+    [Parameter]
+    public bool IsEnableRenderChart { get; set; }
+    
+    protected override async void OnAfterRender(bool firstRender)
     {
         if (IncomingAlarms is {Count: > 0 })
         {
@@ -101,7 +104,11 @@
                     Labels = numTime
                 }
             };
-            await JSRuntime.InvokeVoidAsync("setup3", Id!, config);
+            if(IsEnableRenderChart || firstRender)
+            {
+                await JSRuntime.InvokeVoidAsync("setup3", Id!, config);
+            }
+            
         }
     }
 
