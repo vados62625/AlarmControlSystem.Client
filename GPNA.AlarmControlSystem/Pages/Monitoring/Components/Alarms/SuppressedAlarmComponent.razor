@@ -6,6 +6,7 @@
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
 @using GPNA.AlarmControlSystem.Extensions
 @using GPNA.AlarmControlSystem.Models.Dto.SuppressedAlarm
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Modals
 @inject IJSRuntime JSRuntime
 
 @if (Alarm != null && Alarm.Description != "ПЕРЕДАЧА СМЕНЫ")
@@ -33,8 +34,10 @@
 
         <td @onclick="ShowMoreAttributes">@(Alarm.AlarmLimit ?? "N/A") / @(Alarm.Value ?? "N/A")</td>
 
-        <td class="item-table__checkbox" @onclick="SendTest">
-            <input class="item-table__checkbox-input" type="checkbox" checked="@(Alarm.StatusAlarm == StatusAlarmType.InWork)"/>
+        <td class="item-table__checkbox" @onclick="SendToTasks">
+            <input class="item-table__checkbox-input"
+                   type="checkbox" 
+                   checked="@(Alarm.StatusAlarm == StatusAlarmType.InWork)"/>
         </td>
     </tr>
 
@@ -58,17 +61,13 @@ else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
 
 @code
 {
-    [Inject]
-    IBufferAlarmService AlarmService { get; set; } = null!;
-
-    [Parameter]
-    public SuppressedAlarmDto? Alarm { get; set; }
+    [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
+    
+    [CascadingParameter] public IModalService Modal { get; set; } = default!;
+    
+    [Parameter] public SuppressedAlarmDto? Alarm { get; set; }
 
     bool _displayComment = false;
-
-    protected override void OnInitialized()
-    {
-    }
 
     private async Task SaveComment(KeyboardEventArgs e)
     {
@@ -82,13 +81,27 @@ else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
         }
     }
 
-    private async Task SendTest()
+    private async Task SendToTasks()
     {
-        if (Alarm != null)
+        if (Alarm != null && Alarm.StatusAlarm!=StatusAlarmType.InWork)
         {
             Alarm.StatusAlarm = Alarm is {StatusAlarm: StatusAlarmType.Undefined } ? StatusAlarmType.InWork : StatusAlarmType.Undefined;
-            await AlarmService.ChangeStatus(new ChangeStatusAlarmCommand { Id = Alarm.Id, StatusAlarm = Alarm.StatusAlarm });
-            await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
+            
+            ArgumentNullException.ThrowIfNull(Alarm.Id);
+            var parameters = new ModalParameters { { "TagName", Alarm.TagName } };
+            var modal = Modal.Show<SendAlarmOnTasksModal>("", parameters);
+            var result = await modal.Result;
+            if (result.Confirmed)
+            {
+                await AlarmService.ChangeStatus(new ChangeStatusAlarmCommand {Id = Alarm.Id, StatusAlarm = Alarm.StatusAlarm});
+                await JSRuntime.InvokeVoidAsync("saveComment", "snackbar", $"Сигнализация {Alarm.TagName} отправлена в задачи");
+            }
+        }
+        else if (Alarm is {StatusAlarm: StatusAlarmType.InWork })
+        {
+            Alarm.StatusAlarm = StatusAlarmType.Undefined;
+            await AlarmService.ChangeStatus(new ChangeStatusAlarmCommand {Id = Alarm.Id, StatusAlarm = Alarm.StatusAlarm});
+            await JSRuntime.InvokeVoidAsync("saveComment", "snackbar", $"Сигнализация {Alarm.TagName} удалена из задач");
         }
     }
 

@@ -3,6 +3,7 @@
 @using GPNA.AlarmControlSystem.Pages.TagTable.Components
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
 @using GPNA.AlarmControlSystem.Shared.Pagination
+@using GPNA.AlarmControlSystem.Models.Dto.Tag
 
 <div class="page-main">
     <div class="page-header justify-content-center position-relative">
@@ -15,9 +16,9 @@
             <SelectObject LinksDictionary="_workstationLinksDictionary" />
         </div>        
         <div class="d-flex gap-2 position-absolute" style="right: 0;">
-            @if (false)
+            @if (_query!= new GetTagsListQuery(){Page = 1})
             {
-                <TitleBarButton Title="Фильтрация" FunctionButton="filtration" />
+                <TitleBarButton Title="Фильтрация" FunctionButton="filtration" Action="DropFilters"/>
             }
             <TitleBarButton Title="Экспорт" FunctionButton="export" />
         </div> 

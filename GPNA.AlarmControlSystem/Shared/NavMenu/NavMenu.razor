@@ -23,7 +23,8 @@
     </ul>
 
     <div class="header-right-side">
-        <LoginDisplay/>
+        <Legend ActivePageName="@ActivePageName" />
+        <LoginDisplay />
     </div>
 </header>
 
@@ -34,9 +35,12 @@
     [Inject]
     private IFieldService? FieldService { get; set; }
     
+    [Parameter] public string ActivePageName { get; set; } = string.Empty;
+    
     private IDictionary<string, string>? FieldLinksDictionary { get; set; }
     private IDictionary<string, string>? ReportLinksDictionary { get; set; }
     private IDictionary<string, string>? SettingsLinksDictionary { get; set; }
+    
     
     protected override async Task OnInitializedAsync()
     {

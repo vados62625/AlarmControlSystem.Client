@@ -1,0 +1,142 @@
+﻿.bg-task-table {
+    width: 100%;
+    border-radius: 6px;
+    background: none;
+}
+
+.task-table-status-icon, .bg-task-table-button .task-table-status-icon {
+    width: 13px;
+    height: 13px;
+}
+.task-table-status-comment.new {
+    color: var(--text-red);
+}
+.task-table-status-comment.process {
+    color: rgba(0, 32, 51, 0.6);
+}
+.task-table-status-comment.wait {
+    color: var(--text-orange);
+}
+.task-table-status-comment.ready {
+    color: var(--text-green);
+}
+
+.bg-task-table thead {
+    text-align: center;
+    background: var(--bg-grey-table);
+    box-shadow: 0px 2px 4px var(--shadow-grey-table);
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--text-black);
+}
+
+.bg-task-table thead tr th {
+    height: 40px;
+    padding-left: 10px;
+    padding-right: 6px;
+}
+
+.bg-task-table thead tr th:not(:last-child) {
+    border-right: 0.5px solid var(--border--light-grey-table);
+}
+
+.bg-task-table thead tr th:not(.bg-task-table-button) {
+    text-align: start;
+}
+
+.bg-task-table-button div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bg-task-table-button button {
+    border: none;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    padding: 0;
+}
+
+.bg-task-table-button button:nth-child(2) {
+    margin-left: 10px;
+}
+
+.bg-task-table-button svg:not(.task-table-status-icon) {
+    width: 10px;
+    height: 8px;
+}
+
+
+.bg-task-table tbody {
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.bg-task-table tbody tr {
+    height: 40px;
+    align-items: center;
+}
+
+.bg-task-table tbody tr:first-child {
+    height: 50px;
+}
+.bg-task-table tbody tr:first-child td {
+    padding-top: 10px;
+}
+
+.bg-task-table tbody tr:not(:has(+ .task-table-comment)) {
+    border-bottom: 0.5px solid rgba(0, 32, 51, 0.15);
+}
+.bg-task-table tbody tr:not(:has(+ .border-none)) {
+    border-bottom: none;
+}
+
+.bg-task-table tbody tr td {
+    padding: 0 10px;
+}
+
+.bg-task-table tbody tr td:nth-child(3) div {
+    padding-left: 37px;
+    height: 32px;
+    align-items: center;
+}
+
+.bg-task-table tbody tr td:nth-child(3) div button {
+    border: none;
+    background-color: transparent;
+    margin-left: 13px;
+    padding: 0;
+}
+
+.bg-task-table tbody tr td:nth-child(3) div button svg {
+    width: 11px;
+    height: 11px;
+    margin-bottom: 3px;
+}
+
+.bg-task-table tbody tr td:nth-child(5), .bg-task-table tbody tr td:nth-child(7), .bg-task-table tbody tr td:nth-child(9), .bg-task-table tbody tr td:last-child {
+    text-align: center;
+}
+
+.bg-task-table tbody .task-table-comment td {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.task-table-comment div {
+    width: 100%;
+    border: 0.5px solid var(--border--light-grey-table);
+    border-radius: 6px;
+    min-height: 28px;
+    padding: 7px 10px;
+    margin-bottom: 5px;
+    font-weight: 400;
+    font-size: 12px;
+    color: #5187A7;
+    text-align: start;
+}
+
+.task-table-shift td:last-child {
+    text-align: center;
+}

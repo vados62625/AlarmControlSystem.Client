@@ -4,8 +4,7 @@
 @using GPNA.AlarmControlSystem.Shared.NavMenu
 @inherits LayoutComponentBase
 
-@inject IAuthorizationService AuthorizationService
-@inject IToastService ToastService
+@inject NavigationManager NavigationManager
 
 <BlazoredToasts Position="ToastPosition.BottomRight"
                 Timeout="10"
@@ -17,7 +16,7 @@
 <Spinner/>
 
 <div class="page">
-    <NavMenu/>
+    <NavMenu ActivePageName="@_activePageName"/>
     <div class="main">
         <div class="top-row px-4 auth">
 
@@ -33,11 +32,11 @@
 
 
 @code {
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
-    //     if (!await AuthorizationService.GetAuthorizationStatus())
-    //     {
-    //         ToastService.ShowError("Не удалось авторизоваться на сервере");
-    //     }
-    // }
+    private string _activePageName = string.Empty;
+    
+    protected override void OnParametersSet()
+    {
+        var uri = new Uri(NavigationManager.Uri);
+        _activePageName = uri.AbsolutePath;
+    }
 }

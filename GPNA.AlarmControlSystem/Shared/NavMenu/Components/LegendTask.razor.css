@@ -1,0 +1,48 @@
+﻿.legend-task {
+    width: 100%;
+    height: 100%;
+    padding: 22px 22px 22px 29px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 8px;
+}
+
+.legend-task-container {
+    display: flex;
+    align-items: center;
+    font-family: 'Inter';
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.legend-task-icon {
+    width: 13px;
+    height: 13px;
+}
+
+.legend-task-comment {   
+    color: rgba(0, 32, 51, 0.6);
+    margin-left: 7px;
+    min-width: 40px;
+}
+    .legend-task-comment.new {
+        color: var(--text-red);
+    }
+
+    .legend-task-comment.process {
+        color: rgba(0, 32, 51, 0.6);
+    }
+
+    .legend-task-comment.wait {
+        color: var(--text-orange);
+    }
+
+    .legend-task-comment.ready {
+        color: var(--text-green);
+    }
+
+.legend-task-transcript {
+    color: rgba(0, 32, 51, 0.7);
+    white-space: nowrap;
+}

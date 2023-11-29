@@ -1,0 +1,49 @@
+﻿.legend-tag-table {
+    width: 100%;
+    height: 100%;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 8px;
+}
+.legend-tag-table-container {
+    display: flex;
+    align-items: center;
+    font-family: 'Inter';
+    font-weight: 400;
+    font-size: 12px;
+}
+.legend-tag-table-indicator {
+    width: 9px;
+    height: 9px;
+    border: 1px solid #B0C1CB;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+    .legend-tag-table-indicator.new {
+        background: #BA8FDB;
+        border-color: #BA8FDB;
+    }
+
+    .legend-tag-table-indicator.norma {
+        background: transparent;
+        border-color: #B0C1CB;
+    }
+
+    .legend-tag-table-indicator.unverified {
+        background: #F2C94C;
+        border-color: #F2C94C;
+    }
+
+    .legend-tag-table-indicator.incorrect {
+        background: #EB5757;
+        border-color: #EB5757;
+    }
+
+.legend-tag-table-transcript {
+    color: rgba(0, 32, 51, 0.8);
+    white-space: nowrap;
+}
+

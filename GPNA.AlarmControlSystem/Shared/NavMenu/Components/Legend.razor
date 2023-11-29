@@ -1,0 +1,26 @@
+﻿<div class="legeng-container">
+	<button class="legend-button" @onclick="@(() => _displayLegend = !_displayLegend)">		
+		<svg>
+			<use href="/img/icons/icons.svg#legend"></use>
+		</svg>
+	</button>
+	@if (_displayLegend)
+	{
+		<div class="legend-content">
+			@switch (ActivePageName)
+			{
+				case "/tasks" or "/tasks/":
+					<LegendTask />
+					break;
+				case "/tag-table" or "/tag-table/":
+					<LegendTagTable />
+					break;
+			}
+		</div>
+	}
+</div>
+
+@code {
+	[Parameter] public string ActivePageName { get; set; } = string.Empty;
+	private bool _displayLegend = false;
+}
