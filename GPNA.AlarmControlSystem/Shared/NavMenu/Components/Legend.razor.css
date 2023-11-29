@@ -1,0 +1,63 @@
+﻿.legeng-container {
+    position: relative;
+    display: inline-block;    
+}
+
+    /*.legeng-container:hover .legend-content {
+        display: block;
+    }*/
+
+.legend-button {
+    padding: 0;
+    border: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(151, 178, 196, 0.1);
+    border: 0.5px solid rgba(87, 106, 120, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+    /*button p {
+        font-family: 'DINPro';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 18px;       
+        color: #CED4D9;
+        margin-right: 2px;
+        margin-bottom: 2px;
+    }*/
+
+    .legend-button svg {
+        width: 8px;
+        height: 13px;        
+    }
+
+.legend-content {
+    /*display: none;*/
+    position: absolute;
+    right: -300%;
+    top: 102%;
+    background-color: var(--white);
+    min-width: 180px;
+    box-shadow: 0px -1px 1px rgba(0, 32, 51, 0.07), 0px 2px 2px rgba(0, 32, 51, 0.07), 0px 1px 1px rgba(0, 32, 51, 0.07), 0px 8px 16px rgba(0, 32, 51, 0.07);
+    border-radius: 10px;  
+    z-index: 50;   
+}
+
+.legend-form {
+    width: 100%;
+    height: 100%;
+    padding: 25px;   
+}
+    .legend-form p {
+        font-family: 'Inter';
+        font-weight: 400;
+        font-size: 12px;
+        color: rgba(0, 32, 51, 0.8);
+        white-space: nowrap;
+    }

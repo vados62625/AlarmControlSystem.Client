@@ -46,4 +46,7 @@
 
 .header-right-side{
     margin: auto 20px auto auto;
+    display: flex;
+    justify-content: end;
+    gap: 20px;
 }

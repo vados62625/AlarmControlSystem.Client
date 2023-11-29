@@ -1,6 +1,5 @@
 ﻿.tag-table__modal-bg {
     width: 595px;
-    height: 664px;
     background: #FFFFFF;
     padding: 20px;
     border-radius: 10px;
@@ -15,15 +14,22 @@
     font-weight: 400;
     font-size: 12px;
     color: rgba(0, 32, 51, 0.6);
+    z-index: 1055;
+    overflow-x: hidden;
+    overflow-y: auto;
+    outline: 0;
 }
+    .tag-table__modal-bg.add, .tag-table__modal-bg.edit {
+        height: 664px;
+    }
 
     .tag-table__modal-bg.correct {
         width: 1250px;
         height: 772px;
     }
-    .tag-table__modal-bg.delete {
-        width: 371px;
-        height: 200px;
+    .tag-table__modal-bg.delete, .tag-table__modal-bg.send-alarm {
+        width: 371px;        
+        min-height: 200px;
         background: linear-gradient(0deg, rgba(226, 87, 87, 0.1), rgba(226, 87, 87, 0.1)), #FFFFFF;
         box-shadow: 0px 2px 5px rgba(0, 32, 51, 0.2);
         padding: 30px;
@@ -31,11 +37,7 @@
     }
 
     .tag-table__modal-bg.send-alarm {
-        width: 371px;
-        height: 200px;        
-        box-shadow: 0px 2px 5px rgba(0, 32, 51, 0.2);
-        padding: 30px;
-        gap: 10px;
+        background: #FFFFFF;
     }
 
 .tag-table__modal-title {

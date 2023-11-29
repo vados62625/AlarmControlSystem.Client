@@ -1,0 +1,52 @@
+﻿@inject NavigationManager NavigationManager
+
+<div class="legeng-container">
+	<button class="legend-button" @onclick="OpenLegend">		
+		<svg>
+			<use href="/img/icons/icons.svg#legend"></use>
+		</svg>
+	</button>
+	@if (DisplayLegend)
+	{
+		<div class="legend-content">
+			@if (PageName == "tasks")
+			{
+				<LegendTask />
+			}
+			else @if (PageName == "tagtable")
+			{
+				<LegendTagTable />
+			}
+			else
+			{
+				<div class="legend-form">
+					<p>Раздел в разработке</p>
+				</div>
+			}
+		</div>
+	}
+	
+</div>
+
+@code {
+
+	bool DisplayLegend = false;
+	string PageName;
+	
+	// не работает кнопка открытия легенды только на главной странице
+
+	void OpenLegend()
+	{
+		var uri = new Uri(NavigationManager.Uri);
+		if (uri != null)
+		{
+			PageName = uri.Segments[1];
+		} else
+		{
+			PageName = "";
+		}
+
+		DisplayLegend = !DisplayLegend;
+	}
+
+}
