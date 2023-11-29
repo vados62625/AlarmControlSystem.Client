@@ -12,7 +12,7 @@ namespace GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
         /// <summary>
         /// Время события активации сигнализации
         /// </summary>
-        public DateTimeOffset DateTimeActivation { get; set; }
+        public DateTimeOffset DateTimeStart { get; set; }
 
         /// <summary>
         /// Время события подавления сигнализации
@@ -22,7 +22,7 @@ namespace GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
         /// <summary>
         /// Время события нормализации сигнализации
         /// </summary>
-        public DateTimeOffset? DateTimeNormalization { get; set; }
+        public DateTimeOffset? DateTimeEnd { get; set; }
 
         /// <summary>
         /// Комментарии

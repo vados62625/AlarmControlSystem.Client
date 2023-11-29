@@ -10,24 +10,17 @@ public class SuppressedAlarmDto : AlarmBaseDto
     /// <summary>
     /// Время события активации сигнализации
     /// </summary>
-    public DateTimeOffset DateTimeActivation { get; set; }
+    public DateTimeOffset DateTimeStart { get; set; }
 
     /// <summary>
-    /// Время события подавления сигнализации
+    /// Время события снятия с подавления сигнализации
     /// </summary>
-    public DateTimeOffset DateTimeSuppression { get; set; }
+    public DateTimeOffset DateTimeEnd { get; set; }
 
     /// <summary>
     /// Длительность
     /// </summary>
-    public TimeSpan? Duration
-    {
-        get => DateTimeOffset.Now - DateTimeSuppression;
-        set
-        {
-
-        }
-    }
+    public TimeSpan? Duration => DateTimeOffset.Now - DateTimeStart;
 
     /// <summary>
     /// Комментарии
