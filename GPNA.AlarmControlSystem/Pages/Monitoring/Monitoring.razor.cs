@@ -184,7 +184,7 @@ public partial class Monitoring : ComponentBase
                 OrderByDescending = _orderByDesc,
                 Page = _currentPage,
                 CountOnPage = 15,
-                DisplayShifts = !FiltersOn && (_orderBy == nameof(IncomingAlarmDto.DateTimeActivation) || _orderBy == string.Empty)
+                DisplayShifts = !FiltersOn && (_orderBy == nameof(IncomingAlarmDto.DateTimeStart) || _orderBy == string.Empty)
             });
 
             if (request.Success)

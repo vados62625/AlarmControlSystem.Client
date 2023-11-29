@@ -10,9 +10,9 @@
 @if(Alarm!=null && Alarm.Description!="ПЕРЕДАЧА СМЕНЫ")
 {    
     <tr>
-        <td @onclick="ShowMoreAttributes">@Alarm.DateTimeActivation.ToString("dd.MM.yyyy")</td>
+        <td @onclick="ShowMoreAttributes">@Alarm.DateTimeStart.ToString("dd.MM.yyyy")</td>
         
-        <td @onclick="ShowMoreAttributes">@Alarm.DateTimeActivation.ToString("HH:mm")</td>
+        <td @onclick="ShowMoreAttributes">@Alarm.DateTimeStart.ToString("HH:mm")</td>
         
         <td @onclick="ShowMoreAttributes">
             @(Alarm.Duration?.Hours.ToString() ?? "N/A")
@@ -48,8 +48,8 @@
 else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
 {
     <tr class="monitoring-table-shift">        
-        <td>@Alarm.DateTimeActivation.ToString("d")</td>
-        <td>@Alarm.DateTimeActivation.ToString("t")</td>        
+        <td>@Alarm.DateTimeStart.ToString("d")</td>
+        <td>@Alarm.DateTimeStart.ToString("t")</td>        
         <td colspan=7>@Alarm.Description</td>              
     </tr>   
 }
