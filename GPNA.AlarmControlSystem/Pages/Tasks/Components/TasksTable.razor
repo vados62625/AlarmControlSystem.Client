@@ -1,9 +1,9 @@
 ﻿@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
-@*@using GPNA.AlarmControlSystem.Pages.Monitoring.Alarms*@
+@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 
-<table class="bg-task-table ">
+<table class="bg-task-table">
     <thead>
     <tr>
         <th class="bg-task-table-button" style="min-width: 60px;">
@@ -111,33 +111,16 @@
     </tr>
     </thead>
     <tbody>        
-        <tr>
-            <td>
-                <div class="d-flex gap-2 align-items-center">
-                    <svg class="task-table-status-icon">
-                        <use href="/img/icons/icons.svg#task-@TaskStatus"></use>
-                    </svg>
-                    <p class="task-table-status-comment @TaskStatus">2/3</p>
-                </div>                
-            </td>
-            <td>#@TaskNumber</td>
-            <td>дата</td>
-            <td>время</td>
-            <td>1</td>
-            <td>еф</td>
-            <td><MonitoringTableStatus Title="HH/LL" Status="StateType.HH"/></td>
-            <td>описание</td>
-            <td><MonitoringTableStatus Title="КРИТИЧНЫЙ" Priority="PriorityType.Urgent"></MonitoringTableStatus></td>
-            <td>уставка</td>
-        </tr>
-        
-            <tr class="task-table-comment @Border">
-                <td colspan="10">
-                    @*<input type="text" placeholder="Текст комментария" />*@
-                    <div><p>Текст комментария</p></div>
-                </td>
-            </tr>    
-        
+    @if(Tasks is {Items: { } } )
+    {
+        @foreach (var task in Tasks.Items)
+        {
+            <TaskLine Task="@task"/>
+        }
+    }
+
+
+
     @*@if (Alarms != null && Alarms.Any())
     {
         foreach (var alarmArray in Alarms)
@@ -220,16 +203,8 @@
 </div>
 
 @code {
-
     [Parameter]
-    public string? ButtonArrow { get; set; } = "arrow-down";
-
-    [Parameter] public string? TaskStatus { get; set; } = "new";
-    [Parameter] public int TaskNumber { get; set; } = 1256;   
-    [Parameter] public string? Border { get; set; }
-
-    [Parameter]
-    public IncomingAlarmDto[][]? Alarms { get; set; }
+    public AlarmsCollection<IncomingAlarmDto[]>? Tasks { get; set; }
 
     [CascadingParameter(Name = nameof(StateFilter))]
     public StateType? StateFilter { get; set; }
