@@ -14,23 +14,26 @@
                     <div class="page-main">
                         <div class="page-header">
                             <div class="d-flex date-period-select">
-                                <div>
-                                    <input type="datetime-local" @bind="_from" @bind:event="oninput">
-                                    <svg>
-                                        <use href="/img/icons/icons.svg#calendar"></use>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <input type="datetime-local" @bind="_to" @bind:event="oninput">
-                                    <svg>
-                                        <use href="/img/icons/icons.svg#calendar"></use>
-                                    </svg>
-                                </div>
-                                <button class="btn p-0 ms-2 d-flex shadow-none@(_spinnerClass)" id="button-refresh" @onclick="async () => await RefreshBySpinner()">
-                                    <svg class="w-100 h-100">
-                                        <use href="/img/icons/icons.svg#refresh"></use>
-                                    </svg>
-                                </button>
+                                @if ((AlarmTypeEnum)AlarmType == AlarmTypeEnum.Incoming)
+                                {
+                                    <div>
+                                        <input type="datetime-local" @bind="@_from" @bind:event="oninput">
+                                        <svg>
+                                            <use href="/img/icons/icons.svg#calendar"></use>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <input type="datetime-local" @bind="@_to" @bind:event="oninput">
+                                        <svg>
+                                            <use href="/img/icons/icons.svg#calendar"></use>
+                                        </svg>
+                                    </div>
+                                    <button class="btn p-0 ms-2 d-flex shadow-none@(_spinnerClass)" id="button-refresh" @onclick="@(async () => await RefreshBySpinner())">
+                                        <svg class="w-100 h-100">
+                                            <use href="/img/icons/icons.svg#refresh"></use>
+                                        </svg>
+                                    </button>
+                                }
                             </div>
                             <div class="d-flex">
                                 <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ ЗА ПЕРИОД С DP @(Options?.Value.BranchName ?? "N/A") М/Р <b>@_fieldName</b></p>
