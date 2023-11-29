@@ -17,7 +17,7 @@
         <td @onclick="ShowMoreAttributes">@Alarm.DateTimeStart.ToString("HH:mm")</td>
         
         <td @onclick="ShowMoreAttributes">
-            @(Alarm.Duration?.Hours.ToString() ?? "N/A")
+            @(Alarm.Duration?.TotalHours.ToString("0") ?? "N/A")
         </td>
 
         <td @onclick="ShowMoreAttributes">@(Alarm.TagName)</td>
