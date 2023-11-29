@@ -38,6 +38,7 @@ builder.Services
     .AddScoped<IBufferAlarmService, BufferAlarmService>()
     .AddScoped<IIncomingAlarmService, IncomingAlarmService>()
     .AddScoped<IActiveAlarmService, ActiveAlarmService>()
+    .AddScoped<IImitatedAlarmService, ImitatedAlarmService>()
     .AddScoped<ISuppressedAlarmService, SuppressedAlarmService>()
     .AddScoped<IWorkStationService, WorkStationService>()
     .AddScoped<IUserService, UserService>()

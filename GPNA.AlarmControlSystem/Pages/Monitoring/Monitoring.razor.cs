@@ -2,6 +2,7 @@
 using GPNA.AlarmControlSystem.Models.Dto.ActiveAlarm;
 using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
 using GPNA.AlarmControlSystem.Models.Dto.Field;
+using GPNA.AlarmControlSystem.Models.Dto.ImitatedAlarm;
 using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
 using GPNA.AlarmControlSystem.Models.Dto.SuppressedAlarm;
 using GPNA.AlarmControlSystem.Models.Dto.Workstation;
@@ -19,6 +20,8 @@ public partial class Monitoring : ComponentBase
     [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
     [Inject] private IIncomingAlarmService? IncomingAlarmService { get; set; }
     [Inject] private IActiveAlarmService? ActiveAlarmService { get; set; }
+    
+    [Inject] private IImitatedAlarmService? ImitatedAlarmService { get; set; }
     [Inject] private ISuppressedAlarmService? SuppressedAlarmService { get; set; }
     [Inject] private IFieldService? FieldService { get; set; }
     [Inject] private IWorkStationService? WorkStationService { get; set; }
@@ -42,14 +45,15 @@ public partial class Monitoring : ComponentBase
     private string _tagNameFilter = string.Empty;
     private string? _fireStatus, _gasStatus;
     
-    private StateType? _stateFilter;
-    private PriorityType? _priorityFilter;
+    private Dictionary<StateType, bool>? _stateFilter;
+    private Dictionary<PriorityType, bool>? _priorityFilter;
 
     private bool FiltersOn => !string.IsNullOrWhiteSpace(_tagNameFilter) || _stateFilter != default || _priorityFilter != default;
 
     private AlarmsCollection<IncomingAlarmDto[]>? _incomingAlarmsCollection;
     private AlarmsCollection<ActiveAlarmDto>? _activeAlarmsCollection;
     private AlarmsCollection<SuppressedAlarmDto>? _suppressedAlarmsCollection;
+    private AlarmsCollection<ImitatedAlarmDto>? _imitatedAlarmsCollection;
 
     private IDictionary<string, string>? _fieldLinksDictionary;
 
@@ -70,6 +74,7 @@ public partial class Monitoring : ComponentBase
     protected override void OnInitialized()
     {
         SetDates();
+        InitFilters();
     }
 
     protected override async Task OnParametersSetAsync()
@@ -139,6 +144,14 @@ public partial class Monitoring : ComponentBase
         }
     }
 
+    private void InitFilters()
+    {
+        _stateFilter = Enum.GetValues<StateType>().ToDictionary(c => c, _ => true);
+        _priorityFilter = Enum.GetValues<PriorityType>().ToDictionary(c => c, _ => true);
+
+        _priorityFilter[PriorityType.Information] = false;
+    }
+    
     private async Task InitializePageAsync()
     {
         switch ((AlarmTypeEnum)AlarmType)
@@ -151,6 +164,11 @@ public partial class Monitoring : ComponentBase
             case AlarmTypeEnum.Active:
             {
                 await SpinnerService.Load(UpdateActiveAlarms);
+                break;
+            }
+            case AlarmTypeEnum.Simulation:
+            {
+                await SpinnerService.Load(UpdateImitatedAlarms);
                 break;
             }
             case AlarmTypeEnum.Suppressed:
@@ -179,8 +197,8 @@ public partial class Monitoring : ComponentBase
                 TagName = _tagNameFilter,
                 DateTimeStart = _from,
                 DateTimeEnd = _to,
-                State = _stateFilter,
-                Priority = _priorityFilter,
+                State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
+                Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
                 OrderPropertyName = _orderBy,
                 OrderByDescending = _orderByDesc,
                 Page = _currentPage,
@@ -208,8 +226,8 @@ public partial class Monitoring : ComponentBase
                 TagName = _tagNameFilter,
                 DateTimeStart = _from,
                 DateTimeEnd = _to,
-                State = _stateFilter,
-                Priority = _priorityFilter,
+                State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
+                Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
                 OrderPropertyName = _orderBy,
                 OrderByDescending = _orderByDesc,
                 Page = _currentPage,
@@ -228,6 +246,35 @@ public partial class Monitoring : ComponentBase
         if (_activeAlarmsCollection != null) SetAlarmsCounts(_activeAlarmsCollection);
     }
     
+    private async Task UpdateImitatedAlarms()
+    {
+        if (ImitatedAlarmService != null)
+        {
+            var request = await ImitatedAlarmService.GetImitatedAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
+            {
+                WorkStationId = WorkstationId ?? 0,
+                TagName = _tagNameFilter,
+                DateTimeStart = _from,
+                DateTimeEnd = _to,
+                State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
+                Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
+                OrderPropertyName = _orderBy,
+                OrderByDescending = _orderByDesc,
+                Page = _currentPage,
+                CountOnPage = 15,
+                DisplayShifts = false
+            });
+
+            if (request.Success)
+            {
+                _imitatedAlarmsCollection = request.Payload;
+                _pagesCount = _imitatedAlarmsCollection.PagesCount;
+            }
+        }
+        
+        if (_imitatedAlarmsCollection != null) SetAlarmsCounts(_imitatedAlarmsCollection);
+    }
+    
     private async Task UpdateSuppressedAlarms()
     {
         if (SuppressedAlarmService != null)
@@ -238,8 +285,8 @@ public partial class Monitoring : ComponentBase
                 TagName = _tagNameFilter,
                 DateTimeStart = _from,
                 DateTimeEnd = _to,
-                State = _stateFilter,
-                Priority = _priorityFilter,
+                State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
+                Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
                 OrderPropertyName = _orderBy,
                 OrderByDescending = _orderByDesc,
                 Page = _currentPage,
@@ -261,9 +308,18 @@ public partial class Monitoring : ComponentBase
     private Task DropFilters()
     {
         _tagNameFilter = string.Empty;
-        _stateFilter = null;
-        _priorityFilter = null;
+        
         _currentPage = 1;
+
+        foreach (var state in Enum.GetValues<StateType>())
+        {
+            _stateFilter[state] = true;
+        }
+        
+        foreach (var priority in Enum.GetValues<PriorityType>())
+        {
+            _priorityFilter[priority] = true;
+        }
         
         return InitializePageAsync();
     }
@@ -277,8 +333,8 @@ public partial class Monitoring : ComponentBase
             TagName = _tagNameFilter,
             DateTimeStart = _from,
             DateTimeEnd = _to,
-            State = _stateFilter,
-            Priority = _priorityFilter,
+            State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
+            Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
         });
 
         return new MemoryStream(result);
@@ -301,17 +357,21 @@ public partial class Monitoring : ComponentBase
         SpinnerService?.Hide();
     }
 
-    private async Task SetStateFilter(StateType? state)
+    private async Task ToggleStateFilter(StateType? state)
     {
-        _stateFilter = state;
+        if (state == default || _stateFilter == default) return;
+        
+        _stateFilter[state.Value] = !_stateFilter[state.Value];
         _currentPage = 1;
         
         await InitializePageAsync();
     }
 
-    private async Task SetPriorityFilter(PriorityType? priority)
+    private async Task TogglePriorityFilter(PriorityType? priority)
     {
-        _priorityFilter = priority;
+        if (priority == default || _priorityFilter == default) return;
+
+        _priorityFilter[priority.Value] = !_priorityFilter[priority.Value];
         _currentPage = 1;
         
         await InitializePageAsync();

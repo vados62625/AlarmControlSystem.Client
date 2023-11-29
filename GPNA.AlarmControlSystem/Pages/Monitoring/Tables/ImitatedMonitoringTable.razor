@@ -1,9 +1,9 @@
 ﻿@using GPNA.AlarmControlSystem.Models.Dto.ActiveAlarm
-@using GPNA.AlarmControlSystem.Models.Dto.SuppressedAlarm
+@using GPNA.AlarmControlSystem.Models.Dto.ImitatedAlarm
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
-@using GPNA.AlarmControlSystem.Pages.Monitoring.Components.Alarms
 
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Components.Alarms
 <table class="bg-monitoring-table ">
     <thead>
     <tr>
@@ -104,7 +104,7 @@
     {
         foreach (var alarm in Alarms)
         {
-            <SuppressedAlarmComponent Alarm="alarm"/>
+            <ImitatedAlarmComponent Alarm="alarm"/>
         }
     }
     </tbody>
@@ -187,7 +187,7 @@
     public string? ButtonArrow { get; set; } = "arrow-down";
 
     [Parameter]
-    public SuppressedAlarmDto[]? Alarms { get; set; }
+    public ImitatedAlarmDto[]? Alarms { get; set; }
 
     [CascadingParameter(Name = nameof(StateFilter))]
     public Dictionary<StateType, bool>? StateFilter { get; set; }

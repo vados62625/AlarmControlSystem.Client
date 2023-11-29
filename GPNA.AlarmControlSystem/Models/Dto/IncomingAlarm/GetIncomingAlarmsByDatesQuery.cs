@@ -32,12 +32,12 @@ namespace GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
         /// <summary>
         /// Приоритет
         /// </summary>
-        public PriorityType? Priority { get; set; }
+        public List<PriorityType>? Priority { get; set; }
         
         /// <summary>
         /// Состояние
         /// </summary>
-        public StateType? State { get; set; }
+        public List<StateType>? State { get; set; }
         
         /// <summary>
         /// Страница

@@ -1,0 +1,112 @@
+﻿@using Microsoft.AspNetCore.Components
+@using GPNA.AlarmControlSystem.Models.Enums
+@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
+@using GPNA.AlarmControlSystem.Models.Dto.ActiveAlarm
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Components
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Modals
+@using GPNA.AlarmControlSystem.Extensions
+@using GPNA.AlarmControlSystem.Models.Dto.ImitatedAlarm
+@inject IJSRuntime JSRuntime
+
+@if(Alarm!=null && Alarm.Description!="ПЕРЕДАЧА СМЕНЫ")
+{    
+    <tr>
+        <td @onclick="ShowMoreAttributes">@Alarm.DateTimeStart.ToString("dd.MM.yyyy")</td>
+        
+        <td @onclick="ShowMoreAttributes">@Alarm.DateTimeStart.ToString("HH:mm")</td>
+        
+        <td @onclick="ShowMoreAttributes">
+            @(Alarm.Duration?.Hours.ToString() ?? "N/A")
+        </td>
+
+        <td @onclick="ShowMoreAttributes">@(Alarm.TagName)</td>
+        
+        <td @onclick="ShowMoreAttributes">
+            <MonitoringTableStatus Title="@Alarm.State.GetDescription()" Status="@Alarm.State"/>
+        </td>
+        
+        <td @onclick="ShowMoreAttributes"> @(Alarm.Description ?? "N/A") </td>
+        
+        <td @onclick="ShowMoreAttributes">
+            <MonitoringTableStatus Title="@Alarm.Priority.GetDescription()" Priority="@Alarm.Priority"/>
+        </td>
+        
+        <td @onclick="ShowMoreAttributes">@(Alarm.AlarmLimit ?? "N/A") / @(Alarm.Value ?? "N/A")</td>              
+
+        <td class="item-table__checkbox" @onclick="SendToTasks">
+            <input class="item-table__checkbox-input" 
+                   type="checkbox" 
+                   checked="@(Alarm.StatusAlarm == StatusAlarmType.InWork)"/>
+        </td>
+    </tr>
+    
+    @if (_displayComment || Alarm.Comment is {Length: > 0 })
+    {
+        <tr class="monitoring-table-comment">
+            <td colspan="9">
+                <input type="text" placeholder="Введите комментарий" @bind="Alarm.Comment" @bind:event="oninput" @onkeydown="SaveComment"/>
+            </td>
+        </tr>
+    }
+
+} 
+else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
+{
+    <tr class="monitoring-table-shift">        
+        <td>@Alarm.DateTimeStart.ToString("d")</td>
+        <td>@Alarm.DateTimeStart.ToString("t")</td>        
+        <td colspan=7>@Alarm.Description</td>              
+    </tr>   
+}
+@code
+{
+    [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
+    
+    [CascadingParameter] public IModalService Modal { get; set; } = default!;
+    
+    [Parameter] public ImitatedAlarmDto? Alarm { get; set; }
+
+    bool _displayComment;
+
+    private async Task SaveComment(KeyboardEventArgs e)
+    {
+        if (e.Code is "Enter" or "NumpadEnter")
+        {
+            if (Alarm?.Comment != null)
+            {
+                await AlarmService.AddComment(new AddCommentInAlarmCommand {Id = Alarm.Id, Comment = Alarm.Comment});
+                await JSRuntime.InvokeVoidAsync("saveComment", "snackbar");
+            }
+        }
+    }
+
+    private async Task SendToTasks()
+    {
+        if (Alarm != null && Alarm.StatusAlarm!=StatusAlarmType.InWork)
+        {
+            Alarm.StatusAlarm = Alarm is {StatusAlarm: StatusAlarmType.Undefined } ? StatusAlarmType.InWork : StatusAlarmType.Undefined;
+            
+            ArgumentNullException.ThrowIfNull(Alarm.Id);
+            var parameters = new ModalParameters { { "TagName", Alarm.TagName } };
+            var modal = Modal.Show<SendAlarmOnTasksModal>("", parameters);
+            var result = await modal.Result;
+            if (result.Confirmed)
+            {
+                await AlarmService.ChangeStatus(new ChangeStatusAlarmCommand {Id = Alarm.Id, StatusAlarm = Alarm.StatusAlarm});
+                await JSRuntime.InvokeVoidAsync("saveComment", "snackbar", $"Сигнализация {Alarm.TagName} отправлена в задачи");
+            }
+        }
+        else if (Alarm is {StatusAlarm: StatusAlarmType.InWork })
+        {
+            Alarm.StatusAlarm = StatusAlarmType.Undefined;
+            await AlarmService.ChangeStatus(new ChangeStatusAlarmCommand {Id = Alarm.Id, StatusAlarm = Alarm.StatusAlarm});
+            await JSRuntime.InvokeVoidAsync("saveComment", "snackbar", $"Сигнализация {Alarm.TagName} удалена из задач");
+        }
+    }
+
+    void ShowMoreAttributes()
+    {
+        _displayComment = !_displayComment;
+    }
+}

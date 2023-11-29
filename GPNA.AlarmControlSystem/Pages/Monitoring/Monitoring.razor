@@ -8,8 +8,8 @@
 
 <CascadingValue Name="@nameof(_from)" Value="@_from">
     <CascadingValue Name="@nameof(_to)" Value="@_to">
-        <CascadingValue Name="@nameof(_stateFilter)" Value="@_stateFilter">
-            <CascadingValue Name="@nameof(_priorityFilter)" Value="@_priorityFilter">
+        <CascadingValue Name="StateFilter" Value="@_stateFilter">
+            <CascadingValue Name="PriorityFilter" Value="@_priorityFilter">
                 <CascadingValue Name="@nameof(AlarmType)" Value="@AlarmType">
                     <div class="page-main">
                         <div class="page-header">
@@ -95,24 +95,22 @@
                             {
                                 case AlarmTypeEnum.Active:
                                 {
-                                    <ActiveMonitoringTable Alarms="_activeAlarmsCollection?.Items" OnStateFilterChanged="SetStateFilter" OnPriorityFilterChanged="SetPriorityFilter" OnOrderingChanged="OnOrderingChanged"/>
+                                    <ActiveMonitoringTable Alarms="_activeAlarmsCollection?.Items" OnStateFilterChanged="ToggleStateFilter" OnPriorityFilterChanged="TogglePriorityFilter" OnOrderingChanged="OnOrderingChanged"/>
                                     break;
                                 }
                                 case AlarmTypeEnum.Incoming:
                                 {
-                                    <IncomingMonitoringTable Alarms="_incomingAlarmsCollection?.Items" OnStateFilterChanged="SetStateFilter" OnPriorityFilterChanged="SetPriorityFilter" OnOrderingChanged="OnOrderingChanged"/>
+                                    <IncomingMonitoringTable Alarms="_incomingAlarmsCollection?.Items" OnStateFilterChanged="ToggleStateFilter" OnPriorityFilterChanged="TogglePriorityFilter" OnOrderingChanged="OnOrderingChanged"/>
                                     break;
                                 }
                                 case AlarmTypeEnum.Suppressed:
                                 {
-                                    <SuppressedMonitoringTable Alarms="_suppressedAlarmsCollection?.Items" OnStateFilterChanged="SetStateFilter" OnPriorityFilterChanged="SetPriorityFilter" OnOrderingChanged="OnOrderingChanged"/>
+                                    <SuppressedMonitoringTable Alarms="_suppressedAlarmsCollection?.Items" OnStateFilterChanged="ToggleStateFilter" OnPriorityFilterChanged="TogglePriorityFilter" OnOrderingChanged="OnOrderingChanged"/>
                                     break;
                                 }
                                 case AlarmTypeEnum.Simulation:
                                 {
-                                    <div class="text-center">
-                                        <p>Этот раздел находится в разработке</p>
-                                    </div>
+                                    <ImitatedMonitoringTable Alarms="_imitatedAlarmsCollection?.Items" OnStateFilterChanged="ToggleStateFilter" OnPriorityFilterChanged="TogglePriorityFilter" OnOrderingChanged="OnOrderingChanged"/>
                                     break;
                                 }
                             }

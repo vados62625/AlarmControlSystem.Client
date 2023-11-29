@@ -28,7 +28,7 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
         [Inject] private IExportService? ExportService { get; set; }
         [Parameter] [SupplyParameterFromQuery] public int? WorkstationId { get; set; }
         [Parameter] [SupplyParameterFromQuery] public int? FieldId { get; set; }
-        
+
         private string? _workstationName, _fieldName;
         private WorkStationDto[]? _workstations;
         private FieldDto[]? _fields;
@@ -36,12 +36,12 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
         private IDictionary<string, string>? _workstationLinksDictionary;
 
         private GetIncomingAlarmsByDatesQuery _query = new();
-        
+
         // private List<IncomingAlarmDto>? _tasks;
         private AlarmsCollection<IncomingAlarmDto[]>? _tasks;
 
         string input = "";
-        
+
         private int _pagesCount, _totalCount;
         private int _currentPage = 1;
 
@@ -69,28 +69,28 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
 
             FieldId ??= _fields?.FirstOrDefault()?.Id;
             _fieldName = _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name;
-        
+
             WorkstationId ??= _workstations?.FirstOrDefault()?.Id;
             _workstationName = _workstations?.FirstOrDefault(ws => ws.Id == WorkstationId)?.Name;
-        
+
             StateHasChanged();
-        
+
             FillLinks();
         }
-        
+
         private void FillLinks()
         {
             if (_fields != null)
             {
-                _fieldLinksDictionary = _fields.ToDictionary(field => 
-                        field.Name, 
+                _fieldLinksDictionary = _fields.ToDictionary(field =>
+                        field.Name,
                     field => $"/tasks/?fieldId={field.Id}");
             }
-        
+
             if (_workstations != null)
             {
-                _workstationLinksDictionary = _workstations.ToDictionary(workStation => 
-                        workStation.Name ?? Guid.NewGuid().ToString(), 
+                _workstationLinksDictionary = _workstations.ToDictionary(workStation =>
+                        workStation.Name ?? Guid.NewGuid().ToString(),
                     workStation => $"/tasks/?fieldId={FieldId}&workstationId={workStation.Id}");
             }
         }
@@ -104,7 +104,7 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
             _query.DateTimeEnd = DateTimeOffset.Now;
             _query.DateTimeStart = DateTimeOffset.Now.AddYears(-10);
             var result = await IncomingAlarmService.GetAlarmsPerDate(_query); // TODO I make PageableCollectionDto
-            
+
             if (result.Success)
             {
                 _tasks = result.Payload;
@@ -112,21 +112,36 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
                 StateHasChanged();
             }
         }
-        
+
         private async Task SetStateFilter(StateType? state)
         {
-            _query.State = state;
-            _query.Page = 1;
-        
-            await SpinnerService.Load(GetTasks);
+            if (state.HasValue && _query.State != default)
+            {
+                if (_query.State.Contains(state.Value))
+                    _query.State.Add(state.Value);
+                
+                else 
+                    _query.State.Remove(state.Value);
+
+                _query.Page = 1;
+
+                await SpinnerService.Load(GetTasks);
+            }
         }
 
         private async Task SetPriorityFilter(PriorityType? priority)
         {
-            _query.Priority = priority;
-            _query.Page = 1;
-        
-            await SpinnerService.Load(GetTasks);
+            if (priority.HasValue && _query.Priority != default)
+            {
+                if (_query.Priority.Contains(priority.Value))
+                    _query.Priority.Add(priority.Value);
+
+                else
+                    _query.Priority.Remove(priority.Value);
+                _query.Page = 1;
+
+                await SpinnerService.Load(GetTasks);
+            }
         }
 
         private async Task OnPageChanged(int page)
@@ -134,14 +149,14 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
             _query.Page = page;
             await SpinnerService.Load(GetTasks);
         }
-    
+
         private async Task Search(string tagName)
         {
             _query.TagName = tagName;
             _query.Page = 1;
             await SpinnerService.Load(GetTasks);
         }
-        
+
         private async Task DropFilters()
         {
             _query = new GetIncomingAlarmsByDatesQuery()
@@ -152,7 +167,7 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
 
             await SpinnerService.Load(GetTasks);
         }
-        
+
         private async Task<Stream?> GetFileStream()
         {
             var result = await ExportService.ExportIncomingAlarms(new ExportIncomingAlarmsByDatesQuery
@@ -160,10 +175,9 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
                 DocumentType = ExportDocumentType.Excel,
                 StatusAlarm = StatusAlarmType.InWork,
                 WorkStationId = WorkstationId ?? 0,
-                TagName = _query.TagName, 
+                TagName = _query.TagName,
                 State = _query.State,
                 Priority = _query.Priority,
-                
             });
 
             return new MemoryStream(result);

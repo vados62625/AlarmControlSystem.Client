@@ -126,17 +126,17 @@
                 </div>
                 <div class="modal-body">
 
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="stateFilterRadio" id="stateFilterRadio-1" checked="@(StateFilter == null)" onchange="@(async () => await SetStateFilter(null))">
-                        <label class="form-check-label" for="stateFilterRadio-1">
-                            Все
-                        </label>
-                    </div>
+                    @* <div class="form-check"> *@
+                    @*     <input class="form-check-input" type="checkbox" name="stateFilterRadio" id="stateFilterRadio-1" checked="@(StateFilter?.All(c => c.Value) ?? true)" onchange="@(async () => await SetStateFilter(null))"> *@
+                    @*     <label class="form-check-label" for="stateFilterRadio-1"> *@
+                    @*         Все *@
+                    @*     </label> *@
+                    @* </div> *@
 
                     @foreach (var state in Enum.GetValues<StateType>())
                     {
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="stateFilterRadio" id="stateFilterRadio@((int)state)" checked="@(StateFilter == state)" onchange="@(async () => await SetStateFilter(state))">
+                            <input class="form-check-input" type="checkbox" name="stateFilterRadio" id="stateFilterRadio@((int)state)" checked="@(StateFilter?[state])" onchange="@(async () => await SetStateFilter(state))">
                             <label class="form-check-label" for="stateFilterRadio@((int)state)">
                                 @state.ToString()
                             </label>
@@ -156,17 +156,17 @@
                 </div>
                 <div class="modal-body">
 
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="priorityFilterRadio" id="priorityFilterRadio-1" checked="@(PriorityFilter == null)" onchange="@(async () => await OnPriorityFilterChanged.InvokeAsync(null))">
-                        <label class="form-check-label" for="priorityFilterRadio-1">
-                            Все
-                        </label>
-                    </div>
+                    @* <div class="form-check"> *@
+                    @*     <input class="form-check-input" type="checkbox" name="priorityFilterRadio" id="priorityFilterRadio-1" checked="@(PriorityFilter?.All(c => c.Value) ?? true)" onchange="@(async () => await OnPriorityFilterChanged.InvokeAsync(null))"> *@
+                    @*     <label class="form-check-label" for="priorityFilterRadio-1"> *@
+                    @*         Все *@
+                    @*     </label> *@
+                    @* </div> *@
 
                     @foreach (var priority in Enum.GetValues<PriorityType>())
                     {
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="priorityFilterRadio" id="priorityFilterRadio@((int)priority)" checked="@(PriorityFilter == priority)" onchange="@(async () => await OnPriorityFilterChanged.InvokeAsync(priority))">
+                            <input class="form-check-input" type="checkbox" name="priorityFilterRadio" id="priorityFilterRadio@((int)priority)" checked="@(PriorityFilter?[priority])" onchange="@(async () => await OnPriorityFilterChanged.InvokeAsync(priority))">
                             <label class="form-check-label" for="priorityFilterRadio@((int)priority)">
                                 @priority.ToString()
                             </label>
@@ -189,10 +189,10 @@
     public ActiveAlarmDto[]? Alarms { get; set; }
 
     [CascadingParameter(Name = nameof(StateFilter))]
-    public StateType? StateFilter { get; set; }
+    public Dictionary<StateType, bool>? StateFilter { get; set; }
 
     [CascadingParameter(Name = nameof(PriorityFilter))]
-    public PriorityType? PriorityFilter { get; set; }
+    public Dictionary<PriorityType, bool>? PriorityFilter { get; set; }
     
     [CascadingParameter(Name = nameof(AlarmType))]
     public AlarmType? AlarmType { get; set; }
