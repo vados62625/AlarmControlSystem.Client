@@ -1,142 +1,138 @@
-﻿@using GPNA.AlarmControlSystem.Services
+﻿@using GPNA.AlarmControlSystem.Shared.ButtonsModal
+@using GPNA.AlarmControlSystem.Services
 @using GPNA.AlarmControlSystem.Interfaces
-@using GPNA.AlarmControlSystem.Models.Dto
 @using GPNA.AlarmControlSystem.Models.Dto.Tag
 @using GPNA.AlarmControlSystem.Models.Enums
-@using Microsoft.AspNetCore.Components
+@using GPNA.AlarmControlSystem.Extensions
 
-<div class="simple-form">
+<EditForm Model="@_command" OnValidSubmit="HandleValidSubmit">
+	<DataAnnotationsValidator />
+	<div class="modal-backdrop show"></div>
+	<div class="modal tag-table__modal-bg">
+		<CloseButton ClickEvent="Cancel"/>
+		<p class="tag-table__modal-title">ОКНО РЕДАКТИРОВАНИЯ TЕГА</p>
+		<div class="w-100 h-100 p-0 d-flex flex-column gap-2 justify-content-between">
+			<div class="d-flex justify-content-between">
+				<div class="tag-table__modal-item-container">
+					<p>Позиция по ГП</p>
+					<input class="tag-table__modal-item-input small" type="text" placeholder="Введите позицию по ГП" value="@_command.Position">
+				</div>
+				<div class="tag-table__modal-item-container">
+					<p>TagName</p>
+					<input class="tag-table__modal-item-input small" type="text" value="@_command.TagName" readonly>
+				</div>
+			</div>
+			<div class="d-flex justify-content-between">
+				<div class="tag-table__modal-item-container">
+					<p>Состояние</p>
+					<input class="tag-table__modal-item-input small" type="text" value="@_command.State" readonly>
+				</div>
+				<div class="tag-table__modal-item-container">
+					<p>Приоритет</p>
+					<div class="tag-table__modal-custom-select">
+						<select class="tag-table__modal-item-select" style="color:rgba(0, 32, 51, 0.25)" @bind="_command.Priority">
+							<option disabled selected hidden>Выберите приоритет</option>
+							@foreach (PriorityType priority in Enum.GetValues(typeof(PriorityType)))
+							{
+								<option value="@priority">@priority.GetDescription()</option>
+							}
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="tag-table__modal-item-container">
+				<p>Описание</p>
+				<input class="tag-table__modal-item-input" type="text" placeholder="Введите описание" value="@_command.Description">
+			</div>
+			<div class="d-flex justify-content-between">
+				<div class="tag-table__modal-item-container">
+					<p>Уставка</p>
+					<input class="tag-table__modal-item-input small" type="text" placeholder="Введите уставку" value="@_command.AlarmLimit">
+				</div>
+				<div class="tag-table__modal-item-container">
+					<p>Единицы измерения</p>
+					<input class="tag-table__modal-item-input small" type="text" placeholder="Введите ед. измерения" value="@_command.Unit">
+				</div>
+			</div>
+			<div class="tag-table__modal-item-container">
+				<p>Потенциальные последствия</p>
+				<textarea class="tag-table__modal-item-textarea" type="text" placeholder="Введите потенциальные последствия" value="@_command.Consequence"></textarea>
+			</div>
+			<div class="tag-table__modal-item-container">
+				<p>Действия полевого оператора</p>
+				<textarea class="tag-table__modal-item-textarea" type="text" placeholder="Введите действия полевого оператора" value="@_command.ActionFieldOperator"></textarea>
+			</div>
+			<div class="tag-table__modal-item-container">
+				<p>Действия оператора АРМ</p>
+				<textarea class="tag-table__modal-item-textarea" type="text" placeholder="Введите действия оператора АРМ" value="@_command.ActionArmOperator"></textarea>
+			</div>
+			<div class="tag-table__modal-item-container">
+				<p>Условия усиления</p>
+				<textarea class="tag-table__modal-item-textarea" type="text" placeholder="Введите условия усиления" value="@_command.Inform"></textarea>
+			</div>
+			<div class="tag-table__modal-item-container">
+				<p>Время на реакцию</p>
+				<input class="tag-table__modal-item-input" type="text" placeholder="Введите время на реакцию" value="@_command.ReactionTime">
+			</div>
+			<div class="tag-table__modal-button-container">
+				<SaveButton />
+				<CancelButton ClickEvent="Cancel"/>
+			</div>
+		</div>
+	</div>
+	@if (!string.IsNullOrEmpty(_error)) {
+		<div class="alert alert-danger mt-3 mb-0">@_error</div>
+	}
+</EditForm>
 
-    <EditForm Model="@Tag" OnValidSubmit="HandleValidSubmit">
-        <DataAnnotationsValidator />
-        <div style="display: flex; width: 100%; gap: 16px;">
-            <div class="form-group">
-            <label>Позиция по ГП:</label>
-            <InputText @bind-Value="Tag.Position" class="form-control" />
-            <ValidationMessage For="@(() => Tag.Position)" />
-            </div>
-            <div class="form-group">
-                <label>TagName:</label>
-                <InputText @bind-Value="Tag.TagName" class="form-control" />
-                <ValidationMessage For="@(() => Tag.TagName)" />
-            </div>
-        </div>
-         <div style="display: flex; width: 100%; gap: 16px;">
-            <div class="form-group">
-                <label>Состояние:</label>
-                <InputSelect @bind-Value="Tag.State" class="form-control">
-                    <option value=""></option>
-                    @foreach (var state in Enum.GetValues(typeof(StateType)))
-                    {
-                        <option value="@state">@state</option>
-                    }
-                </InputSelect>
-                <ValidationMessage For="@(() => Tag.State)" />
-            </div>
-            <div class="form-group">
-                <label>Приоритет:</label>
-                <InputSelect @bind-Value="Tag.Priority" class="form-control">
-                    <option value=""></option>
-                    @foreach (var priority in Enum.GetValues(typeof(PriorityType)))
-                    {
-                        <option value="@priority">@priority</option>
-                    }
-                </InputSelect>
-                <ValidationMessage For="@(() => Tag.State)" />
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label>Описание:</label>
-            <InputText @bind-Value="Tag.Description" class="form-control" />
-            <ValidationMessage For="@(() => Tag.Description)" />
-        </div>
-        <div style="display: flex; width: 100%; gap: 16px;">
-            <div class="form-group">
-                <label>Уставка:</label>
-                <InputText @bind-Value="Tag.AlarmLimit" class="form-control" />
-                <ValidationMessage For="@(() => Tag.AlarmLimit)" />
-            </div>
-            <div class="form-group">
-                <label>Ед. изм.</label>
-                <InputText @bind-Value="Tag.Unit" class="form-control" />
-                <ValidationMessage For="@(() => Tag.Unit)" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label>Потенциальные последствия:</label>
-            <InputTextArea @bind-Value="Tag.Consequence" class="form-control" />
-            <ValidationMessage For="@(() => Tag.Consequence)" />
-        </div>
-        <div class="form-group">
-            <label>Действия Полевого оператора:</label>
-            <InputTextArea @bind-Value="Tag.ActionFieldOperator" class="form-control" />
-            <ValidationMessage For="@(() => Tag.ActionFieldOperator)" />
-        </div>
-        <div class="form-group">
-            <label>Действия Оператора АРМ:</label>
-            <InputTextArea @bind-Value="Tag.ActionArmOperator" class="form-control" />
-            <ValidationMessage For="@(() => Tag.ActionArmOperator)" />
-        </div>
-        <div class="form-group">
-            <label>Уровень усиления:</label>
-            <InputTextArea @bind-Value="Tag.Inform" class="form-control" />
-            <ValidationMessage For="@(() => Tag.Inform)" />
-        </div>
-        <div class="form-group">
-            <label>Время на реакцию:</label>
-            <InputTextArea @bind-Value="Tag.ReactionTime" class="form-control" />
-            <ValidationMessage For="@(() => Tag.ReactionTime)" />
-        </div>
-        <div class="modal-button-group">
-            <button class="button button-primary" @onclick="Cancel">
-                <span class="fa fa-times"></span>
-                Отменить
-            </button>
-            <button class="button button-success">
-                @if (IsLoading) {
-                    <span class="spinner-border spinner-border-sm mr-1"></span>
-                }
-                else
-                {
-                    <span class="fa fa-check" aria-hidden="true"></span>
-                }
-                Сохранить
-            </button>
-        </div>
-        @if (!string.IsNullOrEmpty(Error)) {
-            <div class="alert alert-danger mt-3 mb-0">@Error</div>
-        }
-    </EditForm>
-
-</div>
 
 @code {
-    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;
-    [Inject]
-    protected ITagService TagService { get; set; } = default!;
-    [Inject]
-    protected ISpinnerService SpinnerService { get; set; } = default!;
+	[CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;
+	
+	[Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
+	[Inject] protected ITagService TagService { get; set; } = default!;
 
-    [Parameter] public UpdateTagCommand Tag { get; set; }
+	[Parameter] public TagDto Tag { get; set; } = new TagDto();
+	
+	private UpdateTagCommand _command = new();
+	private string _error  = "";
 
-    private bool IsLoading { get; set; } = false;
-    private string Error { get; set; } = "";
+	protected override void OnInitialized()
+	{
+		_command = new UpdateTagCommand()
+		{
+			WorkStationId = 1,
+			Id = Tag.Id,
+			Position = Tag.Position,
+			TagName = Tag.TagName,
+			Description = Tag.Description,
+			Unit = Tag.Unit,
+			State = Tag.State,
+			Priority = Tag.Priority,
+			AlarmLimit = Tag.AlarmLimit,
+			Scale = Tag.Scale,
+			Consequence = Tag.Consequence,
+			ActionFieldOperator = Tag.ActionFieldOperator,
+			ActionArmOperator = Tag.ActionArmOperator,
+			Inform = Tag.Inform,
+			ReactionTime = Tag.ReactionTime,
+			Validate = Tag.Validate
+		};
+	}
 
-    public async void HandleValidSubmit() 
-    {
-        SpinnerService.Show();
-        await TagService.Update(Tag);  
-        SpinnerService.Hide();        
-        IsLoading = false;
-        StateHasChanged();        
+	private async void HandleValidSubmit() 
+	{
+		SpinnerService.Show();
+		var updatedTag = await TagService.Update(_command);
+		SpinnerService.Hide(); 
+		if (updatedTag.Success)
+		{
+			await ModalInstance.CloseAsync(ModalResult.Ok(updatedTag.Payload));
+		}
+	}
 
-        await ModalInstance.CloseAsync(ModalResult.Ok());
-    }
-
-    void Cancel()
-    {
-        ModalInstance.CancelAsync();
-    }
-
+	void Cancel()
+	{
+		ModalInstance.CancelAsync();
+	}
 }

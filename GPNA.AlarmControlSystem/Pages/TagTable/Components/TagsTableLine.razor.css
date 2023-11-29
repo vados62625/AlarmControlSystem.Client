@@ -37,27 +37,27 @@
         background: rgba(204, 217, 224, 0.15);
     }
 
-    .tag-table-line.incorrect {
+    .tag-table-line.NotValid {
         background: rgba(235, 87, 87, 0.1);
     }
 
-        .tag-table-line.incorrect:hover {
+        .tag-table-line.NotValid:hover {
             background: linear-gradient(0deg, rgba(235, 87, 87, 0.15), rgba(235, 87, 87, 0.15)), #FFFFFF;
         }
 
-    .tag-table-line.unverified {
+    .tag-table-line.NoneCheck {
         background: rgba(242, 201, 76, 0.2);
     }
 
-        .tag-table-line.unverified:hover {
+        .tag-table-line.NoneCheck:hover {
             background: linear-gradient(0deg, rgba(242, 201, 76, 0.25), rgba(242, 201, 76, 0.25)), #FFFFFF;
         }
 
-    .tag-table-line.new {
+    .tag-table-line.NewTag {
         background: rgba(186, 143, 219, 0.2);
     }
 
-        .tag-table-line.new:hover {
+        .tag-table-line.NewTag:hover {
             background: linear-gradient(0deg, rgba(186, 143, 219, 0.25), rgba(186, 143, 219, 0.25)), #FFFFFF;
         } 
 
@@ -68,22 +68,22 @@
     border-radius: 50%;    
 }
 
-    .tag-table-indicator.new {
+    .tag-table-indicator.NewTag {
         background: #B0C1CB;
         border-color: #B0C1CB;
     }
 
-    .tag-table-indicator.norma {
+    .tag-table-indicator.Valid {
         background: transparent;
         border-color: #B0C1CB;
     }
 
-    .tag-table-indicator.unverified {
+    .tag-table-indicator.NoneCheck {
         background: #F2C94C;
         border-color: #F2C94C;
     }
 
-    .tag-table-indicator.incorrect {
+    .tag-table-indicator.NotValid {
         background: #EB5757;
         border-color: #EB5757;
     }

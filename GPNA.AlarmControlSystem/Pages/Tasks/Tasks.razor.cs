@@ -1,6 +1,7 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
 using GPNA.AlarmControlSystem.Interfaces;
+using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
 using GPNA.AlarmControlSystem.Models.Dto.Field;
 using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
 using GPNA.AlarmControlSystem.Models.Dto.Tag;
@@ -14,16 +15,17 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
 
-namespace GPNA.AlarmControlSystem.Pages.TagTable
+namespace GPNA.AlarmControlSystem.Pages.Tasks
 {
-    public partial class TagTable : ComponentBase
+    public partial class Tasks : ComponentBase
     {
         [CascadingParameter] public IModalService Modal { get; set; } = default!;
         [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
-        [Inject] protected ITagService TagService { get; set; } = default!;
+        [Inject] protected IIncomingAlarmService IncomingAlarmService { get; set; } = default!;
         [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
         [Inject] private IFieldService? FieldService { get; set; }
         [Inject] private IWorkStationService? WorkStationService { get; set; }
+        [Inject] private IExportService? ExportService { get; set; }
         [Parameter] [SupplyParameterFromQuery] public int? WorkstationId { get; set; }
         [Parameter] [SupplyParameterFromQuery] public int? FieldId { get; set; }
         
@@ -33,9 +35,10 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
         private IDictionary<string, string>? _fieldLinksDictionary;
         private IDictionary<string, string>? _workstationLinksDictionary;
 
-        private GetTagsListQuery _query = new();
+        private GetIncomingAlarmsByDatesQuery _query = new();
         
-        private List<TagDto>? _tags;
+        // private List<IncomingAlarmDto>? _tasks;
+        private AlarmsCollection<IncomingAlarmDto[]>? _tasks;
 
         string input = "";
         
@@ -45,7 +48,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
         protected override async Task OnInitializedAsync()
         {
             await SetFieldWithWorkstation();
-            await SpinnerService.Load(GetTags);
+            await SpinnerService.Load(GetTasks);
         }
 
         private async Task SetFieldWithWorkstation()
@@ -81,47 +84,30 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
             {
                 _fieldLinksDictionary = _fields.ToDictionary(field => 
                         field.Name, 
-                    field => $"/tag-table/?fieldId={field.Id}");
+                    field => $"/tasks/?fieldId={field.Id}");
             }
         
             if (_workstations != null)
             {
                 _workstationLinksDictionary = _workstations.ToDictionary(workStation => 
                         workStation.Name ?? Guid.NewGuid().ToString(), 
-                    workStation => $"/tag-table/?fieldId={FieldId}&workstationId={workStation.Id}");
-            }
-        }
-        
-        public async Task AddTag()
-        {
-            var createModal = Modal.Show<AddTagModal>();
-            var result = await createModal.Result;
-
-            if (result.Confirmed)
-            {
-                await SpinnerService.Load(GetTags);
+                    workStation => $"/tasks/?fieldId={FieldId}&workstationId={workStation.Id}");
             }
         }
 
-
-        private async Task Enter(KeyboardEventArgs e)
-        {
-            if (e.Code is "Enter" or "NumpadEnter")
-            {
-                await SpinnerService.Load(GetTags);
-            }
-        }
-
-        private async Task GetTags()
+        private async Task GetTasks()
         {
             _query.WorkStationId = WorkstationId ?? 1;
-            _query.ItemsOnPage = 15;
             _query.Page ??= 1;
-            var result = await TagService.GetCollection(_query); // TODO I make PageableCollectionDto
+            _query.StatusAlarm = StatusAlarmType.InWork;
+            _query.CountOnPage = 15;
+            _query.DateTimeEnd = DateTimeOffset.Now;
+            _query.DateTimeStart = DateTimeOffset.Now.AddYears(-10);
+            var result = await IncomingAlarmService.GetAlarmsPerDate(_query); // TODO I make PageableCollectionDto
             
             if (result.Success)
             {
-                _tags = result.Payload.Items;
+                _tasks = result.Payload;
                 _pagesCount = 100;
                 StateHasChanged();
             }
@@ -132,7 +118,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
             _query.State = state;
             _query.Page = 1;
         
-            await SpinnerService.Load(GetTags);
+            await SpinnerService.Load(GetTasks);
         }
 
         private async Task SetPriorityFilter(PriorityType? priority)
@@ -140,42 +126,63 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
             _query.Priority = priority;
             _query.Page = 1;
         
-            await SpinnerService.Load(GetTags);
-        }
-
-        private async Task OnOrderingChanged(string orderBy)
-        {
-            if (orderBy == _query.OrderPropertyName) 
-                _query.OrderByDescending = !_query.OrderByDescending;
-
-            _query.OrderPropertyName = orderBy;
-            _query.Page = 1;
-        
-            await SpinnerService.Load(GetTags);
+            await SpinnerService.Load(GetTasks);
         }
 
         private async Task OnPageChanged(int page)
         {
             _query.Page = page;
-            await SpinnerService.Load(GetTags);
+            await SpinnerService.Load(GetTasks);
         }
     
         private async Task Search()
         {
             _query.Page = 1;
-            await SpinnerService.Load(GetTags);
+            await SpinnerService.Load(GetTasks);
         }
         
         private async Task DropFilters()
         {
-            _query = new GetTagsListQuery
+            _query = new GetIncomingAlarmsByDatesQuery()
             {
-                Page = 1
+                Page = 1,
+                StatusAlarm = StatusAlarmType.InWork
             };
 
-            await SpinnerService.Load(GetTags);
+            await SpinnerService.Load(GetTasks);
         }
         
-        
+        private async Task<Stream?> GetFileStream()
+        {
+            var result = await ExportService.ExportIncomingAlarms(new ExportIncomingAlarmsByDatesQuery
+            {
+                DocumentType = ExportDocumentType.Excel,
+                StatusAlarm = StatusAlarmType.InWork,
+                WorkStationId = WorkstationId ?? 0,
+                TagName = _query.TagName, 
+                State = _query.State,
+                Priority = _query.Priority,
+                
+            });
+
+            return new MemoryStream(result);
+        }
+
+        private async Task DownloadFileFromStream()
+        {
+            SpinnerService?.Show();
+
+            var fileStream = await GetFileStream();
+
+            if (fileStream == null) return;
+
+            var fileName = "export.xlsx";
+
+            using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+            await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+
+            SpinnerService?.Hide();
+        }
     }
 }

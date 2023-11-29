@@ -1,32 +1,24 @@
-﻿@page "/tagtable"
+﻿@page "/tag-table"
 
 @using GPNA.AlarmControlSystem.Pages.TagTable.Components
-@using GPNA.AlarmControlSystem.Pages.TagTable.Components.Modals
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
-@using GPNA.AlarmControlSystem.Interfaces
-@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
-@using GPNA.AlarmControlSystem.Models.Dto.Field
-@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
-@using GPNA.AlarmControlSystem.Models.Dto.Workstation
-@using GPNA.AlarmControlSystem.Models.Enums
-@using GPNA.AlarmControlSystem.Options
-@using Microsoft.Extensions.Options
-
+@using GPNA.AlarmControlSystem.Shared.Pagination
+@using GPNA.AlarmControlSystem.Models.Dto.Tag
 
 <div class="page-main">
     <div class="page-header justify-content-center position-relative">
         <div class="d-flex">
-            <p>ТАБЛИЦА ПЕРЕМЕННЫХ МЕРЕТОЯХА @(Options?.Value.BranchName ?? "N/A") М/Р <b>@FieldName</b></p>
-            <SelectObject Object="dto" LinksDictionary="FieldLinksDictionary" />
+            <p>ТАБЛИЦА ПЕРЕМЕННЫХ МЕРЕТОЯХА @(Options?.Value.BranchName ?? "N/A") М/Р <b>@_fieldName</b></p>
+            <SelectObject Object="dto" LinksDictionary="_fieldLinksDictionary" />
             <p style="margin-left:15px;">
-                <b>@WorkstationName</b>
+                <b>@_workstationName</b>
             </p>
-            <SelectObject LinksDictionary="WorkstationLinksDictionary" />
+            <SelectObject LinksDictionary="_workstationLinksDictionary" />
         </div>        
         <div class="d-flex gap-2 position-absolute" style="right: 0;">
-            @if (FiltersOn)
+            @if (_query!= new GetTagsListQuery(){Page = 1})
             {
-                <TitleBarButton Title="Фильтрация" FunctionButton="filtration" />
+                <TitleBarButton Title="Фильтрация" FunctionButton="filtration" Action="DropFilters"/>
             }
             <TitleBarButton Title="Экспорт" FunctionButton="export" />
         </div> 
@@ -44,250 +36,25 @@
     <div class="tag-table-search-container">
         <div class="tagname-filter">
             <p>TagName</p>
-            <input placeholder="Поиск" type="text" name="tagname">
+            <input placeholder="Поиск" type="text" name="tagname" @bind="_query.Suggest" @bind:event="oninput" @onchange="async () => await Search()">
         </div>
         <div class="tagname-filter description">
             <p>Описание</p>
-            <input placeholder="Поиск" type="text" name="tagname">
+            <input placeholder="Поиск" type="text" name="tagname" @bind="_query.Description" @bind:event="oninput" @onchange="async () => await Search()">
         </div>
-        <button class="tag-table-button-add" @onclick="OpenCorrectTagModal">
+        <button class="tag-table-button-add" @onclick="AddTag">
             <p>Новый Таг</p>
             <svg>
                 <use href="/img/icons/icons.svg#tag-table-add"></use>
             </svg>
         </button>        
     </div>
-    <TagsTable></TagsTable>   
-
-    <AddTagModal @ref="AddTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></AddTagModal>
-    <EditTagModal @ref="EditTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></EditTagModal>
-    <CorrectTagModal @ref="CorrectorTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></CorrectTagModal>
-    <DeleteTagModal @ref="DeleteTagModal" SaveTag="@SaveTag" CloseTag="CloseTag"></DeleteTagModal>
-
-
-</div>
-
-@code {
-    AddTagModal? AddTagModal;
-    EditTagModal? EditTagModal;
-    CorrectTagModal? CorrectorTagModal;
-    DeleteTagModal? DeleteTagModal;
-
-    void OpenAddTagModal()
-    {
-        AddTagModal.Show();
-    }
-
-    void OpenEditTagModal()
-    {
-        EditTagModal.Show();
-    }
-    void OpenCorrectTagModal()
-    {
-        CorrectorTagModal.Show();
-    }
-    void OpenDeleteTagModal()
-    {
-        DeleteTagModal.Show();
-    }
-
-    public async Task SaveTag()
-        {
-        DeleteTagModal.Hide();
-        }
     
-    public async Task CloseTag()
-    {
-        DeleteTagModal.Hide();
-    }
-
-
-        [Inject]
-        private IOptions<AcsModuleOptions>? Options { get; set; }
-
-        [Inject]
-        private IIncomingAlarmService? IncomingAlarmService { get; set; }
-
-        [Inject]
-        private IFieldService? FieldService { get; set; }
-
-        [Inject]
-        private IWorkStationService? WorkStationService { get; set; }
-
-        [Inject]
-        private IExportService? ExportService { get; set; }
-
-        //[Inject]
-        //private ISpinnerService? SpinnerService { get; set; }
-
-        [Parameter]
-        public DateTime DateTime { get; set; }
-
-        [Parameter]
-        [SupplyParameterFromQuery]
-        public int? WorkstationId { get; set; }
-
-        [Parameter]
-        [SupplyParameterFromQuery]
-        public int? FieldId { get; set; }
-
-        [Parameter]
-        public string? WorkstationName { get; set; }
-
-        [Parameter]
-        public string? FieldName { get; set; }
-
-        [CascadingParameter(Name = nameof(From))]
-        public DateTimeOffset From { get; set; }
-
-        [CascadingParameter(Name = nameof(To))]
-        public DateTimeOffset To { get; set; }
-
-        [CascadingParameter(Name = nameof(PagesCount))]
-        public int PagesCount { get; set; }
-
-        [CascadingParameter(Name = nameof(CurrentPage))]
-        public int CurrentPage { get; set; } = 1;
-
-        [Parameter]
-        public string TagNameFilter { get; set; } = string.Empty;
-
-        [CascadingParameter(Name = nameof(StateFilter))]
-        public StateType? StateFilter { get; set; }
-
-        [CascadingParameter(Name = nameof(PriorityFilter))]
-        public PriorityType? PriorityFilter { get; set; }
-
-        private bool FiltersOn => !string.IsNullOrWhiteSpace(TagNameFilter) || StateFilter != default || PriorityFilter != default;
-
-        private AlarmsCollection<IncomingAlarmDto[]>? AlarmsCollection { get; set; }
-
-        private FieldDto[]? _fields;
-
-        private WorkStationDto[]? _workstations;
-
-        private IDictionary<string, string>? FieldLinksDictionary { get; set; }
-
-        private IDictionary<string, string>? WorkstationLinksDictionary { get; set; }
-
-        private string _spinnerClass = string.Empty;
-
-        private string _orderBy = string.Empty;
-
-        private bool _orderByDesc = true;
-
-        protected override void OnInitialized()
-        {
-            SetDates();
-            base.OnInitialized();
-        }
-
-        protected override async Task OnParametersSetAsync()
-        {
-            await SetFieldWithWorkstation();
-
-            //await InitializePageAsync();
-        }
-
-        private async Task SetFieldWithWorkstation()
-        {
-            if (FieldService != null)
-            {
-                var fields = await FieldService.GetList();
-
-                if (fields.Success)
-                {
-                    _fields = fields.Payload.ToArray();
-                }
-            }
-
-            if (WorkStationService != null)
-            {
-                var workstations = await WorkStationService.GetList(new { FieldId });
-
-                if (workstations.Success)
-                {
-                    _workstations = workstations.Payload.ToArray();
-                }
-            }
-
-            FieldId ??= _fields?.FirstOrDefault()?.Id;
-
-            FieldName = _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name;
-
-            WorkstationId ??= _workstations?.FirstOrDefault()?.Id;
-
-            WorkstationName = _workstations?.FirstOrDefault(ws => ws.Id == WorkstationId)?.Name;
-
-            FillLinks();
-        }
-
-        private void FillLinks()
-        {
-            if (_fields != null)
-            {
-                FieldLinksDictionary = _fields.ToDictionary(field =>
-                    field.Name,
-                    field => $"/Arm/?fieldId={field.Id}");
-            }
-
-            if (_workstations != null)
-            {
-                WorkstationLinksDictionary = _workstations.ToDictionary(workStation =>
-                    workStation.Name ?? Guid.NewGuid().ToString(),
-                    workStation => $"/Arm/?fieldId={FieldId}&workstationId={workStation.Id}");
-            }
-        }
-
-      
-
-        private void SetDates()
-        {
-            To = DateTimeOffset.Now;
-            From = new DateTimeOffset(To.Year, To.Month, To.Day, 8, 0, 0, 0, To.Offset);
-        }
-
-        private async Task UpdateAlarms()
-        {
-            if (IncomingAlarmService != null)
-            {
-                var request = await IncomingAlarmService.GetAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
-                {
-                    WorkStationId = WorkstationId ?? 0,
-                    TagName = TagNameFilter,
-                    DateTimeStart = From,
-                    DateTimeEnd = To,
-                    State = StateFilter,
-                    Priority = PriorityFilter,
-                    OrderPropertyName = _orderBy,
-                    OrderByDescending = _orderByDesc,
-                    Page = CurrentPage,
-                    CountOnPage = 15
-                });
-
-                if (request.Success)
-                {
-                    AlarmsCollection = request.Payload;
-                    PagesCount = AlarmsCollection.PagesCount;
-                }
-            }
-        }
-
-        private async Task<Stream?> GetFileStream()
-        {
-            var result = await ExportService.ExportIncomingAlarms(new ExportIncomingAlarmsByDatesQuery
-            {
-                DocumentType = ExportDocumentType.Excel,
-                WorkStationId = WorkstationId ?? 0,
-                TagName = TagNameFilter,
-                DateTimeStart = From,
-                DateTimeEnd = To,
-                State = StateFilter,
-                Priority = PriorityFilter,
-            });
-
-            return new MemoryStream(result);
-        }
-
-       
-}
+    <TagsTable Tags="_tags" 
+               OnStateFilterChanged="SetStateFilter" 
+               OnPriorityFilterChanged="SetPriorityFilter" 
+               OnOrderingChanged="OnOrderingChanged"
+               OnTagDeleted="GetTags"/>
+    <Pagination CurrentPage="@(_query.Page ?? 1)" PagesCount="_pagesCount" OnPageClick="OnPageChanged"/>
+</div>
+    

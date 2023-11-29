@@ -1,22 +1,29 @@
 ﻿@using GPNA.AlarmControlSystem.Pages.Monitoring.Components
+@using GPNA.AlarmControlSystem.Models.Dto.Tag
+@using GPNA.AlarmControlSystem.Extensions
+@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Pages.TagTable.Components
+@using GPNA.AlarmControlSystem.Pages.TagTable.Modals
+@using GPNA.AlarmControlSystem.Services
 
-<tr class="tag-table-line @TagStatus">
+<tr class="tag-table-line @Tag.Validate.ToString()">
     <td @onclick="ShowMoreAttributes">                
-        <div class="tag-table-indicator @TagStatus"></div>                               
+        <div class="tag-table-indicator @Tag.Validate.ToString()"></div>                               
     </td>           
-    <td @onclick="ShowMoreAttributes">20_1_TT_34_BLKKKEY_LL</td>           
+    <td @onclick="ShowMoreAttributes">@Tag.TagName</td>           
     <td @onclick="ShowMoreAttributes">
         <div class=" d-flex gap-2 align-items-center">
-            @if (AttentionDescription) {                    
+            @if (_attentionDescription) {                    
                 <svg class="tag-table-icon-attention">
                     <use href="/img/icons/icons.svg#tag-table-attention"></use>
                 </svg>                        
             }
-            <p>Описание</p>
+            <p>@Tag.Description</p>
         </div>                                
     </td>
     <td @onclick="ShowMoreAttributes">
-        @if (AttentionPriority) {
+        @if (_attentionPriority)
+        {
             <div class="position-relative">
                 <div class="tag-table-container-attention priority">
                     <svg class="tag-table-icon-attention">
@@ -24,10 +31,11 @@
                     </svg>
                 </div>
             </div>
-        }                
-        <MonitoringTableStatus Title="КРИТИЧНЫЙ" Priority="urgent"></MonitoringTableStatus></td>
+        }
+        <MonitoringTableStatus Title="@Tag.Priority.GetDescription()" Priority="@Tag.Priority"/>
+    </td>
     <td @onclick="ShowMoreAttributes">
-        @if (AttentionSetting) {
+        @if (_attentionSetting) {
             <div class="position-relative">
             <div class="tag-table-container-attention">
                 <svg class="tag-table-icon-attention">
@@ -36,16 +44,16 @@
             </div>
         </div>
         }                
-        <p>440</p>                
+        <p>@(Tag.AlarmLimit ?? "N/A")</p>                
     </td>
     <td @onclick="ShowMoreAttributes">
-        <svg class="tag-table-icon-reglament @ReglamentColor">
+        <svg class="tag-table-icon-reglament @_reglamentColor">
             <use href="/img/icons/icons.svg#tag-table-reglament"></use>
         </svg>
     </td>
     <td>
         <div class="d-flex gap-1 justify-content-center align-items-center">
-            <button class="tag-table-button-modal">
+            <button class="tag-table-button-modal" @onclick="EditTag">
                 <svg>
                     <use href="/img/icons/icons.svg#tag-table-edit"></use>
                 </svg>
@@ -55,7 +63,7 @@
                     <use href="/img/icons/icons.svg#tag-table-correct"></use>
                 </svg>
             </button>
-            <button class="tag-table-button-modal">
+            <button class="tag-table-button-modal" @onclick="DeleteTag">
                 <svg>
                     <use href="/img/icons/icons.svg#tag-table-delete"></use>
                 </svg>
@@ -66,27 +74,62 @@
 </tr>
 @if (_displayComment)
 {   
-    <TagTableInfo Title="Позиция по ГП" Description="20 БКНС"></TagTableInfo>
-    <TagTableInfo Title="Потенциальные последствия" Description="Разгерметизация оборудования"></TagTableInfo>
-    <TagTableInfo Title="Действия Полевого оператора" Description="Полевой персонал: - произвести осмотр оборудования по месту на предмет целостности и герметичности. В случае наличия разгерметизации действовать согласно ПМЛА: - сравнить показания с техническим манометром по месту; - на дефектном насосе вывесить табличку в ремонте"></TagTableInfo>
-    <TagTableInfo Title="Действия Оператора APM" Description="Оператор АРМ: - проверка уровня в 20-ЕД-1. Прекратить операции по возможному сбросу жидкости в 20-ЕД-1; - вывод дефектного оборудования в ремонт; - сделать заявку на ревизию/ремонт оборудования"></TagTableInfo>
-    <TagTableInfo Title="Условия усиления" Description="В случае разгерметизации - согласно ПМЛА; В случае отказа насоса - механик"></TagTableInfo>
-    <TagTableInfo Title="Время на реакцию" Description="5 минут"></TagTableInfo>
+    <TagTableInfo Title="Позиция по ГП" Description="@Tag.Position"/>
+    <TagTableInfo Title="Потенциальные последствия" Description="@Tag.Consequence"/>
+    <TagTableInfo Title="Действия Полевого оператора" Description="@Tag.ActionFieldOperator"></TagTableInfo>
+    <TagTableInfo Title="Действия Оператора APM" Description="@Tag.ActionArmOperator"></TagTableInfo>
+    <TagTableInfo Title="Условия усиления" Description="@Tag.Inform"></TagTableInfo>
+    <TagTableInfo Title="Время на реакцию" Description="@Tag.ReactionTime"></TagTableInfo>
 }
 
 @code {
-
-    [Parameter] public string? TagStatus { get; set; }
-    [Parameter] public string? ReglamentColor { get; set; }
-    [Parameter] public bool AttentionDescription { get; set; } = false;
-    [Parameter] public bool AttentionPriority { get; set; } = false;
-    [Parameter] public bool AttentionSetting { get; set; } = false;
+    [CascadingParameter] public IModalService Modal { get; set; } = default!;
+    
+    [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
+    [Inject] protected ITagService TagService { get; set; } = default!;
+    
+    [Parameter] public TagDto Tag { get; set; } = new TagDto();
+    [Parameter] public EventCallback<TagDto> OnTagDeleted { get; set; }
+    
+    private string? _reglamentColor;
+    private bool _attentionDescription = false;
+    private bool _attentionPriority = false;
+    private bool _attentionSetting = false;
 
     bool _displayComment = false;
 
     void ShowMoreAttributes()
     {
         _displayComment = !_displayComment;
+    }
+    
+    private async Task EditTag()
+    {
+        var parameters = new ModalParameters { { "Tag", Tag } };
+
+        var updateModal = Modal.Show<EditTagModal>("", parameters);
+        var result = await updateModal.Result;
+
+        if (result.Confirmed && result.Data!=null)
+        {
+            Tag = (TagDto)result.Data;
+        }
+    }
+    
+    private async Task DeleteTag()
+    {
+        ArgumentNullException.ThrowIfNull(Tag.Id);
+        var parameters = new ModalParameters { { "TagName", Tag.TagName } };
+        var deleteModal = Modal.Show<DeleteTagModal>("", parameters);
+        var result = await deleteModal.Result;
+
+        if (result.Confirmed)
+        {
+            SpinnerService.Show();
+            await TagService.Delete(Tag.Id);
+            SpinnerService.Hide();
+            await OnTagDeleted.InvokeAsync(Tag);
+        }
     }
 
 }

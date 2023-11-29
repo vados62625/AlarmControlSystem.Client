@@ -1,0 +1,61 @@
+﻿@using Microsoft.AspNetCore.Components
+@using GPNA.AlarmControlSystem.Models.Enums
+@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
+@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Components
+@using GPNA.AlarmControlSystem.Extensions
+@inject IJSRuntime JSRuntime
+
+@if (Task!=null && _taskLast!=null)
+{
+    <tr>
+        <td>
+            <div class="d-flex gap-2 align-items-center">
+                <svg class="task-table-status-icon">
+                    <use href="/img/icons/icons.svg#task-@_taskStatus"></use>
+                </svg>
+                <p class="task-table-status-comment">N/A</p>
+            </div>
+        </td>
+        <td>N/A</td>
+        <td>@_taskLast.CreatedAt.Date</td>
+        <td>@_taskLast.CreatedAt.LocalDateTime</td>
+        <td>@Task.Length</td>
+        <td>@_taskLast.TagName</td>
+        <td>
+            <MonitoringTableStatus 
+                Title="@_taskLast.State.GetDescription()" 
+                Status="@_taskLast.State"/>
+        </td>
+        <td>@_taskLast.Description</td>
+        <td>
+            <MonitoringTableStatus 
+                Title="@_taskLast.Priority.GetDescription()" 
+                Priority="@_taskLast.Priority"/>
+        </td>
+        <td>уставка</td>
+    </tr>
+    <tr class="task-table-comment">
+        <td colspan="10">
+            @*<input type="text" placeholder="Текст комментария" />*@
+            <div>
+                <p>@_taskLast.Comment</p></div>
+        </td>
+    </tr>
+}
+
+
+@code
+{
+    [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
+    
+    [Parameter] public IncomingAlarmDto[]? Task { get; set; }
+    private IncomingAlarmDto? _taskLast;
+    private string? _taskStatus = "new";
+    
+    protected override void OnInitialized()
+    {
+        _taskLast = Task?.Last();
+    }
+}
