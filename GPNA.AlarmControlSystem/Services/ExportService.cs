@@ -19,7 +19,22 @@ public class ExportService : IExportService
     {
         return await _apiBroker.GetFile($"{URL}/ExportIncomingAlarms", query);
     }
-    
+
+    public async Task<byte[]> ExportActiveAlarms(ExportIncomingAlarmsByDatesQuery query)
+    {
+        return await _apiBroker.GetFile($"{URL}/ExportActiveAlarms", query);
+    }
+
+    public async Task<byte[]> ExportImitatedAlarms(ExportIncomingAlarmsByDatesQuery query)
+    {
+        return await _apiBroker.GetFile($"{URL}/ExportImitatedAlarms", query);
+    }
+
+    public async Task<byte[]> ExportSuppressedAlarms(ExportIncomingAlarmsByDatesQuery query)
+    {
+        return await _apiBroker.GetFile($"{URL}/ExportSuppressedAlarms", query);
+    }
+
     public async Task<byte[]> ExportActiveAlarmsReport(ExportIncomingAlarmsByDatesQuery query)
     {
         return await _apiBroker.GetFile($"{URL}/ExportActiveAlarmsReport", query);

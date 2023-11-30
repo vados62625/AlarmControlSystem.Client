@@ -20,7 +20,7 @@ public partial class Monitoring : ComponentBase
     [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
     [Inject] private IIncomingAlarmService? IncomingAlarmService { get; set; }
     [Inject] private IActiveAlarmService? ActiveAlarmService { get; set; }
-    
+
     [Inject] private IImitatedAlarmService? ImitatedAlarmService { get; set; }
     [Inject] private ISuppressedAlarmService? SuppressedAlarmService { get; set; }
     [Inject] private IFieldService? FieldService { get; set; }
@@ -31,12 +31,12 @@ public partial class Monitoring : ComponentBase
     [Parameter] [SupplyParameterFromQuery] public int? WorkstationId { get; set; }
     [Parameter] [SupplyParameterFromQuery] public int? FieldId { get; set; }
     [Parameter] [SupplyParameterFromQuery] public int AlarmType { get; set; } = 1;
-    
+
     private string? _workstationName, _fieldName;
 
     private WorkStationDto[]? _workstations;
     private FieldDto[]? _fields;
-    
+
     private DateTimeOffset _from, _to;
 
     private int _pagesCount, _totalCount;
@@ -44,11 +44,12 @@ public partial class Monitoring : ComponentBase
 
     private string _tagNameFilter = string.Empty;
     private string? _fireStatus, _gasStatus;
-    
+
     private Dictionary<StateType, bool>? _stateFilter;
     private Dictionary<PriorityType, bool>? _priorityFilter;
 
-    private bool FiltersOn => !string.IsNullOrWhiteSpace(_tagNameFilter) || _stateFilter != default || _priorityFilter != default;
+    private bool FiltersOn => !string.IsNullOrWhiteSpace(_tagNameFilter) || _stateFilter != default ||
+                              _priorityFilter != default;
 
     private AlarmsCollection<IncomingAlarmDto[]>? _incomingAlarmsCollection;
     private AlarmsCollection<ActiveAlarmDto>? _activeAlarmsCollection;
@@ -69,7 +70,7 @@ public partial class Monitoring : ComponentBase
 
     private bool _orderByDesc = true;
 
-    private Dictionary<AlarmTypeEnum, int> _tabAlarmsCount = new ();
+    private Dictionary<AlarmTypeEnum, int> _tabAlarmsCount = new();
 
     protected override void OnInitialized()
     {
@@ -102,12 +103,12 @@ public partial class Monitoring : ComponentBase
 
         FieldId ??= _fields?.FirstOrDefault()?.Id;
         _fieldName = _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name;
-        
+
         WorkstationId ??= _workstations?.FirstOrDefault()?.Id;
         _workstationName = _workstations?.FirstOrDefault(ws => ws.Id == WorkstationId)?.Name;
-        
+
         StateHasChanged();
-        
+
         FillLinks();
     }
 
@@ -119,28 +120,29 @@ public partial class Monitoring : ComponentBase
         _gasStatus = alarms.Gas ? "active" : "";
         _countByPriority = alarms.CountByPriority;
         _countByState = alarms.CountByState;
-        
-                        
+
+
         _tabAlarmsCount[AlarmTypeEnum.Active] = alarms.ActiveAlarmsCount;
         _tabAlarmsCount[AlarmTypeEnum.Incoming] = alarms.IncomingAlarmsCount;
         _tabAlarmsCount[AlarmTypeEnum.Simulation] = alarms.ImitationParamsCount;
         _tabAlarmsCount[AlarmTypeEnum.Suppressed] = alarms.SuppressedAlarmsCount;
     }
-    
+
     private void FillLinks()
     {
         if (_fields != null)
         {
-            _fieldLinksDictionary = _fields.ToDictionary(field => 
-                    field.Name, 
+            _fieldLinksDictionary = _fields.ToDictionary(field =>
+                    field.Name,
                 field => $"/monitoring/?alarmType={(int)AlarmType}&fieldId={field.Id}");
         }
-        
+
         if (_workstations != null)
         {
-            _workstationLinksDictionary = _workstations.ToDictionary(workStation => 
-                    workStation.Name ?? Guid.NewGuid().ToString(), 
-                workStation => $"/monitoring/?alarmType={(int)AlarmType}&fieldId={FieldId}&workstationId={workStation.Id}");
+            _workstationLinksDictionary = _workstations.ToDictionary(workStation =>
+                    workStation.Name ?? Guid.NewGuid().ToString(),
+                workStation =>
+                    $"/monitoring/?alarmType={(int)AlarmType}&fieldId={FieldId}&workstationId={workStation.Id}");
         }
     }
 
@@ -151,7 +153,7 @@ public partial class Monitoring : ComponentBase
 
         _priorityFilter[PriorityType.Information] = false;
     }
-    
+
     private async Task InitializePageAsync()
     {
         switch ((AlarmTypeEnum)AlarmType)
@@ -203,7 +205,8 @@ public partial class Monitoring : ComponentBase
                 OrderByDescending = _orderByDesc,
                 Page = _currentPage,
                 CountOnPage = 15,
-                DisplayShifts = !FiltersOn && (_orderBy == nameof(IncomingAlarmDto.DateTimeStart) || _orderBy == string.Empty)
+                DisplayShifts = !FiltersOn &&
+                                (_orderBy == nameof(IncomingAlarmDto.DateTimeStart) || _orderBy == string.Empty)
             });
 
             if (request.Success)
@@ -215,7 +218,7 @@ public partial class Monitoring : ComponentBase
 
         if (_incomingAlarmsCollection != null) SetAlarmsCounts(_incomingAlarmsCollection);
     }
-    
+
     private async Task UpdateActiveAlarms()
     {
         if (ActiveAlarmService != null)
@@ -242,10 +245,10 @@ public partial class Monitoring : ComponentBase
                 _pagesCount = _activeAlarmsCollection.PagesCount;
             }
         }
-        
+
         if (_activeAlarmsCollection != null) SetAlarmsCounts(_activeAlarmsCollection);
     }
-    
+
     private async Task UpdateImitatedAlarms()
     {
         if (ImitatedAlarmService != null)
@@ -271,10 +274,10 @@ public partial class Monitoring : ComponentBase
                 _pagesCount = _imitatedAlarmsCollection.PagesCount;
             }
         }
-        
+
         if (_imitatedAlarmsCollection != null) SetAlarmsCounts(_imitatedAlarmsCollection);
     }
-    
+
     private async Task UpdateSuppressedAlarms()
     {
         if (SuppressedAlarmService != null)
@@ -301,30 +304,30 @@ public partial class Monitoring : ComponentBase
                 _pagesCount = _suppressedAlarmsCollection.PagesCount;
             }
         }
-        
+
         if (_suppressedAlarmsCollection != null) SetAlarmsCounts(_suppressedAlarmsCollection);
     }
-    
+
     private Task DropFilters()
     {
         _tagNameFilter = string.Empty;
-        
+
         _currentPage = 1;
 
         foreach (var state in Enum.GetValues<StateType>())
         {
             _stateFilter[state] = true;
         }
-        
+
         foreach (var priority in Enum.GetValues<PriorityType>())
         {
             _priorityFilter[priority] = true;
         }
-        
+
         return InitializePageAsync();
     }
 
-    private async Task<Stream?> GetFileStream()
+    private async Task<Stream?> GetIncomingExportStream()
     {
         var result = await ExportService.ExportIncomingAlarms(new ExportIncomingAlarmsByDatesQuery
         {
@@ -335,6 +338,58 @@ public partial class Monitoring : ComponentBase
             DateTimeEnd = _to,
             State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
             Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
+            CountOnPage = int.MaxValue
+        });
+
+        return new MemoryStream(result);
+    }
+
+    private async Task<Stream?> GetActiveExportStream()
+    {
+        var result = await ExportService.ExportActiveAlarms(new ExportIncomingAlarmsByDatesQuery
+        {
+            DocumentType = ExportDocumentType.Excel,
+            WorkStationId = WorkstationId ?? 0,
+            TagName = _tagNameFilter,
+            DateTimeStart = _from,
+            DateTimeEnd = _to,
+            State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
+            Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
+            CountOnPage = int.MaxValue
+        });
+
+        return new MemoryStream(result);
+    }
+
+    private async Task<Stream?> GetImitatedExportStream()
+    {
+        var result = await ExportService.ExportImitatedAlarms(new ExportIncomingAlarmsByDatesQuery
+        {
+            DocumentType = ExportDocumentType.Excel,
+            WorkStationId = WorkstationId ?? 0,
+            TagName = _tagNameFilter,
+            DateTimeStart = _from,
+            DateTimeEnd = _to,
+            State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
+            Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
+            CountOnPage = int.MaxValue
+        });
+
+        return new MemoryStream(result);
+    }
+
+    private async Task<Stream?> GetSuppressedExportStream()
+    {
+        var result = await ExportService.ExportSuppressedAlarms(new ExportIncomingAlarmsByDatesQuery
+        {
+            DocumentType = ExportDocumentType.Excel,
+            WorkStationId = WorkstationId ?? 0,
+            TagName = _tagNameFilter,
+            DateTimeStart = _from,
+            DateTimeEnd = _to,
+            State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
+            Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
+            CountOnPage = int.MaxValue
         });
 
         return new MemoryStream(result);
@@ -344,7 +399,14 @@ public partial class Monitoring : ComponentBase
     {
         SpinnerService?.Show();
 
-        var fileStream = await GetFileStream();
+        var fileStream = AlarmType switch
+        {
+            (int)Models.Enums.AlarmType.Incoming => await GetIncomingExportStream(),
+            (int)Models.Enums.AlarmType.Active => await GetActiveExportStream(),
+            (int)Models.Enums.AlarmType.Imitated => await GetImitatedExportStream(),
+            (int)Models.Enums.AlarmType.Suppressed => await GetSuppressedExportStream(),
+            _ => default
+        };
 
         if (fileStream == null) return;
 
@@ -360,10 +422,10 @@ public partial class Monitoring : ComponentBase
     private async Task ToggleStateFilter(StateType? state)
     {
         if (state == default || _stateFilter == default) return;
-        
+
         _stateFilter[state.Value] = !_stateFilter[state.Value];
         _currentPage = 1;
-        
+
         await InitializePageAsync();
     }
 
@@ -373,7 +435,7 @@ public partial class Monitoring : ComponentBase
 
         _priorityFilter[priority.Value] = !_priorityFilter[priority.Value];
         _currentPage = 1;
-        
+
         await InitializePageAsync();
     }
 
@@ -381,9 +443,9 @@ public partial class Monitoring : ComponentBase
     {
         _spinnerClass = " active";
         _currentPage = 1;
-        
+
         await InitializePageAsync();
-        
+
         _spinnerClass = string.Empty;
     }
 
@@ -393,7 +455,7 @@ public partial class Monitoring : ComponentBase
 
         _orderBy = orderBy;
         _currentPage = 1;
-        
+
         await InitializePageAsync();
     }
 
@@ -402,7 +464,7 @@ public partial class Monitoring : ComponentBase
         _currentPage = page;
         await InitializePageAsync();
     }
-    
+
     private async Task Search(string tagname)
     {
         _tagNameFilter = tagname;

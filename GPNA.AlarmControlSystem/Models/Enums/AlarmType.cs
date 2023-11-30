@@ -4,5 +4,6 @@ public enum AlarmType
 {
     Incoming,
     Active,
-    Suppressed
+    Imitated,
+    Suppressed,
 }
