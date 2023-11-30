@@ -19,6 +19,11 @@
     margin-left: 13px;
 }
 
+    .button-modal.edit p {
+        margin-left: 8px;
+        margin-right: 2px;
+    }
+
     .button-modal.save, .button-modal.send {
         background: #DDF1FC;
     }

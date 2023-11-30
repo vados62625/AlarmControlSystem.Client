@@ -1,0 +1,57 @@
+﻿@page "/settings/permissions"
+@using GPNA.AlarmControlSystem.Pages.Settings.Permissions.Components
+@using GPNA.AlarmControlSystem.Shared.ButtonsModal
+@inject IJSRuntime JsRuntime
+
+
+<div class="page-main">
+    <div class="page-header justify-content-center">
+        <div class="d-flex align-items-center">
+            <p>
+                Настройка ответственных <b>@FieldName</b>
+            </p>
+            <SelectObject LinksDictionary="FieldLinksDictionary"/>
+
+            <p class="ms-2">
+                ЦЕХА <b>@WorkstationName</b>
+            </p>
+            <SelectObject LinksDictionary="WorkstationLinksDictionary"/>
+        </div>
+    </div>
+
+    <div class="settings-container">
+
+        <div class="settings-bg">            
+            <p class="settings-title">Права доступа. Коментарии</p>                
+            
+            <UserPermissionsItem Title="Технолог (промысел)" SettingsEdit="false"/>
+            <UserPermissionsItem Title="Технолог (офис)" SettingsEdit="false" />
+            <UserPermissionsItem Title="Инженер АСУ ТП (промысел)" SettingsEdit="false" />
+            <UserPermissionsItem Title="Инженер АСУ ТП (офис)" SettingsEdit="false" />
+            <UserPermissionsItem Title="Начальник смены" SettingsEdit="false" />
+            <UserPermissionsItem Title="Начальник цеха" SettingsEdit="false" />
+            
+            <div class="settings-buttons-container">
+                <EditButton />
+            </div>
+            
+        </div>
+
+        <div class="settings-bg">           
+            <p class="settings-title">Права доступа. Задачи</p>
+                
+            <UserPermissionsItem Title="Технолог (промысел)" />
+            <UserPermissionsItem Title="Технолог (офис)" />
+            <UserPermissionsItem Title="Инженер АСУ ТП (промысел)" />
+            <UserPermissionsItem Title="Инженер АСУ ТП (офис)" />
+            <UserPermissionsItem Title="Начальник смены" />
+            <UserPermissionsItem Title="Начальник цеха" />
+
+            <div class="settings-buttons-container">
+                <SaveButton />
+                <CancelButton />
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -6,7 +6,7 @@ using GPNA.AlarmControlSystem.Models.Dto.Workstation;
 using GPNA.AlarmControlSystem.Services;
 using Microsoft.AspNetCore.Components;
 
-namespace GPNA.AlarmControlSystem.Pages.Settings;
+namespace GPNA.AlarmControlSystem.Pages.Settings.Permissions;
 
 public partial class UserPermissions : ComponentBase
 {

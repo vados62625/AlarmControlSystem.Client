@@ -1,0 +1,34 @@
+﻿<div class="settings-stats-container ">
+	<p class="settings-stat-title">@Title</p>
+
+    @if (SettingsEdit)
+	{
+        <div class="d-flex gap-2">
+            <button class="settings-stat-button">
+                <svg>
+                    <use href="/img/icons/icons.svg#settings-add-line"></use>
+                </svg>
+            </button>
+            <button class="settings-stat-button">
+                <svg>
+                    <use href="/img/icons/icons.svg#settings-delete-line"></use>
+                </svg>
+            </button>
+        </div>
+
+        <input class="settings-stat-input" type="text" placeholder="Введите ФИО" />
+        <input class="settings-stat-input" type="text" placeholder="Введите почту" />
+    } 
+
+    else
+    {    
+        <input class="settings-stat-input ban" type="text" placeholder="Введите ФИО" readonly />
+        <input class="settings-stat-input ban" type="text" placeholder="Введите почту" readonly />
+    }   
+    
+</div>
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public bool SettingsEdit { get; set; } = true;
+}
