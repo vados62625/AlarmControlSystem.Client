@@ -15,7 +15,7 @@
 			<div class="d-flex justify-content-between">
 				<div class="tag-table__modal-item-container">
 					<p>Позиция по ГП</p>
-					<input class="tag-table__modal-item-input small" type="text" placeholder="Введите позицию по ГП" value="@_command.Position">
+					<input class="tag-table__modal-item-input small" type="text" placeholder="Введите позицию по ГП" @bind="@_command.Position">
 				</div>
 				<div class="tag-table__modal-item-container">
 					<p>TagName</p>
@@ -42,37 +42,37 @@
 			</div>
 			<div class="tag-table__modal-item-container">
 				<p>Описание</p>
-				<input class="tag-table__modal-item-input" type="text" placeholder="Введите описание" value="@_command.Description">
+				<input class="tag-table__modal-item-input" type="text" placeholder="Введите описание" @bind="@_command.Description">
 			</div>
 			<div class="d-flex justify-content-between">
 				<div class="tag-table__modal-item-container">
 					<p>Уставка</p>
-					<input class="tag-table__modal-item-input small" type="text" placeholder="Введите уставку" value="@_command.AlarmLimit">
+					<input class="tag-table__modal-item-input small" type="text" placeholder="Введите уставку" @bind="@_command.AlarmLimit">
 				</div>
 				<div class="tag-table__modal-item-container">
 					<p>Единицы измерения</p>
-					<input class="tag-table__modal-item-input small" type="text" placeholder="Введите ед. измерения" value="@_command.Unit">
+					<input class="tag-table__modal-item-input small" type="text" placeholder="Введите ед. измерения" @bind="@_command.Unit">
 				</div>
 			</div>
 			<div class="tag-table__modal-item-container">
 				<p>Потенциальные последствия</p>
-				<textarea class="tag-table__modal-item-textarea" type="text" placeholder="Введите потенциальные последствия" value="@_command.Consequence"></textarea>
+				<textarea class="tag-table__modal-item-textarea" type="text" placeholder="Введите потенциальные последствия" @bind="@_command.Consequence"></textarea>
 			</div>
 			<div class="tag-table__modal-item-container">
 				<p>Действия полевого оператора</p>
-				<textarea class="tag-table__modal-item-textarea" type="text" placeholder="Введите действия полевого оператора" value="@_command.ActionFieldOperator"></textarea>
+				<textarea class="tag-table__modal-item-textarea" type="text" placeholder="Введите действия полевого оператора" @bind="@_command.ActionFieldOperator"></textarea>
 			</div>
 			<div class="tag-table__modal-item-container">
 				<p>Действия оператора АРМ</p>
-				<textarea class="tag-table__modal-item-textarea" type="text" placeholder="Введите действия оператора АРМ" value="@_command.ActionArmOperator"></textarea>
+				<textarea class="tag-table__modal-item-textarea" type="text" placeholder="Введите действия оператора АРМ" @bind="@_command.ActionArmOperator"></textarea>
 			</div>
 			<div class="tag-table__modal-item-container">
 				<p>Условия усиления</p>
-				<textarea class="tag-table__modal-item-textarea" type="text" placeholder="Введите условия усиления" value="@_command.Inform"></textarea>
+				<textarea class="tag-table__modal-item-textarea" type="text" placeholder="Введите условия усиления" @bind="@_command.Inform"></textarea>
 			</div>
 			<div class="tag-table__modal-item-container">
 				<p>Время на реакцию</p>
-				<input class="tag-table__modal-item-input" type="text" placeholder="Введите время на реакцию" value="@_command.ReactionTime">
+				<input class="tag-table__modal-item-input" type="text" placeholder="Введите время на реакцию" @bind="@_command.ReactionTime">
 			</div>
 			<div class="tag-table__modal-button-container">
 				<SaveButton />
