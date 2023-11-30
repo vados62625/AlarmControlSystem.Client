@@ -1,0 +1,38 @@
+﻿.settings-bg {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+    background: #FFFFFF;
+    border: 0.5px solid rgba(0, 32, 51, 0.25);
+    border-radius: 10px;
+    gap: 10px;
+}
+
+.settings-title {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 120%;
+    align-items: center;
+    text-align: center;
+    text-transform: uppercase;
+    color: #002033;
+    white-space: nowrap;
+    margin-bottom: 10px;
+}
+
+.settings-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;   
+    gap: 30px;    
+}
+
+.settings-buttons-container {
+    display: flex;
+    align-self: end;
+    margin-top: 10px;
+    gap: 8px;
+}
