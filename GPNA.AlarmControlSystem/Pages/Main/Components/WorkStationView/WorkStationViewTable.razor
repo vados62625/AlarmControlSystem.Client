@@ -1,4 +1,5 @@
 ﻿@using GPNA.AlarmControlSystem.Application.Dto
+@using GPNA.AlarmControlSystem.Models.Dto.KpiSettings
 @using GPNA.AlarmControlSystem.Models.Enums
 @if (VisibleTablePriority)
 {
@@ -34,26 +35,30 @@
     <tr>
         @foreach (var count in AlarmsCount.Values)
         {
-            <td>@(count?.First(c => c.Priority == PriorityType.Low)?.CountDayPriority ?? 0)</td>
+            var value = count?.First(c => c.Priority == PriorityType.Low)?.CountDayPriority ?? 0;
+            <td class="@(JournalSettings?.LowPriority < value ? "kpi-warning-low" : "")">@value</td>
         }
     </tr>
     <tr>
         @foreach (var count in AlarmsCount.Values)
         {
-            <td>@(count?.First(c => c.Priority == PriorityType.High)?.CountDayPriority ?? 0)</td>
+            var value = count?.First(c => c.Priority == PriorityType.High)?.CountDayPriority ?? 0;
+            <td class="@(JournalSettings?.LowPriority < value ? "kpi-warning-high" : "")">@value</td>
         }
     </tr>
     <tr>
         @foreach (var count in AlarmsCount.Values)
         {
-            <td>@(count?.First(c => c.Priority == PriorityType.Urgent)?.CountDayPriority ?? 0)</td>
+            var value = count?.First(c => c.Priority == PriorityType.Urgent)?.CountDayPriority ?? 0;
+            <td class="@(JournalSettings?.LowPriority < value ? "kpi-warning-urgent" : "")">@value</td>
         }
     </tr>
     </tbody>
 </table>
 
 @code {
-
+    [CascadingParameter] public AlarmJournalSettingsDto? JournalSettings { get; set; }
+    
     [Parameter]
     public DateTime DateTime { get; set; }
 
@@ -65,5 +70,7 @@
 
     [Parameter]
     public Dictionary<DateTimeOffset, CountAlarmsOnPriority[]> AlarmsCount { get; set; }
+    
+    
 
 }

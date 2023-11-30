@@ -2,9 +2,8 @@
 
 namespace GPNA.AlarmControlSystem.Models.Dto.Workstation;
 
-public class WorkstationMainPageDto
+public class WorkstationMainPageDto : WorkStationDto
 {
-    public string Name { get; set; } = string.Empty;
     public Dictionary<DateTimeOffset, CountAlarmsOnPriority[]> CountIncomingAlarms { get; set; } = new();
     public Dictionary<DateTimeOffset, CountAlarmsOnPriority[]> CountActiveAlarms { get; set; } = new();
     public Dictionary<DateTimeOffset, CountAlarmsOnPriority[]> CountSuppressedAlarms { get; set; } = new();

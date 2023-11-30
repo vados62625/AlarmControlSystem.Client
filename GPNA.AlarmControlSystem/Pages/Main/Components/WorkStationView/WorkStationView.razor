@@ -1,35 +1,42 @@
 ﻿@using GPNA.AlarmControlSystem.Pages.Main
 @using GPNA.AlarmControlSystem.Models.Dto.Workstation
 @using GPNA.AlarmControlSystem.Models.Enums
+@using GPNA.AlarmControlSystem.Services
+@using GPNA.AlarmControlSystem.Models.Dto.KpiSettings
 
-@if(Workstation!=null)
-{
-    <div class="bg">
-        <div class="bg-fire-container">
-            <p>@Workstation.Name</p>
-            <WorkStationViewIconContainer Fire="@Workstation.Fire" Gas="@Workstation.Gas"/>
-        </div>
-        <WorkStationViewPieChart Title="Общее количество за" CountAlarms="_countAlarms" DateTime="Workstation.CountIncomingAlarms.Keys.Max()"/>
-        <WorkStationViewPieChart Title="Уникальные" CountAlarms="_countUniqueAlarms" DateTime="Workstation.CountIncomingAlarms.Keys.Max()"/>
+<CascadingValue Value="_journalSettings">
+    @if (Workstation != null)
+    {
+        <div class="bg">
+            <div class="bg-fire-container">
+                <p>@Workstation.Name</p>
+                <WorkStationViewIconContainer Fire="@Workstation.Fire" Gas="@Workstation.Gas"/>
+            </div>
+            <WorkStationViewPieChart Title="Общее количество за" CountAlarms="_countAlarms" DateTime="Workstation.CountIncomingAlarms.Keys.Max()"/>
+            <WorkStationViewPieChart Title="Уникальные" CountAlarms="_countUniqueAlarms" DateTime="Workstation.CountIncomingAlarms.Keys.Max()"/>
 
-        <div class="bg-table-container">
-            <WorkStationViewTable AlarmsCount="Workstation.CountIncomingAlarms" VisibleTablePriority="true" Title="ВХОДЯЩИЕ СИГНАЛИЗАЦИИ"/>
-            <WorkStationViewTable AlarmsCount="Workstation.CountActiveAlarms" Title="АКТИВНЫЕ СИГНАЛИЗАЦИИ"/>
-            <WorkStationViewTable AlarmsCount="Workstation.CountSuppressedAlarms" Title="ПОДАВЛЕННЫЕ СИГНАЛИЗАЦИ"/>
+            <div class="bg-table-container">
+                <WorkStationViewTable AlarmsCount="Workstation.CountIncomingAlarms" VisibleTablePriority="true" Title="ВХОДЯЩИЕ СИГНАЛИЗАЦИИ"/>
+                <WorkStationViewTable AlarmsCount="Workstation.CountActiveAlarms" Title="АКТИВНЫЕ СИГНАЛИЗАЦИИ"/>
+                <WorkStationViewTable AlarmsCount="Workstation.CountSuppressedAlarms" Title="ПОДАВЛЕННЫЕ СИГНАЛИЗАЦИ"/>
+            </div>
         </div>
-    </div>
-}
+    }
+</CascadingValue>
 
 @code {
-
-    [Parameter]
-    public WorkstationMainPageDto? Workstation { get; set; }
+    [Inject] private AlarmJournalSettingsService? AlarmJournalSettingsService { get; set; }
+    
+    [Parameter] public WorkstationMainPageDto? Workstation { get; set; }
 
     private Dictionary<PriorityType, int>? _countAlarms;
 
     private Dictionary<PriorityType, int>? _countUniqueAlarms;
 
-    protected override void OnInitialized()
+    private AlarmJournalSettingsDto? _journalSettings;
+    
+    
+    protected override async Task OnInitializedAsync()
     {
         if (Workstation != null && Workstation.CountIncomingAlarms.Any())
         {
@@ -41,7 +48,20 @@
                 _countAlarms = lastDayCount.Value.ToDictionary(c => c.Priority, c => c.CountDayPriority);
                 _countUniqueAlarms = lastDayCount.Value.ToDictionary(c => c.Priority, c => c.CountSensorsDayPriority);
             }
+            
+            _journalSettings = await GetJournalSettings();
         }
+
+        
+    }
+    
+    private async Task<AlarmJournalSettingsDto?> GetJournalSettings()
+    {
+        if (Workstation == null || AlarmJournalSettingsService == default || Workstation.Id == default) return null;
+        
+        var result = await AlarmJournalSettingsService.GetSettings(Workstation.Id);
+
+        return result.Success ? result.Payload : null;
     }
 
 }

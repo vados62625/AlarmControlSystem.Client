@@ -35,11 +35,11 @@ public partial class KPI : ComponentBase
 
     private WorkStationDto[]? _workstations;
 
-    private AlarmJournalSettingsDto? _journalSettings;
-    private MonitoringSettingsDto? _monitoringSettings;
-    private ReportSettingsDto? _reportSettings;
-    private TagTableSettingsDto? _tagTableSettings;
-    private TaskSettingsDto? _taskSettings;
+    private AlarmJournalSettingsDto _journalSettings = new();
+    private MonitoringSettingsDto _monitoringSettings = new();
+    private ReportSettingsDto _reportSettings = new();
+    private TagTableSettingsDto _tagTableSettings = new();
+    private TaskSettingsDto _taskSettings = new();
 
     private IDictionary<string, string>? FieldLinksDictionary { get; set; }
 
