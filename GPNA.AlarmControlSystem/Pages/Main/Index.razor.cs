@@ -24,7 +24,7 @@ public partial class Index : ComponentBase
     protected ISpinnerService SpinnerService { get; set; } = default!;
 
     [Parameter]
-    public DateTimeOffset DateTime { get; set; } = new(DateTimeOffset.Now.Year, DateTimeOffset.Now.Month, DateTimeOffset.Now.AddDays(-1).Day, 23, 59, 59, DateTimeOffset.Now.Offset);
+    public DateTimeOffset DateTime { get; set; } = new(DateTimeOffset.Now.AddDays(-1).Year, DateTimeOffset.Now.AddDays(-1).Month, DateTimeOffset.Now.AddDays(-1).Day, 23, 59, 59, DateTimeOffset.Now.AddDays(-1).Offset);
 
     [Parameter]
     [SupplyParameterFromQuery]
