@@ -9,34 +9,34 @@
     <div class="page-header justify-content-center position-relative">
         <div class="d-flex">
             <p>ТАБЛИЦА ПЕРЕМЕННЫХ <b>@_fieldName М/Р</b></p>
-            <SelectObject Object="dto" LinksDictionary="_fieldLinksDictionary" />
+            <SelectObject Object="dto" LinksDictionary="_fieldLinksDictionary"/>
             <p style="margin-left:15px;">
                 <b>@_workstationName</b>
             </p>
-            <SelectObject LinksDictionary="_workstationLinksDictionary" />
-        </div>        
+            <SelectObject LinksDictionary="_workstationLinksDictionary"/>
+        </div>
         <div class="d-flex gap-2 position-absolute" style="right: 0;">
-            @if (_query!= new GetTagsListQuery(){Page = 1})
+            @if (_query is not {Page: 1})
             {
                 <TitleBarButton Title="Фильтрация" FunctionButton="filtration" Action="DropFilters"/>
             }
-            <TitleBarButton Title="Экспорт" FunctionButton="export" />
-        </div> 
+            <TitleBarButton Title="Экспорт" FunctionButton="export"/>
+        </div>
     </div>
-    
+
     <div class="priority-alarm-container">
-        <TagStatusOnHead Title="Нет оценки последствий" Title1="KPI" NumberLinesTitle="one-line" WidthLarge="true"></TagStatusOnHead>
-        <TagStatusOnHead Title="Некорректное описание" />                                
-        <TagStatusOnHead Title="Некорректный приоритет" />
-        <TagStatusOnHead Title="Некорректная уставка" />
-        <TagStatusOnHead Title="Непроверенные" StatusTags="unverified" NumberLinesTitle="one-line" />
-        <TagStatusOnHead Title="Новые"  StatusTags="new" NumberLinesTitle="one-line" />
-    </div>                            
-    
+        <TagStatusOnHead Title="Нет оценки последствий" Title1="KPI" NumberLinesTitle="one-line" WidthLarge="true" Value="@(_tags.InvalidConsequence)" Value1="@((int)_tags.Kpi)"></TagStatusOnHead>
+        <TagStatusOnHead Title="Некорректное описание" Value="@(_tags.InvalidDesc)"/>
+        <TagStatusOnHead Title="Некорректный приоритет" Value="@(_tags.InvalidPriority)"/>
+        <TagStatusOnHead Title="Некорректная уставка" Value="@(_tags.InvalidAlarmLimit)"/>
+        <TagStatusOnHead Title="Непроверенные" StatusTags="unverified" NumberLinesTitle="one-line" Value="@(_tags.Unchecked)"/>
+        <TagStatusOnHead Title="Новые" StatusTags="new" NumberLinesTitle="one-line" Value="@(_tags.New)"/>
+    </div>
+
     <div class="tag-table-search-container">
         @* <p class="tagname-filter-title">TagName</p> *@
         <InputSearch OnChange="SearchTag" MinWidth="382"/>
-        
+
         @* <p class="tagname-filter-title">Описание</p> *@
         @* <InputSearch OnChange="SearchDesc" MinWidth="382"/> *@
 
@@ -46,15 +46,14 @@
                 <use href="/img/icons/icons.svg#tag-table-add"></use>
             </svg>
         </button>
-        
+
     </div>
-    
-    <TagsTable Tags="_tags" 
-               OnStateFilterChanged="SetStateFilter" 
-               OnPriorityFilterChanged="SetPriorityFilter" 
+
+    <TagsTable Tags="_tags.Items?.ToList()"
+               OnStateFilterChanged="SetStateFilter"
+               OnPriorityFilterChanged="SetPriorityFilter"
                OnOrderingChanged="OnOrderingChanged"
                OnTagDeleted="GetTags"/>
-    
-    <Pagination CurrentPage="@(_query.Page ?? 1)" PagesCount="_pagesCount" OnPageClick="OnPageChanged"/>
+
+    <Pagination CurrentPage="@(_query.Page ?? 1)" PagesCount="_tags.PagesCount" OnPageClick="OnPageChanged"/>
 </div>
-    

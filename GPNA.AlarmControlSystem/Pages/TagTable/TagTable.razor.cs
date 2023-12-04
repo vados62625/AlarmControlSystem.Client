@@ -1,5 +1,6 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
+using GPNA.AlarmControlSystem.Application.Dto.Tag;
 using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto.Field;
 using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
@@ -34,8 +35,8 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
         private IDictionary<string, string>? _workstationLinksDictionary;
 
         private GetTagsListQuery _query = new();
-        
-        private List<TagDto>? _tags;
+
+        private TagsCollection _tags = new();
 
         string input = "";
         
@@ -117,11 +118,11 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
             _query.WorkStationId = WorkstationId ?? 1;
             _query.ItemsOnPage = 15;
             _query.Page ??= 1;
-            var result = await TagService.GetCollection(_query); // TODO I make PageableCollectionDto
+            var result = await TagService.GetTagsCollection(_query); // TODO I make PageableCollectionDto
             
             if (result.Success)
             {
-                _tags = result.Payload.Items;
+                _tags = result.Payload;
                 _pagesCount = 100;
                 StateHasChanged();
             }
