@@ -1,9 +1,7 @@
-﻿using Blazored.Modal;
-using Blazored.Modal.Services;
+﻿using Blazored.Modal.Services;
 using GPNA.AlarmControlSystem.Application.Dto.Tag;
 using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto.Field;
-using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
 using GPNA.AlarmControlSystem.Models.Dto.Tag;
 using GPNA.AlarmControlSystem.Models.Dto.Workstation;
 using GPNA.AlarmControlSystem.Models.Enums;
@@ -11,9 +9,7 @@ using GPNA.AlarmControlSystem.Options;
 using GPNA.AlarmControlSystem.Services;
 using GPNA.AlarmControlSystem.Pages.TagTable.Modals;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Options;
-using Microsoft.JSInterop;
 
 namespace GPNA.AlarmControlSystem.Pages.TagTable
 {
@@ -35,13 +31,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
         private IDictionary<string, string>? _workstationLinksDictionary;
 
         private GetTagsListQuery _query = new();
-
         private TagsCollection _tags = new();
-
-        string input = "";
-        
-        private int _pagesCount, _totalCount;
-        private int _currentPage = 1;
 
         protected override async Task OnInitializedAsync()
         {
@@ -104,15 +94,6 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
             }
         }
 
-
-        private async Task Enter(KeyboardEventArgs e)
-        {
-            if (e.Code is "Enter" or "NumpadEnter")
-            {
-                await SpinnerService.Load(GetTags);
-            }
-        }
-
         private async Task GetTags()
         {
             _query.WorkStationId = WorkstationId ?? 1;
@@ -123,7 +104,6 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
             if (result.Success)
             {
                 _tags = result.Payload;
-                _pagesCount = 100;
                 StateHasChanged();
             }
         }
@@ -163,18 +143,11 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
     
         private async Task SearchTag(string tagName)
         {
-            _query.Suggest = tagName; // TODO: должно быть _query.Suggest 
+            _query.Suggest = tagName;
             _query.Page = 1;
             await SpinnerService.Load(GetTags);
         }
-        
-        private async Task SearchDesc(string description)
-        {
-            _query.Description = description;
-            _query.Page = 1;
-            await SpinnerService.Load(GetTags);
-        }
-        
+
         private async Task DropFilters()
         {
             _query = new GetTagsListQuery
@@ -184,7 +157,5 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
 
             await SpinnerService.Load(GetTags);
         }
-        
-        
     }
 }
