@@ -30,8 +30,22 @@ public partial class Monitoring : ComponentBase
 
     [Parameter] [SupplyParameterFromQuery] public int? WorkstationId { get; set; }
     [Parameter] [SupplyParameterFromQuery] public int? FieldId { get; set; }
-    [Parameter] [SupplyParameterFromQuery] public int AlarmType { get; set; } = 1;
 
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int AlarmType
+    {
+        get => _alarmType;
+        set
+        {
+            _alarmType = value;
+            _currentPage = 1;
+        }
+    }
+
+    private int _alarmType = 1;
+    
+    
     private string? _workstationName, _fieldName;
 
     private WorkStationDto[]? _workstations;
