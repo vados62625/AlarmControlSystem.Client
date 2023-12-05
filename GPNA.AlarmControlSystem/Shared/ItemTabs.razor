@@ -21,24 +21,13 @@ else
 }
 
 @code {
-    [Parameter] public int? FieldId { get; set; }
-    [Parameter] public int? WorkstationId { get; set; }
     [Parameter] public string? Title { get; set; }
-    [Parameter] public AlarmTypeEnum AlarmTypeEnum { get; set; }
     [Parameter] public int Count { get; set; }
     [Parameter] public bool IsActive { get; set; }
-    
-
-    private string _href = string.Empty;
-
-    protected override void OnParametersSet()
-    {
-        _href = $"/monitoring/?alarmType={(int)AlarmTypeEnum}&fieldId={FieldId}&workstationId={WorkstationId}";
-        Title ??= AlarmTypeEnum.GetDescription();
-    }
+    [Parameter] public string Href { get; set; } = string.Empty;
 
     void Click()
     {
-        NavigationManager.NavigateTo(_href);
+        NavigationManager.NavigateTo(Href);
     }
 }

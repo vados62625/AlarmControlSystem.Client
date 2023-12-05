@@ -28,6 +28,7 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
         [Inject] private IExportService? ExportService { get; set; }
         [Parameter] [SupplyParameterFromQuery] public int? WorkstationId { get; set; }
         [Parameter] [SupplyParameterFromQuery] public int? FieldId { get; set; }
+        [Parameter] [SupplyParameterFromQuery] public int CurrentTab { get; set; } = 0;
 
         private string? _workstationName, _fieldName;
         private WorkStationDto[]? _workstations;
@@ -39,12 +40,11 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
 
         // private List<IncomingAlarmDto>? _tasks;
         private AlarmsCollection<IncomingAlarmDto[]>? _tasks;
-
-        string input = "";
-
+        private AlarmsCollection<IncomingAlarmDto[]>? _archive;
+        
         private int _pagesCount, _totalCount;
         private int _currentPage = 1;
-
+        
         protected override async Task OnInitializedAsync()
         {
             await SetFieldWithWorkstation();
@@ -99,7 +99,7 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
         {
             _query.WorkStationId = WorkstationId ?? 1;
             _query.Page ??= 1;
-            _query.StatusAlarm = StatusAlarmType.InWork;
+            _query.StatusAlarm = CurrentTab == 0 ? StatusAlarmType.InWork : StatusAlarmType.Done;
             _query.CountOnPage = 15;
             _query.DateTimeEnd = DateTimeOffset.Now;
             _query.DateTimeStart = DateTimeOffset.Now.AddYears(-10);
@@ -107,8 +107,18 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
 
             if (result.Success)
             {
-                _tasks = result.Payload;
-                _pagesCount = _tasks.PagesCount;
+                switch (CurrentTab)
+                {
+                    case 0:
+                        _tasks = result.Payload;
+                        _pagesCount = _tasks.PagesCount;
+                        break;
+                    case 1:
+                        _archive = result.Payload;
+                        _pagesCount = _archive.PagesCount;
+                        break;
+                }
+
                 StateHasChanged();
             }
         }

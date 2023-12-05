@@ -4,6 +4,7 @@
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Tables
 @using GPNA.AlarmControlSystem.Shared.Pagination
 @using GPNA.AlarmControlSystem.Models.Enums
+@using GPNA.AlarmControlSystem.Extensions
 @inject IJSRuntime JS
 
 <CascadingValue Name="@nameof(_from)" Value="@_from">
@@ -86,10 +87,10 @@
                                 <div class="d-flex">
                                     @foreach (AlarmTypeEnum alarmType in Enum.GetValues(typeof(AlarmTypeEnum)))
                                     {
-                                        <ItemTabs AlarmTypeEnum="alarmType"
+                                        <ItemTabs Title="@alarmType.GetDescription()"
                                                   Count="@(_tabAlarmsCount.TryGetValue(alarmType, out var tabCount) ? tabCount : 0)"
-                                                  WorkstationId="WorkstationId" FieldId="FieldId"
-                                                  IsActive="@((int)alarmType == AlarmType)"/>
+                                                  IsActive="@((int)alarmType == AlarmType)"
+                                                  Href=@($"/monitoring/?alarmType={(int)alarmType}&fieldId={FieldId}&workstationId={WorkstationId}")/>
                                     }
                                 </div>
                                 @switch ((AlarmTypeEnum)AlarmType)

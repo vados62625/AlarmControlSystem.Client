@@ -53,9 +53,34 @@
         </div>
     </div>
     <div style="border-radius: 6px;">
-        <TasksTable Tasks="_tasks"
-                    OnStateFilterChanged="SetStateFilter" 
-                    OnPriorityFilterChanged="SetPriorityFilter"/>
+        <div class="d-flex">
+            <ItemTabs Title="Задачи"
+                      Count="@(_tasks?.TotalCount ?? 0)"
+                      IsActive="@(CurrentTab == 0)"
+                      Href="@($"/tasks/?currentTab=0&fieldId={FieldId}&workstationId={WorkstationId}")" />
+            <ItemTabs Title="Архив"
+                      Count="@(_archive?.TotalCount ?? 0)"
+                      IsActive="@(CurrentTab == 1)"
+                      Href="@($"/tasks/?currentTab=1&fieldId={FieldId}&workstationId={WorkstationId}")"/>
+        </div>
+        @switch (CurrentTab)
+        {
+            case 0:
+            {
+                <TasksTable Tasks="_tasks"
+                                    OnStateFilterChanged="SetStateFilter"
+                                    OnPriorityFilterChanged="SetPriorityFilter"/>
+                break;
+            }
+            case 1:
+            {
+                <TasksTable Tasks="_archive"
+                            OnStateFilterChanged="SetStateFilter"
+                            OnPriorityFilterChanged="SetPriorityFilter"/>
+                break;
+            }
+        }
+        
         <Pagination CurrentPage="_currentPage" PagesCount="_pagesCount" OnPageClick="OnPageChanged"/>
     </div>
 </div>
