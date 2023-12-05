@@ -11,12 +11,12 @@
 
 @if (Alarm != null && Alarm.Description != "ПЕРЕДАЧА СМЕНЫ")
 {
-    <tr>
+    <tr class="@(Kpi < Alarm.Duration?.TotalHours ? "kpi-suppressed-warning-bg" : "")">
         <td @onclick="ShowMoreAttributes">@Alarm.DateTimeStart.ToString("dd.MM.yyyy")</td>
 
         <td @onclick="ShowMoreAttributes">@Alarm.DateTimeStart.ToString("HH:mm")</td>
 
-        <td @onclick="ShowMoreAttributes">
+        <td @onclick="ShowMoreAttributes" class="@(Kpi < Alarm.Duration?.TotalHours ? "kpi-suppressed-warning-text" : "")">
             @(Alarm.Duration?.TotalHours.ToString("0") ?? "N/A")
         </td>
 
@@ -66,7 +66,8 @@ else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
     [CascadingParameter] public IModalService Modal { get; set; } = default!;
     
     [Parameter] public SuppressedAlarmDto? Alarm { get; set; }
-
+    [Parameter] public int? Kpi { get; set; }
+    
     bool _displayComment = false;
 
     private async Task SaveComment(KeyboardEventArgs e)

@@ -1,4 +1,5 @@
 ﻿@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
+@using GPNA.AlarmControlSystem.Models.Dto.KpiSettings
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
 
@@ -103,28 +104,7 @@
     {
         foreach (var alarmArray in Alarms)
         {
-            <IncomingAlarmComponent Alarm="alarmArray.Last()" List="@alarmArray"/>
-            @* switch (AlarmType) *@
-            @* { *@
-            @*     case Models.Enums.AlarmType.Incoming: *@
-            @*     { *@
-            @*         <IncomingAlarmComponent Alarm="alarmArray.Last()" List="@alarmArray"/> *@
-            @*          *@
-            @*         break; *@
-            @*     } *@
-            @*     case Models.Enums.AlarmType.Active: *@
-            @*     { *@
-            @*         <ActiveAlarmComponent Alarm="alarmArray.Last()"/> *@
-            @*          *@
-            @*         break; *@
-            @*     } *@
-            @*     case Models.Enums.AlarmType.Suppressed: *@
-            @*     { *@
-            @*         <SuppressedAlarmComponent Alarm="alarmArray.Last()"/> *@
-            @*          *@
-            @*         break; *@
-            @*     } *@
-            @* } *@
+            <IncomingAlarmComponent Alarm="alarmArray.Last()" List="@alarmArray" Kpi="MonitoringSettings?.RepeatCount"/>
         }
     }
     </tbody>
@@ -218,6 +198,9 @@
     [CascadingParameter(Name = nameof(AlarmType))]
     public AlarmType? AlarmType { get; set; }
 
+    [CascadingParameter(Name = nameof(MonitoringSettings))]
+    public MonitoringSettingsDto? MonitoringSettings { get; set; }
+    
     [Parameter]
     public EventCallback<StateType?> OnStateFilterChanged { get; set; }
 

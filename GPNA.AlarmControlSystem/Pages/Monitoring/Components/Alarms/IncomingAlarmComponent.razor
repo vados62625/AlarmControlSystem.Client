@@ -18,10 +18,10 @@
         
         <td @onclick="ShowMoreAttributes">@Alarm.DateTimeStart.ToString("HH:mm")</td>
         
-        <td @onclick="ShowListAlarms">
+        <td @onclick="ShowListAlarms" >
             @if (!IsChildren)
             {
-                <div class="d-flex">
+                <div class="d-flex justify-content-end @(Kpi < (List?.Length ?? -1) ? "kpi-incoming-warning" : "")">
                     <p>@(List?.Length ?? -1)</p>
                     <button>
                         <svg>
@@ -88,6 +88,8 @@ else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
     [Parameter] public IncomingAlarmDto[]? List { get; set; } = Array.Empty<IncomingAlarmDto>();
     [Parameter] public IncomingAlarmDto? Alarm { get; set; }
     [Parameter] public bool IsChildren { get; set; }
+    [Parameter] public int? Kpi { get; set; }
+    
     const string? ButtonArrow = "arrow-down";
 
     bool _displayComment = false;

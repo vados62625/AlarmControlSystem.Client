@@ -58,9 +58,10 @@
 }
 
 .bg-monitoring-table tbody tr td:nth-child(3) div {
-    padding-left: 37px;
     height: 32px;
     align-items: center;
+    margin-right: 20px;
+    padding-right: 13px;
 }
 
 .bg-monitoring-table tbody tr td:nth-child(3) div button {
@@ -100,4 +101,8 @@
 
 .monitoring-table-shift td:last-child {
     text-align: center;
+}
+
+.kpi-incoming-warning {
+    background: rgba(255, 231, 231, 1);
 }

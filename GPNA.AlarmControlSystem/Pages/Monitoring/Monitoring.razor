@@ -11,113 +11,130 @@
         <CascadingValue Name="StateFilter" Value="@_stateFilter">
             <CascadingValue Name="PriorityFilter" Value="@_priorityFilter">
                 <CascadingValue Name="@nameof(AlarmType)" Value="@AlarmType">
-                    <div class="page-main">
-                        <div class="page-header">
-                            <div class="d-flex date-period-select">
-                                @if ((AlarmTypeEnum)AlarmType == AlarmTypeEnum.Incoming)
-                                {
-                                    <div>
-                                        <input type="datetime-local" @bind="@_from" @bind:event="oninput">
-                                        <svg>
-                                            <use href="/img/icons/icons.svg#calendar"></use>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <input type="datetime-local" @bind="@_to" @bind:event="oninput">
-                                        <svg>
-                                            <use href="/img/icons/icons.svg#calendar"></use>
-                                        </svg>
-                                    </div>
-                                    <button class="btn p-0 ms-2 d-flex shadow-none@(_spinnerClass)" id="button-refresh" @onclick="@(async () => await RefreshBySpinner())">
-                                        <svg class="w-100 h-100">
-                                            <use href="/img/icons/icons.svg#refresh"></use>
-                                        </svg>
-                                    </button>
-                                }
-                            </div>
-                            <div class="d-flex">
-                                <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ <b>@_fieldName М/Р</b></p>
-                                <SelectObject Object="dto" LinksDictionary="_fieldLinksDictionary"/>
-                                <p style="margin-left:15px;">
-                                    <b>@_workstationName</b>
-                                </p>
-                                <SelectObject LinksDictionary="_workstationLinksDictionary"/>
-                            </div>
-                            <div class="d-flex gap-2">
-                                @if (FiltersOn)
-                                {
-                                    <TitleBarButton Title="Фильтрация" FunctionButton="filtration" Action="DropFilters"/>
-                                }
-                                <TitleBarButton Title="Экспорт" FunctionButton="export" Action="DownloadFileFromStream"/>
-                            </div>
+                    <CascadingValue Name="MonitoringSettings" Value="@_monitoringSettings">
+                        <div class="page-main">
+                            <div class="page-header">
+                                <div class="d-flex date-period-select">
+                                    @if ((AlarmTypeEnum)AlarmType == AlarmTypeEnum.Incoming)
+                                    {
+                                        <div>
+                                            <input type="datetime-local" @bind="@_from" @bind:event="oninput">
+                                            <svg>
+                                                <use href="/img/icons/icons.svg#calendar"></use>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <input type="datetime-local" @bind="@_to" @bind:event="oninput">
+                                            <svg>
+                                                <use href="/img/icons/icons.svg#calendar"></use>
+                                            </svg>
+                                        </div>
+                                        <button class="btn p-0 ms-2 d-flex shadow-none@(_spinnerClass)" id="button-refresh" @onclick="@(async () => await RefreshBySpinner())">
+                                            <svg class="w-100 h-100">
+                                                <use href="/img/icons/icons.svg#refresh"></use>
+                                            </svg>
+                                        </button>
+                                    }
+                                </div>
+                                <div class="d-flex">
+                                    <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ <b>@_fieldName М/Р</b></p>
+                                    <SelectObject Object="dto" LinksDictionary="_fieldLinksDictionary"/>
+                                    <p style="margin-left:15px;">
+                                        <b>@_workstationName</b>
+                                    </p>
+                                    <SelectObject LinksDictionary="_workstationLinksDictionary"/>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    @if (FiltersOn)
+                                    {
+                                        <TitleBarButton Title="Фильтрация" FunctionButton="filtration" Action="DropFilters"/>
+                                    }
+                                    <TitleBarButton Title="Экспорт" FunctionButton="export" Action="DownloadFileFromStream"/>
+                                </div>
 
-                        </div>
-                        <div class="d-flex justify-content-between overflow-auto">
-                            <div class="priority-alarm-container">
-                                <PriorityAlarm Title="Всего" Value="_totalCount" Priority="total"/>
-                                <PriorityAlarm Title="Критичный" Value="_countByPriority?[PriorityType.Urgent]" Priority="critical"/>
-                                <PriorityAlarm Title="Высокий" Value="_countByPriority?[PriorityType.High]" Priority="high"/>
-                                <PriorityAlarm Title="Низкий" Value="_countByPriority?[PriorityType.Low]" Priority="low"/>
-                                <PriorityAlarm Title="Без приоритета" Value="_countByPriority?[PriorityType.None]" Priority="none-priority"/>
-                                <div class="ps-5">
-                                    <PriorityAlarm Title="Инфо" Value="_countByPriority?[PriorityType.Information]" StatusActive="opacity-50" Priority="info"/>
+                            </div>
+                            <div class="d-flex justify-content-between overflow-auto">
+                                <div class="priority-alarm-container">
+                                    <PriorityAlarm Title="Всего" Value="_totalCount" Priority="total"/>
+                                    <PriorityAlarm Title="Критичный" Value="_countByPriority?[PriorityType.Urgent]" Priority="critical"/>
+                                    <PriorityAlarm Title="Высокий" Value="_countByPriority?[PriorityType.High]" Priority="high"/>
+                                    <PriorityAlarm Title="Низкий" Value="_countByPriority?[PriorityType.Low]" Priority="low"/>
+                                    <PriorityAlarm Title="Без приоритета" Value="_countByPriority?[PriorityType.None]" Priority="none-priority"/>
+                                    <div class="ps-5">
+                                        <PriorityAlarm Title="Инфо" Value="_countByPriority?[PriorityType.Information]" StatusActive="opacity-50" Priority="info"/>
+                                    </div>
+                                </div>
+                                <div class="priority-alarm-container">
+                                    <PriorityAlarm Title="Пожар" StatusActive="@_fireStatus" Status="fire"/>
+                                    <PriorityAlarm Title="Загазованность" StatusActive="@_gasStatus" Status="gas"/>
+                                    <PriorityAlarm Title="HH" Value="_countByState?[StateType.HH]" Status="hh"/>
+                                    <PriorityAlarm Title="H" Value="_countByState?[StateType.H]" Status="h"/>
+                                    <PriorityAlarm Title="LL" Value="_countByState?[StateType.LL]" Status="ll"/>
+                                    <PriorityAlarm Title="L" Value="_countByState?[StateType.L]" Status="l"/>
+                                    <PriorityAlarm Title="DISCR" Value="_countByState?[StateType.Discr]" Status="discr"/>
+                                    <PriorityAlarm Title="RSHI" Value="_countByState?[StateType.RSHI]" Status="rshi"/>
+                                    <PriorityAlarm Title="RSLO" Value="_countByState?[StateType.RSLO]" Status="rslo"/>
+                                    <PriorityAlarm Title="NoneState" Value="_countByState?[StateType.none]" Status="none-state"/>
                                 </div>
                             </div>
-                            <div class="priority-alarm-container">
-                                <PriorityAlarm Title="Пожар" StatusActive="@_fireStatus" Status="fire"/>
-                                <PriorityAlarm Title="Загазованность" StatusActive="@_gasStatus" Status="gas"/>
-                                <PriorityAlarm Title="HH" Value="_countByState?[StateType.HH]" Status="hh"/>
-                                <PriorityAlarm Title="H" Value="_countByState?[StateType.H]" Status="h"/>
-                                <PriorityAlarm Title="LL" Value="_countByState?[StateType.LL]" Status="ll"/>
-                                <PriorityAlarm Title="L" Value="_countByState?[StateType.L]" Status="l"/>
-                                <PriorityAlarm Title="DISCR" Value="_countByState?[StateType.Discr]" Status="discr"/>
-                                <PriorityAlarm Title="RSHI" Value="_countByState?[StateType.RSHI]" Status="rshi"/>
-                                <PriorityAlarm Title="RSLO" Value="_countByState?[StateType.RSLO]" Status="rslo"/>
-                                <PriorityAlarm Title="NoneState" Value="_countByState?[StateType.none]" Status="none-state"/>
+                        
+                            <InputSearch 
+                                OnChange="Search"
+                                Placeholder="Поиск по Tag"/>
+                        
+                            <div style="border-radius: 6px;">
+                                <div class="d-flex">
+                                    @foreach (AlarmTypeEnum alarmType in Enum.GetValues(typeof(AlarmTypeEnum)))
+                                    {
+                                        <ItemTabs AlarmTypeEnum="alarmType"
+                                                  Count="@(_tabAlarmsCount.TryGetValue(alarmType, out var tabCount) ? tabCount : 0)"
+                                                  WorkstationId="WorkstationId" FieldId="FieldId"
+                                                  IsActive="@((int)alarmType == AlarmType)"/>
+                                    }
+                                </div>
+                                @switch ((AlarmTypeEnum)AlarmType)
+                                {
+                                    case AlarmTypeEnum.Active:
+                                    {
+                                        <ActiveMonitoringTable 
+                                            Alarms="_activeAlarmsCollection?.Items" 
+                                            OnStateFilterChanged="ToggleStateFilter" 
+                                            OnPriorityFilterChanged="TogglePriorityFilter" 
+                                            OnOrderingChanged="OnOrderingChanged"/>
+                                        break;
+                                    }
+                                    case AlarmTypeEnum.Incoming:
+                                    {
+                                        <IncomingMonitoringTable 
+                                            Alarms="_incomingAlarmsCollection?.Items" 
+                                            OnStateFilterChanged="ToggleStateFilter" 
+                                            OnPriorityFilterChanged="TogglePriorityFilter" 
+                                            OnOrderingChanged="OnOrderingChanged"/>
+                                        break;
+                                    }
+                                    case AlarmTypeEnum.Suppressed:
+                                    {
+                                        <SuppressedMonitoringTable 
+                                            Alarms="_suppressedAlarmsCollection?.Items" 
+                                            OnStateFilterChanged="ToggleStateFilter" 
+                                            OnPriorityFilterChanged="TogglePriorityFilter" 
+                                            OnOrderingChanged="OnOrderingChanged"/>
+                                        break;
+                                    }
+                                    case AlarmTypeEnum.Simulation:
+                                    {
+                                        <ImitatedMonitoringTable 
+                                            Alarms="_imitatedAlarmsCollection?.Items" 
+                                            OnStateFilterChanged="ToggleStateFilter" 
+                                            OnPriorityFilterChanged="TogglePriorityFilter" 
+                                            OnOrderingChanged="OnOrderingChanged"/>
+                                        break;
+                                    }
+                                }
+                                <Pagination CurrentPage="_currentPage" PagesCount="_pagesCount" OnPageClick="OnPageChanged"/>
                             </div>
                         </div>
-                        
-                        <InputSearch 
-                            OnChange="Search"
-                            Placeholder="Поиск по Tag"/>
-                        
-                        <div style="border-radius: 6px;">
-                            <div class="d-flex">
-                                @foreach (AlarmTypeEnum alarmType in Enum.GetValues(typeof(AlarmTypeEnum)))
-                                {
-                                    <ItemTabs AlarmTypeEnum="alarmType"
-                                              Count="@(_tabAlarmsCount.TryGetValue(alarmType, out var tabCount) ? tabCount : 0)"
-                                              WorkstationId="WorkstationId" FieldId="FieldId"
-                                              IsActive="@((int)alarmType == AlarmType)"/>
-                                }
-                            </div>
-                            @switch ((AlarmTypeEnum)AlarmType)
-                            {
-                                case AlarmTypeEnum.Active:
-                                {
-                                    <ActiveMonitoringTable Alarms="_activeAlarmsCollection?.Items" OnStateFilterChanged="ToggleStateFilter" OnPriorityFilterChanged="TogglePriorityFilter" OnOrderingChanged="OnOrderingChanged"/>
-                                    break;
-                                }
-                                case AlarmTypeEnum.Incoming:
-                                {
-                                    <IncomingMonitoringTable Alarms="_incomingAlarmsCollection?.Items" OnStateFilterChanged="ToggleStateFilter" OnPriorityFilterChanged="TogglePriorityFilter" OnOrderingChanged="OnOrderingChanged"/>
-                                    break;
-                                }
-                                case AlarmTypeEnum.Suppressed:
-                                {
-                                    <SuppressedMonitoringTable Alarms="_suppressedAlarmsCollection?.Items" OnStateFilterChanged="ToggleStateFilter" OnPriorityFilterChanged="TogglePriorityFilter" OnOrderingChanged="OnOrderingChanged"/>
-                                    break;
-                                }
-                                case AlarmTypeEnum.Simulation:
-                                {
-                                    <ImitatedMonitoringTable Alarms="_imitatedAlarmsCollection?.Items" OnStateFilterChanged="ToggleStateFilter" OnPriorityFilterChanged="TogglePriorityFilter" OnOrderingChanged="OnOrderingChanged"/>
-                                    break;
-                                }
-                            }
-                            <Pagination CurrentPage="_currentPage" PagesCount="_pagesCount" OnPageClick="OnPageChanged"/>
-                        </div>
-                    </div>
-
+                    </CascadingValue>
                 </CascadingValue>
             </CascadingValue>
         </CascadingValue>

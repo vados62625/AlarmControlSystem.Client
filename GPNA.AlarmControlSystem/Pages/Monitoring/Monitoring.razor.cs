@@ -4,6 +4,7 @@ using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
 using GPNA.AlarmControlSystem.Models.Dto.Field;
 using GPNA.AlarmControlSystem.Models.Dto.ImitatedAlarm;
 using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
+using GPNA.AlarmControlSystem.Models.Dto.KpiSettings;
 using GPNA.AlarmControlSystem.Models.Dto.SuppressedAlarm;
 using GPNA.AlarmControlSystem.Models.Dto.Workstation;
 using GPNA.AlarmControlSystem.Models.Enums;
@@ -28,6 +29,7 @@ public partial class Monitoring : ComponentBase
     [Inject] private IExportService? ExportService { get; set; }
     [Inject] private ISpinnerService SpinnerService { get; set; } = default!;
 
+    [Inject] private MonitoringSettingsService? MonitoringSettingsService { get; set; }
     [Parameter] [SupplyParameterFromQuery] public int? WorkstationId { get; set; }
     [Parameter] [SupplyParameterFromQuery] public int? FieldId { get; set; }
 
@@ -86,6 +88,8 @@ public partial class Monitoring : ComponentBase
 
     private Dictionary<AlarmTypeEnum, int> _tabAlarmsCount = new();
 
+    private MonitoringSettingsDto? _monitoringSettings;
+    
     protected override void OnInitialized()
     {
         SetDates();
@@ -95,7 +99,7 @@ public partial class Monitoring : ComponentBase
     protected override async Task OnParametersSetAsync()
     {
         await SetFieldWithWorkstation();
-
+        _monitoringSettings = await GetSettings();
         await InitializePageAsync();
     }
 
@@ -203,6 +207,15 @@ public partial class Monitoring : ComponentBase
         _from = new DateTimeOffset(_to.Year, _to.Month, day, hourOfDay, 0, 0, 0, _to.Offset);
     }
 
+    private async Task<MonitoringSettingsDto?> GetSettings()
+    {
+        if (MonitoringSettingsService == default || WorkstationId is null) return null;
+        
+        var result = await MonitoringSettingsService.GetSettings(WorkstationId.Value);
+
+        return result.Success ? result.Payload : null;
+    }
+    
     private async Task UpdateIncomingAlarms()
     {
         if (IncomingAlarmService != null)
