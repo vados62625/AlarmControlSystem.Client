@@ -46,7 +46,7 @@ public partial class UserPermissions : ComponentBase
     private IDictionary<string, string>? WorkstationLinksDictionary { get; set; }
 
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         await SetFieldWithWorkstation();
 
@@ -98,14 +98,14 @@ public partial class UserPermissions : ComponentBase
         {
             FieldLinksDictionary = _fields.ToDictionary(field =>
                     field.Name,
-                field => $"/settings/KPI/?fieldId={field.Id}");
+                field => $"/settings/permissions/?fieldId={field.Id}");
         }
 
         if (_workstations != null)
         {
             WorkstationLinksDictionary = _workstations.ToDictionary(workStation =>
                     workStation.Name ?? Guid.NewGuid().ToString(),
-                workStation => $"/settings/KPI/?fieldId={FieldId}&workstationId={workStation.Id}");
+                workStation => $"/settings/permissions/?fieldId={FieldId}&workstationId={workStation.Id}");
         }
     }
 
