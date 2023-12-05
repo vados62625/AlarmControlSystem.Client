@@ -53,7 +53,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports.GeneralReport
         [Parameter] public bool IsEnableRenderChart { get; set; } = false;
         public Dictionary<string, Dictionary<DateTimeOffset, IncomingAlarmDto[]>>? IncomingAlarms { get; set; } = new();
 
-        protected override async Task OnInitializedAsync()
+        protected override async Task OnParametersSetAsync()
         {
             await InitializePageAsync();
         }
@@ -187,9 +187,9 @@ namespace GPNA.AlarmControlSystem.Pages.Reports.GeneralReport
         
         private async Task<ReportSettingsDto?> GetReportSettings()
         {
-            if (ReportSettingsService != default && FieldId != default)
+            if (ReportSettingsService != default && WorkstationId != default)
             {
-                var result = await ReportSettingsService.GetSettings(FieldId.Value);
+                var result = await ReportSettingsService.GetSettings(WorkstationId.Value);
 
                 if (result.Success) return result.Payload;
             }
