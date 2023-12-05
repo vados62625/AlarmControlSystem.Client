@@ -1,6 +1,6 @@
 ﻿<div class="d-flex flex-column">
     <p class="stat-title">@Title</p>
-    <input name="@InputName" type="text" class="stat-value stat-bg-value" @bind="@Value" disabled="@(!Enabled)"/>
+    <input name="@InputName" type="text" class="stat-bg-value" @bind="@Value" disabled="@(!Enabled)"/>
 </div>
 
 @code {
@@ -29,6 +29,6 @@
     public string? InputName { get; set; }
 
     [Parameter]
-    public bool Enabled { get; set; } = true;
+    public bool Enabled { get; set; } = false;
 
 }

@@ -184,6 +184,75 @@ public partial class KPI : ComponentBase
         }
     }
 
+    private bool _editJournalSettingsButtonShow = true;
+    private bool _editMonitoringSettingsButtonShow = true;
+    private bool _editTaskSettingsButtonShow = true;
+    private bool _editReportSettingsButtonShow = true;
+    private bool _editTagTableSettingsButtonShow = true;
+    
+    private bool _enabledEditJournalSettings;
+    private bool _enabledEditMonitoringSettings;
+    private bool _enabledEditTaskSettings;
+    private bool _enabledEditReportSettings;
+    private bool _enabledEditTagTableSettings;
+
+    void EditJournalSettings()
+    {
+        _editJournalSettingsButtonShow = !_editJournalSettingsButtonShow;
+        _enabledEditJournalSettings = true;
+    }
+
+    void CancelEditJournalSettings()
+    {
+        _editJournalSettingsButtonShow = !_editJournalSettingsButtonShow;
+        _enabledEditJournalSettings = false;
+    }
+    void EditMonitoringSettings()
+    {
+        _editMonitoringSettingsButtonShow = !_editMonitoringSettingsButtonShow;
+        _enabledEditMonitoringSettings = true;
+    }
+
+    void CancelEditMonitoringSettings()
+    {
+        _editMonitoringSettingsButtonShow = !_editMonitoringSettingsButtonShow;
+        _enabledEditMonitoringSettings = false;
+    }
+
+    void EditTaskSettings()
+    {
+        _editTaskSettingsButtonShow = !_editTaskSettingsButtonShow;
+        _enabledEditTaskSettings = true;
+    }
+
+    void CancelEditTaskSettings()
+    {
+        _editTaskSettingsButtonShow = !_editTaskSettingsButtonShow;
+        _enabledEditTaskSettings = false;
+    }
+    void EditReportSettings()
+    {
+        _editReportSettingsButtonShow = !_editReportSettingsButtonShow;
+        _enabledEditReportSettings = true;
+    }
+
+    void CancelEditReportSettings()
+    {
+        _editReportSettingsButtonShow = !_editReportSettingsButtonShow;
+        _enabledEditReportSettings = false;
+    }
+    void EditTagTableSettings()
+    {
+        _editTagTableSettingsButtonShow = !_editTagTableSettingsButtonShow;
+        _enabledEditTagTableSettings = true;
+    }
+
+    void CancelEditTagTableSettings()
+    {
+        _editTagTableSettingsButtonShow = !_editTagTableSettingsButtonShow;
+        _enabledEditTagTableSettings = false;
+    }
+
     private async Task UpdateJournalSettings()
     {
         if (AlarmJournalSettingsService != null && _journalSettings != null)
@@ -193,8 +262,11 @@ public partial class KPI : ComponentBase
             if (result.Success)
             {
                 ShowSuccess();
+                _editJournalSettingsButtonShow = !_editJournalSettingsButtonShow;
+                _enabledEditJournalSettings = false;
+
             }
-        }
+        }        
     }
 
     private async Task UpdateMonitoringSettings()
@@ -206,8 +278,10 @@ public partial class KPI : ComponentBase
             if (result.Success)
             {
                 ShowSuccess();
+                _editMonitoringSettingsButtonShow = !_editMonitoringSettingsButtonShow;
+                _enabledEditMonitoringSettings = false;
             }
-        }
+        }        
     }
 
     private async Task UpdateReportSettings()
@@ -219,8 +293,10 @@ public partial class KPI : ComponentBase
             if (result.Success)
             {
                 ShowSuccess();
+                _editReportSettingsButtonShow = !_editReportSettingsButtonShow;
+                _enabledEditReportSettings = false;
             }
-        }
+        }        
     }
 
     private async Task UpdateTagTableSettings()
@@ -232,8 +308,10 @@ public partial class KPI : ComponentBase
             if (result.Success)
             {
                 ShowSuccess();
+                _editTagTableSettingsButtonShow = !_editTagTableSettingsButtonShow;
+                _enabledEditTagTableSettings = false;
             }
-        }
+        }        
     }
 
     private async Task UpdateTaskSettings()
@@ -245,8 +323,10 @@ public partial class KPI : ComponentBase
             if (result.Success)
             {
                 ShowSuccess();
+                _editTaskSettingsButtonShow = !_editTaskSettingsButtonShow;
+                _enabledEditTaskSettings = false;
             }
-        }
+        }        
     }
 
     private void ShowSuccess() => ToastService?.ShowSuccess("Данные сохранены");
