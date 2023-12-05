@@ -1,6 +1,7 @@
 ﻿using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto.Field;
 using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
+using GPNA.AlarmControlSystem.Models.Dto.KpiSettings;
 using GPNA.AlarmControlSystem.Models.Dto.Workstation;
 using GPNA.AlarmControlSystem.Models.Enums;
 using GPNA.AlarmControlSystem.Options;
@@ -19,7 +20,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports.GeneralReport
         [Inject] private IIncomingAlarmService IncomingAlarmService { get; set; } = null!;
         [Inject] private IExportService? ExportService { get; set; }
         [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
-
+        [Inject] private ReportSettingsService? ReportSettingsService { get; set; }
         [Inject] private IFieldService? FieldService { get; set; }
 
         [Inject] private IWorkStationService? WorkStationService { get; set; }
@@ -35,7 +36,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports.GeneralReport
 
         private string? FieldName => _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name ?? "N/A";
 
-        static int inputKpi = 12;
+        private ReportSettingsDto? _reportSettings;
         private IDictionary<string, string>? FieldLinksDictionary { get; set; }
 
         private IDictionary<string, string>? WorkstationLinksDictionary { get; set; }
@@ -64,6 +65,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports.GeneralReport
             SpinnerService.Show();
             StateHasChanged();
             await SetFieldWithWorkstation();
+            _reportSettings = await GetReportSettings();
             _generalCount = 0;
             // _averageUrgent = await SetAverageUrgent();
 
@@ -181,6 +183,18 @@ namespace GPNA.AlarmControlSystem.Pages.Reports.GeneralReport
             await InitializePageAsync();
 
             _spinnerClass = string.Empty;
+        }
+        
+        private async Task<ReportSettingsDto?> GetReportSettings()
+        {
+            if (ReportSettingsService != default && FieldId != default)
+            {
+                var result = await ReportSettingsService.GetSettings(FieldId.Value);
+
+                if (result.Success) return result.Payload;
+            }
+
+            return null;
         }
     }
 }

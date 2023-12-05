@@ -52,7 +52,7 @@
     <div class="chart-container" style="margin-bottom: 30px;">
         @if (IncomingAlarms is {Count: > 0 })
         {
-            <Chart1 Kpi="@inputKpi" IncomingAlarms="@IncomingAlarms" IsEnableRenderChart ="IsEnableRenderChart"/>
+            <Chart1 Kpi="@(_reportSettings?.InHour ?? 0)" IncomingAlarms="@IncomingAlarms" IsEnableRenderChart ="IsEnableRenderChart"/>
         }
         else
         {
