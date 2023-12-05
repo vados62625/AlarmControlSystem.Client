@@ -1,8 +1,8 @@
 ﻿<div class="settings-stats-container ">
 	<p class="settings-stat-title">@Title</p>
 
-    @if (SettingsEdit)
-	{
+    @if (Enabled)
+    {
         <div class="d-flex gap-2">
             <button class="settings-stat-button">
                 <svg>
@@ -15,20 +15,20 @@
                 </svg>
             </button>
         </div>
+    }
 
-        <input class="settings-stat-input" type="text" placeholder="Введите ФИО" />
-        <input class="settings-stat-input" type="text" placeholder="Введите почту" />
-    } 
-
-    else
-    {    
-        <input class="settings-stat-input ban" type="text" placeholder="Введите ФИО" readonly />
-        <input class="settings-stat-input ban" type="text" placeholder="Введите почту" readonly />
-    }   
-    
+        <input class="settings-stat-input" type="text" placeholder="Введите ФИО" disabled="@(!Enabled)" />
+        <input class="settings-stat-input" type="text" placeholder="Введите почту" disabled="@(!Enabled)" />
+   
 </div>
 
 @code {
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public bool SettingsEdit { get; set; } = true;
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public bool SettingsEdit { get; set; } = false;
+
+    [Parameter]
+    public bool Enabled { get; set; } = false;
 }

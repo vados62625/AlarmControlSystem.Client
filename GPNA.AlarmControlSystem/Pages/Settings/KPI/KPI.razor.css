@@ -25,13 +25,13 @@
 }
 
 .settings-container {
-    display: flex;   
+    display: flex;
     flex-flow: column wrap;
-    column-count: 2;    
+    column-count: 2;
     align-self: flex-start;
-    margin: 0 23px;  
-    height: 750px;
-    gap: 20px;    
+    margin: 0 23px;   
+    max-height: calc(100vh - 85px);
+    gap: 20px;
 }
 
 .stats-container {
@@ -39,4 +39,11 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+
+.settings-buttons-container {
+    display: flex;
+    align-self: end;
+    margin-top: 10px;
+    gap: 8px;
 }

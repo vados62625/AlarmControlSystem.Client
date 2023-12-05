@@ -11,14 +11,23 @@
     width: 100%;
     min-width: 272px;
     height: 22px;
-    background: #FFFFFF;
+    background: rgba(221, 241, 252, 0.5);
     border: 1px solid rgba(0, 32, 51, 0.1);
     border-radius: 2px;
     padding-left: 6px;
-}
-
-.stat-value {
     font-weight: 400;
     font-size: 12px;
     color: #002033;
+}
+
+    .stat-bg-value:disabled {
+        background: #FFFFFF;
+    }
+
+input::placeholder {
+    color: rgba(0, 32, 51, 0.25);
+}
+
+input:focus-visible {
+    outline: 1px solid rgba(0, 32, 51, 0.1);
 }

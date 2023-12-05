@@ -1,6 +1,7 @@
 ﻿@page "/settings/KPI"
 @page "/settings"
 @using GPNA.AlarmControlSystem.Pages.Settings.KPI.Components
+@using GPNA.AlarmControlSystem.Shared.ButtonsModal
 @inject IJSRuntime JsRuntime
 
 
@@ -22,82 +23,117 @@
 
     <div class="settings-container">
         <div class="bg">
-            <div class="d-flex align-items-center">
+            @*<div class="d-flex align-items-center">*@
                 <p class="title">ЖУРНАЛ СИГНАЛИЗАЦИЙ</p>
-                <div class="btn-group">
+                @*<div class="btn-group">
                     <button class="btn p-0 ms-2 d-flex shadow-none" onclick="@(async () => await UpdateJournalSettings())">
                         <img src="img/icons/icon-save.svg" alt="*">
                     </button>
                 </div>
-            </div>
+            </div>*@
+
             <div class="stats-container">
-                <StatKPI Title="Критичный приоритет" @bind-Value="@(_journalSettings.UrgentPriority)"/>
-                <StatKPI Title="Низкий приоритет" @bind-Value="@(_journalSettings.LowPriority)"/>
-                <StatKPI Title="Высокий приоритет" @bind-Value="@(_journalSettings.HighPriority)"/>
+                <StatKPI Title="Критичный приоритет" @bind-Value="@(_journalSettings.UrgentPriority)" Enabled="_enabledEditJournalSettings"/>
+                <StatKPI Title="Низкий приоритет" @bind-Value="@(_journalSettings.LowPriority)" Enabled="_enabledEditJournalSettings" />
+                <StatKPI Title="Высокий приоритет" @bind-Value="@(_journalSettings.HighPriority)" Enabled="_enabledEditJournalSettings" />
+            </div>
+            <div class="settings-buttons-container">
+                 @if (_editJournalSettingsButtonShow)
+                {
+                    <EditButton ClickEvent="EditJournalSettings" />
+                }
+                else
+                {
+                    <SaveButton ClickEvent="@(async () => await UpdateJournalSettings())" />
+                    <CancelButton ClickEvent="CancelEditJournalSettings" />
+                }
             </div>
         </div>
         <div class="bg">
             
-            <div class="d-flex align-items-center">
-                <p class="title">МОНИТОРИНГ</p>
-                <div class="btn-group">
-                    <button class="btn p-0 ms-2 d-flex shadow-none" onclick="@(async () => await UpdateMonitoringSettings())">
-                        <img src="img/icons/icon-save.svg" alt="*">
-                    </button>
-                </div>
-            </div>
+            <p class="title">МОНИТОРИНГ</p>
+                
             <div class="stats-container">
-                <StatKPI Title="Входящие сигнализаци. Количество повторений" @bind-Value="_monitoringSettings.RepeatCount"/>
-                <StatKPI Title="Активные сигнализации. Длительность,ч" @bind-Value="_monitoringSettings.ActiveAlarms"/>
-                <StatKPI Title="Имитационные параметры. Длительность,ч" @bind-Value="_monitoringSettings.ImitationParams"/>
-                <StatKPI Title="Подавленные сигнализации. Длительность,ч" @bind-Value="_monitoringSettings.SuppressedAlarms"/>
+                <StatKPI Title="Входящие сигнализаци. Количество повторений" @bind-Value="_monitoringSettings.RepeatCount" Enabled="_enabledEditMonitoringSettings" />
+                <StatKPI Title="Активные сигнализации. Длительность,ч" @bind-Value="_monitoringSettings.ActiveAlarms" Enabled="_enabledEditMonitoringSettings" />
+                <StatKPI Title="Имитационные параметры. Длительность,ч" @bind-Value="_monitoringSettings.ImitationParams" Enabled="_enabledEditMonitoringSettings" />
+                <StatKPI Title="Подавленные сигнализации. Длительность,ч" @bind-Value="_monitoringSettings.SuppressedAlarms" Enabled="_enabledEditMonitoringSettings" />
+            </div>
+            <div class="settings-buttons-container">
+                @if (_editMonitoringSettingsButtonShow)
+                {
+                    <EditButton ClickEvent="EditMonitoringSettings" />
+                }
+                else
+                {
+                    <SaveButton ClickEvent="@(async () => await UpdateMonitoringSettings())" />
+                    <CancelButton ClickEvent="CancelEditMonitoringSettings" />
+                }
             </div>
         </div>
         <div class="bg">
-            <div class="d-flex align-items-center">
-                <p class="title">ЗАДАЧИ</p>
-                <div class="btn-group">
-                    <button class="btn p-0 ms-2 d-flex shadow-none" onclick="@(async () => await UpdateTaskSettings())">
-                        <img src="img/icons/icon-save.svg" alt="*">
-                    </button>
-                </div>
-            </div>
+            
+            <p class="title">ЗАДАЧИ</p>
+                
             <div class="stats-container">
-                <StatKPI Title="Время ответа на задачу, сутки" @bind-Value="_taskSettings.ResponseDays"/>
-                <StatKPI Title="Просроченные" @bind-Value="_taskSettings.Overdue"/>
-                <StatKPI Title="Выполненные вовремя" @bind-Value="_taskSettings.CompletedOnTime"/>
+                <StatKPI Title="Время ответа на задачу, сутки" @bind-Value="_taskSettings.ResponseDays" Enabled="_enabledEditTaskSettings" />
+                <StatKPI Title="Просроченные" @bind-Value="_taskSettings.Overdue" Enabled="_enabledEditTaskSettings" />
+                <StatKPI Title="Выполненные вовремя" @bind-Value="_taskSettings.CompletedOnTime" Enabled="_enabledEditTaskSettings" />
+            </div>
+            <div class="settings-buttons-container">
+                @if (_editTaskSettingsButtonShow)
+                {
+                    <EditButton ClickEvent="EditTaskSettings" />
+                }
+                else
+                {
+                    <SaveButton ClickEvent="@(async () => await UpdateTaskSettings())" />
+                    <CancelButton ClickEvent="CancelEditTaskSettings" />
+                }
             </div>
         </div>
         <div class="bg">
-            <div class="d-flex align-items-center">
-                <p class="title">ОТЧЕТЫ</p>
-                <div class="btn-group">
-                    <button class="btn p-0 ms-2 d-flex shadow-none" onclick="@(async () => await UpdateReportSettings())">
-                        <img src="img/icons/icon-save.svg" alt="*">
-                    </button>
-                </div>
-            </div>
+            
+            <p class="title">ОТЧЕТЫ</p>
+                
             <div class="stats-container">
                 <div class="d-flex justify-content-between">
-                    <StatKPI Title="В час" @bind-Value="_reportSettings.InHour"/>
-                    <StatKPI Title="Сутки" @bind-Value="_reportSettings.Days"/>
+                    <StatKPI Title="В час" @bind-Value="_reportSettings.InHour" Enabled="_enabledEditReportSettings" />
+                    <StatKPI Title="Сутки" @bind-Value="_reportSettings.Days" Enabled="_enabledEditReportSettings" />
                 </div>
-                <StatKPI Title="Просроченные активные" @bind-Value="_reportSettings.ActiveOverdue"/>
-                <StatKPI Title="Просроченные имитационные" @bind-Value="_reportSettings.ImitationOverdue"/>
-                <StatKPI Title="Просроченные подавленные" @bind-Value="_reportSettings.SuppressedOverdue"/>
+                <StatKPI Title="Просроченные активные" @bind-Value="_reportSettings.ActiveOverdue" Enabled="_enabledEditReportSettings" />
+                <StatKPI Title="Просроченные имитационные" @bind-Value="_reportSettings.ImitationOverdue" Enabled="_enabledEditReportSettings" />
+                <StatKPI Title="Просроченные подавленные" @bind-Value="_reportSettings.SuppressedOverdue" Enabled="_enabledEditReportSettings" />
+            </div>
+            <div class="settings-buttons-container">
+                @if (_editReportSettingsButtonShow)
+                {
+                    <EditButton ClickEvent="EditReportSettings" />
+                }
+                else
+                {
+                    <SaveButton ClickEvent="@(async () => await UpdateReportSettings())" />
+                    <CancelButton ClickEvent="CancelEditReportSettings" />
+                }
             </div>
         </div>
         <div class="bg">
-            <div class="d-flex align-items-center">
-                <p class="title">ТАБЛИЦА ПЕРЕМЕННЫХ</p>
-                <div class="btn-group">
-                    <button class="btn p-0 ms-2 d-flex shadow-none" onclick="@(async () => await UpdateTagTableSettings())">
-                        <img src="img/icons/icon-save.svg" alt="*">
-                    </button>
-                </div>
-            </div>
+            
+            <p class="title">ТАБЛИЦА ПЕРЕМЕННЫХ</p>
+                
             <div class="stats-container">
-                <StatKPI Title="Заполненность оценки рисков, %" @bind-Value="_tagTableSettings.RiskAssessment"></StatKPI>
+                <StatKPI Title="Заполненность оценки рисков, %" @bind-Value="_tagTableSettings.RiskAssessment" Enabled="_enabledEditTagTableSettings"></StatKPI>
+            </div>
+            <div class="settings-buttons-container">
+                @if (_editTagTableSettingsButtonShow)
+                {
+                    <EditButton ClickEvent="EditTagTableSettings" />
+                }
+                else
+                {
+                    <SaveButton ClickEvent="@(async () => await UpdateTagTableSettings())" />
+                    <CancelButton ClickEvent="CancelEditTagTableSettings" />
+                }
             </div>
         </div>
     </div>
