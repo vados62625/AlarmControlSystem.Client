@@ -101,3 +101,11 @@
 .monitoring-table-shift td:last-child {
     text-align: center;
 }
+
+.kpi-imitated-warning-bg {
+    background: rgba(255, 231, 231, 1);
+}
+
+.kpi-imitated-warning-text {
+    color: rgba(235, 87, 87, 1);
+}

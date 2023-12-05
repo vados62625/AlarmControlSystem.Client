@@ -116,11 +116,3 @@
 .monitoring-table-shift td:last-child {
     text-align: center;
 }
-
-.kpi-suppressed-warning-bg {
-    background: rgba(255, 231, 231, 1);
-}
-
-.kpi-suppressed-warning-text {
-    color: rgba(235, 87, 87, 1);
-}
