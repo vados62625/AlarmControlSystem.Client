@@ -57,25 +57,63 @@
                             <div class="d-flex justify-content-between overflow-auto">
                                 <div class="priority-alarm-container">
                                     <PriorityAlarm Title="Всего" Value="_totalCount" Priority="total"/>
-                                    <PriorityAlarm Title="Критичный" Value="_countByPriority?[PriorityType.Urgent]" Priority="critical"/>
-                                    <PriorityAlarm Title="Высокий" Value="_countByPriority?[PriorityType.High]" Priority="high"/>
-                                    <PriorityAlarm Title="Низкий" Value="_countByPriority?[PriorityType.Low]" Priority="low"/>
-                                    <PriorityAlarm Title="Без приоритета" Value="_countByPriority?[PriorityType.None]" Priority="none-priority"/>
+                                    <PriorityAlarm Title="Критичный" Value="_countByPriority?[PriorityType.Urgent]" Priority="critical"
+                                                   OnClick="@(()=>TogglePriorityFilter(PriorityType.Urgent))"
+                                                   IsActive="@(_priorityFilter?[PriorityType.Urgent] ?? false)"/>
+                                    <PriorityAlarm Title="Высокий" 
+                                                   Value="_countByPriority?[PriorityType.High]" Priority="high"
+                                                   OnClick="@(()=>TogglePriorityFilter(PriorityType.High))"
+                                                   IsActive="@(_priorityFilter?[PriorityType.High] ?? false)"/>
+                                    <PriorityAlarm Title="Низкий" 
+                                                   Value="_countByPriority?[PriorityType.Low]" Priority="low"
+                                                   OnClick="@(()=>TogglePriorityFilter(PriorityType.Low))"
+                                                   IsActive="@(_priorityFilter?[PriorityType.Low] ?? false)"/>
+                                    <PriorityAlarm Title="Без приоритета" 
+                                                   Value="_countByPriority?[PriorityType.None]" Priority="none-priority"
+                                                   OnClick="@(()=>TogglePriorityFilter(PriorityType.None))"
+                                                   IsActive="@(_priorityFilter?[PriorityType.None] ?? false)"/>
                                     <div class="ps-5">
-                                        <PriorityAlarm Title="Инфо" Value="_countByPriority?[PriorityType.Information]" StatusActive="opacity-50" Priority="info"/>
+                                        <PriorityAlarm Title="Инфо" 
+                                                       Value="_countByPriority?[PriorityType.Information]" StatusActive="opacity-50" Priority="info" 
+                                                       OnClick="@(()=>TogglePriorityFilter(PriorityType.Information))"
+                                                       IsActive="@(_priorityFilter?[PriorityType.Information] ?? false)"/>
                                     </div>
                                 </div>
                                 <div class="priority-alarm-container">
                                     <PriorityAlarm Title="Пожар" StatusActive="@_fireStatus" Status="fire"/>
                                     <PriorityAlarm Title="Загазованность" StatusActive="@_gasStatus" Status="gas"/>
-                                    <PriorityAlarm Title="HH" Value="_countByState?[StateType.HH]" Status="hh"/>
-                                    <PriorityAlarm Title="H" Value="_countByState?[StateType.H]" Status="h"/>
-                                    <PriorityAlarm Title="LL" Value="_countByState?[StateType.LL]" Status="ll"/>
-                                    <PriorityAlarm Title="L" Value="_countByState?[StateType.L]" Status="l"/>
-                                    <PriorityAlarm Title="DISCR" Value="_countByState?[StateType.Discr]" Status="discr"/>
-                                    <PriorityAlarm Title="RSHI" Value="_countByState?[StateType.RSHI]" Status="rshi"/>
-                                    <PriorityAlarm Title="RSLO" Value="_countByState?[StateType.RSLO]" Status="rslo"/>
-                                    <PriorityAlarm Title="NoneState" Value="_countByState?[StateType.none]" Status="none-state"/>
+                                    <PriorityAlarm Title="HH" 
+                                                   Value="_countByState?[StateType.HH]" Status="hh"
+                                                   OnClick="@(()=>ToggleStateFilter(StateType.HH))"
+                                                   IsActive="@(_stateFilter?[StateType.HH] ?? false)"/>
+                                    <PriorityAlarm Title="H" 
+                                                   Value="_countByState?[StateType.H]" Status="h"
+                                                   OnClick="@(()=>ToggleStateFilter(StateType.H))"
+                                                   IsActive="@(_stateFilter?[StateType.H] ?? false)"/>
+                                    <PriorityAlarm Title="LL" 
+                                                   Value="_countByState?[StateType.LL]" Status="ll"
+                                                   OnClick="@(()=>ToggleStateFilter(StateType.LL))"
+                                                   IsActive="@(_stateFilter?[StateType.LL] ?? false)"/>
+                                    <PriorityAlarm Title="L" 
+                                                   Value="_countByState?[StateType.L]" Status="l"
+                                                   OnClick="@(()=>ToggleStateFilter(StateType.L))"
+                                                   IsActive="@(_stateFilter?[StateType.L] ?? false)"/>
+                                    <PriorityAlarm Title="DISCR" 
+                                                   Value="_countByState?[StateType.Discr]" Status="discr"
+                                                   OnClick="@(()=>ToggleStateFilter(StateType.Discr))"
+                                                   IsActive="@(_stateFilter?[StateType.Discr] ?? false)"/>
+                                    <PriorityAlarm Title="RSHI" 
+                                                   Value="_countByState?[StateType.RSHI]" Status="rshi"
+                                                   OnClick="@(()=>ToggleStateFilter(StateType.RSHI))"
+                                                   IsActive="@(_stateFilter?[StateType.RSHI] ?? false)"/>
+                                    <PriorityAlarm Title="RSLO" 
+                                                   Value="_countByState?[StateType.RSLO]" Status="rslo"
+                                                   OnClick="@(()=>ToggleStateFilter(StateType.RSLO))"
+                                                   IsActive="@(_stateFilter?[StateType.RSLO] ?? false)"/>
+                                    <PriorityAlarm Title="NoneState" 
+                                                   Value="_countByState?[StateType.none]" Status="none-state"
+                                                   OnClick="@(()=>ToggleStateFilter(StateType.none))"
+                                                   IsActive="@(_stateFilter?[StateType.none] ?? false)"/>
                                 </div>
                             </div>
                         
@@ -107,7 +145,7 @@
                                     case AlarmTypeEnum.Incoming:
                                     {
                                         <IncomingMonitoringTable 
-                                            Alarms="_incomingAlarmsCollection?.Items" 
+                                            Alarms="@_incomingAlarmsCollection?.Items" 
                                             OnStateFilterChanged="ToggleStateFilter" 
                                             OnPriorityFilterChanged="TogglePriorityFilter" 
                                             OnOrderingChanged="OnOrderingChanged"/>
