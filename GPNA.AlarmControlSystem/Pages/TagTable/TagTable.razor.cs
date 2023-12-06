@@ -1,4 +1,5 @@
-﻿using Blazored.Modal.Services;
+﻿using Blazored.Modal;
+using Blazored.Modal.Services;
 using GPNA.AlarmControlSystem.Application.Dto.Tag;
 using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto.Field;
@@ -85,7 +86,9 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
         
         public async Task AddTag()
         {
-            var createModal = Modal.Show<AddTagModal>();
+            // var createModal = Modal.Show<AddTagModal>();
+            var parameters = new ModalParameters { { "Tag", new TagDto{ WorkStationId = WorkstationId ?? 1 } } };
+            var createModal = Modal.Show<EditTagModal>("", parameters);
             var result = await createModal.Result;
 
             if (result.Confirmed)

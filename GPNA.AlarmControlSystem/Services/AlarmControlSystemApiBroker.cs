@@ -83,7 +83,7 @@ public class AlarmControlSystemApiBroker : ApiBrokerBase, IAlarmControlSystemApi
             if (result.Success)
                 return result;
 
-            _toastService.ShowError(result.Error.Contains("403") || result.Error.Contains("401") ? $"Доступ запрещен" : $"Ошибка запроса");
+            _toastService.ShowError(result.Error.Contains("403") || result.Error.Contains("401") ? $"Доступ запрещен" : result.Error);
 
             return new Result<T>("Ошибка запроса");
         }

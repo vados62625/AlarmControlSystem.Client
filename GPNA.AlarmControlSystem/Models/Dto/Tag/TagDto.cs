@@ -8,6 +8,11 @@ namespace GPNA.AlarmControlSystem.Models.Dto.Tag
     public class TagDto : EntityDtoBase
     {
         /// <summary>
+        /// Id рабочей станции
+        /// </summary>
+        public int WorkStationId { get; set; }
+        
+        /// <summary>
         /// Позиция
         /// </summary>
         public string? Position { get; set; }

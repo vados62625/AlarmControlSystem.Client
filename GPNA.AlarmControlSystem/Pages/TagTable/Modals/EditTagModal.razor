@@ -19,13 +19,13 @@
 				</div>
 				<div class="tag-table__modal-item-container">
 					<p>TagName</p>
-					<input class="tag-table__modal-item-input small" type="text" @bind="@_command.TagName" readonly>
+					<input class="tag-table__modal-item-input small" type="text" @bind="@_command.TagName" readonly="@(Tag.Id != default)">
 				</div>
 			</div>
 			<div class="d-flex justify-content-between">
 				<div class="tag-table__modal-item-container">
 					<p>Состояние</p>
-					<input class="tag-table__modal-item-input small" type="text" @bind="@_command.State" readonly>
+					<input class="tag-table__modal-item-input small" type="text" @bind="@_command.State" readonly="@(Tag.Id != default)">
 				</div>
 				<div class="tag-table__modal-item-container">
 					<p>Приоритет</p>
@@ -101,7 +101,7 @@
 	{
 		_command = new UpdateTagCommand()
 		{
-			WorkStationId = 1,
+			WorkStationId = Tag.WorkStationId,
 			Id = Tag.Id,
 			Position = Tag.Position,
 			TagName = Tag.TagName,
@@ -123,7 +123,7 @@
 	private async void HandleValidSubmit() 
 	{
 		SpinnerService.Show();
-		var updatedTag = await TagService.Update(_command);
+		var updatedTag = Tag.Id == default ? await TagService.Create(_command) : await TagService.Update(_command);
 		SpinnerService.Hide(); 
 		if (updatedTag.Success)
 		{
