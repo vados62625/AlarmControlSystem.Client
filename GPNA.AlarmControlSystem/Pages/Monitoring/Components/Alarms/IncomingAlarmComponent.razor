@@ -83,6 +83,7 @@ else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
 @code
 {
     [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
+    [Inject] ITagTaskService TagTaskService { get; set; } = null!;
     [CascadingParameter] public IModalService Modal { get; set; } = default!;
     
     [Parameter] public IncomingAlarmDto[]? List { get; set; } = Array.Empty<IncomingAlarmDto>();
@@ -127,7 +128,7 @@ else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
             var result = await modal.Result;
             if (result.Confirmed)
             {
-                await AlarmService.ChangeStatus(new ChangeStatusAlarmCommand {Id = Alarm.Id, StatusAlarm = Alarm.StatusAlarm});
+                await TagTaskService.CreateTagTask(Alarm.TagId);
                 await JSRuntime.InvokeVoidAsync("saveComment", "snackbar", $"Сигнализация {Alarm.TagName} отправлена в задачи");
             }
         }

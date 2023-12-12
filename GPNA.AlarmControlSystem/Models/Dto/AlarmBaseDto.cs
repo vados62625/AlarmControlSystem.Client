@@ -5,6 +5,11 @@ namespace GPNA.AlarmControlSystem.Models.Dto
     public class AlarmBaseDto : EntityDtoBase
     {
         /// <summary>
+        /// Id тега
+        /// </summary>
+        public int TagId { get; set; }
+        
+        /// <summary>
         /// Имя тега
         /// </summary>
         public string TagName { get; set; }

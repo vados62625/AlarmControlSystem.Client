@@ -1,17 +1,14 @@
-﻿using Blazored.Modal;
-using Blazored.Modal.Services;
+﻿using Blazored.Modal.Services;
 using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
 using GPNA.AlarmControlSystem.Models.Dto.Field;
 using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
-using GPNA.AlarmControlSystem.Models.Dto.Tag;
+using GPNA.AlarmControlSystem.Models.Dto.TagTask;
 using GPNA.AlarmControlSystem.Models.Dto.Workstation;
 using GPNA.AlarmControlSystem.Models.Enums;
 using GPNA.AlarmControlSystem.Options;
 using GPNA.AlarmControlSystem.Services;
-using GPNA.AlarmControlSystem.Pages.TagTable.Modals;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
 
@@ -21,7 +18,7 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
     {
         [CascadingParameter] public IModalService Modal { get; set; } = default!;
         [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
-        [Inject] protected IIncomingAlarmService IncomingAlarmService { get; set; } = default!;
+        [Inject] protected ITagTaskService TagTaskService { get; set; } = default!;
         [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
         [Inject] private IFieldService? FieldService { get; set; }
         [Inject] private IWorkStationService? WorkStationService { get; set; }
@@ -36,11 +33,11 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
         private IDictionary<string, string>? _fieldLinksDictionary;
         private IDictionary<string, string>? _workstationLinksDictionary;
 
-        private GetIncomingAlarmsByDatesQuery _query = new();
+        private GetTagTasksListQuery _query = new();
 
         // private List<IncomingAlarmDto>? _tasks;
-        private AlarmsCollection<IncomingAlarmDto[]>? _tasks;
-        private AlarmsCollection<IncomingAlarmDto[]>? _archive;
+        private TagTasksCollection? _tasks;
+        private TagTasksCollection? _archive;
         
         private int _pagesCount, _totalCount;
         private int _currentPage = 1;
@@ -62,7 +59,7 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
 
             if (WorkStationService != null)
             {
-                var workstations = await WorkStationService.GetList(new { FieldId = FieldId });
+                var workstations = await WorkStationService.GetList(new { FieldId });
                 if (workstations.Success)
                     _workstations = workstations.Payload.ToArray();
             }
@@ -99,11 +96,11 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
         {
             _query.WorkStationId = WorkstationId ?? 1;
             _query.Page ??= 1;
-            _query.StatusAlarm = CurrentTab == 0 ? StatusAlarmType.InWork : StatusAlarmType.Done;
-            _query.CountOnPage = 15;
+            _query.IsArchived = CurrentTab == 0;
+            _query.ItemsOnPage = 15;
             _query.DateTimeEnd = DateTimeOffset.Now;
             _query.DateTimeStart = DateTimeOffset.Now.AddYears(-10);
-            var result = await IncomingAlarmService.GetAlarmsPerDate(_query); // TODO I make PageableCollectionDto
+            var result = await TagTaskService.GetTagTasksCollection(_query); // TODO I make PageableCollectionDto
 
             if (result.Success)
             {
@@ -169,10 +166,10 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
 
         private async Task DropFilters()
         {
-            _query = new GetIncomingAlarmsByDatesQuery()
+            _query = new GetTagTasksListQuery()
             {
                 Page = 1,
-                StatusAlarm = StatusAlarmType.InWork
+                IsArchived = true
             };
 
             await SpinnerService.Load(GetTasks);

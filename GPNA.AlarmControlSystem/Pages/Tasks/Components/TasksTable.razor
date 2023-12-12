@@ -2,6 +2,7 @@
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
 @using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
+@using GPNA.AlarmControlSystem.Models.Dto.TagTask
 
 <table class="bg-task-table">
     <thead>
@@ -204,7 +205,7 @@
 
 @code {
     [Parameter]
-    public AlarmsCollection<IncomingAlarmDto[]>? Tasks { get; set; }
+    public TagTasksCollection? Tasks { get; set; }
 
     [CascadingParameter(Name = nameof(StateFilter))]
     public StateType? StateFilter { get; set; }

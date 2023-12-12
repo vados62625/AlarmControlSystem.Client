@@ -5,9 +5,10 @@
 @using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
 @using GPNA.AlarmControlSystem.Extensions
+@using GPNA.AlarmControlSystem.Models.Dto.TagTask
 @inject IJSRuntime JSRuntime
 
-@if (Task!=null && _taskLast!=null)
+@if (Task != null)
 {
     <tr>
         <td>
@@ -18,29 +19,30 @@
                 <p class="task-table-status-comment">N/A</p>
             </div>
         </td>
+        <td>@Task.Number</td>
+        <td>@Task.CreatedAt.Date</td>
+        <td>@Task.CreatedAt.LocalDateTime</td>
         <td>N/A</td>
-        <td>@_taskLast.CreatedAt.Date</td>
-        <td>@_taskLast.CreatedAt.LocalDateTime</td>
-        <td>@Task.Length</td>
-        <td>@_taskLast.TagName</td>
+        <td>@Task?.Tag?.TagName</td>
         <td>
-            <MonitoringTableStatus 
-                Title="@_taskLast.State.GetDescription()" 
-                Status="@_taskLast.State"/>
+            <MonitoringTableStatus
+                Title="@Task?.Tag?.State.GetDescription()"
+                Status="@Task?.Tag?.State"/>
         </td>
-        <td>@_taskLast.Description</td>
+        <td>@Task?.Tag?.Description</td>
         <td>
-            <MonitoringTableStatus 
-                Title="@_taskLast.Priority.GetDescription()" 
-                Priority="@_taskLast.Priority"/>
+            <MonitoringTableStatus
+                Title="@Task?.Tag?.Priority.GetDescription()"
+                Priority="@Task?.Tag?.Priority"/>
         </td>
-        <td>@_taskLast.AlarmLimit</td>
+        <td>@Task?.Tag?.AlarmLimit</td>
     </tr>
     <tr class="task-table-comment">
         <td colspan="10">
             @*<input type="text" placeholder="Текст комментария" />*@
             <div>
-                <p>@_taskLast.Comment</p></div>
+                @* <p>@_taskLast.Comment</p> *@
+            </div>
         </td>
     </tr>
 }
@@ -48,14 +50,15 @@
 
 @code
 {
-    [Inject] IBufferAlarmService AlarmService { get; set; } = null!;
-    
-    [Parameter] public IncomingAlarmDto[]? Task { get; set; }
-    private IncomingAlarmDto? _taskLast;
+    [Inject]
+    ITagTaskService AlarmService { get; set; } = null!;
+
+    [Parameter]
+    public TagTaskDto? Task { get; set; }
     private string? _taskStatus = "new";
-    
+
     protected override void OnInitialized()
     {
-        _taskLast = Task?.Last();
+       
     }
 }

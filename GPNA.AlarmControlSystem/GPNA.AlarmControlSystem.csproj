@@ -67,10 +67,6 @@
       <DependentUpon>KPI.razor</DependentUpon>
     </Compile>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\Dto\Task\" />
-  </ItemGroup>
   
 
 

@@ -4,6 +4,12 @@ namespace GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
 {
     public class BufferAlarmDto : AlarmBaseDto
     {
+        
+        /// <summary>
+        /// Id тега
+        /// </summary>
+        public int TagId { get; set; }
+        
         /// <summary>
         /// Id рабочей станции
         /// </summary>

@@ -20,5 +20,5 @@ public class SendEmailQuery
     /// Id сигнализации
     /// </summary>
     [Required]
-    public int BufferAlarmId { get; set; }
+    public int TagId { get; set; }
 }
