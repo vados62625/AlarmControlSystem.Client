@@ -3,6 +3,7 @@ using Blazored.Modal.Services;
 using GPNA.AlarmControlSystem.Application.Dto.Tag;
 using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto.Field;
+using GPNA.AlarmControlSystem.Models.Dto.Queries;
 using GPNA.AlarmControlSystem.Models.Dto.Tag;
 using GPNA.AlarmControlSystem.Models.Dto.Workstation;
 using GPNA.AlarmControlSystem.Models.Enums;
@@ -11,16 +12,19 @@ using GPNA.AlarmControlSystem.Services;
 using GPNA.AlarmControlSystem.Pages.TagTable.Modals;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Options;
+using Microsoft.JSInterop;
 
 namespace GPNA.AlarmControlSystem.Pages.TagTable
 {
     public partial class TagTable : ComponentBase
     {
         [CascadingParameter] public IModalService Modal { get; set; } = default!;
+        [Inject] protected IJSRuntime JS { get; set; } = default!;
         [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
         [Inject] protected ITagService TagService { get; set; } = default!;
         [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
         [Inject] private IFieldService? FieldService { get; set; }
+        [Inject] private IExportService? ExportService { get; set; }
         [Inject] private IWorkStationService? WorkStationService { get; set; }
         [Parameter] [SupplyParameterFromQuery] public int? WorkstationId { get; set; }
         [Parameter] [SupplyParameterFromQuery] public int? FieldId { get; set; }
@@ -159,6 +163,38 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
             };
 
             await SpinnerService.Load(GetTags);
+        }
+        
+        private async Task<Stream?> GetFileStream()
+        {
+            var result = await ExportService.ExportTags(new ExportTagsQuery
+            {
+                DocumentType = ExportDocumentType.Excel,
+                WorkStationId = WorkstationId ?? 0,
+                TagName = _query.TagName,
+                Suggest = _query.Suggest,
+                State = _query.State,
+                Priority = _query.Priority,
+            });
+
+            return new MemoryStream(result);
+        }
+
+        private async Task DownloadFileFromStream()
+        {
+            SpinnerService?.Show();
+
+            var fileStream = await GetFileStream();
+
+            if (fileStream == null) return;
+
+            var fileName = "Теги.xlsx";
+
+            using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+            await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+
+            SpinnerService?.Hide();
         }
     }
 }

@@ -3,7 +3,7 @@
 
 <div class="page-main">
     <div class="page-header ">       
-        <a href="/alarms-at-work" class="bg-navigation">
+        <a href="/tasks" class="bg-navigation">
             <svg>
                 <use href="/img/icons/icons.svg#arrow-left"></use>
             </svg>
@@ -21,7 +21,7 @@
 
     </div>
     <div class="d-flex flex-column overflow-auto gap-2">
-        <TasksTable Border="border-none"></TasksTable>
+        @* <TasksTable Border="border-none"></TasksTable> *@
         <div class="mesage-container w-100">
             <div class=" mesage-container flex-column">
                 <div class="bg-message message-correspondents">
@@ -97,6 +97,6 @@
 
 @code {
 
-    [Parameter] public int TaskNumber { get; set; }
+    [SupplyParameterFromQuery][Parameter] public int TaskNumber { get; set; }
 
 }

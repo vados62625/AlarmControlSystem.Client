@@ -10,7 +10,7 @@
 
 @if (Task != null)
 {
-    <tr>
+    <tr onclick="@(() => NavigationManager?.NavigateTo($"/tasks/task-number?taskNumber={Task.Number}"))">
         <td>
             <div class="d-flex gap-2 align-items-center">
                 <svg class="task-table-status-icon">
@@ -22,7 +22,6 @@
         <td>@Task.Number</td>
         <td>@Task.CreatedAt.Date</td>
         <td>@Task.CreatedAt.LocalDateTime</td>
-        <td>N/A</td>
         <td>@Task?.Tag?.TagName</td>
         <td>
             <MonitoringTableStatus
@@ -37,21 +36,21 @@
         </td>
         <td>@Task?.Tag?.AlarmLimit</td>
     </tr>
-    <tr class="task-table-comment">
-        <td colspan="10">
-            @*<input type="text" placeholder="Текст комментария" />*@
-            <div>
-                @* <p>@_taskLast.Comment</p> *@
-            </div>
-        </td>
-    </tr>
+    @* <tr class="task-table-comment"> *@
+    @*     <td colspan="10"> *@
+    @*         $1$ <input type="text" placeholder="Текст комментария" /> #1# *@
+    @*         <div> *@
+    @*             $1$ <p>@_taskLast.Comment</p> #1# *@
+    @*         </div> *@
+    @*     </td> *@
+    @* </tr> *@
 }
 
 
 @code
 {
-    [Inject]
-    ITagTaskService AlarmService { get; set; } = null!;
+    [Inject] ITagTaskService AlarmService { get; set; } = null!;
+    [Inject] NavigationManager? NavigationManager { get; set; }
 
     [Parameter]
     public TagTaskDto? Task { get; set; }

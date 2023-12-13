@@ -1,5 +1,6 @@
 ﻿using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
+using GPNA.AlarmControlSystem.Models.Dto.Queries;
 using GPNA.RestClient.Models;
 
 namespace GPNA.AlarmControlSystem.Services;
@@ -38,5 +39,15 @@ public class ExportService : IExportService
     public async Task<byte[]> ExportActiveAlarmsReport(ExportIncomingAlarmsByDatesQuery query)
     {
         return await _apiBroker.GetFile($"{URL}/ExportActiveAlarmsReport", query);
+    }
+    
+    public async Task<byte[]> ExportTags(ExportTagsQuery query)
+    {
+        return await _apiBroker.GetFile($"{URL}/ExportTags", query);
+    }
+    
+    public async Task<byte[]> ExportTagTasks(ExportTagTasksQuery query)
+    {
+        return await _apiBroker.GetFile($"{URL}/ExportTagTasks", query);
     }
 }

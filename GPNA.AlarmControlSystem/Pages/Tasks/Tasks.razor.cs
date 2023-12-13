@@ -3,6 +3,7 @@ using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
 using GPNA.AlarmControlSystem.Models.Dto.Field;
 using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
+using GPNA.AlarmControlSystem.Models.Dto.Queries;
 using GPNA.AlarmControlSystem.Models.Dto.TagTask;
 using GPNA.AlarmControlSystem.Models.Dto.Workstation;
 using GPNA.AlarmControlSystem.Models.Enums;
@@ -177,12 +178,12 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
 
         private async Task<Stream?> GetFileStream()
         {
-            var result = await ExportService.ExportIncomingAlarms(new ExportIncomingAlarmsByDatesQuery
+            var result = await ExportService.ExportTagTasks(new ExportTagTasksQuery
             {
                 DocumentType = ExportDocumentType.Excel,
-                StatusAlarm = StatusAlarmType.InWork,
                 WorkStationId = WorkstationId ?? 0,
                 TagName = _query.TagName,
+                Suggest = _query.Suggest,
                 State = _query.State,
                 Priority = _query.Priority,
             });
@@ -198,7 +199,7 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
 
             if (fileStream == null) return;
 
-            var fileName = "export.xlsx";
+            var fileName = "Задачи_по_тегам.xlsx";
 
             using var streamRef = new DotNetStreamReference(stream: fileStream);
 
