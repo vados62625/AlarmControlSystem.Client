@@ -23,8 +23,8 @@ public partial class Index : ComponentBase
     [Inject]
     protected ISpinnerService SpinnerService { get; set; } = default!;
 
-    [Parameter]
-    public DateTimeOffset DateTime { get; set; } = new(DateTimeOffset.Now.AddDays(-1).Year, DateTimeOffset.Now.AddDays(-1).Month, DateTimeOffset.Now.AddDays(-1).Day, 23, 59, 59, DateTimeOffset.Now.AddDays(-1).Offset);
+    private DateTimeOffset DateTimeStart { get; } = new(DateTimeOffset.Now.AddDays(-8).Year, DateTimeOffset.Now.AddDays(-8).Month, DateTimeOffset.Now.AddDays(-8).Day, 0, 0, 0, DateTimeOffset.Now.AddDays(-8).Offset);
+    private DateTimeOffset DateTimeEnd { get; } = new(DateTimeOffset.Now.AddDays(-1).Year, DateTimeOffset.Now.AddDays(-1).Month, DateTimeOffset.Now.AddDays(-1).Day, 23, 59, 59, DateTimeOffset.Now.AddDays(-1).Offset);
 
     [Parameter]
     [SupplyParameterFromQuery]
@@ -79,7 +79,7 @@ public partial class Index : ComponentBase
     {
         if (WorkStationService != null && FieldId != null)
         {
-            var query = new GetAlarmsCountForFieldQuery { FieldId = FieldId.Value, DateTimeStart = DateTime.AddDays(-7), DateTimeEnd = DateTime };
+            var query = new GetAlarmsCountForFieldQuery { FieldId = FieldId.Value, DateTimeStart = DateTimeStart, DateTimeEnd = DateTimeEnd };
             var result = await WorkStationService.GetWorkstationsWithStatistics(query);
 
             if (result.Success)
