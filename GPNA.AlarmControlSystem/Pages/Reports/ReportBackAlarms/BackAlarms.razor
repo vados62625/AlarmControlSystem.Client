@@ -7,7 +7,7 @@
         <div class="d-flex align-items-center">
             <p>ОТЧЕТ О КОЛИЧЕСТВЕ ПРОСРОЧЕННЫХ СИГНАЛИЗАЦИЙ  <b>@(_fields?.FirstOrDefault(f => f.Id == FieldId)?.Name ?? "N/A") М/Р</b></p>
             <SelectObject Object="dto" LinksDictionary="WorkstationLinksDictionary"/>
-            <p class="ms-2"><b>НА @DateTime.ToString("dd MMMM")</b></p>
+            <p class="ms-2"><b>НА @DateTimeEnd.ToString("dd MMMM")</b></p>
         </div>        
     </div>
     <TableBackAlarms></TableBackAlarms> 
