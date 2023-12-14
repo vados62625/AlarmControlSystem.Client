@@ -4,8 +4,14 @@
     gap: 11px;
     display: flex;
     align-items: center;
+    text-decoration: none;
 }
 
+    .bg-navigation:hover {
+        color: var(--text-button-navigation-grey);
+        opacity: 0.5;
+    }
+    
     .bg-navigation.right {
         flex-direction: row-reverse;
     }

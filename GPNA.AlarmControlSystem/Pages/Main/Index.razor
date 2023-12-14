@@ -1,22 +1,22 @@
 ﻿@page "/"
 @using GPNA.AlarmControlSystem.Pages.Main.Components.WorkStationView
 
-
 <div class="page-main">
-    <div class="page-header justify-content-center">
-        @if (_fields is {Length: > 2 })
+    <div class="page-header">
+        @if (_previousField != null)
         {
-            <ButtonNavigation Title="@_fields[2].Name" Href="@("/?fieldId=" + _fields[2].Id)"/>
+            <ButtonNavigation Title="@_previousField.Name" Href="@("/?fieldId=" + _previousField.Id)"/>
         }
         <div class="d-flex align-items-center">
-            <p>ОТЧЕТ ПО СИГНАЛИЗАЦИЯМ ЗА @DateTimeEnd.ToString("dd MMMM") <b>@(_fields?.FirstOrDefault(f => f.Id == FieldId)?.Name ?? "N/A") М/Р</b></p>
+            <p>ОТЧЕТ ПО СИГНАЛИЗАЦИЯМ ЗА @DateTimeEnd.ToString("dd MMMM") <b>@(_activeField?.Name ?? "N/A") М/Р</b></p>
             <SelectObject Object="dto" LinksDictionary="WorkstationLinksDictionary"/>
         </div>
-        @if (_fields is {Length: > 1 })
+        @if (_nextField != null)
         {
-            <ButtonNavigation Title="@_fields[1].Name" Href="@("/?fieldId=" + _fields[1].Id)" Navigation="right"/>
+            <ButtonNavigation Title="@_nextField.Name" Href="@("/?fieldId=" + _nextField.Id)" Navigation="right"/>
         }
     </div>
+    
     @if (_workstations != default)
     {
         foreach (var workstation in _workstations)
@@ -24,4 +24,5 @@
             <WorkStationView Workstation="workstation"/>
         }
     }
+    
 </div>

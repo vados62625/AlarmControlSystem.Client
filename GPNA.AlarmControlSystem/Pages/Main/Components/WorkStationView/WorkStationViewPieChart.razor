@@ -1,6 +1,8 @@
 ﻿@using GPNA.AlarmControlSystem.Application.Dto
+@using GPNA.AlarmControlSystem.Models.Dto.KpiSettings
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Pages.Main.Components.Charts
+
 <div class="pie-chart">
     <p>
         @Title <b>@DateTime.ToString("dd MMMM")</b>
@@ -11,21 +13,21 @@
         </div>
 
         <div class="d-flex flex-column justify-content-between ps-3">
-            <div class="pie-chart-stat">
+            <div class="pie-chart-stat @(JournalSettings?.LowPriority < (CountAlarms?[PriorityType.Low] ?? 0) ? "kpi-warning-low" : "")">
                 <div class="d-flex align-items-center">
                     <div class="pie-chart-stat-priority low"></div>
                     <p>Низкий</p>
                 </div>
                 <p>@(CountAlarms?[PriorityType.Low] ?? 0)</p>
             </div>
-            <div class="pie-chart-stat">
+            <div class="pie-chart-stat @(JournalSettings?.LowPriority < (CountAlarms?[PriorityType.High] ?? 0) ? "kpi-warning-high" : "")">
                 <div class="d-flex align-items-center">
                     <div class="pie-chart-stat-priority high"></div>
                     <p>Высокий</p>
                 </div>
                 <p>@(CountAlarms?[PriorityType.High] ?? 0)</p>
             </div>
-            <div class="pie-chart-stat">
+            <div class="pie-chart-stat @(JournalSettings?.LowPriority < (CountAlarms?[PriorityType.Urgent] ?? 0) ? "kpi-warning-urgent" : "")">
                 <div class="d-flex align-items-center">
                     <div class="pie-chart-stat-priority critical"></div>
                     <p>Критичный</p>
@@ -37,7 +39,8 @@
 </div>
 
 @code {
-
+    [CascadingParameter] public AlarmJournalSettingsDto? JournalSettings { get; set; }
+    
     [Parameter]
     public DateTimeOffset DateTime { get; set; }
 

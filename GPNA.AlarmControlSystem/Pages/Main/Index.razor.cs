@@ -32,30 +32,35 @@ public partial class Index : ComponentBase
 
     private bool IsEnableRenderChart { get; set; }
 
-    private FieldDto[]? _fields;
+    private List<FieldDto>? _fields;
 
     private WorkstationMainPageDto[]? _workstations;
 
     private IDictionary<string, string>? WorkstationLinksDictionary { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    private FieldDto? _activeField, _nextField, _previousField;
+    
+    protected override async Task OnParametersSetAsync()
     {
         IsEnableRenderChart = false;
-        SpinnerService.Show();
-
-        await InitializePageAsync();
-
-        SpinnerService.Hide();
+        await SpinnerService.Load(InitializePageAsync);
         IsEnableRenderChart = true;
-
-        await base.OnInitializedAsync();
     }
 
     private async Task InitializePageAsync()
     {
         await GetFields();
-
-        FieldId ??= _fields?.FirstOrDefault()?.Id ?? 1;
+        
+        _activeField = FieldId != null
+            ? _fields?.FirstOrDefault(f => f.Id == FieldId) 
+            : _fields?.FirstOrDefault();
+        FieldId = _activeField?.Id;
+        if (_activeField != null && _fields != null)
+        {
+            var x = _fields.IndexOf(_activeField);
+            _nextField = _fields.Count > (x + 1) ? _fields[x + 1] : _fields.First();
+            _previousField = x - 1 >= 0 ? _fields[x - 1] : _fields.Last();
+        }
 
         await GetWorkstations();
 
@@ -70,7 +75,7 @@ public partial class Index : ComponentBase
 
             if (result.Success)
             {
-                _fields = result.Payload.ToArray();
+                _fields = result.Payload.ToList();
             }
         }
     }

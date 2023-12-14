@@ -37,7 +37,8 @@
         <td class="item-table__checkbox" @onclick="SendToTasks">
             <input class="item-table__checkbox-input" 
                    type="checkbox" 
-                   checked="@(Alarm.StatusAlarm == StatusAlarmType.InWork)"/>
+                   checked="@(Alarm.StatusAlarm == StatusAlarmType.InWork)"
+                   disabled="@(Alarm.StatusAlarm == StatusAlarmType.InWork)"/>
         </td>
     </tr>
     
@@ -101,9 +102,9 @@ else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
         }
         else if (Alarm is {StatusAlarm: StatusAlarmType.InWork })
         {
-            Alarm.StatusAlarm = StatusAlarmType.Undefined;
-            await AlarmService.ChangeStatus(new ChangeStatusAlarmCommand {Id = Alarm.Id, StatusAlarm = Alarm.StatusAlarm});
-            await JSRuntime.InvokeVoidAsync("saveComment", "snackbar", $"Сигнализация {Alarm.TagName} удалена из задач");
+            // Alarm.StatusAlarm = StatusAlarmType.Undefined;
+            // await AlarmService.ChangeStatus(new ChangeStatusAlarmCommand {Id = Alarm.Id, StatusAlarm = Alarm.StatusAlarm});
+            // await JSRuntime.InvokeVoidAsync("saveComment", "snackbar", $"Сигнализация {Alarm.TagName} удалена из задач");
         }
     }
 

@@ -33,6 +33,18 @@
         color: var(--text-black);
     }
 
+    .pie-chart-stat.kpi-warning-low {
+        background: rgba(188, 225, 251, 1);
+    }
+
+    .pie-chart-stat.kpi-warning-high {
+        background: rgba(242, 153, 74, 0.25);
+    }
+    
+    .pie-chart-stat.kpi-warning-urgent {
+        background: rgba(235, 87, 87, 0.2);
+    }
+    
 .pie-chart-stat-priority {
     width: 8px;
     height: 8px;
