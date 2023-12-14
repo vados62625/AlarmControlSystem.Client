@@ -1,4 +1,6 @@
-﻿using GPNA.AlarmControlSystem.Models.Enums;
+﻿using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
+using GPNA.AlarmControlSystem.Models.Enums;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace GPNA.AlarmControlSystem.Models.Dto.Tag
 {
@@ -81,5 +83,15 @@ namespace GPNA.AlarmControlSystem.Models.Dto.Tag
         /// Состояние проверки на валидность информации
         /// </summary>
         public ValidateType Validate { get; set; }
+        
+        /// <summary>
+        /// Последняя сигнализация по тегу
+        /// </summary>
+        public BufferAlarmDto? LastBufferAlarm { get; set; }
+
+        /// <summary>
+        /// Валидность последней сигнализации 
+        /// </summary>
+        public Dictionary<string, ModelStateEntry?> ModelState { get; set; } = new();
     }
 }

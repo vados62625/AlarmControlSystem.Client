@@ -106,7 +106,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
             _query.WorkStationId = WorkstationId ?? 1;
             _query.ItemsOnPage = 15;
             _query.Page ??= 1;
-            var result = await TagService.GetTagsCollection(_query); // TODO I make PageableCollectionDto
+            var result = await TagService.GetTagsCollection(_query);
             
             if (result.Success)
             {
