@@ -92,6 +92,6 @@ namespace GPNA.AlarmControlSystem.Models.Dto.Tag
         /// <summary>
         /// Валидность последней сигнализации 
         /// </summary>
-        public Dictionary<string, ModelStateEntry?> ModelState { get; set; } = new();
+        public Dictionary<string, object?> ModelState { get; set; } = new();
     }
 }
