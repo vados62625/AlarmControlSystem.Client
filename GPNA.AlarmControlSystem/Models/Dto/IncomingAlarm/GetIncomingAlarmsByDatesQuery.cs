@@ -63,5 +63,7 @@ namespace GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
         /// Выводить передачи смены
         /// </summary>
         public bool DisplayShifts { get; set; }
+        
+        public string? Suggest { get; set; }
     }
 }

@@ -162,7 +162,7 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
 
         private async Task Search(string tagName)
         {
-            _query.TagName = tagName;
+            _query.Suggest = tagName;
             _query.Page = 1;
             await SpinnerService.Load(GetTasks);
         }
@@ -185,7 +185,7 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
                 DocumentType = ExportDocumentType.Excel,
                 StatusAlarm = StatusAlarmType.InWork,
                 WorkStationId = WorkstationId ?? 0,
-                TagName = _query.TagName,
+                Suggest = _query.Suggest,
                 State = _query.State,
                 Priority = _query.Priority,
             });

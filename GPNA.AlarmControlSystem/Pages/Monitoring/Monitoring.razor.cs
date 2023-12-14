@@ -223,7 +223,7 @@ public partial class Monitoring : ComponentBase
             var request = await IncomingAlarmService.GetAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
             {
                 WorkStationId = WorkstationId ?? 0,
-                TagName = _tagNameFilter,
+                Suggest = _tagNameFilter,
                 DateTimeStart = _from,
                 DateTimeEnd = _to,
                 State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
@@ -253,7 +253,7 @@ public partial class Monitoring : ComponentBase
             var request = await ActiveAlarmService.GetActiveAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
             {
                 WorkStationId = WorkstationId ?? 0,
-                TagName = _tagNameFilter,
+                Suggest = _tagNameFilter,
                 DateTimeStart = _from,
                 DateTimeEnd = _to,
                 State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
@@ -283,7 +283,7 @@ public partial class Monitoring : ComponentBase
             var request = await ImitatedAlarmService.GetImitatedAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
             {
                 WorkStationId = WorkstationId ?? 0,
-                TagName = _tagNameFilter,
+                Suggest = _tagNameFilter,
                 DateTimeStart = _from,
                 DateTimeEnd = _to,
                 State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
@@ -312,7 +312,7 @@ public partial class Monitoring : ComponentBase
             var request = await SuppressedAlarmService.GetSuppressedAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
             {
                 WorkStationId = WorkstationId ?? 0,
-                TagName = _tagNameFilter,
+                Suggest = _tagNameFilter,
                 DateTimeStart = _from,
                 DateTimeEnd = _to,
                 State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
@@ -360,7 +360,7 @@ public partial class Monitoring : ComponentBase
         {
             DocumentType = ExportDocumentType.Excel,
             WorkStationId = WorkstationId ?? 0,
-            TagName = _tagNameFilter,
+            Suggest = _tagNameFilter,
             DateTimeStart = _from,
             DateTimeEnd = _to,
             State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
@@ -377,7 +377,7 @@ public partial class Monitoring : ComponentBase
         {
             DocumentType = ExportDocumentType.Excel,
             WorkStationId = WorkstationId ?? 0,
-            TagName = _tagNameFilter,
+            Suggest = _tagNameFilter,
             DateTimeStart = _from,
             DateTimeEnd = _to,
             State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
@@ -394,7 +394,7 @@ public partial class Monitoring : ComponentBase
         {
             DocumentType = ExportDocumentType.Excel,
             WorkStationId = WorkstationId ?? 0,
-            TagName = _tagNameFilter,
+            Suggest = _tagNameFilter,
             DateTimeStart = _from,
             DateTimeEnd = _to,
             State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
@@ -411,7 +411,7 @@ public partial class Monitoring : ComponentBase
         {
             DocumentType = ExportDocumentType.Excel,
             WorkStationId = WorkstationId ?? 0,
-            TagName = _tagNameFilter,
+            Suggest = _tagNameFilter,
             DateTimeStart = _from,
             DateTimeEnd = _to,
             State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
