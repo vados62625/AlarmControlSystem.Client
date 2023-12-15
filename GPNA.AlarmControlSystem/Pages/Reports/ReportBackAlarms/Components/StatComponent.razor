@@ -1,14 +1,23 @@
 ﻿<div class="stat-container">
     <div class="d-flex flex-column align-items-end gap-1">
-        <p>654612</p>
-        <p>5461</p>
+        <p>@CurrentValue</p>
+        <p>@LastValue</p>
     </div>
     <svg class="@ColorStatus">
         <use href="/img/icons/icons.svg#back-alarm-table-stat-arrow"></use>
     </svg>
-    <p class="@ColorStatus">102</p>
+    <p class="@ColorStatus">@DifferenceValue</p>
 </div>
 
 @code {
-    [Parameter] public string? ColorStatus { get; set; } = "green";
+    
+    protected string ColorStatus => CurrentValue > LastValue ? "red" : "green";
+
+    [Parameter]
+    public int CurrentValue { get; set; }
+
+    [Parameter]
+    public int LastValue { get; set; }
+
+    private int DifferenceValue => Math.Abs(CurrentValue - LastValue);
 }

@@ -1,6 +1,6 @@
 Chart.register({
     id: 'doughnut-centertext',
-    beforeDraw: function(chart) {
+    beforeDraw: function (chart) {
         if (chart.config.options.elements && chart.config.options.elements.center) {
             // Get ctx from string
             var ctx = chart.ctx;
@@ -26,7 +26,7 @@ Chart.register({
             var elementHeight = (chart._metasets[0].data[0].innerRadius * 2);
 
             // Pick a new font size so it will not be larger than the height of label.
-            var fontSizeToUse = Math.min.apply(null,[newFontSize, elementHeight, maxFontSize]);
+            var fontSizeToUse = Math.min.apply(null, [newFontSize, elementHeight, maxFontSize]);
             var minFontSize = centerConfig.minFontSize;
             var lineHeight = centerConfig.lineHeight || 25;
             var wrapText = false;
@@ -97,7 +97,7 @@ Chart.register({
                 if (dataset.data[j] > 0) {
                     hasData = true;
                     break;
-                }            
+                }
             }
         }
 
@@ -122,7 +122,7 @@ window.setup = (id, config) => {
         chartStatus.destroy();
     }
     let el = document.getElementById(id)
-    if(el) {
+    if (el) {
         let ctx = el.getContext('2d');
         new Chart(ctx, config);
     }
@@ -130,7 +130,7 @@ window.setup = (id, config) => {
 
 window.setup2 = (id, config) => {
     let el = document.getElementById(id)
-    if(el) {
+    if (el) {
         let ctx = el.getContext('2d');
         config.options.scales.y = {min: 0, max: 100};
         new Chart(ctx, config);
@@ -138,16 +138,51 @@ window.setup2 = (id, config) => {
 }
 
 
-window.setup3 = (id,config) => {
+window.setup3 = (id, config) => {
     let chartStatus = Chart.getChart(id); // <canvas> id
     if (chartStatus != undefined) {
         chartStatus.destroy();
     }
     let el = document.getElementById(id)
-    if(el){
+    if (el) {
         let ctx = el.getContext('2d');
-        config.options.scales.y = { min: 0};
+        config.options.scales.y = {min: 0};
         new Chart(ctx, config);
     }
-    
+
+}
+
+window.setupBarChart = (id, config) => {
+    let chartStatus = Chart.getChart(id); // <canvas> id
+    if (chartStatus != undefined) {
+        chartStatus.destroy();
+    }
+    let el = document.getElementById(id)
+    if (el) {
+        let ctx = el.getContext('2d');
+        config.options.scales.y = {min: 0};
+        config.options.plugins.tooltip = {
+            callbacks: {
+                label: function (tooltipItem, data) {
+                    var corporation = data.datasets[tooltipItem.datasetIndex].label;
+                    var valor = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+
+                    // Loop through all datasets to get the actual total of the index
+                    var total = 0;
+                    for (var i = 0; i < data.datasets.length; i++)
+                        total += data.datasets[i].data[tooltipItem.index];
+
+                    // If it is not the last dataset, you display it as you usually do
+                    if (tooltipItem.datasetIndex != data.datasets.length - 1) {
+                        return corporation + " : $" + valor.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                    } else { // .. else, you display the dataset and the total, using an array
+                        return [corporation + " : $" + valor.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'), "Total : $" + total];
+                    }
+                }
+            }
+        };
+        
+        new Chart(ctx, config);
+    }
+
 }

@@ -116,6 +116,7 @@ a, .btn-link {
 
 .content {
     padding-top: 1.1rem;
+    min-height: 50vh;
 }
 
 .valid.modified:not([type=checkbox]) {
@@ -395,7 +396,6 @@ p {
 .page-main {
     width: 100%;
     height: 100%;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
     gap: 10px;

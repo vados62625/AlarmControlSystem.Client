@@ -1,4 +1,5 @@
 ﻿@using GPNA.AlarmControlSystem.Models.Dto.Workstation
+@using GPNA.AlarmControlSystem.Models.Enums
 <div class="back-alarm-table-container">
     <table class="back-alarm-table">
         <thead>
@@ -16,38 +17,60 @@
         <tbody>
         <tr>
             <td>Просроченные<br/> активные<br/> сигнализации</td>
-            <td>
-                <StatComponent></StatComponent>
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            @if (ExpiredAlarmsCount != null)
+            {
+                foreach (var kvPair in ExpiredAlarmsCount)
+                {
+                    <td>
+                        @if (kvPair.Value.TryGetValue(AlarmType.Activation, out var activeDict) && activeDict.TryGetValue(DateTime.Now.Date.AddDays(-1), out var currentVal))
+                        {
+                            <StatComponent CurrentValue="@currentVal" LastValue="@(activeDict.TryGetValue(DateTime.Now.Date.AddDays(-8), out var lastVal) ? lastVal : 0)"></StatComponent>
+                        }
+                        else
+                        {
+                            <StatComponent></StatComponent>
+                        }
+                    </td>
+                }
+            }
         </tr>
         <tr>
             <td>Просроченные<br/> имитационные<br/> параметры</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            @if (ExpiredAlarmsCount != null)
+            {
+                foreach (var kvPair in ExpiredAlarmsCount)
+                {
+                    <td>
+                        @if (kvPair.Value.TryGetValue(AlarmType.Imitation, out var imitationDict) && imitationDict.TryGetValue(DateTime.Now.Date.AddDays(-1), out var currentVal))
+                        {
+                            <StatComponent CurrentValue="@currentVal" LastValue="@(imitationDict.TryGetValue(DateTime.Now.Date.AddDays(-8), out var lastVal) ? lastVal : 0)"></StatComponent>
+                        }
+                        else
+                        {
+                            <StatComponent></StatComponent>
+                        }
+                    </td>
+                }
+            }
         </tr>
         <tr>
             <td>Просроченные<br/> подавленные<br/> сигнализации</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            @if (ExpiredAlarmsCount != null)
+            {
+                foreach (var kvPair in ExpiredAlarmsCount)
+                {
+                    <td>
+                        @if (kvPair.Value.TryGetValue(AlarmType.Suppression, out var suppressionDict) && suppressionDict.TryGetValue(DateTime.Now.Date.AddDays(-1), out var currentVal))
+                        {
+                            <StatComponent CurrentValue="@currentVal" LastValue="@(suppressionDict.TryGetValue(DateTime.Now.Date.AddDays(-8), out var lastVal) ? lastVal : 0)"></StatComponent>
+                        }
+                        else
+                        {
+                            <StatComponent></StatComponent>
+                        }
+                    </td>
+                }
+            }
         </tr>
         </tbody>
     </table>
@@ -56,9 +79,9 @@
 @code {
 
     [Parameter]
-    Dictionary<int, Dictionary<DateTimeOffset, int>>? ExpiredAlarmsCount { get; set; }
+    public Dictionary<int, Dictionary<AlarmType, Dictionary<DateTime, int>>>? ExpiredAlarmsCount { get; set; }
 
     [Parameter]
-    WorkStationDto[]? WorkStations { get; set; }
+    public WorkStationDto[]? WorkStations { get; set; }
 
 }

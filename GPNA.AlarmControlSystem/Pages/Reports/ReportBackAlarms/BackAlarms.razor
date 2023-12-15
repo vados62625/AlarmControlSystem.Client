@@ -1,6 +1,7 @@
 ﻿@page "/reports/back-alarms"
 
 @using GPNA.AlarmControlSystem.Pages.Reports.ReportBackAlarms.Components;
+@using GPNA.AlarmControlSystem.Models.Enums
 
 <div class="page-main">
     <div class="page-header justify-content-center">        
@@ -10,5 +11,6 @@
             <p class="ms-2"><b>НА @DateTimeEnd.ToString("dd MMMM")</b></p>
         </div>        
     </div>
-    <TableBackAlarms></TableBackAlarms> 
+    <TableBackAlarms ExpiredAlarmsCount="_expiredAlarmsCount" WorkStations="_workstations"></TableBackAlarms>
+    <BarChart IncomingAlarms="_expiredAlarmsCount?[1][AlarmType.Activation]"/>
 </div>

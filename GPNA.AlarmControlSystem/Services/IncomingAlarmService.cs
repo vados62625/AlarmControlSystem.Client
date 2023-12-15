@@ -5,6 +5,7 @@ using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto;
 using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
 using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
+using GPNA.AlarmControlSystem.Models.Enums;
 using GPNA.RestClient.Models;
 using GPNA.RestClient.Services.Base;
 using Microsoft.AspNetCore.Authorization;
@@ -18,7 +19,8 @@ namespace GPNA.AlarmControlSystem.Services
 
         const string URL = "api/IncomingAlarms";
 
-        public IncomingAlarmService(IAlarmControlSystemApiBroker apiBroker, IHttpContextAccessor httpContextAccessor) : base(apiBroker, URL)
+        public IncomingAlarmService(IAlarmControlSystemApiBroker apiBroker, IHttpContextAccessor httpContextAccessor) :
+            base(apiBroker, URL)
         {
             _apiBroker = apiBroker;
             _httpContextAccessor = httpContextAccessor;
@@ -41,14 +43,25 @@ namespace GPNA.AlarmControlSystem.Services
             return await _apiBroker.Get<CountAlarmsOnPriority[]>($"{URL}/GetCountIncomingAlarmsByPriorities", content);
         }
 
-        public async Task<Result<AlarmsCollection<IncomingAlarmDto[]>>> GetAlarmsPerDate(GetIncomingAlarmsByDatesQuery content)
+        public async Task<Result<AlarmsCollection<IncomingAlarmDto[]>>> GetAlarmsPerDate(
+            GetIncomingAlarmsByDatesQuery content)
         {
-            return await _apiBroker.Get<AlarmsCollection<IncomingAlarmDto[]>>($"{URL}/GetIncomingAlarmsPerDate", content);
+            return await _apiBroker.Get<AlarmsCollection<IncomingAlarmDto[]>>($"{URL}/GetIncomingAlarmsPerDate",
+                content);
         }
 
-        public async Task<Result<Dictionary<DateTimeOffset, IncomingAlarmDto[]>>> GetCountInHour(GetIncomingAlarmsByDatesQuery content)
+        public async Task<Result<Dictionary<DateTimeOffset, IncomingAlarmDto[]>>> GetCountInHour(
+            GetIncomingAlarmsByDatesQuery content)
         {
-            return await _apiBroker.Get<Dictionary<DateTimeOffset, IncomingAlarmDto[]>>($"{URL}/GetCountIncomingAlarmsInHour", content);
+            return await _apiBroker.Get<Dictionary<DateTimeOffset, IncomingAlarmDto[]>>(
+                $"{URL}/GetCountIncomingAlarmsInHour", content);
+        }
+
+        public async Task<Result<Dictionary<int, Dictionary<AlarmType, Dictionary<DateTime, int>>>>>
+            GetExpiredCountInHour(GetExpiredAlarmsByDatesQuery content)
+        {
+            return await _apiBroker.Get<Dictionary<int, Dictionary<AlarmType, Dictionary<DateTime, int>>>>(
+                $"{URL}/GetCountExpiredAlarmsInHour", content);
         }
     }
 }
