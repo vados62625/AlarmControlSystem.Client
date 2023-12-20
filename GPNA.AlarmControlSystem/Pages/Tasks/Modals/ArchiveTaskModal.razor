@@ -1,0 +1,31 @@
+﻿@using GPNA.AlarmControlSystem.Shared.ButtonsModal
+
+<div class="modal-backdrop show"></div>
+
+<div class="tag-table__modal-bg send-alarm">
+	<CloseButton ClickEvent="Cancel"/>
+	<p class="tag-table__modal-title">ОТПРАВИТЬ ЗАДАЧУ В АРХИВ?</p>
+			
+	<p class="align-self-start">Вы уверены, что хотите отправить ЗАДАЧУ №@TaskNumber в архив?</p>						
+	<div class="tag-table__modal-button-container">
+		<SendAlarmButton ClickEvent="SendAndClose"/>
+		<CancelButton ClickEvent="Cancel"/>
+	</div>
+</div>
+
+
+
+@code {
+	[CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;
+	[Parameter] public string? TaskNumber { get; set; }
+	
+	private async void SendAndClose() 
+	{
+		await ModalInstance.CloseAsync(ModalResult.Ok());
+	}
+
+	void Cancel()
+	{
+		ModalInstance.CancelAsync();
+	}
+}

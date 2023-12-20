@@ -118,7 +118,7 @@ public partial class BackAlarms : ComponentBase
                 _expiredAlarmsCount = result.Payload;
             }
             
-            var chartQuery = new GetExpiredAlarmsByDatesQuery { FieldId = FieldId.Value, DateTimeStart = DateTimeEnd.AddDays(-7*12), DateTimeEnd = DateTimeEnd };
+            var chartQuery = new GetExpiredAlarmsByDatesQuery { FieldId = FieldId.Value, DateTimeStart = DateTimeEnd.AddDays(-7 * 12 - 1), DateTimeEnd = DateTimeEnd };
             var chartResult = await IncomingAlarmService.GetExpiredCountPerWeek(chartQuery);
 
             if (chartResult.Success)

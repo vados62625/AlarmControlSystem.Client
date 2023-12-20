@@ -33,19 +33,25 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
         private FieldDto[]? _fields;
         private IDictionary<string, string>? _fieldLinksDictionary;
         private IDictionary<string, string>? _workstationLinksDictionary;
+        
+        private Dictionary<StateType, bool>? _stateFilter;
+        private Dictionary<PriorityType, bool>? _priorityFilter;
 
         private GetTagTasksListQuery _query = new();
 
-        // private List<IncomingAlarmDto>? _tasks;
         private TagTasksCollection? _tasks;
-        private TagTasksCollection? _archive;
         
         private int _pagesCount, _totalCount;
         private int _currentPage = 1;
         
+        private string _orderBy = string.Empty;
+
+        private bool _orderByDesc = true;
+        
         protected override async Task OnInitializedAsync()
         {
             await SetFieldWithWorkstation();
+            InitFilters();
             await SpinnerService.Load(GetTasks);
         }
 
@@ -104,23 +110,28 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
             _query.Page ??= 1;
             _query.Archived = CurrentTab == 1;
             _query.ItemsOnPage = 15;
-            _query.DateTimeEnd = DateTimeOffset.Now;
-            _query.DateTimeStart = DateTimeOffset.Now.AddYears(-10);
+            _query.State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList();
+            _query.Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList();
+            _query.OrderPropertyName = _orderBy;
+            _query.OrderByDescending = _orderByDesc;
+            
             var result = await TagTaskService.GetTagTasksCollection(_query); // TODO I make PageableCollectionDto
 
             if (result.Success)
             {
-                switch (CurrentTab)
-                {
-                    case 0:
-                        _tasks = result.Payload;
-                        _pagesCount = _tasks.PagesCount;
-                        break;
-                    case 1:
-                        _archive = result.Payload;
-                        _pagesCount = _archive.PagesCount;
-                        break;
-                }
+                // switch (CurrentTab)
+                // {
+                //     case 0:
+                //         _tasks = result.Payload;
+                //         _pagesCount = _tasks.PagesCount;
+                //         break;
+                //     case 1:
+                //         _archive = result.Payload;
+                //         _pagesCount = _archive.PagesCount;
+                //         break;
+                // }
+                _tasks = result.Payload;
+                _pagesCount = _tasks.PagesCount;
 
                 StateHasChanged();
             }
@@ -180,16 +191,53 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
 
             await SpinnerService.Load(GetTasks);
         }
+        
+        private void InitFilters()
+        {
+            _stateFilter = Enum.GetValues<StateType>().ToDictionary(c => c, _ => true);
+            _priorityFilter = Enum.GetValues<PriorityType>().ToDictionary(c => c, _ => true);
+        }
+        
+        private async Task ToggleStateFilter(StateType? state)
+        {
+            if (state == default || _stateFilter == default) return;
+
+            _stateFilter[state.Value] = !_stateFilter[state.Value];
+            _currentPage = 1;
+
+            await SpinnerService.Load(GetTasks);
+        }
+
+        private async Task TogglePriorityFilter(PriorityType? priority)
+        {
+            if (priority == default || _priorityFilter == default) return;
+
+            _priorityFilter[priority.Value] = !_priorityFilter[priority.Value];
+            _currentPage = 1;
+
+            await SpinnerService.Load(GetTasks);
+        }
+        
+        private async Task OnOrderingChanged(string orderBy)
+        {
+            if (_orderBy == orderBy) _orderByDesc = !_orderByDesc;
+
+            _orderBy = orderBy;
+            _currentPage = 1;
+
+            await SpinnerService.Load(GetTasks);
+        }
 
         private async Task<Stream?> GetFileStream()
         {
             var result = await ExportService.ExportTagTasks(new ExportTagTasksQuery
             {
                 DocumentType = ExportDocumentType.Excel,
+                Archived = CurrentTab == 1,
                 WorkStationId = WorkstationId ?? 0,
                 Suggest = _query.Suggest,
-                State = _query.State,
-                Priority = _query.Priority,
+                State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
+                Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
             });
 
             return new MemoryStream(result);

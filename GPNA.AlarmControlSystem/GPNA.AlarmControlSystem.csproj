@@ -60,6 +60,7 @@
     <_ContentIncludedByDefault Remove="Pages\TagTable\Components\Modals\CorrectTagModal.razor" />
     <_ContentIncludedByDefault Remove="Pages\TagTable\Components\Modals\DeleteTagModal.razor" />
     <_ContentIncludedByDefault Remove="Pages\TagTable\Components\Modals\EditTagModal.razor" />
+    <_ContentIncludedByDefault Remove="Pages\Tasks\Components\Modals\SendAlarmOnTasksModal.razor" />
   </ItemGroup>
 
   <ItemGroup>

@@ -140,3 +140,8 @@
 .task-table-shift td:last-child {
     text-align: center;
 }
+
+.button-archive.button-modal svg {
+    width: 20px;
+    height: 20px;
+}

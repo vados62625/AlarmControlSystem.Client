@@ -9,10 +9,10 @@
 
 <div class="page-main">
     <div class="page-header">
-        <InputSearch 
+        <InputSearch
             OnChange="Search"
             Placeholder="Поиск по Tag"/>
-        
+
         <div class="d-flex">
             <p>ЗАДАЧИ <b>@_fieldName М/Р</b></p>
             <SelectObject Object="dto" LinksDictionary="_fieldLinksDictionary"/>
@@ -26,61 +26,89 @@
             {
                 <TitleBarButton Title="Фильтрация" FunctionButton="filtration" Action="DropFilters"/>
             }
-            <TitleBarButton Title="Экспорт" FunctionButton="export" Action="DownloadFileFromStream"/>
+            @if (_tasks != null && _tasks.Items.Any())
+            {
+                <TitleBarButton Title="Экспорт" FunctionButton="export" Action="DownloadFileFromStream"/>
+            }
         </div>
 
     </div>
     <div class="d-flex justify-content-between overflow-auto">
         <div class="priority-alarm-container">
-            <PriorityAlarm Title="Всего" Value="_tasks?.TotalCount" Priority="total" />
-            <PriorityAlarm Title="Критичный" Value="_tasks?.CountByPriority?[PriorityType.Urgent]" Priority="critical" />
-            <PriorityAlarm Title="Высокий" Value="_tasks?.CountByPriority?[PriorityType.High]" Priority="high" />
-            <PriorityAlarm Title="Низкий" Value="_tasks?.CountByPriority?[PriorityType.Low]" Priority="low" />
-            <PriorityAlarm Title="Инфо" Value="_tasks?.CountByPriority?[PriorityType.Information]" Priority="info" />
-            <PriorityAlarm Title="Без приоритета" Value="_tasks?.CountByPriority?[PriorityType.None]" Priority="none-priority" />
+            <PriorityAlarm Title="Всего" Value="_tasks?.TotalCount" Priority="total"/>
+            <PriorityAlarm Title="Критичный" Value="_tasks?.CountByPriority?[PriorityType.Urgent]"
+                           OnClick="@(() => TogglePriorityFilter(PriorityType.Urgent))"
+                           IsActive="@(_priorityFilter?[PriorityType.Urgent] ?? false)"
+                           Priority="critical"/>
+            <PriorityAlarm Title="Высокий" Value="_tasks?.CountByPriority?[PriorityType.High]"
+                           OnClick="@(() => TogglePriorityFilter(PriorityType.High))"
+                           IsActive="@(_priorityFilter?[PriorityType.High] ?? false)"
+                           Priority="high"/>
+            <PriorityAlarm Title="Низкий" Value="_tasks?.CountByPriority?[PriorityType.Low]"
+                           OnClick="@(() => TogglePriorityFilter(PriorityType.Low))"
+                           IsActive="@(_priorityFilter?[PriorityType.Low] ?? false)"
+                           Priority="low"/>
+            <PriorityAlarm Title="Инфо" Value="_tasks?.CountByPriority?[PriorityType.Information]"
+                           OnClick="@(() => TogglePriorityFilter(PriorityType.Information))"
+                           IsActive="@(_priorityFilter?[PriorityType.Information] ?? false)"
+                           Priority="info"/>
+            <PriorityAlarm Title="Без приоритета" Value="_tasks?.CountByPriority?[PriorityType.None]"
+                           OnClick="@(() => TogglePriorityFilter(PriorityType.None))"
+                           IsActive="@(_priorityFilter?[PriorityType.None] ?? false)"
+                           Priority="none-priority"/>
         </div>
         <div class="priority-alarm-container">
-            <PriorityAlarm Title="HH" Value="_tasks?.CountByState?[StateType.HH]" Status="hh" />
-            <PriorityAlarm Title="H" Value="_tasks?.CountByState?[StateType.H]" Status="h" />
-            <PriorityAlarm Title="LL" Value="_tasks?.CountByState?[StateType.LL]" Status="ll" />
-            <PriorityAlarm Title="L" Value="_tasks?.CountByState?[StateType.L]" Status="l" />
-            <PriorityAlarm Title="DISCR" Value="_tasks?.CountByState?[StateType.Discr]" Status="discr" />
-            <PriorityAlarm Title="RSHI" Value="_tasks?.CountByState?[StateType.RSHI]" Status="rshi" />
-            <PriorityAlarm Title="RSLO" Value="_tasks?.CountByState?[StateType.RSLO]" Status="rslo" />
-            <PriorityAlarm Title="NoneState" Value="_tasks?.CountByState?[StateType.none]" Status="none-state" />
-            <PriorityAlarm Title="Пожар" StatusActive="@(_tasks?.Fire ?? false ? "active" : "")" Status="fire" />
-            <PriorityAlarm Title="Загазованность" StatusActive="@(_tasks?.Gas ?? false ? "active" : "")" Status="gas" />
+            <PriorityAlarm Title="HH" Value="_tasks?.CountByState?[StateType.HH]"
+                           OnClick="@(() => ToggleStateFilter(StateType.HH))"
+                           IsActive="@(_stateFilter?[StateType.HH] ?? false)"
+                           Status="hh"/>
+            <PriorityAlarm Title="H" Value="_tasks?.CountByState?[StateType.H]"
+                           OnClick="@(() => ToggleStateFilter(StateType.H))"
+                           IsActive="@(_stateFilter?[StateType.H] ?? false)"
+                           Status="h"/>
+            <PriorityAlarm Title="LL" Value="_tasks?.CountByState?[StateType.LL]"
+                           OnClick="@(() => ToggleStateFilter(StateType.LL))"
+                           IsActive="@(_stateFilter?[StateType.LL] ?? false)"
+                           Status="ll"/>
+            <PriorityAlarm Title="L" Value="_tasks?.CountByState?[StateType.L]"
+                           OnClick="@(() => ToggleStateFilter(StateType.L))"
+                           IsActive="@(_stateFilter?[StateType.L] ?? false)"
+                           Status="l"/>
+            <PriorityAlarm Title="DISCR" Value="_tasks?.CountByState?[StateType.Discr]"
+                           OnClick="@(() => ToggleStateFilter(StateType.Discr))"
+                           IsActive="@(_stateFilter?[StateType.Discr] ?? false)"
+                           Status="discr"/>
+            <PriorityAlarm Title="RSHI" Value="_tasks?.CountByState?[StateType.RSHI]"
+                           OnClick="@(() => ToggleStateFilter(StateType.RSHI))"
+                           IsActive="@(_stateFilter?[StateType.RSHI] ?? false)"
+                           Status="rshi"/>
+            <PriorityAlarm Title="RSLO" Value="_tasks?.CountByState?[StateType.RSLO]"
+                           OnClick="@(() => ToggleStateFilter(StateType.RSLO))"
+                           IsActive="@(_stateFilter?[StateType.RSLO] ?? false)"
+                           Status="rslo"/>
+            <PriorityAlarm Title="NoneState" Value="_tasks?.CountByState?[StateType.none]"
+                           OnClick="@(() => ToggleStateFilter(StateType.none))"
+                           IsActive="@(_stateFilter?[StateType.none] ?? false)"
+                           Status="none-state"/>
+            <PriorityAlarm Title="Пожар" StatusActive="@(_tasks?.Fire ?? false ? "active" : "")" Status="fire"/>
+            <PriorityAlarm Title="Загазованность" StatusActive="@(_tasks?.Gas ?? false ? "active" : "")" Status="gas"/>
         </div>
     </div>
     <div style="border-radius: 6px;">
         <div class="d-flex">
-                      @* Count="@(_tasks?.TotalCount ?? 0)" *@
-                      @* Count="@(_archive?.TotalCount ?? 0)" *@
             <ItemTabs Title="Задачи"
                       IsActive="@(CurrentTab == 0)"
-                      Href="@($"/tasks/?currentTab=0&fieldId={FieldId}&workstationId={WorkstationId}")" />
+                      Href="@($"/tasks/?currentTab=0&fieldId={FieldId}&workstationId={WorkstationId}")"/>
             <ItemTabs Title="Архив"
                       IsActive="@(CurrentTab == 1)"
                       Href="@($"/tasks/?currentTab=1&fieldId={FieldId}&workstationId={WorkstationId}")"/>
         </div>
-        @switch (CurrentTab)
-        {
-            case 0:
-            {
-                <TasksTable Tasks="_tasks"
-                                    OnStateFilterChanged="SetStateFilter"
-                                    OnPriorityFilterChanged="SetPriorityFilter"/>
-                break;
-            }
-            case 1:
-            {
-                <TasksTable Tasks="_archive"
-                            OnStateFilterChanged="SetStateFilter"
-                            OnPriorityFilterChanged="SetPriorityFilter"/>
-                break;
-            }
-        }
         
+        <TasksTable Tasks="_tasks"
+                    OnStateFilterChanged="SetStateFilter"
+                    OnPriorityFilterChanged="SetPriorityFilter"
+                    OnOrderingChanged="OnOrderingChanged"/>
+
         <Pagination CurrentPage="_currentPage" PagesCount="_pagesCount" OnPageClick="OnPageChanged"/>
     </div>
 </div>

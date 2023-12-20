@@ -6,12 +6,13 @@
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
 @using GPNA.AlarmControlSystem.Extensions
 @using GPNA.AlarmControlSystem.Models.Dto.TagTask
+@using GPNA.AlarmControlSystem.Pages.Tasks.Modals
 @inject IJSRuntime JSRuntime
 
 @if (Task != null)
 {
-    <tr onclick="@(() => NavigationManager?.NavigateTo($"/tasks/task-number?taskNumber={Task.Number}"))">
-        <td>
+    <tr>
+        <td @onclick="GoToDetails">
             <div class="d-flex gap-2 align-items-center">
                 <svg class="task-table-status-icon">
                     <use href="/img/icons/icons.svg#task-@_taskStatus"></use>
@@ -19,26 +20,31 @@
                 <p class="task-table-status-comment">N/A</p>
             </div>
         </td>
-        <td>@Task.Number</td>
-        <td>@Task.CreatedAt.Date</td>
-        <td>@Task.CreatedAt.LocalDateTime</td>
-        <td>@Task?.Tag?.TagName</td>
-        <td>
+        <td @onclick="GoToDetails">@Task.Number</td>
+        <td @onclick="GoToDetails">@Task.CreatedAt.Date</td>
+        <td @onclick="GoToDetails">@Task.CreatedAt.LocalDateTime</td>
+        <td @onclick="GoToDetails">@Task?.Tag?.TagName</td>
+        <td @onclick="GoToDetails">
             <MonitoringTableStatus
                 Title="@Task?.Tag?.State.GetDescription()"
                 Status="@Task?.Tag?.State"/>
         </td>
-        <td>@Task?.Tag?.Description</td>
-        <td>
+        <td @onclick="GoToDetails">@Task?.Tag?.Description</td>
+        <td @onclick="GoToDetails">
             <MonitoringTableStatus
                 Title="@Task?.Tag?.Priority.GetDescription()"
                 Priority="@Task?.Tag?.Priority"/>
         </td>
-        <td>@Task?.Tag?.AlarmLimit</td>
+        <td @onclick="GoToDetails">@Task?.Tag?.AlarmLimit</td>
         <td>
             @if (Task is {Archived: false })
             {
-                <button class="btn btn-secondary" @onclick="ArchiveTask">В архив</button>
+                <button class="btn button-modal button-archive save" @onclick="ArchiveTask">
+                    <svg>
+                        <use href="/img/icons/icons.svg#archive"></use>
+                    </svg>
+                    В архив
+                </button>
             }
         </td>
     </tr>
@@ -55,25 +61,45 @@
 
 @code
 {
-    [Inject] ITagTaskService TagTaskService { get; set; } = null!;
-    [Inject] NavigationManager? NavigationManager { get; set; }
+    [Inject]
+    ITagTaskService TagTaskService { get; set; } = null!;
+
+    [Inject]
+    NavigationManager? NavigationManager { get; set; }
+
+    [CascadingParameter]
+    public IModalService Modal { get; set; } = default!;
 
     [Parameter]
     public TagTaskDto? Task { get; set; }
+
     private string? _taskStatus = "new";
 
     protected override void OnInitialized()
     {
-       
+    }
+
+    private void GoToDetails()
+    {
+        NavigationManager?.NavigateTo($"/tasks/task-number?taskNumber={Task.Number}");
     }
 
     private async Task ArchiveTask()
     {
-        var result = await TagTaskService.UpdateTagTask(new UpdateTagTaskCommand { Id = Task!.Id, Archived = true });
-
-        if (result.Success)
+        if (Task is {Archived: false })
         {
-            NavigationManager?.NavigateTo($"/tasks/");
+            var parameters = new ModalParameters { { "TaskNumber", Task.Number.ToString() } };
+            var modal = Modal.Show<ArchiveTaskModal>("", parameters);
+            var modalResult = await modal.Result;
+            if (modalResult.Confirmed)
+            {
+                var result = await TagTaskService.UpdateTagTask(new UpdateTagTaskCommand { Id = Task!.Id, Archived = true });
+
+                if (result.Success)
+                {
+                    NavigationManager?.NavigateTo($"/tasks/");
+                }
+            }
         }
     }
 }
