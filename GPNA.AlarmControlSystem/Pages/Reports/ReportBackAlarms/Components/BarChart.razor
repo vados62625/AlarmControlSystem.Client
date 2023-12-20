@@ -3,12 +3,14 @@
 @using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
 @inject IJSRuntime JSRuntime
 
-<canvas id="@Id"></canvas>
+<div style="height: 450px">
+    <canvas id="@Id"></canvas>
+</div>
 
 @code {
 
     [Parameter]
-    public Dictionary<DateTime, int>? IncomingAlarms { get; set; }
+    public Dictionary<DateTime, int>? ExpiredAlarms { get; set; }
 
     [Parameter]
     public string? Id { get; set; } = "bar-chart";
@@ -26,26 +28,66 @@
 
     protected async Task DrawChart()
     {
-        if (IncomingAlarms is {Count: > 0 })
+        if (ExpiredAlarms is {Count: > 0 })
         {
-            var numTime = IncomingAlarms.Select(kvPair => $"{kvPair.Key:M} {kvPair.Key:t}");
+            var numTime = ExpiredAlarms.Select(kvPair => $"{kvPair.Key:M} {kvPair.Key:t}");
 
             var datasets = new[] { "value", "positiveDifference", "negativeDifference" };
 
-            var armCount = datasets.ToDictionary(
-                key => key,
-                key =>
+    // var armCount = datasets.ToDictionary(
+    //     key => key,
+    //     key =>
+    //     {
+    //         return key switch
+    //         {
+    //             "value" =>
+    //                 ExpiredAlarms.Where(c => c.Key.Date >= DateTime.Now.Date.AddDays(-8)).Select(kvPair => kvPair.Value).ToArray(),
+    //             "positiveDifference" => 
+    //                 ExpiredAlarms.Where(c => c.Key.Date < DateTime.Now.Date.AddDays(-8)).Select(kvPair => kvPair.Value).ToArray(),
+    //             "negativeDifference" =>
+    //                 ExpiredAlarms.Where(c => c.Key.Date < DateTime.Now.Date.AddDays(-8)).Select(kvPair => kvPair.Value).ToArray(),
+    //             _ => throw new ArgumentOutOfRangeException(nameof(key), key, null)};
+    //     });
+    //
+    // for (var i = 0; i < armCount.First().Value.Count(); i++)
+    // {
+    //     var negative = armCount["value"][i] - armCount["positiveDifference"][i] >= 0;
+    //
+    //     
+    //     if (negative)
+    //     {
+    //         armCount["value"][i] -= armCount["positiveDifference"][i];
+    //         armCount["positiveDifference"][i] = 0;
+    //     }
+    //     else
+    //     {
+    //         armCount["negativeDifference"][i] = 0;
+    //     }
+    // }
+
+            var armCount = datasets.ToDictionary(c => c, _ => new int[ExpiredAlarms.Values.Count]);
+
+            armCount["value"] = ExpiredAlarms.Select(c => c.Value).ToArray();
+            
+            armCount["positiveDifference"][0] = 0;
+            armCount["negativeDifference"][0] = 0;
+            
+            for (var i = 1; i < armCount.First().Value.Length; i++)
+            {
+                var difference = armCount["value"][i] - (armCount["value"][i - 1] + armCount["negativeDifference"][i - 1]);
+
+                if (difference > 0)
                 {
-                    return key switch
-                    {
-                        "value" =>
-                            IncomingAlarms.Where(c => c.Key.Date >= DateTime.Now.Date.AddDays(-8)).Select(kvPair => kvPair.Value),
-                        "positiveDifference" => 
-                            IncomingAlarms.Where(c => c.Key.Date < DateTime.Now.Date.AddDays(-8)).Select(kvPair => kvPair.Value),
-                        "negativeDifference" =>
-                            IncomingAlarms.Where(c => c.Key.Date < DateTime.Now.Date.AddDays(-8)).Select(kvPair => kvPair.Value),
-                        _ => throw new ArgumentOutOfRangeException(nameof(key), key, null)};
-                });
+                    armCount["value"][i] -= difference;
+                    armCount["negativeDifference"][i] = difference;
+                    armCount["positiveDifference"][i] = 0;
+                }
+                else
+                {
+                    armCount["negativeDifference"][i] = 0;
+                    armCount["positiveDifference"][i] = difference;
+                }
+            }
 
             var config = new
             {
@@ -60,6 +102,7 @@
     //     Mode = "index"
     // },
                     responsive = true,
+                    maintainAspectRatio = false,
                     interaction = new
                     {
                         intersect = false,

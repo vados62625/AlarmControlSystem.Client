@@ -10,7 +10,7 @@ public class UpdateTagTaskCommand
     /// <summary>
     /// В архив
     /// </summary>
-    public bool? IsArchived { get; set; }
+    public bool? Archived { get; set; }
 
     /// <summary>
     /// Добавить пользователей

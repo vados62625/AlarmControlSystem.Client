@@ -63,5 +63,12 @@ namespace GPNA.AlarmControlSystem.Services
             return await _apiBroker.Get<Dictionary<int, Dictionary<AlarmType, Dictionary<DateTime, int>>>>(
                 $"{URL}/GetCountExpiredAlarmsInHour", content);
         }
+        
+        public async Task<Result<Dictionary<int, Dictionary<AlarmType, Dictionary<DateTime, int>>>>>
+            GetExpiredCountPerWeek(GetExpiredAlarmsByDatesQuery content)
+        {
+            return await _apiBroker.Get<Dictionary<int, Dictionary<AlarmType, Dictionary<DateTime, int>>>>(
+                $"{URL}/GetCountExpiredAlarmsPerWeek", content);
+        }
     }
 }

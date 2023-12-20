@@ -40,6 +40,8 @@ public partial class BackAlarms : ComponentBase
     private WorkStationDto[]? _workstations;
 
     private Dictionary<int, Dictionary<AlarmType, Dictionary<DateTime, int>>>? _expiredAlarmsCount;
+    
+    private Dictionary<int, Dictionary<AlarmType, Dictionary<DateTime, int>>>? _expiredAlarmsCountChart;
 
     private IDictionary<string, string>? WorkstationLinksDictionary { get; set; }
 
@@ -114,6 +116,14 @@ public partial class BackAlarms : ComponentBase
             if (result.Success)
             {
                 _expiredAlarmsCount = result.Payload;
+            }
+            
+            var chartQuery = new GetExpiredAlarmsByDatesQuery { FieldId = FieldId.Value, DateTimeStart = DateTimeEnd.AddDays(-7*12), DateTimeEnd = DateTimeEnd };
+            var chartResult = await IncomingAlarmService.GetExpiredCountPerWeek(chartQuery);
+
+            if (chartResult.Success)
+            {
+                _expiredAlarmsCountChart = chartResult.Payload;
             }
         }
     }

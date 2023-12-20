@@ -16,13 +16,16 @@ else
         <p class="tabs-title">
             @Title
         </p>
-        <span class="tabs-item-count">@Count</span>
+        @if (Count.HasValue)
+        {
+            <span class="tabs-item-count">@Count</span>
+        }
     </div>
 }
 
 @code {
     [Parameter] public string? Title { get; set; }
-    [Parameter] public int Count { get; set; }
+    [Parameter] public int? Count { get; set; }
     [Parameter] public bool IsActive { get; set; }
     [Parameter] public string Href { get; set; } = string.Empty;
 

@@ -49,6 +49,11 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
             await SpinnerService.Load(GetTasks);
         }
 
+        protected override async Task OnParametersSetAsync()
+        {
+            await GetTasks();
+        }
+
         private async Task SetFieldWithWorkstation()
         {
             if (FieldService != null)
@@ -97,7 +102,7 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
         {
             _query.WorkStationId = WorkstationId ?? 1;
             _query.Page ??= 1;
-            _query.IsArchived = CurrentTab == 0;
+            _query.Archived = CurrentTab == 1;
             _query.ItemsOnPage = 15;
             _query.DateTimeEnd = DateTimeOffset.Now;
             _query.DateTimeStart = DateTimeOffset.Now.AddYears(-10);
@@ -170,7 +175,7 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
             _query = new GetTagTasksListQuery()
             {
                 Page = 1,
-                IsArchived = true
+                Archived = true
             };
 
             await SpinnerService.Load(GetTasks);

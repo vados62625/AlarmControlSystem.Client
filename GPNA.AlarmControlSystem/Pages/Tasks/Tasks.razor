@@ -54,12 +54,12 @@
     </div>
     <div style="border-radius: 6px;">
         <div class="d-flex">
+                      @* Count="@(_tasks?.TotalCount ?? 0)" *@
+                      @* Count="@(_archive?.TotalCount ?? 0)" *@
             <ItemTabs Title="Задачи"
-                      Count="@(_tasks?.TotalCount ?? 0)"
                       IsActive="@(CurrentTab == 0)"
                       Href="@($"/tasks/?currentTab=0&fieldId={FieldId}&workstationId={WorkstationId}")" />
             <ItemTabs Title="Архив"
-                      Count="@(_archive?.TotalCount ?? 0)"
                       IsActive="@(CurrentTab == 1)"
                       Href="@($"/tasks/?currentTab=1&fieldId={FieldId}&workstationId={WorkstationId}")"/>
         </div>

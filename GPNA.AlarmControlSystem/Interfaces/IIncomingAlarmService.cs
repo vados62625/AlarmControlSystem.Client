@@ -21,5 +21,8 @@ namespace GPNA.AlarmControlSystem.Interfaces
         
         Task<Result<Dictionary<int, Dictionary<AlarmType, Dictionary<DateTime, int>>>>> GetExpiredCountInHour(
             GetExpiredAlarmsByDatesQuery content);
+        
+        Task<Result<Dictionary<int, Dictionary<AlarmType, Dictionary<DateTime, int>>>>> GetExpiredCountPerWeek(
+            GetExpiredAlarmsByDatesQuery content);
     }
 }

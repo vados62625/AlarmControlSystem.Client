@@ -8,7 +8,7 @@ namespace GPNA.AlarmControlSystem.Models.Dto.TagTask
         /// <summary>
         /// В архиве
         /// </summary>
-        public bool IsArchived { get; set; }
+        public bool Archived { get; set; }
 
         /// <summary>
         /// Состояние
