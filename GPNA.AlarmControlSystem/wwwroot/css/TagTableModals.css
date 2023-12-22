@@ -25,7 +25,6 @@
 
     .tag-table__modal-bg.correct {
         width: 1250px;
-        height: 772px;
     }
     .tag-table__modal-bg.delete, .tag-table__modal-bg.send-alarm {
         width: 371px;        
@@ -186,7 +185,6 @@
 
 .tag-table__modal-info {
     width: 595px;
-    min-height: 244px;
     padding: 12px 20px;
     border-radius: 10px;
     display: flex;

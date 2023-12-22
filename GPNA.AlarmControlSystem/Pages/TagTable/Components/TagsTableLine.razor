@@ -10,10 +10,13 @@
     <td @onclick="ShowMoreAttributes">                
         <div class="tag-table-indicator @Tag.Validate.ToString()"></div>                               
     </td>           
-    <td @onclick="ShowMoreAttributes">@Tag.TagName</td>           
+    <td @onclick="ShowMoreAttributes">
+        @Tag.TagName
+    </td>           
     <td @onclick="ShowMoreAttributes">
         <div class=" d-flex gap-2 align-items-center">
-            @if (_attentionDescription) {                    
+            @if (Tag.ModelState.TryGetValue("Description", out var errorDesc)) 
+            {                    
                 <svg class="tag-table-icon-attention">
                     <use href="/img/icons/icons.svg#tag-table-attention"></use>
                 </svg>                        
@@ -22,7 +25,7 @@
         </div>                                
     </td>
     <td @onclick="ShowMoreAttributes">
-        @if (_attentionPriority)
+        @if (Tag.ModelState.TryGetValue("Priority", out var errorPriority))
         {
             <div class="position-relative">
                 <div class="tag-table-container-attention priority">
@@ -35,7 +38,7 @@
         <MonitoringTableStatus Title="@Tag.Priority.GetDescription()" Priority="@Tag.Priority"/>
     </td>
     <td @onclick="ShowMoreAttributes">
-        @if (_attentionSetting) {
+        @if (Tag.ModelState.TryGetValue("AlarmLimit", out var errorAlarmLimit)) {
             <div class="position-relative">
             <div class="tag-table-container-attention">
                 <svg class="tag-table-icon-attention">
@@ -47,7 +50,7 @@
         <p>@(Tag.AlarmLimit ?? "N/A")</p>                
     </td>
     <td @onclick="ShowMoreAttributes">
-        <svg class="tag-table-icon-reglament @_reglamentColor">
+        <svg class="tag-table-icon-reglament @(_attentionReglament ? "red" : "")">
             <use href="/img/icons/icons.svg#tag-table-reglament"></use>
         </svg>
     </td>
@@ -58,17 +61,16 @@
                     <use href="/img/icons/icons.svg#tag-table-edit"></use>
                 </svg>
             </button>
-            <button class="tag-table-button-modal">
-                <svg>
-                    <use href="/img/icons/icons.svg#tag-table-correct"></use>
-                </svg>
-            </button>
+            @* <button class="tag-table-button-modal"> *@
+            @*     <svg> *@
+            @*         <use href="/img/icons/icons.svg#tag-table-correct"></use> *@
+            @*     </svg> *@
+            @* </button> *@
             <button class="tag-table-button-modal" @onclick="DeleteTag">
                 <svg>
                     <use href="/img/icons/icons.svg#tag-table-delete"></use>
                 </svg>
             </button>
-                    
         </div>
     </td>
 </tr>
@@ -91,10 +93,7 @@
     [Parameter] public TagDto Tag { get; set; } = new TagDto();
     [Parameter] public EventCallback<TagDto> OnTagDeleted { get; set; }
     
-    private string? _reglamentColor;
-    private bool _attentionDescription = false;
-    private bool _attentionPriority = false;
-    private bool _attentionSetting = false;
+   private bool _attentionReglament = false;
 
     bool _displayComment = false;
 
@@ -102,12 +101,26 @@
     {
         _displayComment = !_displayComment;
     }
-    
+
+    protected override void OnParametersSet()
+    {
+        if (Tag.ModelState.Count > 0)
+        {
+            foreach (var obj in Tag.ModelState)
+            {
+                if (obj.Key is "Position" or "Consequence" or "ActionFieldOperator" or "ActionArmOperator" or "Inform" or "ReactionTime")
+                {
+                    _attentionReglament = true;
+                }
+            }
+        }
+    }
+
     private async Task EditTag()
     {
         var parameters = new ModalParameters { { "Tag", Tag } };
 
-        var updateModal = Modal.Show<EditTagModal>("", parameters);
+        var updateModal = Modal.Show<CorrectTagModal>("", parameters);
         var result = await updateModal.Result;
 
         if (result.Confirmed && result.Data!=null)

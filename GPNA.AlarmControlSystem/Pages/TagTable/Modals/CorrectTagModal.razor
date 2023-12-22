@@ -1,104 +1,199 @@
 ﻿@using GPNA.AlarmControlSystem.Shared.ButtonsModal
+@using GPNA.AlarmControlSystem.Services
+@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.Tag
+@using GPNA.AlarmControlSystem.Models.Enums
+@using GPNA.AlarmControlSystem.Pages.TagTable.Components
+@using GPNA.AlarmControlSystem.Extensions
 
-@if (displayCorrectTagModal)
-{
+<EditForm Model="@_command" OnValidSubmit="HandleValidSubmit">
+	<DataAnnotationsValidator />
 	<div class="modal-backdrop show"></div>
-
 	<div class="tag-table__modal-bg correct">
-		<CloseButton ClickEvent="ClickCloseTag"></CloseButton>			
-			<p class="tag-table__modal-title">ЗАПРОС НА КОРРЕКТИРОВКИ</p>
-			<div class="w-100 h-100 p-0 d-flex flex-column gap-2 justify-content-between">
-				<div class="d-flex flex-column gap-2 align-items-end">
-					<div class="d-flex gap-3 justify-content-end">
-						<div class="tag-table__modal-item-container">
-							<p>ФИО</p>
-							<div class="tag-table__modal-custom-select">
-								<select class="tag-table__modal-item-select small" onchange="this.style.color='#002033'">
-									<option disabled selected hidden>Выберите получателя</option>
-									<option>Получатель 1</option>
-									<option>Получатель 2</option>
-									<option>Получатель 3</option>
-								</select>
-							</div>						
+		<CloseButton ClickEvent="Cancel"/>			
+		<p class="tag-table__modal-title">Окно редактирования TAGA</p>
+		<div class="w-100 h-100 p-0 d-flex flex-column gap-2 justify-content-between">
+			<div class="d-flex justify-content-between">	
+				<div class="tag-table__modal-info">
+					<p class="tag-table__modal-title">Регламентная информация</p>
+					<div class="w-100 h-100 p-0 d-flex flex-column gap-2 justify-content-between">
+						<div class="d-flex justify-content-between">
+							<div class="tag-table__modal-item-container">
+								<p>TagName</p>
+								<input class="tag-table__modal-item-input smaller" type="text" @bind="@_command.TagName">
+							</div>
+							<div class="tag-table__modal-item-container @(Tag.ModelState.TryGetValue("State", out var errorState) ? "red" : "")">
+								<p>Состояние</p>
+								<div class="tag-table__modal-custom-select">
+									<select class="tag-table__modal-item-select" style="color:rgba(0, 32, 51, 0.25)" @bind="_command.State">
+										<option disabled selected hidden>Выберите состояние</option>
+										@foreach (StateType stateType in Enum.GetValues(typeof(StateType)))
+										{
+											<option value="@stateType">@stateType.GetDescription()</option>
+										}
+									</select>
+								</div>
+							</div>
 						</div>
-						<div class="tag-table__modal-item-container">
-							<p>Должность</p>
-							<input class="tag-table__modal-item-input small" type="text" placeholder="Подставится автоматически" readonly>
+						<div class="d-flex justify-content-between">
+							<div class="tag-table__modal-item-container @(Tag.ModelState.TryGetValue("Priority", out var errorPriority) ? "red" : "")">
+								<p>Приоритет</p>
+								<div class="tag-table__modal-custom-select">
+									<select class="tag-table__modal-item-select" style="color:rgba(0, 32, 51, 0.25)" @bind="_command.Priority">
+										<option disabled selected hidden>Выберите приоритет</option>
+										@foreach (PriorityType priority in Enum.GetValues(typeof(PriorityType)))
+										{
+											<option value="@priority">@priority.GetDescription()</option>
+										}
+									</select>
+								</div>
+							</div>
+							<div class="tag-table__modal-item-container @(Tag.ModelState.TryGetValue("AlarmLimit", out var errorAlarmLimit) ? "red" : "")">
+								<p>Уставка</p>
+								<input class="tag-table__modal-item-input small" type="text" placeholder="Введите уставку" @bind="@_command.AlarmLimit">
+							</div>
 						</div>
-					</div>					
-					<button class="button-adressee-add">
-						<svg>
-							<use href="/img/icons/icons.svg#tag-modal-add"></use>
-						</svg>
-						<p>Добавить</p>
-					</button>					
-				</div>
-				<div class="tag-table__modal-item-container">
-					<p>Тело письма</p>
-					<input class="tag-table__modal-item-input" type="text" placeholder="Введите тело письма">
-				</div>
-				<div class="d-flex justify-content-between">
-					<CorrectTagInfoComponent Title="Текущая информация" MeaningDifferentStyle="red"></CorrectTagInfoComponent>
-					<CorrectTagInfoComponent Title="Корректная информация"></CorrectTagInfoComponent>					
-				</div>
-				<div class="tag-table__modal-info big">
-					<p class="tag-table__modal-title">РЕГЛАМЕНТ</p>
-					<div class="d-flex justify-content-between gap-5">
-						<div class="d-flex flex-column gap-2 justify-content-between">
-							<div class="tag-table__modal-item-container">
-								<p>Потенциальные последствия</p>
-							<textarea class="tag-table__modal-item-textarea big" type="text" placeholder="Введите потенциальные последствия"></textarea>
-							</div>
-							<div class="tag-table__modal-item-container">
-								<p>Условия усиления</p>
-							<textarea class="tag-table__modal-item-textarea big" type="text" placeholder="Введите условия усиления"></textarea>
-							</div>
-							<div class="tag-table__modal-item-container">
-								<p>Время на реакцию</p>
-							<input class="tag-table__modal-item-input big" type="text" placeholder="Введите время на реакцию">
-							</div>
-
-						</div>
-						<div class="d-flex flex-column gap-2 justify-content-start">
-							<div class="tag-table__modal-item-container @MeaningDifferentStyle">
-								<p>Действия Полевого оператора</p>
-							<textarea class="tag-table__modal-item-textarea big" type="text" placeholder="Введите действия полевого оператора"></textarea>
-							</div>
-							<div class="tag-table__modal-item-container">
-								<p>Действия оператора АРМ</p>
-							<textarea class="tag-table__modal-item-textarea big" type="text" placeholder="Введите действия оператора АРМ"></textarea>
-							</div>
+						<div class="tag-table__modal-item-container @(Tag.ModelState.TryGetValue("Description", out var errorDescription) ? "red" : "")">
+							<p>Описание</p>
+							<input class="tag-table__modal-item-input" type="text" placeholder="Введите описание" @bind="@_command.Description">
 						</div>
 					</div>
-				</div>				
-				<div class="tag-table__modal-button-container">					
-					<SendButton ClickEvent="ClickSaveTag"></SendButton>
-					<CancelButton ClickEvent="ClickCloseTag"></CancelButton>					
-				</div>			
+				</div>
+				<div class="tag-table__modal-info">
+					<p class="tag-table__modal-title">ИНФОРМАЦИЯ С ПОЛЯ</p>
+					<div class="w-100 h-100 p-0 d-flex flex-column gap-2 justify-content-between">
+						<div class="d-flex justify-content-between">
+							<div class="tag-table__modal-item-container">
+								<p>TagName</p>
+								<input class="tag-table__modal-item-input smaller" 
+								       value="@(Tag.LastBufferAlarm?.TagName ?? "")" 
+								       readonly>
+							</div>
+							<div class="tag-table__modal-item-container">
+								<p>Состояние</p>
+								<input class="tag-table__modal-item-input smaller"
+								       value="@(Tag.LastBufferAlarm?.State.GetDescription() ?? "")" 
+								       readonly>
+							</div>
+						</div>
+						<div class="d-flex justify-content-between">
+							<div class="tag-table__modal-item-container">
+								<p>Приоритет</p>
+								<input class="tag-table__modal-item-input smaller" 
+								       value="@(Tag.LastBufferAlarm?.Priority.GetDescription() ?? "")"
+								       readonly>
+							</div>
+							<div class="tag-table__modal-item-container">
+								<p>Уставка</p>
+								<input class="tag-table__modal-item-input small" 
+								       value="@(Tag.LastBufferAlarm?.AlarmLimit ?? "")"
+								       readonly>
+							</div>
+						</div>
+						<div class="tag-table__modal-item-container">
+							<p>Описание</p>
+							<input class="tag-table__modal-item-input" 
+							       value="@Tag.LastBufferAlarm?.Description"
+							       readonly>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="tag-table__modal-info big">
+				<p class="tag-table__modal-title">РЕГЛАМЕНТ</p>
+				<div class="d-flex justify-content-between gap-5">
+					<div class="d-flex flex-column gap-2 justify-content-between">
+						<div class="tag-table__modal-item-container @(Tag.ModelState.TryGetValue("Position", out var errorPosition) ? "red" : "")">
+							<p>Позиция по ГП</p>
+							<input class="tag-table__modal-item-input big" @bind="_command.Position">
+						</div>
+						<div class="tag-table__modal-item-container @(Tag.ModelState.TryGetValue("Consequence", out var errorConsequence) ? "red" : "")">
+							<p>Потенциальные последствия</p>
+							<textarea class="tag-table__modal-item-textarea big" type="text" @bind="_command.Consequence" placeholder="Введите потенциальные последствия"></textarea>
+						</div>
+						<div class="tag-table__modal-item-container @(Tag.ModelState.TryGetValue("Inform", out var errorInform) ? "red" : "")">
+							<p>Условия усиления</p>
+							<textarea class="tag-table__modal-item-textarea big" type="text" @bind="_command.Inform" placeholder="Введите условия усиления"></textarea>
+						</div>
+						<div class="tag-table__modal-item-container @(Tag.ModelState.TryGetValue("ReactionTime", out var errorReactionTime) ? "red" : "")">
+							<p>Время на реакцию</p>
+							<input class="tag-table__modal-item-input big" type="text" @bind="_command.ReactionTime" placeholder="Введите время на реакцию">
+						</div>
+					</div>
+					<div class="d-flex flex-column gap-2 justify-content-start">
+						<div class="tag-table__modal-item-container @(Tag.ModelState.TryGetValue("Unit", out var errorUnit) ? "red" : "")">
+							<p>Единицы измерения</p>
+							<input class="tag-table__modal-item-input big" @bind="_command.Unit">
+						</div>
+						<div class="tag-table__modal-item-container @(Tag.ModelState.TryGetValue("ActionFieldOperator", out var errorActionFieldOperator) ? "red" : "")">
+							<p>Действия Полевого оператора</p>
+							<textarea class="tag-table__modal-item-textarea big" type="text" @bind="_command.ActionFieldOperator" placeholder="Введите действия полевого оператора"></textarea>
+						</div>
+						<div class="tag-table__modal-item-container @(Tag.ModelState.TryGetValue("ActionArmOperator", out var errorActionArmOperator) ? "red" : "")">
+							<p>Действия оператора АРМ</p>
+							<textarea class="tag-table__modal-item-textarea big" type="text" @bind="_command.ActionArmOperator" placeholder="Введите действия оператора АРМ"></textarea>
+						</div>
+					</div>
+				</div>
+			</div>				
+			<div class="tag-table__modal-button-container">					
+				<SaveButton/>
+				<CancelButton ClickEvent="Cancel"/>					
+			</div>			
 		</div>
-	</div>		
-	
-}
-
+	</div> 
+	@if (!string.IsNullOrEmpty(_error)) {
+		<div class="alert alert-danger mt-3 mb-0">@_error</div>
+	}
+</EditForm>
 
 @code {
-	[Parameter] public string? MeaningDifferentStyle { get; set; } = "red";
+	[CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;
+	
+	[Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
+	[Inject] protected ITagService TagService { get; set; } = default!;
+	
+	[Parameter] public TagDto Tag { get; set; } = new TagDto();
 
-	bool displayCorrectTagModal = false;
+	private UpdateTagCommand _command = new();
+	private string _error  = "";
 
-	[Parameter] public EventCallback SaveTag { get; set; }
-	[Parameter] public EventCallback CloseTag { get; set; }	
-
-	public void Show() => displayCorrectTagModal = true;
-	public void Hide() => displayCorrectTagModal = false;
-
-	private async Task ClickSaveTag()
+	protected override void OnInitialized()
 	{
-		displayCorrectTagModal = false;
+		_command = new UpdateTagCommand()
+		{
+			WorkStationId = Tag.WorkStationId,
+			Id = Tag.Id,
+			Position = Tag.Position,
+			TagName = Tag.TagName,
+			Description = Tag.Description,
+			Unit = Tag.Unit,
+			State = Tag.State,
+			Priority = Tag.Priority,
+			AlarmLimit = Tag.AlarmLimit,
+			Scale = Tag.Scale,
+			Consequence = Tag.Consequence,
+			ActionFieldOperator = Tag.ActionFieldOperator,
+			ActionArmOperator = Tag.ActionArmOperator,
+			Inform = Tag.Inform,
+			ReactionTime = Tag.ReactionTime,
+			Validate = Tag.Validate
+		};
+	}
+	
+	private async void HandleValidSubmit() 
+	{
+		SpinnerService.Show();
+		var updatedTag = Tag.Id == default ? await TagService.Create(_command) : await TagService.Update(_command);
+		SpinnerService.Hide(); 
+		if (updatedTag.Success)
+		{
+			await ModalInstance.CloseAsync(ModalResult.Ok(updatedTag.Payload));
+		}
 	}
 
-	private async Task ClickCloseTag()
+	void Cancel()
 	{
-		displayCorrectTagModal = false;
+		ModalInstance.CancelAsync();
 	}
 }

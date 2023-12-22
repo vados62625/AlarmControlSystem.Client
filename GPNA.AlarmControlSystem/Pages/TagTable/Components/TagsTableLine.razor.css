@@ -69,8 +69,8 @@
 }
 
     .tag-table-indicator.NewTag {
-        background: #B0C1CB;
-        border-color: #B0C1CB;
+        background: rgba(186, 143, 219, 1);
+        border-color: rgba(186, 143, 219, 1);
     }
 
     .tag-table-indicator.Valid {

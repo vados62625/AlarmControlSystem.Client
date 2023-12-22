@@ -25,7 +25,15 @@
 			<div class="d-flex justify-content-between">
 				<div class="tag-table__modal-item-container">
 					<p>Состояние</p>
-					<input class="tag-table__modal-item-input small" type="text" @bind="@_command.State" readonly="@(Tag.Id != default)">
+					<div class="tag-table__modal-custom-select">
+						<select class="tag-table__modal-item-select" style="color:rgba(0, 32, 51, 0.25)" @bind="_command.State">
+							<option disabled selected hidden>Выберите состояние</option>
+							@foreach (StateType stateType in Enum.GetValues(typeof(StateType)))
+							{
+								<option value="@stateType">@stateType.GetDescription()</option>
+							}
+						</select>
+					</div>
 				</div>
 				<div class="tag-table__modal-item-container">
 					<p>Приоритет</p>

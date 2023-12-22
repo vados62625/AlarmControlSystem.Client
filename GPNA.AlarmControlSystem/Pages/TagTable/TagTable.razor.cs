@@ -38,7 +38,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
         private GetTagsListQuery _query = new();
         private TagsCollection _tags = new();
 
-        protected override async Task OnInitializedAsync()
+        protected override async Task OnParametersSetAsync()
         {
             await SetFieldWithWorkstation();
             await SpinnerService.Load(GetTags);
