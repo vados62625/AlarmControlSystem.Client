@@ -428,10 +428,10 @@ public partial class Monitoring : ComponentBase
 
         var fileStream = AlarmType switch
         {
-            (int)Models.Enums.AlarmType.Incoming => await GetIncomingExportStream(),
-            (int)Models.Enums.AlarmType.Activation => await GetActiveExportStream(),
-            (int)Models.Enums.AlarmType.Imitation => await GetImitatedExportStream(),
-            (int)Models.Enums.AlarmType.Suppression => await GetSuppressedExportStream(),
+            (int)Models.Enums.AlarmTypeEnum.Incoming => await GetIncomingExportStream(),
+            (int)Models.Enums.AlarmTypeEnum.Active => await GetActiveExportStream(),
+            (int)Models.Enums.AlarmTypeEnum.Simulation => await GetImitatedExportStream(),
+            (int)Models.Enums.AlarmTypeEnum.Suppressed => await GetSuppressedExportStream(),
             _ => default
         };
 
