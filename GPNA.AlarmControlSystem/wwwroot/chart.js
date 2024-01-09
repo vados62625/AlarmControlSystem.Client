@@ -163,20 +163,25 @@ window.setupBarChart = (id, config) => {
         config.options.scales.y = {min: 0};
         config.options.plugins.tooltip = {
             callbacks: {
-                label: function (tooltipItem, data) {
+                // label: function (tooltipItem, data) {
+                label: function (context) {
+                    let data = config.data;
+                    
+                    let tooltipItem = context;
+                    
                     var corporation = data.datasets[tooltipItem.datasetIndex].label;
-                    var valor = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                    var valor = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.dataIndex];
 
                     // Loop through all datasets to get the actual total of the index
                     var total = 0;
                     for (var i = 0; i < data.datasets.length; i++)
-                        total += data.datasets[i].data[tooltipItem.index];
+                        total += data.datasets[i].data[tooltipItem.dataIndex];
 
                     // If it is not the last dataset, you display it as you usually do
                     if (tooltipItem.datasetIndex != data.datasets.length - 1) {
-                        return corporation + " : $" + valor.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+                        return corporation + " : " + valor.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
                     } else { // .. else, you display the dataset and the total, using an array
-                        return [corporation + " : $" + valor.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'), "Total : $" + total];
+                        return [corporation + " : " + valor.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'), "Количество :" + total];
                     }
                 }
             }

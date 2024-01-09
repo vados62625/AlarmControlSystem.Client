@@ -45,6 +45,8 @@ public partial class BackAlarms : ComponentBase
 
     private IDictionary<string, string>? WorkstationLinksDictionary { get; set; }
 
+    private bool _isEnableRenderChart;
+
     protected override async Task OnInitializedAsync()
     {
         SpinnerService.Show();
@@ -60,9 +62,15 @@ public partial class BackAlarms : ComponentBase
     {
         await GetWorkstations();
         
-        await GetExpiredAlarmsCount();
+        _isEnableRenderChart = true;
+        
+        await SpinnerService.Load(GetExpiredAlarmsCount);
 
         FillWorkstationLinks();
+        
+        StateHasChanged();
+        await Task.Delay(100);
+        _isEnableRenderChart = false;
     }
 
 
