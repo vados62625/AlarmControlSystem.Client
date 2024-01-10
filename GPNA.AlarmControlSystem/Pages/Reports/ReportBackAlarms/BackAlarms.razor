@@ -2,6 +2,7 @@
 
 @using GPNA.AlarmControlSystem.Pages.Reports.ReportBackAlarms.Components;
 @using GPNA.AlarmControlSystem.Models.Enums
+@using GPNA.AlarmControlSystem.Extensions
 
 <div class="page-main">
     <div class="page-header justify-content-center">        
@@ -9,8 +10,12 @@
             <p>ОТЧЕТ О КОЛИЧЕСТВЕ ПРОСРОЧЕННЫХ СИГНАЛИЗАЦИЙ  <b>@(_fields?.FirstOrDefault(f => f.Id == FieldId)?.Name ?? "N/A") М/Р</b></p>
             <SelectObject Object="dto" LinksDictionary="WorkstationLinksDictionary"/>
             <p class="ms-2"><b>НА @DateTimeEnd.ToString("dd MMMM")</b></p>
-        </div>        
+        </div>
     </div>
     <TableBackAlarms ExpiredAlarmsCount="_expiredAlarmsCount" WorkStations="_workstations"></TableBackAlarms>
-    <BarChart IsEnableRenderChart="_isEnableRenderChart" FieldId="FieldId" ExpiredAlarms="_expiredAlarmsCountChart"/>
+    <div class="d-flex justify-content-center">
+        <p><b>@(((AlarmType)(AlarmType ?? 0)).GetDescription())</b></p>
+        <SelectObject Object="alarmType" LinksDictionary="AlarmTypeLinksDictionary"/>
+    </div>
+    <BarChart IsEnableRenderChart="_isEnableRenderChart" FieldId="FieldId" ExpiredAlarms="_expiredAlarmsCountChart" AlarmType="@((AlarmType)(AlarmType ?? 0))"/>
 </div>

@@ -16,9 +16,9 @@
 
     [Inject]
     protected ISpinnerService SpinnerService { get; set; } = default!;
-    
+
     [Parameter]
-    public Dictionary<DateTime, int>? ExpiredAlarms { get; set; }
+    public Dictionary<AlarmType, Dictionary<DateTime, int>>? ExpiredAlarms { get; set; }
 
     [Parameter]
     public string? Id { get; set; } = "bar-chart";
@@ -28,9 +28,12 @@
 
     [Parameter]
     public bool IsEnableRenderChart { get; set; }
-    
+
     [Parameter]
     public int? FieldId { get; set; }
+
+    [Parameter]
+    public AlarmType? AlarmType { get; set; }
 
     private bool _loaded;
 
@@ -44,80 +47,81 @@
 
     protected async Task DrawChart()
     {
-        if (ExpiredAlarms is {Count: > 0 })
-        {
-            var numTime = ExpiredAlarms.Select(kvPair => $"{kvPair.Key:M} {kvPair.Key:t}");
-
-            var datasets = new[] { "value", "positiveDifference", "negativeDifference" };
-
-            var armCount = datasets.ToDictionary(c => c, _ => new int[ExpiredAlarms.Values.Count]);
-
-            armCount["value"] = ExpiredAlarms.Select(c => c.Value).ToArray();
-
-            armCount["positiveDifference"][0] = 0;
-            armCount["negativeDifference"][0] = 0;
-
-            for (var i = 1; i < armCount.First().Value.Length; i++)
+        if (ExpiredAlarms != null && AlarmType != null && ExpiredAlarms.TryGetValue(AlarmType!.Value, out var expiredAlarms))
+            if (expiredAlarms is {Count: > 0 })
             {
-                var difference = armCount["value"][i] - (armCount["value"][i - 1] + armCount["negativeDifference"][i - 1]);
+                var numTime = expiredAlarms.Select(kvPair => $"{kvPair.Key:M} {kvPair.Key:t}");
 
-                if (difference > 0)
+                var datasets = new[] { "value", "positiveDifference", "negativeDifference" };
+
+                var armCount = datasets.ToDictionary(c => c, _ => new int[expiredAlarms.Values.Count]);
+
+                armCount["value"] = expiredAlarms.Select(c => c.Value).ToArray();
+
+                armCount["positiveDifference"][0] = 0;
+                armCount["negativeDifference"][0] = 0;
+
+                for (var i = 1; i < armCount.First().Value.Length; i++)
                 {
-                    armCount["value"][i] -= difference;
-                    armCount["negativeDifference"][i] = difference;
-                    armCount["positiveDifference"][i] = 0;
+                    var difference = armCount["value"][i] - (armCount["value"][i - 1] + armCount["negativeDifference"][i - 1]);
+
+                    if (difference > 0)
+                    {
+                        armCount["value"][i] -= difference;
+                        armCount["negativeDifference"][i] = difference;
+                        armCount["positiveDifference"][i] = 0;
+                    }
+                    else
+                    {
+                        armCount["negativeDifference"][i] = 0;
+                        armCount["positiveDifference"][i] = difference;
+                    }
                 }
-                else
+
+                var config = new
                 {
-                    armCount["negativeDifference"][i] = 0;
-                    armCount["positiveDifference"][i] = difference;
-                }
+                    Type = "bar",
+                    Options = new
+                    {
+                        Responsive = true,
+                        MaintainAspectRatio = false,
+                        Interaction = new
+                        {
+                            Intersect = false,
+                        },
+                        Scales = new
+                        {
+                            X = new
+                            {
+                                Stacked = true
+                            },
+                            Y = new
+                            {
+                                Stacked = true
+                            }
+                        },
+                        Plugins = new
+                        {
+                            Legend = new
+                            {
+                                Display = false,
+                            },
+                        },
+                    },
+                    Data = new
+                    {
+                        Datasets = new[]
+                        {
+                            new { Data = armCount["value"], BackgroundColor = "#8BD3EF", Label = "Количество", Stack = "Stack 0", },
+                            new { Data = armCount["positiveDifference"], BackgroundColor = "#27BC2D33", Label = "Положительная разница", Stack = "Stack 0", },
+                            new { Data = armCount["negativeDifference"], BackgroundColor = "#E25757", Label = "Отрицательная разница", Stack = "Stack 0", },
+                        },
+                        Labels = numTime
+                    }
+                };
+
+                await JSRuntime.InvokeVoidAsync("setupBarChart", Id!, config);
             }
-
-            var config = new
-            {
-                Type = "bar",
-                Options = new
-                {
-                    Responsive = true,
-                    MaintainAspectRatio = false,
-                    Interaction = new
-                    {
-                        Intersect = false,
-                    },
-                    Scales = new
-                    {
-                        X = new
-                        {
-                            Stacked = true
-                        },
-                        Y = new
-                        {
-                            Stacked = true
-                        }
-                    },
-                    Plugins = new
-                    {
-                        Legend = new
-                        {
-                            Display = false,
-                        },
-                    },
-                },
-                Data = new
-                {
-                    Datasets = new[]
-                    {
-                        new { Data = armCount["value"], BackgroundColor = "#8BD3EF", Label = "Количество", Stack = "Stack 0", },
-                        new { Data = armCount["positiveDifference"], BackgroundColor = "#27BC2D33", Label = "Положительная разница", Stack = "Stack 0", },
-                        new { Data = armCount["negativeDifference"], BackgroundColor = "#E25757", Label = "Отрицательная разница", Stack = "Stack 0", },
-                    },
-                    Labels = numTime
-                }
-            };
-
-            await JSRuntime.InvokeVoidAsync("setupBarChart", Id!, config);
-        }
     }
 
 }

@@ -35,15 +35,26 @@ public partial class BackAlarms : ComponentBase
     [SupplyParameterFromQuery]
     public int? FieldId { get; set; }
     
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int? AlarmType { get; set; }
+    
     private FieldDto[]? _fields;
 
     private WorkStationDto[]? _workstations;
 
     private Dictionary<int, Dictionary<AlarmType, Dictionary<DateTime, int>>>? _expiredAlarmsCount;
     
-    private Dictionary<int, Dictionary<AlarmType, Dictionary<DateTime, int>>>? _expiredAlarmsCountChart;
+    private Dictionary<AlarmType, Dictionary<DateTime, int>>? _expiredAlarmsCountChart;
 
     private IDictionary<string, string>? WorkstationLinksDictionary { get; set; }
+
+    private IDictionary<string, string> AlarmTypeLinksDictionary => new Dictionary<string, string>
+    {
+        {"Активация", $"/reports/back-alarms?alarmType=0&fieldId={FieldId}"},
+        {"Имитация", $"/reports/back-alarms?alarmType=4&fieldId={FieldId}"},
+        {"Подавление", $"/reports/back-alarms?alarmType=2&fieldId={FieldId}"},
+    };
 
     private bool _isEnableRenderChart;
 
@@ -79,6 +90,8 @@ public partial class BackAlarms : ComponentBase
         await GetFields();
 
         FieldId ??= _fields?.FirstOrDefault()?.Id ?? 1;
+
+        AlarmType ??= 0;
 
         await GetWorkstations();
         
@@ -129,9 +142,9 @@ public partial class BackAlarms : ComponentBase
             var chartQuery = new GetExpiredAlarmsByDatesQuery { FieldId = FieldId.Value, DateTimeStart = DateTimeEnd.AddDays(-7 * 12 - 1), DateTimeEnd = DateTimeEnd };
             var chartResult = await IncomingAlarmService.GetExpiredCountPerWeek(chartQuery);
 
-            if (chartResult.Success)
+            if (chartResult.Success && result.Payload!.TryGetValue(FieldId!.Value, out var alarmsCount))
             {
-                _expiredAlarmsCountChart = chartResult.Payload;
+                _expiredAlarmsCountChart = alarmsCount;
             }
         }
     }
