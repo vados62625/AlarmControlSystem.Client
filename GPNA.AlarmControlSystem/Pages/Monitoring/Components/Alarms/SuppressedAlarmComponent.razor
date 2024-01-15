@@ -12,9 +12,9 @@
 @if (Alarm != null && Alarm.Description != "ПЕРЕДАЧА СМЕНЫ")
 {
     <tr class="@(Kpi < Alarm.Duration?.TotalHours ? "kpi-suppressed-warning-bg" : "")">
-        <td @onclick="ShowMoreAttributes">@Alarm.DateTimeStart.ToString("dd.MM.yyyy")</td>
+        <td @onclick="ShowMoreAttributes">@Alarm.DateTimeSuppression?.ToString("dd.MM.yyyy")</td>
 
-        <td @onclick="ShowMoreAttributes">@Alarm.DateTimeStart.ToString("HH:mm")</td>
+        <td @onclick="ShowMoreAttributes">@Alarm.DateTimeSuppression?.ToString("HH:mm")</td>
 
         <td @onclick="ShowMoreAttributes" class="@(Kpi < Alarm.Duration?.TotalHours ? "kpi-suppressed-warning-text" : "")">
             @(Alarm.Duration?.TotalHours.ToString("0") ?? "N/A")

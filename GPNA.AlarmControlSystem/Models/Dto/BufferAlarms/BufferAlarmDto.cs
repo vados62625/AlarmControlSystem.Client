@@ -24,6 +24,11 @@ namespace GPNA.AlarmControlSystem.Models.Dto.BufferAlarms
         /// Время события подавления сигнализации
         /// </summary>
         public DateTimeOffset? DateTimeSuppression { get; set; }
+        
+        /// <summary>
+        /// Время события имитирования сигнализации
+        /// </summary>
+        public DateTimeOffset? DateTimeImitation { get; set; }
 
         /// <summary>
         /// Время события нормализации сигнализации
