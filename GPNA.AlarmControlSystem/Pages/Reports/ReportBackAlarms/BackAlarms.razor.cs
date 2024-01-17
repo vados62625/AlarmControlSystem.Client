@@ -138,14 +138,6 @@ public partial class BackAlarms : ComponentBase
 
                 _expiredAlarmsCountChart = GetExpiredAlarmsCountSum();
             }
-
-            // var chartQuery = new GetExpiredAlarmsByDatesQuery { FieldId = FieldId.Value, DateTimeStart = DateTimeEnd.AddDays(-7 * 12 - 1), DateTimeEnd = DateTimeEnd };
-            // var chartResult = await IncomingAlarmService.GetExpiredCountPerWeek(chartQuery);
-
-            // if (chartResult.Success && result.Payload!.TryGetValue(FieldId!.Value, out var alarmsCount))
-            // {
-            //     _expiredAlarmsCountChart = alarmsCount;
-            // }
         }
     }
 
@@ -160,9 +152,7 @@ public partial class BackAlarms : ComponentBase
 
     private Dictionary<AlarmType, Dictionary<DateTime, int>> GetExpiredAlarmsCountSum()
     {
-        var dict = new Dictionary<AlarmType, Dictionary<DateTime, int>>();
-
-        dict = _expiredAlarmsCount
+        return _expiredAlarmsCount!
             .SelectMany(c => c.Value)
             .GroupBy(pair => pair.Key)
             .ToDictionary(x => x.Key, x =>
@@ -170,7 +160,5 @@ public partial class BackAlarms : ComponentBase
                     .SelectMany(dict => dict.Value)
                     .GroupBy(pair => pair.Key)
                     .ToDictionary(group => group.Key, group => group.Sum(pair => pair.Value)));
-
-        return dict;
     }
 }
