@@ -1,0 +1,54 @@
+﻿@using GPNA.AlarmControlSystem.Shared.ButtonsModal
+@using GPNA.AlarmControlSystem.Models.Dto.Tag
+
+
+@if (displaySendTagToJournalModal)
+{
+	<div class="modal-backdrop show"></div>
+
+	<div class="tag-table__modal-bg send-tag-journal">
+		<div class="d-flex align-items-center gap-3">
+			<svg style="width: 15px; height: 14px; margin-bottom: 3px;">
+				<use href="/img/icons/icons.svg#tag-modal-attention"></use>
+			</svg>
+			<p class="tag-table__modal-title">ОТПРАВИТЬ ЗАДАЧУ В ЖУРНАЛ ИЗМЕНЕНИЙ АСУ ТП?</p>
+		</div>
+
+		<div class="w-100 h-100 p-0 d-flex flex-column gap-2 justify-content-between">
+			<p class="modal-delete-text mt-2">Выдать задание на изменение конфигурации АСУ ТП<br /> (Отправить в журнал изменений АСУ ТП)?</p>
+
+			<div class="tag-table__modal-item-container mt-2">
+				<p>Специалист АСУ ТП</p>
+				<div class="small tag-table__modal-custom-select">
+					<select class="tag-table__modal-item-select" onchange="this.style.color='#002033'">
+						<option disabled selected hidden>Выберите специалиста АСУ ТП</option>
+						<option>Специалист АСУ ТП 1</option>
+						<option>Специалист АСУ ТП 2</option>
+						<option>Специалист АСУ ТП 3</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="tag-table__modal-button-container">
+				<SendButton />
+				<NotSendButton ClickEvent="Cancel" />
+			</div>
+		</div>
+
+	</div>
+}
+
+
+@code {
+	[CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;	
+
+	bool displaySendTagToJournalModal = false;
+
+	void Cancel()
+	{
+		ModalInstance.CancelAsync();
+	}
+
+
+}
+

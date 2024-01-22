@@ -1,9 +1,7 @@
 ﻿.tag-table-search-container {
     display: flex;
     align-items: center;
-    
     justify-content: space-between;
-    
 }
 
 .tagname-filter-title {
@@ -59,12 +57,3 @@
     .tag-table-button-link:hover {
         background: #6D8EA2;
     }
-
-.tag-table-button-send {
-    background: #006FBA;
-}
-
-    .tag-table-button-send:hover {
-        background: #0065A9;
-    }
-

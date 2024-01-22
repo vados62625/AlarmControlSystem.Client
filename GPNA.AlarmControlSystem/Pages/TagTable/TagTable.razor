@@ -34,14 +34,23 @@
     </div>
 
     <div class="tag-table-search-container">
-        <InputSearch OnChange="SearchTag" MinWidth="382"/>
+        <div class="d-flex gap-2">
+			<button class="tag-table-button-add" @onclick="AddTag">
+				<p>Новый Таг</p>
+				<svg>
+					<use href="/img/icons/icons.svg#tag-table-add"></use>
+				</svg>
+			</button>
+			<InputSearch OnChange="SearchTag" MinWidth="382" />
+        </div>
+        
+        <div class="d-flex gap-2">
+            <a class="tag-table-button-link" href="/tag-table-archive">Архив изменений АСУ ТП</a>
+            <a class="tag-table-button-link" href="/tag-table-journal">Журнал изменений АСУ ТП</a>
+            <button class="tag-table-button-link tag-table-button-send">Отправить в журнал изменений АСУ ТП</button>
+        </div>
 
-        <button class="tag-table-button-add" @onclick="AddTag">
-            <p>Новый Таг</p>
-            <svg>
-                <use href="/img/icons/icons.svg#tag-table-add"></use>
-            </svg>
-        </button>
+        
 
     </div>
 

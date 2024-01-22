@@ -1,0 +1,15 @@
+﻿<button @onclick="Click" class="button-modal not-send">
+	<svg>
+		<use href="/img/icons/icons.svg#tag-modal-cancel"></use>
+	</svg>
+	<p>Не отправлять</p>
+</button>
+
+@code {
+    [Parameter] public EventCallback<bool> ClickEvent { get; set; }    
+
+    private async Task Click()
+    {
+        await ClickEvent.InvokeAsync(true);
+    }
+}

@@ -5,6 +5,7 @@
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Pages.TagTable.Components
 @using GPNA.AlarmControlSystem.Extensions
+@using GPNA.AlarmControlSystem.Pages.TagTable.Modals
 
 <EditForm Model="@_command" OnValidSubmit="HandleValidSubmit">
 	<DataAnnotationsValidator />
@@ -136,9 +137,22 @@
 					</div>
 				</div>
 			</div>				
-			<div class="tag-table__modal-button-container">					
-				<SaveButton/>
-				<CancelButton ClickEvent="Cancel"/>					
+			<div class="tag-table__modal-button-container justify-content-between">
+				<button type="submit" @onclick="Click" class="button-modal send-tag-journal">
+					<svg>
+						<use href="/img/icons/icons.svg#tag-modal-send-to-journal"></use>
+					</svg>
+					<p>Отправить в журнал изменений АСУ ТП</p>
+				</button>
+				<div class="tag-table__modal-button-container mt-0">
+					<SaveButton />
+					<CancelButton ClickEvent="Cancel" />
+				</div>				
+
+				<SaveTagModal @ref="saveTagModal" TagInfoChange="true"></SaveTagModal>
+				<SendTagToJournalModal @ref="sendTagToJournalModal"></SendTagToJournalModal>
+				<CancelChangeTagModal @ref="cancelChangeTagModal"></CancelChangeTagModal>
+				
 			</div>			
 		</div>
 	</div> 
@@ -149,10 +163,11 @@
 
 @code {
 	[CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;
-	
+	[CascadingParameter] public IModalService Modal { get; set; } = default!;
+
 	[Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
 	[Inject] protected ITagService TagService { get; set; } = default!;
-	
+
 	[Parameter] public TagDto Tag { get; set; } = new TagDto();
 
 	private UpdateTagCommand _command = new();
@@ -180,7 +195,7 @@
 			Validate = Tag.Validate
 		};
 	}
-	
+
 	private async void HandleValidSubmit() 
 	{
 		SpinnerService.Show();
@@ -196,4 +211,41 @@
 	{
 		ModalInstance.CancelAsync();
 	}
+
+	////SaveTagModal saveTagModal;
+
+	SaveTagModal? saveTagModal;
+	SendTagToJournalModal? sendTagToJournalModal;
+	CancelChangeTagModal? cancelChangeTagModal;
+
+	//void OnCancel()
+	//{
+	//	saveTagModal.Hide();
+	//}
+
+	////void OnSave()
+	////{
+	////	saveTagModal.Show();
+	////}
+
+	//private async Task OnSave()
+	//{
+	//	//var parameters = new ModalParameters { { "Tag", Tag } };
+
+	//	var updateModal = Modal.Show<SaveTagModal>(""/*, parameters*/);
+	//	var result = await updateModal.Result;
+
+	//	//if (result.Confirmed && result.Data != null)
+	//	//{
+	//	//	Tag = (TagDto)result.Data;
+	//	//}
+	//}
+
+	[Parameter] public EventCallback<bool> ClickEvent { get; set; }
+
+	private async Task Click()
+	{
+		await ClickEvent.InvokeAsync(true);
+	}
+
 }

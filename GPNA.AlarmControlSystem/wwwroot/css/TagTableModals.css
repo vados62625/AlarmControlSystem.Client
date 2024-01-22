@@ -34,6 +34,31 @@
         padding: 30px;
         gap: 10px;
     }
+    .tag-table__modal-bg.save-tag {
+        width: 380px;
+        min-height: 340px;        
+        padding: 30px;
+        gap: 10px;
+    }
+    .tag-table__modal-bg.save-tag.small {
+       /* width: 380px;*/
+        min-height: 74px;
+        padding: 30px;       
+    }
+
+    .tag-table__modal-bg.send-tag-journal {
+        width: 415px;
+        min-height: 242px;
+        padding: 30px;
+        gap: 10px;
+    }
+
+    .tag-table__modal-bg.cancel-change-tag {
+        width: 365px;
+        min-height: 182px;
+        padding: 30px;
+        gap: 10px;
+    }
 
     .tag-table__modal-bg.send-alarm {
         background: #FFFFFF;
@@ -45,12 +70,19 @@
     text-transform: uppercase;
 }
 
-.tag-table__modal-bg.delete .tag-table__modal-title, .tag-table__modal-bg.send-alarm .tag-table__modal-title {
+.tag-table__modal-bg.delete .tag-table__modal-title, .tag-table__modal-bg.send-alarm .tag-table__modal-title, .tag-table__modal-bg.save-tag .tag-table__modal-title,
+.tag-table__modal-bg.send-tag-journal .tag-table__modal-title, .tag-table__modal-bg.cancel-change-tag .tag-table__modal-title {
     margin-bottom: 0;
 }
 
+.tag-table__modal-bg.send-tag-journal .tag-table__modal-title {
+    white-space: nowrap;
+}
+
+
 .modal-delete-text {
-    align-self: start;    
+    align-self: start;
+    line-height: 120%;
 }
 
 .tag-table__modal-bg.delete .tag-table__modal-button-container {
@@ -112,6 +144,10 @@
         min-width: 260px;
     }
 
+    .tag-table__modal-bg.save-tag .tag-table__modal-item-input {
+        max-width: 148px;
+    }
+
 .tag-table__modal-item-textarea {
     min-height: 40px;
     resize: none;
@@ -129,6 +165,15 @@
     .tag-table__modal-item-select > option:checked {
         background-color: rgba(204, 217, 224, 0.15);
     }
+
+.tag-table__modal-bg.save-tag .tag-table__modal-item-select {
+    min-width: 320px;
+}
+
+.tag-table__modal-bg.send-tag-journal .tag-table__modal-item-select {
+    min-width: 355px;
+}
+
 
 .tag-table__modal-custom-select {
     position: relative;
@@ -154,6 +199,14 @@
     justify-content: end;
     gap: 8px;
     margin-top: 27px;
+}
+
+.tag-table__modal-bg.save-tag .tag-table__modal-button-container,
+.tag-table__modal-bg.send-tag-journal .tag-table__modal-button-container,
+.tag-table__modal-bg.cancel-change-tag .tag-table__modal-button-container {
+    justify-content: space-between;
+    margin-top: 10px;
+    gap: 0;
 }
 
 .button-adressee-add {
@@ -204,3 +257,5 @@
         width: 100%;
         min-height: 230px;
     }
+
+

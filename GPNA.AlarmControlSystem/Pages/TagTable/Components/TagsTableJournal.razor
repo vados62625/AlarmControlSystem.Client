@@ -19,8 +19,23 @@
         <th style="min-width: 230px;">
             <p>TagName</p>  
         </th>        
-        <th style="min-width: 990px;">
+        <th style="min-width: 740px;">
             <p>Описание</p>
+        </th>
+        <th style="min-width: 230px;">
+            <p>Инициатор (Технолог)</p>
+        </th>
+        <th class="bg-tag-table-button" style="min-width: 230px;">
+            <div>
+                <p>Исполнитель (Инженер АСУ ТП)</p>
+                <div>
+                    <button data-bs-toggle="modal" data-bs-target="#priorityFilterModal">
+                        <svg>
+                            <use href="/img/icons/icons.svg#filter"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
         </th>
         <th class="bg-tag-table-button" style="min-width: 165px;">
             <div>
@@ -48,13 +63,7 @@
                     </button>                    
                 </div>
             </div>
-        </th>
-        <th style="min-width: 80px;">
-            <p>Действия</p>
-        </th>
-        <th style="min-width: 95px;">
-            <input type="checkbox" />
-        </th>
+        </th>        
     </tr>
     </thead>
     <tbody>
@@ -62,18 +71,9 @@
     {
         @foreach (var tag in Tags)
         {
-            <TagsTableLine Tag="tag" OnTagDeleted="OnTagDeleted"/>
+            <TagsTableLineJournal Tag="tag" OnTagDeleted="OnTagDeleted"/>
         }
-    }
-    
-    @* <TagsTableLine AttentionPriority="true"></TagsTableLine> *@
-    @* <TagsTableLine AttentionPriority="true"></TagsTableLine> *@
-    @* <TagsTableLine AttentionPriority="true"></TagsTableLine> *@
-    @* <TagsTableLine AttentionPriority="true"></TagsTableLine> *@
-    @* <TagsTableLine TagStatus="unverified" AttentionDescription="true" ReglamentColor="red"></TagsTableLine> *@
-    @* <TagsTableLine TagStatus="new"></TagsTableLine> *@
-    @* <TagsTableLine TagStatus="incorrect" AttentionSetting="true"></TagsTableLine> *@
-    
+    }  
     </tbody>
 </table>
 

@@ -1,0 +1,98 @@
+﻿@using GPNA.AlarmControlSystem.Shared.ButtonsModal
+@using GPNA.AlarmControlSystem.Models.Dto.Tag
+
+
+@if (displaySaveTagModal)
+{
+	<div class="modal-backdrop show"></div>
+	@if(TagInfoChange)
+	{
+		<div class="tag-table__modal-bg save-tag">
+			<div class="d-flex align-items-center gap-3">
+				<svg style="width: 12px; height: 10px; margin-bottom: 2px;">
+					<use href="/img/icons/icons.svg#tag-modal-save"></use>
+				</svg>
+				<p class="tag-table__modal-title">ДАННЫЕ УСПЕШНО СОХРАНЕНЫ</p>
+			</div>
+		
+				<div class="w-100 h-100 p-0 d-flex flex-column gap-2 justify-content-between">
+					<p class="modal-delete-text mt-2">В данной сигнализации были найдены несоответствия:</p>
+
+					<div class="d-flex justify-content-between" style="gap: 24px;">
+						<div class="tag-table__modal-item-container">
+							<p>Уставка Регламент</p>
+							<input class="tag-table__modal-item-input"
+								   value="3.9"
+								   readonly>
+						</div>
+						<div class="tag-table__modal-item-container red">
+							<p>Уставка Поле</p>
+							<input class="tag-table__modal-item-input"
+								   value="3.9"
+								   readonly>
+						</div>
+					</div>
+
+					<p class="modal-delete-text mt-2">Выдать задание на изменение конфигурации АСУ ТП (Отправить в журнал изменений АСУ ТП)?</p>
+
+					<div class="tag-table__modal-item-container mt-2">
+						<p>Специалист АСУ ТП</p>
+						<div class="small tag-table__modal-custom-select">
+							<select class="tag-table__modal-item-select" onchange="this.style.color='#002033'">
+								<option disabled selected hidden>Выберите специалиста АСУ ТП</option>
+								<option>Специалист АСУ ТП 1</option>
+								<option>Специалист АСУ ТП 2</option>
+								<option>Специалист АСУ ТП 3</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="tag-table__modal-button-container">
+						<SendButton />
+						<NotSendButton ClickEvent="Cancel" />
+					</div>
+				</div>		
+		</div>
+	} else
+	{
+		<div class="tag-table__modal-bg save-tag small">
+			<CloseButton ClickEvent="Cancel" />
+			<div class="d-flex align-items-center gap-3">
+				<svg style="width: 12px; height: 10px; margin-bottom: 2px;">
+					<use href="/img/icons/icons.svg#tag-modal-save"></use>
+				</svg>
+				<p class="tag-table__modal-title">ДАННЫЕ УСПЕШНО СОХРАНЕНЫ</p>
+			</div>			
+		</div>
+	}
+}
+
+
+@code {
+	[CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;
+	//[Parameter] public string? TagName { get; set; }
+
+	//[Parameter] public TagDto Tag { get; set; } = new TagDto();
+
+	bool displaySaveTagModal = false;
+
+	[Parameter] public bool TagInfoChange { get; set; }
+
+	//[Parameter] public EventCallback onSave { get; set; }
+	//[Parameter] public EventCallback onCancel { get; set; }
+
+	//public void Show() => displaySaveTagModal = true;
+	//public void Hide() => displaySaveTagModal = false;
+
+	//private async void DeleteAndClose()
+	//{
+	//	await ModalInstance.CloseAsync(ModalResult.Ok());
+	//}
+
+	void Cancel()
+	{
+		ModalInstance.CancelAsync();
+	}
+
+
+}
