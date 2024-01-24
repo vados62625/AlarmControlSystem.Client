@@ -35,25 +35,44 @@
         color: var(--white);
     }
 
+        .table-status.urgent.not-active {
+            background: rgba(235, 87, 87, 0.25);
+        }
+
     .table-status.high {
         background: var(--bg-orange);
         color: var(--white);
     }
+
+        .table-status.high.not-active {
+            background: rgba(242, 153, 74, 0.25);
+        }
 
     .table-status.low {
         background: var(--bg-blue-status);
         color: var(--white);
     }
 
+        .table-status.low.not-active {
+            background: rgba(0, 120, 210, 0.25);
+        }
+
     .table-status.information {
         background: var(--bg-grey-status);
         color: var(--white);
     }
 
+        .table-status.information.not-active {
+            background: rgba(191, 199, 204, 0.3);
+        }
+
     .table-status.none {
         background: var(--bg-purple);
         color: var(--white);
     }
+        .table-status.none.not-active {
+            background: rgba(186, 143, 219, 0.25);
+        }
 
     .table-status p {
         font-weight: 400;

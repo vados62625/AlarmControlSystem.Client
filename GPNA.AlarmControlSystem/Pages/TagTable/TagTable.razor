@@ -29,8 +29,8 @@
         <TagStatusOnHead Title="Некорректное описание" Value="@(_tags.InvalidDesc)"/>
         <TagStatusOnHead Title="Некорректный приоритет" Value="@(_tags.InvalidPriority)"/>
         <TagStatusOnHead Title="Некорректная уставка" Value="@(_tags.InvalidAlarmLimit)"/>
-        <TagStatusOnHead Title="Непроверенные" StatusTags="unverified" NumberLinesTitle="one-line" Value="@(_tags.Unchecked)"/>
-        <TagStatusOnHead Title="Новые" StatusTags="new" NumberLinesTitle="one-line" Value="@(_tags.New)"/>
+       @* <TagStatusOnHead Title="Непроверенные" StatusTags="unverified" NumberLinesTitle="one-line" Value="@(_tags.Unchecked)"/>*@
+        <TagStatusOnHead Title="Новые поля" StatusTags="new" NumberLinesTitle="one-line" Value="@(_tags.New)"/>
     </div>
 
     <div class="tag-table-search-container">
@@ -41,7 +41,7 @@
 					<use href="/img/icons/icons.svg#tag-table-add"></use>
 				</svg>
 			</button>
-			<InputSearch OnChange="SearchTag" MinWidth="382" />
+			<InputSearch OnChange="SearchTag" MinWidth="364" />
         </div>
         
         <div class="d-flex gap-2">

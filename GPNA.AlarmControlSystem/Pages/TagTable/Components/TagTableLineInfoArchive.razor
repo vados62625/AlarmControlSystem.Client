@@ -1,0 +1,54 @@
+﻿@using GPNA.AlarmControlSystem.Pages.Monitoring.Components
+@using GPNA.AlarmControlSystem.Models.Dto.Tag
+@using GPNA.AlarmControlSystem.Extensions
+@*@using GPNA.AlarmControlSystem.Interfaces*@
+@*@using GPNA.AlarmControlSystem.Pages.TagTable.Components*@
+@*@using GPNA.AlarmControlSystem.Pages.TagTable.Modals*@
+@*@using GPNA.AlarmControlSystem.Services*@
+
+<tr class="tag-table-archive-line">
+    <td>
+        <div class="d-flex justify-content-between align-items-center">
+			<p>05.12.2022 19.31</p>
+            <svg style="width:9px; height:9px;">
+                <use href="/img/icons/icons.svg#triangle-up"></use>
+            </svg>
+        </div>            
+    </td>
+    <td class="tag-table-archive-border" style="min-width: 787px;">
+        <div class="tag-table-border description red" >
+            <p>Сепаратор нефтегазовый</p>
+        </div>
+    </td>
+    <td class="tag-table-archive-specialist" style="min-width: 230px;">
+        <p>Смирнов Алексей Иванович</p>
+    </td>
+    <td class="tag-table-archive-specialist" style="min-width: 230px;">
+        <p>Иванов Алексей Иванович</p>
+    </td>
+    <td class="tag-table-archive-border">
+        <div class="tag-table-border">
+			<MonitoringTableStatus Title="@Tag.Priority.GetDescription()" Priority="@Tag.Priority" ActiveStatus="not-active"/>
+        </div>            
+    </td>
+    <td class="tag-table-archive-border">
+        <div class="tag-table-border red">
+			<p>@(Tag.AlarmLimit ?? "N/A")</p>
+        </div>            
+    </td>
+    <td/>
+</tr>
+<tr>
+    <td colspan="8">
+		<div class="tag-table-archive-comment">
+            <p>Текст комментария текст комментария текст комментария</p>
+		</div>
+    </td>        
+</tr>
+
+@code {
+    [CascadingParameter] public IModalService Modal { get; set; } = default!;
+
+    [Parameter] public TagDto Tag { get; set; } = new TagDto();
+   
+}

@@ -29,9 +29,9 @@
         border-bottom: 0.5px solid rgba(0, 32, 51, 0.15);
     }
 
-    .bg-tag-table .indicator-container {
-        justify-content: end;
-    }
+        .bg-tag-table .indicator-container {
+            justify-content: end;
+        }
 
     .tag-table-line:hover {
         background: rgba(204, 217, 224, 0.15);
@@ -137,8 +137,7 @@
 
 .tag-table-icon-reglament {
     width: 17px;
-    height: 15px;
-    /*margin-left: 27px;*/
+    height: 15px;   
     color: #A8B3B9;
 }
     .tag-table-icon-reglament.red {
@@ -148,16 +147,35 @@
 .tag-table-comment-line {
     background: rgba(221, 241, 252, 0.5);
 }
+    .tag-table-comment-line.text {
+        background: transparent;       
+    }
 
-/*.tag-table-comment-line td {
+    .tag-table-comment-line td:not(.tag-table-comment-title) {
+        padding-bottom: 5px;
+    }
+
+    .tag-table-comment-title {
+        font-weight: 400;
+        font-size: 12px;
+        text-align: center;
+        text-transform: uppercase;
+        padding: 10px 0;
+    }
+
+.tag-table-journal-comment {
+    border: 0.5px solid rgba(0, 32, 51, 0.15);
+    border-radius: 6px;
+    min-height: 28px;
+    align-items: center;
     padding: 0 10px;
-}*/
-
-.tag-table-comment-title {
-    font-weight: 400;
-    font-size: 12px;
-    text-align: center;
-    text-transform: uppercase;
-    padding: 10px 0;
+    margin: 3px 0;
 }
 
+    .tag-table-journal-comment p {
+        font-weight: 400;
+        font-size: 12px;
+        align-items: center;
+        color: #5187A7;
+        line-height: 200%;
+    }

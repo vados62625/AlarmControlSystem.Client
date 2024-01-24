@@ -18,13 +18,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 150px;
+    width: 180px;
     height: 24px;
     background: #006FBA;
     border: 1px solid #006FBA;
     border-radius: 4px;
-    padding-left: 30px;
-    padding-right: 10px;
+    padding-left: 40px;
+    padding-right: 30px;
 }
 
     .tag-table-button-add:hover {

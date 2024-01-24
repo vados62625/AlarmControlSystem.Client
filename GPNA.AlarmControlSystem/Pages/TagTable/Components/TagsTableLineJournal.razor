@@ -75,19 +75,26 @@
         </svg>
     </td>    
 </tr>
+<tr class="tag-table-comment-line text">
+    <td colspan="8">
+        <div class="tag-table-journal-comment">
+            <p>Текст комментария текст комментария текст комментария</p>
+        </div>
+    </td>
+</tr>
 @if (_displayComment)
 {   
     <tr class="tag-table-comment-line">
         <td class="tag-table-comment-title" colspan="8"><p>КОНФИГУРАЦИЮ АСУ ТП ИЗМЕНИТЬ НА:</p></td>        
     </tr>
     <tr class="tag-table-comment-line">
-        <td/><td/>
+        <td colspan="2"/>
         <td>
             <div class="tag-table-attention-border grey description">
                 <p>Сепаратор нефтегазовый</p>
             </div>
         </td>
-        <td/><td/>
+        <td colspan="2"/>
         <td >
             <div class="tag-table-attention-border grey">
 				<MonitoringTableStatus Title="@Tag.Priority.GetDescription()" Priority="@Tag.Priority" />
@@ -151,34 +158,4 @@
             }
         }
     }
-
-    //private async Task EditTag()
-    //{
-    //    var parameters = new ModalParameters { { "Tag", Tag } };
-
-    //    var updateModal = Modal.Show<CorrectTagModal>("", parameters);
-    //    var result = await updateModal.Result;
-
-    //    if (result.Confirmed && result.Data!=null)
-    //    {
-    //        Tag = (TagDto)result.Data;
-    //    }
-    //}
-    
-    //private async Task DeleteTag()
-    //{
-    //    ArgumentNullException.ThrowIfNull(Tag.Id);
-    //    var parameters = new ModalParameters { { "TagName", Tag.TagName } };
-    //    var deleteModal = Modal.Show<DeleteTagModal>("", parameters);
-    //    var result = await deleteModal.Result;
-
-    //    if (result.Confirmed)
-    //    {
-    //        SpinnerService.Show();
-    //        await TagService.Delete(Tag.Id);
-    //        SpinnerService.Hide();
-    //        await OnTagDeleted.InvokeAsync(Tag);
-    //    }
-    //}
-
 }

@@ -7,67 +7,18 @@
 @using GPNA.AlarmControlSystem.Services
 
 <tr class="tag-table-line @Tag.Validate.ToString()">
-    @*<td @onclick="ShowMoreAttributes">                
-        <div class="tag-table-indicator @Tag.Validate.ToString()"></div>                               
-    </td>*@           
+           
     <td @onclick="ShowMoreAttributes">
-        @Tag.TagName
+		<p>@Tag.TagName</p>
     </td>           
-    <td class="tag-table-attention" @onclick="ShowMoreAttributes" colspan="3">      
-        @if (Tag.ModelState.TryGetValue("Description", out var errorDesc)) 
-        {
-        <div class="tag-table-attention-border @_attentionBorder description" >
-            <svg class="tag-table-icon-attention">
-                    <use href="/img/icons/icons.svg#tag-table-attention"></use>
-				</svg>
-                <p>@Tag.Description</p>
-            </div>
-        } else
-        {
-            <p class="tag-table-description-title">@Tag.Description</p>
-        }         
+    <td @onclick="ShowMoreAttributes" colspan="3"> 
+        <p class="tag-table-description-title">@Tag.Description</p>
     </td>
-    @*<td @onclick="ShowMoreAttributes">
-        <p>Смирнов Алексей Иванович</p>
+    <td @onclick="ShowMoreAttributes"> 
+        <MonitoringTableStatus Title="@Tag.Priority.GetDescription()" Priority="@Tag.Priority" />
     </td>
     <td @onclick="ShowMoreAttributes">
-        <p>Иванов Алексей Иванович</p>
-    </td>*@
-    <td class="tag-table-attention" @onclick="ShowMoreAttributes">        
-        @if (Tag.ModelState.TryGetValue("Priority", out var errorPriority))
-        {
-            <div class="tag-table-attention-border @_attentionBorder">
-                <div class="position-relative">
-                    <div class="tag-table-container-attention priority">
-                        <svg class="tag-table-icon-attention">
-                            <use href="/img/icons/icons.svg#tag-table-attention"></use>
-                        </svg>
-                    </div>
-                </div>
-                <MonitoringTableStatus Title="@Tag.Priority.GetDescription()" Priority="@Tag.Priority" />
-            </div>
-        } else
-        {
-            <MonitoringTableStatus Title="@Tag.Priority.GetDescription()" Priority="@Tag.Priority" />
-        }   
-    </td>
-    <td class="tag-table-attention" @onclick="ShowMoreAttributes">
-        @if (Tag.ModelState.TryGetValue("AlarmLimit", out var errorAlarmLimit))
-        {
-            <div class=" tag-table-attention-border @_attentionBorder">                
-                <p>@(Tag.AlarmLimit ?? "N/A")</p>
-            </div>
-            <div class="position-relative">
-                <div class="tag-table-container-attention">
-                    <svg class="tag-table-icon-attention">
-                        <use href="/img/icons/icons.svg#tag-table-attention"></use>
-                    </svg>
-                </div>
-            </div>            
-        } else
-        {
-            <p>@(Tag.AlarmLimit ?? "N/A")</p>
-        }                   
+        <p>@(Tag.AlarmLimit ?? "N/A")</p>
     </td>
     <td @onclick="ShowMoreAttributes">
         <svg class="tag-table-icon-reglament @(_attentionReglament ? "red" : "")">
@@ -75,40 +26,26 @@
         </svg>
     </td>    
 </tr>
-@if (_displayComment)
-{   
-    <tr class="tag-table-comment-line">
-        <td class="tag-table-comment-title" colspan="8"><p>КОНФИГУРАЦИЮ АСУ ТП ИЗМЕНИТЬ НА:</p></td>        
+@if (_displayArchive)
+{
+    <tr class="tag-table-archive-line">
+        <td class="tag-table-archive-title" colspan="8"><p>АРХИВ ИЗМЕНЕНИЙ АСУ ТП</p></td>
     </tr>
-    <tr class="tag-table-comment-line">
-        <td/><td/>
-        <td>
-            <div class="tag-table-attention-border grey description">
-                <p>Сепаратор нефтегазовый</p>
-            </div>
-        </td>
-        <td/><td/>
-        <td >
-            <div class="tag-table-attention-border grey">
-				<MonitoringTableStatus Title="@Tag.Priority.GetDescription()" Priority="@Tag.Priority" />
-            </div>            
+    <tr class="tag-table-archive-line head">
+        <td colspan="2">
+            <p>Дата</p>
         </td>
         <td>
-            <div class="tag-table-attention-border grey">
-				<p>@(Tag.AlarmLimit ?? "N/A")</p>
-            </div>            
+            <p>Инициатор (Технолог)</p>
         </td>
-        <td/>
+        <td>
+            <p>Исполнитель (Инженер АСУ ТП)</p>
+        </td>
+        <td colspan="3"></td>
     </tr>
-    <tr>
-        <td class="tag-table-comment-title" colspan="8"><p>РЕГЛАМЕНТ</p></td>
-    </tr>
-    <TagTableInfo Title="Позиция по ГП" Description="@Tag.Position"/>
-    <TagTableInfo Title="Потенциальные последствия" Description="@Tag.Consequence"/>
-    <TagTableInfo Title="Действия Полевого оператора" Description="@Tag.ActionFieldOperator"></TagTableInfo>
-    <TagTableInfo Title="Действия Оператора APM" Description="@Tag.ActionArmOperator"></TagTableInfo>
-    <TagTableInfo Title="Условия усиления" Description="@Tag.Inform"></TagTableInfo>
-    <TagTableInfo Title="Время на реакцию" Description="@Tag.ReactionTime"></TagTableInfo>
+    
+    <TagTableLineInfoArchive></TagTableLineInfoArchive>
+    <TagTableLineInfoArchive></TagTableLineInfoArchive>
 }
 
 @code {
@@ -122,20 +59,11 @@
 
     private bool _attentionReglament = false;
 
-    bool _displayComment = false;
-    string _attentionBorder = "";
+    bool _displayArchive = false;    
 
     void ShowMoreAttributes()
     {
-        _displayComment = !_displayComment;
-
-        if (_displayComment)
-        {
-            _attentionBorder = "red";
-        } else
-        {
-            _attentionBorder = "";
-        }
+        _displayArchive = !_displayArchive;
     }
 
     protected override void OnParametersSet()
@@ -151,34 +79,4 @@
             }
         }
     }
-
-    //private async Task EditTag()
-    //{
-    //    var parameters = new ModalParameters { { "Tag", Tag } };
-
-    //    var updateModal = Modal.Show<CorrectTagModal>("", parameters);
-    //    var result = await updateModal.Result;
-
-    //    if (result.Confirmed && result.Data!=null)
-    //    {
-    //        Tag = (TagDto)result.Data;
-    //    }
-    //}
-    
-    //private async Task DeleteTag()
-    //{
-    //    ArgumentNullException.ThrowIfNull(Tag.Id);
-    //    var parameters = new ModalParameters { { "TagName", Tag.TagName } };
-    //    var deleteModal = Modal.Show<DeleteTagModal>("", parameters);
-    //    var result = await deleteModal.Result;
-
-    //    if (result.Confirmed)
-    //    {
-    //        SpinnerService.Show();
-    //        await TagService.Delete(Tag.Id);
-    //        SpinnerService.Hide();
-    //        await OnTagDeleted.InvokeAsync(Tag);
-    //    }
-    //}
-
 }
