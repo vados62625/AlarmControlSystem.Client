@@ -35,13 +35,12 @@
         gap: 10px;
     }
     .tag-table__modal-bg.save-tag {
-        width: 380px;
+        width: 670px;
         min-height: 340px;        
         padding: 30px;
         gap: 10px;
     }
-    .tag-table__modal-bg.save-tag.small {
-       /* width: 380px;*/
+    .tag-table__modal-bg.save-tag.small {       
         min-height: 74px;
         padding: 30px;       
     }
@@ -98,9 +97,16 @@
     .tag-table__modal-item-container p {
         margin-bottom: 2px;
         margin-left: 6px;
+        margin-top: 3px;
     }
 
-    .tag-table__modal-item-container.red input, .tag-table__modal-item-container.red textarea {
+    .tag-table__modal-item-container.tagname input {        
+        font-weight: 700;
+    }
+
+
+    .tag-table__modal-item-container.red input, .tag-table__modal-item-container.red textarea, 
+    .tag-table__modal-item-container.red .tag-table__modal-text-container {
         border: 1px solid #E25757;
         color: #E25757;
     }
@@ -166,8 +172,31 @@
         background-color: rgba(204, 217, 224, 0.15);
     }
 
+.tag-table__modal-text-container {
+    background: #FFFFFF;
+    border: 1px solid rgba(0, 32, 51, 0.1);
+    border-radius: 2px;
+    min-height: 22px;
+    padding: 3px 6px 2px 6px;
+}
+
+    .tag-table__modal-text-container p {
+        line-height: 120%;
+        font-weight: 400;
+        font-size: 12px;
+        color: rgba(0, 32, 51, 0.25);        
+        margin: 0px;
+    }
+
+.item-container__text-ps {
+    font-size: 10px;
+}
+.tag-table__modal-bg.save-tag .tag-table__modal-text-container {
+    min-width: 295px;
+}
+
 .tag-table__modal-bg.save-tag .tag-table__modal-item-select {
-    min-width: 320px;
+    min-width: 610px;
 }
 
 .tag-table__modal-bg.send-tag-journal .tag-table__modal-item-select {
@@ -201,7 +230,6 @@
     margin-top: 27px;
 }
 
-.tag-table__modal-bg.save-tag .tag-table__modal-button-container,
 .tag-table__modal-bg.send-tag-journal .tag-table__modal-button-container,
 .tag-table__modal-bg.cancel-change-tag .tag-table__modal-button-container {
     justify-content: space-between;

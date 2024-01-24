@@ -2,7 +2,7 @@
 @using GPNA.AlarmControlSystem.Models.Dto.Tag
 
 
-@if (displaySendTagToJournalModal)
+@if (displaySendTagsToJournalModal)
 {
 	<div class="modal-backdrop show"></div>
 
@@ -11,11 +11,11 @@
 			<svg style="width: 15px; height: 14px; margin-bottom: 3px;">
 				<use href="/img/icons/icons.svg#tag-modal-attention"></use>
 			</svg>
-			<p class="tag-table__modal-title">ОТПРАВИТЬ ЗАДАЧУ В ЖУРНАЛ ИЗМЕНЕНИЙ АСУ ТП?</p>
+			<p class="tag-table__modal-title">ОТПРАВИТЬ ЗАДАЧИ В ЖУРНАЛ ИЗМЕНЕНИЙ АСУ ТП?</p>
 		</div>
 
 		<div class="w-100 h-100 p-0 d-flex flex-column gap-2 justify-content-between">
-			<p class="modal-delete-text mt-2">Выдать задание на изменение конфигурации АСУ ТП<br /> (Отправить в журнал изменений АСУ ТП)?</p>
+			<p class="modal-delete-text mt-2">Выдать задания на изменение конфигурации АСУ ТП<br /> (Отправить в журнал изменений АСУ ТП)?</p>
 
 			<div class="tag-table__modal-item-container">
 				<p>Специалист АСУ ТП</p>
@@ -29,9 +29,11 @@
 				</div>
 			</div>
 			<div class="tag-table__modal-item-container">
-				<p>Комментарий</p>
+				<p>Комментарий<sup>*</sup></p>
 				<textarea class="tag-table__modal-item-textarea" type="text" placeholder="Введите комментарий"></textarea>
+				<p class="item-container__text-ps"><sup>*</sup>Комментарий будет добавлен ко всем выбранным задачам</p>
 			</div>
+			
 
 			<div class="tag-table__modal-button-container">
 				<SendButton />
@@ -46,7 +48,7 @@
 @code {
 	[CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;	
 
-	bool displaySendTagToJournalModal = false;
+	bool displaySendTagsToJournalModal = false;
 
 	void Cancel()
 	{

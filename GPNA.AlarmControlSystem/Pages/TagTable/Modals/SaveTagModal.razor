@@ -14,28 +14,59 @@
 				</svg>
 				<p class="tag-table__modal-title">ДАННЫЕ УСПЕШНО СОХРАНЕНЫ</p>
 			</div>
+
 		
 				<div class="w-100 h-100 p-0 d-flex flex-column gap-2 justify-content-between">
 					<p class="modal-delete-text mt-2">В данной сигнализации были найдены несоответствия:</p>
 
+				<div class="d-flex justify-content-between" style="gap: 24px;">
+					<div class="tag-table__modal-item-container">
+						<p>Приоритет Регламент</p>
+						<div class="tag-table__modal-text-container">
+							<p>Urgent</p>
+						</div>						
+					</div>
+					<div class="tag-table__modal-item-container red">
+						<p>Приоритет Поле</p>
+						<div class="tag-table__modal-text-container">
+							<p>Urgent</p>
+						</div>
+					</div>
+				</div>
+
 					<div class="d-flex justify-content-between" style="gap: 24px;">
 						<div class="tag-table__modal-item-container">
 							<p>Уставка Регламент</p>
-							<input class="tag-table__modal-item-input"
-								   value="3.9"
-								   readonly>
+							<div class="tag-table__modal-text-container">
+								<p>3.9</p>
+							</div>
 						</div>
 						<div class="tag-table__modal-item-container red">
 							<p>Уставка Поле</p>
-							<input class="tag-table__modal-item-input"
-								   value="3.9"
-								   readonly>
+							<div class="tag-table__modal-text-container">
+								<p>3.9</p>
+							</div>
 						</div>
 					</div>
 
+				<div class="d-flex justify-content-between" style="gap: 24px;">
+					<div class="tag-table__modal-item-container">
+						<p>Описание Регламент</p>
+						<div class="tag-table__modal-text-container">
+							<p>Сепаратор  нефтегазовый  С-2-2.Давление, МПа</p>
+						</div>
+					</div>
+					<div class="tag-table__modal-item-container red">
+						<p>Описание Поле</p>
+						<div class="tag-table__modal-text-container">
+							<p>Сепаратор  нефтегазовый  С-2-2.Давление, МПа</p>
+						</div>
+					</div>
+				</div>
+
 					<p class="modal-delete-text mt-2">Выдать задание на изменение конфигурации АСУ ТП (Отправить в журнал изменений АСУ ТП)?</p>
 
-					<div class="tag-table__modal-item-container mt-2">
+					<div class="tag-table__modal-item-container">
 						<p>Специалист АСУ ТП</p>
 						<div class="small tag-table__modal-custom-select">
 							<select class="tag-table__modal-item-select" onchange="this.style.color='#002033'">
@@ -46,6 +77,10 @@
 							</select>
 						</div>
 					</div>
+				<div class="tag-table__modal-item-container">
+					<p>Комментарий</p>
+					<textarea class="tag-table__modal-item-textarea big" type="text" placeholder="Введите комментарий"></textarea>
+				</div>
 
 					<div class="tag-table__modal-button-container">
 						<SendButton />
@@ -69,25 +104,11 @@
 
 
 @code {
-	[CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;
-	//[Parameter] public string? TagName { get; set; }
-
-	//[Parameter] public TagDto Tag { get; set; } = new TagDto();
+	[CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;	
 
 	bool displaySaveTagModal = false;
 
 	[Parameter] public bool TagInfoChange { get; set; }
-
-	//[Parameter] public EventCallback onSave { get; set; }
-	//[Parameter] public EventCallback onCancel { get; set; }
-
-	//public void Show() => displaySaveTagModal = true;
-	//public void Hide() => displaySaveTagModal = false;
-
-	//private async void DeleteAndClose()
-	//{
-	//	await ModalInstance.CloseAsync(ModalResult.Ok());
-	//}
 
 	void Cancel()
 	{

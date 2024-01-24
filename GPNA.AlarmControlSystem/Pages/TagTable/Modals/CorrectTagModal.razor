@@ -19,7 +19,7 @@
 					<p class="tag-table__modal-title">Регламентная информация</p>
 					<div class="w-100 h-100 p-0 d-flex flex-column gap-2 justify-content-between">
 						<div class="d-flex justify-content-between">
-							<div class="tag-table__modal-item-container">
+							<div class="tag-table__modal-item-container tagname">
 								<p>TagName</p>
 								<input class="tag-table__modal-item-input smaller" type="text" @bind="@_command.TagName">
 							</div>
@@ -64,7 +64,7 @@
 					<p class="tag-table__modal-title">ИНФОРМАЦИЯ С ПОЛЯ</p>
 					<div class="w-100 h-100 p-0 d-flex flex-column gap-2 justify-content-between">
 						<div class="d-flex justify-content-between">
-							<div class="tag-table__modal-item-container">
+							<div class="tag-table__modal-item-container tagname">
 								<p>TagName</p>
 								<input class="tag-table__modal-item-input smaller" 
 								       value="@(Tag.LastBufferAlarm?.TagName ?? "")" 
@@ -152,6 +152,7 @@
 				<SaveTagModal @ref="saveTagModal" TagInfoChange="true"></SaveTagModal>
 				<SendTagToJournalModal @ref="sendTagToJournalModal"></SendTagToJournalModal>
 				<CancelChangeTagModal @ref="cancelChangeTagModal"></CancelChangeTagModal>
+				<SendTagsToJournalModal @ref="sendTagsToJournalModal"></SendTagsToJournalModal>
 				
 			</div>			
 		</div>
@@ -212,34 +213,10 @@
 		ModalInstance.CancelAsync();
 	}
 
-	////SaveTagModal saveTagModal;
-
 	SaveTagModal? saveTagModal;
 	SendTagToJournalModal? sendTagToJournalModal;
 	CancelChangeTagModal? cancelChangeTagModal;
-
-	//void OnCancel()
-	//{
-	//	saveTagModal.Hide();
-	//}
-
-	////void OnSave()
-	////{
-	////	saveTagModal.Show();
-	////}
-
-	//private async Task OnSave()
-	//{
-	//	//var parameters = new ModalParameters { { "Tag", Tag } };
-
-	//	var updateModal = Modal.Show<SaveTagModal>(""/*, parameters*/);
-	//	var result = await updateModal.Result;
-
-	//	//if (result.Confirmed && result.Data != null)
-	//	//{
-	//	//	Tag = (TagDto)result.Data;
-	//	//}
-	//}
+	SendTagsToJournalModal? sendTagsToJournalModal;
 
 	[Parameter] public EventCallback<bool> ClickEvent { get; set; }
 
