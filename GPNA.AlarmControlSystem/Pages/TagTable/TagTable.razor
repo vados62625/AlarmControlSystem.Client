@@ -3,7 +3,6 @@
 @using GPNA.AlarmControlSystem.Pages.TagTable.Components
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
 @using GPNA.AlarmControlSystem.Shared.Pagination
-@using GPNA.AlarmControlSystem.Models.Dto.Tag
 
 <div class="page-main">
     <div class="page-header justify-content-center position-relative">
@@ -45,8 +44,8 @@
         </div>
         
         <div class="d-flex gap-2">
-            <a class="tag-table-button-link" href="/tag-table-archive">Архив изменений АСУ ТП</a>
-            <a class="tag-table-button-link" href="/tag-table-journal">Журнал изменений АСУ ТП</a>
+            <a class="tag-table-button-link" href="@($"/tag-table-archive/?fieldId={FieldId}&workstationId={WorkstationId}")">Архив изменений АСУ ТП</a>
+            <a class="tag-table-button-link" href="@($"/tag-table-journal/?fieldId={FieldId}&workstationId={WorkstationId}")">Журнал изменений АСУ ТП</a>
             <button class="tag-table-button-link tag-table-button-send">Отправить в журнал изменений АСУ ТП</button>
         </div>
 
