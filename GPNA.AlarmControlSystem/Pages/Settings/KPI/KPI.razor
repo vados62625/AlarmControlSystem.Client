@@ -10,27 +10,13 @@
         <div class="d-flex align-items-center">
             <p>
                 НАСТРОЙКИ KPI 
-                @* <b>@FieldName</b> М/Р *@
             </p>
-            @* <SelectObject LinksDictionary="FieldLinksDictionary"/> *@
-            @* *@
-            @* <p class="mx-lg-1"> *@
-            @*     ЦЕХА <b>@WorkstationName</b> *@
-            @* </p> *@
-            @* <SelectObject LinksDictionary="WorkstationLinksDictionary"/> *@
         </div>
     </div>
 
     <div class="settings-container">
         <div class="bg">
-            @*<div class="d-flex align-items-center">*@
                 <p class="title">ЖУРНАЛ СИГНАЛИЗАЦИЙ</p>
-                @*<div class="btn-group">
-                    <button class="btn p-0 ms-2 d-flex shadow-none" onclick="@(async () => await UpdateJournalSettings())">
-                        <img src="img/icons/icon-save.svg" alt="*">
-                    </button>
-                </div>
-            </div>*@
 
             <div class="stats-container">
                 <StatKPI Title="Критичный приоритет" @bind-Value="@(_journalSettings.UrgentPriority)" Enabled="_enabledEditJournalSettings"/>

@@ -5,10 +5,6 @@
 @inject IJSRuntime JSRuntime
 
 <div style="height: 450px">
-    @* @if (!_loaded) *@
-    @* { *@
-    @*     <Loader/> *@
-    @* } *@
     <canvas id="@Id"></canvas>
 </div>
 
@@ -47,7 +43,8 @@
 
     protected async Task DrawChart()
     {
-        if (ExpiredAlarms != null && AlarmType != null && ExpiredAlarms.TryGetValue(AlarmType!.Value, out var expiredAlarms))
+        if (!(ExpiredAlarms != null && AlarmType != null && ExpiredAlarms.TryGetValue(AlarmType!.Value, out var expiredAlarms)))
+            expiredAlarms = GetDatesDict(DateTime.Now.AddDays(-16), DateTime.Now.AddDays(-1));
             if (expiredAlarms is {Count: > 0 })
             {
                 var numTime = expiredAlarms.Select(kvPair => $"{kvPair.Key:M} {kvPair.Key:t}");
@@ -123,5 +120,23 @@
                 await JSRuntime.InvokeVoidAsync("setupBarChart", Id!, config);
             }
     }
+    
+    private Dictionary<DateTime, int> GetDatesDict(DateTime start, DateTime end)
+    {
+        var dateTimes = Enumerable.Range(0, 1 + end.Subtract(start).Days)
+            .Select(offset => start.AddDays(offset))
+            .ToArray();
+
+        return dateTimes.ToDictionary(dt => dt, _ => 0);
+    }
+        
+    // private Dictionary<AlarmType, Dictionary<DateTimeOffset, int>> GetEventsDict(DateTimeOffset start, DateTimeOffset end)
+    // {
+    //     var events = Enum.GetValues(typeof(AlarmType)).Cast<AlarmType>().ToArray();
+    //
+    //     var dict = events.ToDictionary(c => c, _ => GetDatesDict(start, end));
+    //
+    //     return dict;
+    // }
 
 }

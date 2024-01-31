@@ -13,47 +13,43 @@ namespace GPNA.AlarmControlSystem.Pages.Reports.ReportBackAlarms;
 
 public partial class BackAlarms : ComponentBase
 {
-    [Inject]
-    private IOptions<AcsModuleOptions>? Options { get; set; }
+    [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
 
-    [Inject]
-    private IFieldService? FieldService { get; set; }
-    
-    [Inject]
-    private IIncomingAlarmService? IncomingAlarmService { get; set; }
+    [Inject] private IFieldService? FieldService { get; set; }
 
-    [Inject]
-    private IWorkStationService? WorkStationService { get; set; }
+    [Inject] private IIncomingAlarmService? IncomingAlarmService { get; set; }
 
-    [Inject]
-    protected ISpinnerService SpinnerService { get; set; } = default!;
+    [Inject] private IWorkStationService? WorkStationService { get; set; }
 
-    private DateTimeOffset DateTimeStart { get; } = new(DateTimeOffset.Now.AddDays(-16).Year, DateTimeOffset.Now.AddDays(-16).Month, DateTimeOffset.Now.AddDays(-16).Day, 0, 0, 0, DateTimeOffset.Now.AddDays(-16).Offset);
-    private DateTimeOffset DateTimeEnd { get; } = new(DateTimeOffset.Now.AddDays(-1).Year, DateTimeOffset.Now.AddDays(-1).Month, DateTimeOffset.Now.AddDays(-1).Day, 23, 59, 59, DateTimeOffset.Now.AddDays(-1).Offset);
+    [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
 
-    [Parameter]
-    [SupplyParameterFromQuery]
-    public int? FieldId { get; set; }
-    
-    [Parameter]
-    [SupplyParameterFromQuery]
-    public int? AlarmType { get; set; }
-    
+    private DateTimeOffset DateTimeStart { get; } = new(DateTimeOffset.Now.AddDays(-16).Year,
+        DateTimeOffset.Now.AddDays(-16).Month, DateTimeOffset.Now.AddDays(-16).Day, 0, 0, 0,
+        DateTimeOffset.Now.AddDays(-16).Offset);
+
+    private DateTimeOffset DateTimeEnd { get; } = new(DateTimeOffset.Now.AddDays(-1).Year,
+        DateTimeOffset.Now.AddDays(-1).Month, DateTimeOffset.Now.AddDays(-1).Day, 23, 59, 59,
+        DateTimeOffset.Now.AddDays(-1).Offset);
+
+    [Parameter] [SupplyParameterFromQuery] public int? FieldId { get; set; }
+
+    [Parameter] [SupplyParameterFromQuery] public int? AlarmType { get; set; }
+
     private FieldDto[]? _fields;
 
     private WorkStationDto[]? _workstations;
 
     private Dictionary<int, Dictionary<AlarmType, Dictionary<DateTime, int>>>? _expiredAlarmsCount;
-    
+
     private Dictionary<AlarmType, Dictionary<DateTime, int>>? _expiredAlarmsCountChart;
 
     private IDictionary<string, string>? WorkstationLinksDictionary { get; set; }
 
     private IDictionary<string, string> AlarmTypeLinksDictionary => new Dictionary<string, string>
     {
-        {"Активация", $"/reports/back-alarms?alarmType=0&fieldId={FieldId}"},
-        {"Имитация", $"/reports/back-alarms?alarmType=4&fieldId={FieldId}"},
-        {"Подавление", $"/reports/back-alarms?alarmType=2&fieldId={FieldId}"},
+        { "Активация", $"/reports/back-alarms?alarmType=0&fieldId={FieldId}" },
+        { "Имитация", $"/reports/back-alarms?alarmType=4&fieldId={FieldId}" },
+        { "Подавление", $"/reports/back-alarms?alarmType=2&fieldId={FieldId}" },
     };
 
     private bool _isEnableRenderChart;
@@ -72,13 +68,13 @@ public partial class BackAlarms : ComponentBase
     protected override async Task OnParametersSetAsync()
     {
         await GetWorkstations();
-        
+
         _isEnableRenderChart = true;
-        
+
         await SpinnerService.Load(GetExpiredAlarmsCount);
 
         FillWorkstationLinks();
-        
+
         StateHasChanged();
         await Task.Delay(100);
         _isEnableRenderChart = false;
@@ -94,7 +90,7 @@ public partial class BackAlarms : ComponentBase
         AlarmType ??= 0;
 
         await GetWorkstations();
-        
+
         await GetExpiredAlarmsCount();
 
         FillWorkstationLinks();
@@ -117,7 +113,8 @@ public partial class BackAlarms : ComponentBase
     {
         if (WorkStationService != null && FieldId != null)
         {
-            var query = new GetAlarmsCountForFieldQuery { FieldId = FieldId.Value, DateTimeStart = DateTimeStart, DateTimeEnd = DateTimeEnd };
+            var query = new GetAlarmsCountForFieldQuery
+                { FieldId = FieldId.Value, DateTimeStart = DateTimeStart, DateTimeEnd = DateTimeEnd };
             var result = await WorkStationService.GetList(query);
 
             if (result.Success)
@@ -126,25 +123,20 @@ public partial class BackAlarms : ComponentBase
             }
         }
     }
-    
+
     private async Task GetExpiredAlarmsCount()
     {
         if (IncomingAlarmService != null && FieldId != null)
         {
-            var query = new GetExpiredAlarmsByDatesQuery { FieldId = FieldId.Value, DateTimeStart = DateTimeStart, DateTimeEnd = DateTimeEnd };
+            var query = new GetExpiredAlarmsByDatesQuery
+                { FieldId = FieldId.Value, DateTimeStart = DateTimeStart, DateTimeEnd = DateTimeEnd };
             var result = await IncomingAlarmService.GetExpiredCountInHour(query);
 
             if (result.Success)
             {
                 _expiredAlarmsCount = result.Payload;
-            }
-            
-            var chartQuery = new GetExpiredAlarmsByDatesQuery { FieldId = FieldId.Value, DateTimeStart = DateTimeEnd.AddDays(-7 * 12 - 1), DateTimeEnd = DateTimeEnd };
-            var chartResult = await IncomingAlarmService.GetExpiredCountPerWeek(chartQuery);
 
-            if (chartResult.Success && result.Payload!.TryGetValue(FieldId!.Value, out var alarmsCount))
-            {
-                _expiredAlarmsCountChart = alarmsCount;
+                _expiredAlarmsCountChart = GetExpiredAlarmsCountSum();
             }
         }
     }
@@ -153,7 +145,20 @@ public partial class BackAlarms : ComponentBase
     {
         if (_fields != null && _fields.Any())
         {
-            WorkstationLinksDictionary = _fields.ToDictionary(field => field.Name, field => $"/reports/back-alarms?fieldId={field.Id}");
+            WorkstationLinksDictionary =
+                _fields.ToDictionary(field => field.Name, field => $"/reports/back-alarms?fieldId={field.Id}");
         }
+    }
+
+    private Dictionary<AlarmType, Dictionary<DateTime, int>> GetExpiredAlarmsCountSum()
+    {
+        return _expiredAlarmsCount!
+            .SelectMany(c => c.Value)
+            .GroupBy(pair => pair.Key)
+            .ToDictionary(x => x.Key, x =>
+                x.ToArray()
+                    .SelectMany(dict => dict.Value)
+                    .GroupBy(pair => pair.Key)
+                    .ToDictionary(group => group.Key, group => group.Sum(pair => pair.Value)));
     }
 }
