@@ -11,6 +11,6 @@ namespace GPNA.AlarmControlSystem.Interfaces
     public interface ISuppressedAlarmService : ICrudBase<SuppressedAlarmDto>
     {
         Task<Result<CountAlarmsOnDate[]>> GetCountSuppressedAlarmsByDates(GetCountSuppressedAlarmsByDatesQuery content);
-        Task<Result<AlarmsCollection<SuppressedAlarmDto>>> GetSuppressedAlarmsPerDate(GetIncomingAlarmsByDatesQuery content);
+        Task<Result<AlarmsCollection<SuppressedAlarmDto>>> GetSuppressedAlarmsCollection(GetAlarmsCollectionQueryBase content);
     }
 }

@@ -6,7 +6,7 @@
         public virtual DateTimeOffset? DateTimeStart { get; set; }
         public virtual DateTimeOffset? DateTimeEnd { get; set; }
         public int? Page { get; set; }
-        public int? ItemsOnPage { get; set; }
+        public int? ItemsOnPage { get; set; } = 15;
         public string? Suggest { get; set; }
     }
 }

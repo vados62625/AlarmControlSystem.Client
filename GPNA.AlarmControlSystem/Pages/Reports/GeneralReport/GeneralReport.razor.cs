@@ -1,4 +1,5 @@
 ﻿using GPNA.AlarmControlSystem.Interfaces;
+using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
 using GPNA.AlarmControlSystem.Models.Dto.Field;
 using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm;
 using GPNA.AlarmControlSystem.Models.Dto.KpiSettings;
@@ -74,7 +75,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports.GeneralReport
                 foreach (var workStation in _workstations)
                 {
                     var incomingAlarmsResult = await IncomingAlarmService.GetCountInHour(
-                        new GetIncomingAlarmsByDatesQuery
+                        new GetAlarmsCollectionQueryBase
                         {
                             WorkStationId = workStation.Id,
                             DateTimeStart = From,
@@ -148,7 +149,7 @@ namespace GPNA.AlarmControlSystem.Pages.Reports.GeneralReport
 
         private async Task<Stream?> GetFileStream()
         {
-            var result = await ExportService.ExportActiveAlarmsReport(new ExportIncomingAlarmsByDatesQuery
+            var result = await ExportService.ExportActiveAlarmsReport(new ExportAlarmsCollectionQueryBase
             {
                 DocumentType = ExportDocumentType.Excel,
                 WorkStationId = WorkstationId ?? 0,

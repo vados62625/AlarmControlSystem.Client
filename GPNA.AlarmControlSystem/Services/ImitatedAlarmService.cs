@@ -31,7 +31,7 @@ namespace GPNA.AlarmControlSystem.Services
         /// Получить количество активных сигнализаций за дату в рамках заданного периода
         /// </summary>
         /// <returns></returns>
-        public async Task<Result<AlarmsCollection<ImitatedAlarmDto>>> GetImitatedAlarmsPerDate(GetIncomingAlarmsByDatesQuery content)
+        public async Task<Result<AlarmsCollection<ImitatedAlarmDto>>> GetImitatedAlarmsCollection(GetAlarmsCollectionQueryBase content)
         {
             return await _apiBroker.Get<AlarmsCollection<ImitatedAlarmDto>>($"{URL}/GetImitatedAlarmsPerDate", content);
         }

@@ -10,14 +10,14 @@ namespace GPNA.AlarmControlSystem.Interfaces
 {
     public interface IIncomingAlarmService : ICrudBase<IncomingAlarmDto>
     {
-        Task<Result<CountAlarmsOnDate[]>> GetCountIncomingAlarmsByDates(GetIncomingAlarmsByDatesQuery content);
+        Task<Result<CountAlarmsOnDate[]>> GetCountIncomingAlarmsByDates(GetAlarmsCollectionQueryBase content);
         
-        Task<Result<CountAlarmsOnPriority[]>> GetCountIncomingAlarmsByPriorities(GetIncomingAlarmsByDatesQuery content);
+        Task<Result<CountAlarmsOnPriority[]>> GetCountIncomingAlarmsByPriorities(GetAlarmsCollectionQueryBase content);
 
-        Task<Result<AlarmsCollection<IncomingAlarmDto[]>>> GetAlarmsPerDate(GetIncomingAlarmsByDatesQuery content);
+        Task<Result<AlarmsCollection<IncomingAlarmDto[]>>> GetIncomingAlarmsCollection(GetAlarmsCollectionQueryBase content);
 
         Task<Result<Dictionary<DateTimeOffset, IncomingAlarmDto[]>>> GetCountInHour(
-            GetIncomingAlarmsByDatesQuery content);
+            GetAlarmsCollectionQueryBase content);
         
         Task<Result<Dictionary<int, Dictionary<AlarmType, Dictionary<DateTime, int>>>>> GetExpiredCountInHour(
             GetExpiredAlarmsByDatesQuery content);

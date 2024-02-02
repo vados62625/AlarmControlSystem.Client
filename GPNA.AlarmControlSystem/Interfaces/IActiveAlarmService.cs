@@ -11,6 +11,6 @@ namespace GPNA.AlarmControlSystem.Interfaces
     {
 
         Task<Result<CountAlarmsOnDate[]>> GetCountActiveAlarmsByDates(GetCountActiveAlarmsByDatesQuery content);
-        Task<Result<AlarmsCollection<ActiveAlarmDto>>> GetActiveAlarmsPerDate(GetIncomingAlarmsByDatesQuery content);
+        Task<Result<AlarmsCollection<ActiveAlarmDto>>> GetActiveAlarmsCollection(GetAlarmsCollectionQueryBase content);
     }
 }

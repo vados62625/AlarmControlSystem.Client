@@ -1,4 +1,6 @@
-﻿namespace GPNA.AlarmControlSystem.Application.Dto.TagChange;
+﻿using GPNA.AlarmControlSystem.Application.Dto.TagChange;
+
+namespace GPNA.AlarmControlSystem.Models.Dto.TagChange;
 
 public class TagChangesCollection
 {

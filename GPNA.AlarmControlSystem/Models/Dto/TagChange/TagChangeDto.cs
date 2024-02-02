@@ -1,5 +1,6 @@
 ﻿using GPNA.AlarmControlSystem.Models.Dto;
 using GPNA.AlarmControlSystem.Models.Dto.Tag;
+using GPNA.AlarmControlSystem.Models.Enums;
 
 namespace GPNA.AlarmControlSystem.Application.Dto.TagChange
 {
@@ -33,5 +34,20 @@ namespace GPNA.AlarmControlSystem.Application.Dto.TagChange
         /// В архиве
         /// </summary>
         public bool Archived { get; set; }
+        
+        /// <summary>
+        /// Новое описание
+        /// </summary>
+        public string? Description { get; set; }
+        
+        /// <summary>
+        /// Новый приоритет
+        /// </summary>
+        public PriorityType? Priority { get; set; }
+        
+        /// <summary>
+        /// Новая уставка
+        /// </summary>
+        public string? AlarmLimit { get; set; }
     }
 }
