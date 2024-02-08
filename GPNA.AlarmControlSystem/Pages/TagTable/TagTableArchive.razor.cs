@@ -1,5 +1,4 @@
-﻿using Blazored.Modal;
-using Blazored.Modal.Services;
+﻿using Blazored.Modal.Services;
 using GPNA.AlarmControlSystem.Application.Dto.Tag;
 using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto.Field;
@@ -9,7 +8,6 @@ using GPNA.AlarmControlSystem.Models.Dto.Workstation;
 using GPNA.AlarmControlSystem.Models.Enums;
 using GPNA.AlarmControlSystem.Options;
 using GPNA.AlarmControlSystem.Services;
-using GPNA.AlarmControlSystem.Pages.TagTable.Modals;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
@@ -87,20 +85,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
                     workStation => $"/tag-table/?fieldId={FieldId}&workstationId={workStation.Id}");
             }
         }
-        
-        public async Task AddTag()
-        {
-            // var createModal = Modal.Show<AddTagModal>();
-            var parameters = new ModalParameters { { "Tag", new TagDto { WorkStationId = WorkstationId ?? 1 } } };
-            var createModal = Modal.Show<EditTagModal>("", parameters);
-            var result = await createModal.Result;
-        
-            if (result.Confirmed)
-            {
-                await SpinnerService.Load(GetTags);
-            }
-        }
-        
+
         private async Task GetTags()
         {
             _query.WorkStationId = WorkstationId ?? 1;

@@ -1,25 +1,8 @@
 ﻿@page "/tag-table-journal"
 
-@using Blazored.Modal;
-@using Blazored.Modal.Services;
-@using GPNA.AlarmControlSystem.Application.Dto.Tag;
-@using GPNA.AlarmControlSystem.Interfaces;
-@using GPNA.AlarmControlSystem.Models.Dto.Field;
-@using GPNA.AlarmControlSystem.Models.Dto.Queries;
-@using GPNA.AlarmControlSystem.Models.Dto.Tag;
-@using GPNA.AlarmControlSystem.Models.Dto.Workstation;
-@using GPNA.AlarmControlSystem.Models.Enums;
-@using GPNA.AlarmControlSystem.Options;
-@using GPNA.AlarmControlSystem.Services;
-@using GPNA.AlarmControlSystem.Pages.TagTable.Modals;
-@using Microsoft.AspNetCore.Components;
-@using Microsoft.Extensions.Options;
-@using Microsoft.JSInterop;
-
 @using GPNA.AlarmControlSystem.Pages.TagTable.Components
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
 @using GPNA.AlarmControlSystem.Shared.Pagination
-
 
 <div class="page-main">
     <div class="page-header justify-content-center position-relative">
@@ -41,9 +24,9 @@
     </div>
 
     <div class="priority-alarm-container">        
-        <TagStatusOnHead Title="Некорректное описание" Value="@(_tags.InvalidDesc)"/>
-        <TagStatusOnHead Title="Некорректный приоритет" Value="@(_tags.InvalidPriority)"/>
-        <TagStatusOnHead Title="Некорректная уставка" Value="@(_tags.InvalidAlarmLimit)"/>        
+        <TagStatusOnHead Title="Некорректное описание" Value="@(_tagChangesCollection.IncorrectDescription)"/>
+        <TagStatusOnHead Title="Некорректный приоритет" Value="@(_tagChangesCollection.IncorrectPriority)"/>
+        <TagStatusOnHead Title="Некорректная уставка" Value="@(_tagChangesCollection.IncorrectAlarmLimit)"/>        
     </div>
 
     <div class="tag-table-search-container">        
@@ -54,11 +37,11 @@
         </div>
     </div>
 
-    <TagsTableJournal Tags="_tags.Items?.ToList()"
+    <TagsTableJournal Tags="_tagChangesCollection.Items?.ToList()"
                OnStateFilterChanged="SetStateFilter"
                OnPriorityFilterChanged="SetPriorityFilter"
                OnOrderingChanged="OnOrderingChanged"
                OnTagDeleted="GetTags"/>
 
-    <Pagination CurrentPage="@(_query.Page ?? 1)" PagesCount="_tags.PagesCount" OnPageClick="OnPageChanged"/>
+    <Pagination CurrentPage="@(_query.Page ?? 1)" PagesCount="_tagChangesCollection.PagesCount" OnPageClick="OnPageChanged"/>
 </div>

@@ -1,7 +1,9 @@
 ﻿@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
 @using GPNA.AlarmControlSystem.Models.Dto.Tag
+@using GPNA.AlarmControlSystem.Models.Dto.TagChange
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
+@using GPNA.AlarmControlSystem.Application.Dto.TagChange
 
 <table class="bg-tag-table ">
     <thead>
@@ -71,7 +73,7 @@
     {
         @foreach (var tag in Tags)
         {
-            <TagsTableLineJournal Tag="tag" OnTagDeleted="OnTagDeleted"/>
+            <TagsTableLineJournal TagChange="tag"/>
         }
     }  
     </tbody>
@@ -79,7 +81,7 @@
 
 @code {
     [Parameter]
-    public List<TagDto>? Tags { get; set; }
+    public List<TagChangeDto>? Tags { get; set; }
 
     [CascadingParameter(Name = nameof(StateFilter))]
     public StateType? StateFilter { get; set; }

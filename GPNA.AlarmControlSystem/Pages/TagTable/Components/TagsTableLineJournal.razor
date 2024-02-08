@@ -5,6 +5,7 @@
 @using GPNA.AlarmControlSystem.Pages.TagTable.Components
 @using GPNA.AlarmControlSystem.Pages.TagTable.Modals
 @using GPNA.AlarmControlSystem.Services
+@using GPNA.AlarmControlSystem.Application.Dto.TagChange
 
 <tr class="tag-table-line @Tag.Validate.ToString()">
     <td @onclick="ShowMoreAttributes">                
@@ -28,10 +29,10 @@
         }         
     </td>
     <td @onclick="ShowMoreAttributes">
-        <p>Смирнов Алексей Иванович</p>
+        <p>@(TagChange.Initiator?.Login ?? "-")</p>
     </td>
     <td @onclick="ShowMoreAttributes">
-        <p>Иванов Алексей Иванович</p>
+        <p>@(TagChange.Executor?.Login ?? "-")</p>
     </td>
     <td class="tag-table-attention" @onclick="ShowMoreAttributes">        
         @if (Tag.ModelState.TryGetValue("Priority", out var errorPriority))
@@ -124,9 +125,9 @@
     [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
     [Inject] protected ITagService TagService { get; set; } = default!;
 
-    [Parameter] public TagDto Tag { get; set; } = new TagDto();
-    [Parameter] public EventCallback<TagDto> OnTagDeleted { get; set; }
+    [Parameter] public TagChangeDto TagChange { get; set; } = new TagChangeDto();
 
+    private TagDto Tag = new TagDto();
     private bool _attentionReglament = false;
 
     bool _displayComment = false;
@@ -147,9 +148,9 @@
 
     protected override void OnParametersSet()
     {
-        if (Tag.ModelState.Count > 0)
+        if (TagChange?.Tag?.ModelState.Count > 0)
         {
-            foreach (var obj in Tag.ModelState)
+            foreach (var obj in TagChange.Tag.ModelState)
             {
                 if (obj.Key is "Position" or "Consequence" or "ActionFieldOperator" or "ActionArmOperator" or "Inform" or "ReactionTime")
                 {
@@ -157,5 +158,7 @@
                 }
             }
         }
+
+        Tag = TagChange?.Tag ?? new TagDto();
     }
 }
