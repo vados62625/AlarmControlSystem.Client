@@ -37,10 +37,10 @@ namespace GPNA.AlarmControlSystem.Services
         }
         
         /// <summary>
-        /// Получить количество активных сигнализаций за дату в рамках заданного периода
+        /// Получить количество подавленных сигнализаций за дату в рамках заданного периода
         /// </summary>
         /// <returns></returns>
-        public async Task<Result<AlarmsCollection<SuppressedAlarmDto>>> GetSuppressedAlarmsPerDate(GetIncomingAlarmsByDatesQuery content)
+        public async Task<Result<AlarmsCollection<SuppressedAlarmDto>>> GetSuppressedAlarmsCollection(GetAlarmsCollectionQueryBase content)
         {
             return await _apiBroker.Get<AlarmsCollection<SuppressedAlarmDto>>($"{URL}/GetSuppressedAlarmsPerDate", content);
         }

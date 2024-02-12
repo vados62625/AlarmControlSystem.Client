@@ -1,4 +1,5 @@
-﻿using GPNA.AlarmControlSystem.Interfaces;
+﻿using GPNA.AlarmControlSystem.Extensions;
+using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto.ActiveAlarm;
 using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
 using GPNA.AlarmControlSystem.Models.Dto.Field;
@@ -220,21 +221,7 @@ public partial class Monitoring : ComponentBase
     {
         if (IncomingAlarmService != null)
         {
-            var request = await IncomingAlarmService.GetAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
-            {
-                WorkStationId = WorkstationId ?? 0,
-                Suggest = _tagNameFilter,
-                DateTimeStart = _from,
-                DateTimeEnd = _to,
-                State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
-                Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
-                OrderPropertyName = _orderBy,
-                OrderByDescending = _orderByDesc,
-                Page = _currentPage,
-                CountOnPage = 15,
-                DisplayShifts = !FiltersOn &&
-                                (_orderBy == nameof(IncomingAlarmDto.DateTimeStart) || _orderBy == string.Empty)
-            });
+            var request = await IncomingAlarmService.GetIncomingAlarmsCollection(GetAlarmsCollectionQuery());
 
             if (request.Success)
             {
@@ -250,21 +237,7 @@ public partial class Monitoring : ComponentBase
     {
         if (ActiveAlarmService != null)
         {
-            var request = await ActiveAlarmService.GetActiveAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
-            {
-                WorkStationId = WorkstationId ?? 0,
-                Suggest = _tagNameFilter,
-                DateTimeStart = _from,
-                DateTimeEnd = _to,
-                State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
-                Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
-                OrderPropertyName = _orderBy,
-                OrderByDescending = _orderByDesc,
-                Page = _currentPage,
-                CountOnPage = 15,
-                DisplayShifts = false
-                // DisplayShifts = !FiltersOn && (_orderBy == nameof(IncomingAlarmDto.DateTimeActivation) || _orderBy == string.Empty)
-            });
+            var request = await ActiveAlarmService.GetActiveAlarmsCollection(GetAlarmsCollectionQuery());
 
             if (request.Success)
             {
@@ -280,20 +253,7 @@ public partial class Monitoring : ComponentBase
     {
         if (ImitatedAlarmService != null)
         {
-            var request = await ImitatedAlarmService.GetImitatedAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
-            {
-                WorkStationId = WorkstationId ?? 0,
-                Suggest = _tagNameFilter,
-                DateTimeStart = _from,
-                DateTimeEnd = _to,
-                State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
-                Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
-                OrderPropertyName = _orderBy,
-                OrderByDescending = _orderByDesc,
-                Page = _currentPage,
-                CountOnPage = 15,
-                DisplayShifts = false
-            });
+            var request = await ImitatedAlarmService.GetImitatedAlarmsCollection(GetAlarmsCollectionQuery());
 
             if (request.Success)
             {
@@ -309,21 +269,7 @@ public partial class Monitoring : ComponentBase
     {
         if (SuppressedAlarmService != null)
         {
-            var request = await SuppressedAlarmService.GetSuppressedAlarmsPerDate(new GetIncomingAlarmsByDatesQuery
-            {
-                WorkStationId = WorkstationId ?? 0,
-                Suggest = _tagNameFilter,
-                DateTimeStart = _from,
-                DateTimeEnd = _to,
-                State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
-                Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
-                OrderPropertyName = _orderBy,
-                OrderByDescending = _orderByDesc,
-                Page = _currentPage,
-                CountOnPage = 15,
-                DisplayShifts = false
-                // DisplayShifts = !FiltersOn && (_orderBy == nameof(IncomingAlarmDto.DateTimeActivation) || _orderBy == string.Empty)
-            });
+            var request = await SuppressedAlarmService.GetSuppressedAlarmsCollection(GetAlarmsCollectionQuery());
 
             if (request.Success)
             {
@@ -356,68 +302,28 @@ public partial class Monitoring : ComponentBase
 
     private async Task<Stream?> GetIncomingExportStream()
     {
-        var result = await ExportService.ExportIncomingAlarms(new ExportIncomingAlarmsByDatesQuery
-        {
-            DocumentType = ExportDocumentType.Excel,
-            WorkStationId = WorkstationId ?? 0,
-            Suggest = _tagNameFilter,
-            DateTimeStart = _from,
-            DateTimeEnd = _to,
-            State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
-            Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
-            CountOnPage = int.MaxValue
-        });
+        var result = await ExportService.ExportIncomingAlarms(GetExportAlarmsCollectionQuery());
 
         return new MemoryStream(result);
     }
 
     private async Task<Stream?> GetActiveExportStream()
     {
-        var result = await ExportService.ExportActiveAlarms(new ExportIncomingAlarmsByDatesQuery
-        {
-            DocumentType = ExportDocumentType.Excel,
-            WorkStationId = WorkstationId ?? 0,
-            Suggest = _tagNameFilter,
-            DateTimeStart = _from,
-            DateTimeEnd = _to,
-            State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
-            Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
-            CountOnPage = int.MaxValue
-        });
+        var result = await ExportService.ExportActiveAlarms(GetExportAlarmsCollectionQuery());
 
         return new MemoryStream(result);
     }
 
     private async Task<Stream?> GetImitatedExportStream()
     {
-        var result = await ExportService.ExportImitatedAlarms(new ExportIncomingAlarmsByDatesQuery
-        {
-            DocumentType = ExportDocumentType.Excel,
-            WorkStationId = WorkstationId ?? 0,
-            Suggest = _tagNameFilter,
-            DateTimeStart = _from,
-            DateTimeEnd = _to,
-            State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
-            Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
-            CountOnPage = int.MaxValue
-        });
+        var result = await ExportService.ExportImitatedAlarms(GetExportAlarmsCollectionQuery());
 
         return new MemoryStream(result);
     }
 
     private async Task<Stream?> GetSuppressedExportStream()
     {
-        var result = await ExportService.ExportSuppressedAlarms(new ExportIncomingAlarmsByDatesQuery
-        {
-            DocumentType = ExportDocumentType.Excel,
-            WorkStationId = WorkstationId ?? 0,
-            Suggest = _tagNameFilter,
-            DateTimeStart = _from,
-            DateTimeEnd = _to,
-            State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
-            Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
-            CountOnPage = int.MaxValue
-        });
+        var result = await ExportService.ExportSuppressedAlarms(GetExportAlarmsCollectionQuery());
 
         return new MemoryStream(result);
     }
@@ -426,18 +332,18 @@ public partial class Monitoring : ComponentBase
     {
         SpinnerService?.Show();
 
-        var fileStream = AlarmType switch
+        var fileStream = (AlarmTypeEnum)AlarmType switch
         {
-            (int)Models.Enums.AlarmTypeEnum.Incoming => await GetIncomingExportStream(),
-            (int)Models.Enums.AlarmTypeEnum.Active => await GetActiveExportStream(),
-            (int)Models.Enums.AlarmTypeEnum.Simulation => await GetImitatedExportStream(),
-            (int)Models.Enums.AlarmTypeEnum.Suppressed => await GetSuppressedExportStream(),
+            AlarmTypeEnum.Incoming => await GetIncomingExportStream(),
+            AlarmTypeEnum.Active => await GetActiveExportStream(),
+            AlarmTypeEnum.Simulation => await GetImitatedExportStream(),
+            AlarmTypeEnum.Suppressed => await GetSuppressedExportStream(),
             _ => default
         };
 
         if (fileStream == null) return;
 
-        var fileName = "export.xlsx";
+        var fileName = $"{((AlarmTypeEnum)AlarmType).GetDescription()} - экспорт.xlsx";
 
         using var streamRef = new DotNetStreamReference(stream: fileStream);
 
@@ -497,5 +403,40 @@ public partial class Monitoring : ComponentBase
         _tagNameFilter = tagname;
         _currentPage = 1;
         await InitializePageAsync();
+    }
+
+    private GetAlarmsCollectionQueryBase GetAlarmsCollectionQuery()
+    {
+        return new GetAlarmsCollectionQueryBase
+        {
+            WorkStationId = WorkstationId ?? 0,
+            Suggest = _tagNameFilter,
+            DateTimeStart = _from,
+            DateTimeEnd = _to,
+            State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
+            Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
+            OrderPropertyName = _orderBy,
+            OrderByDescending = _orderByDesc,
+            Page = _currentPage,
+            ItemsOnPage = 15,
+            DisplayShifts = !FiltersOn &&
+                            (AlarmTypeEnum)AlarmType == AlarmTypeEnum.Incoming &&
+                            (_orderBy == nameof(IncomingAlarmDto.DateTimeStart) || _orderBy == string.Empty)
+        };
+    }
+
+    private ExportAlarmsCollectionQueryBase GetExportAlarmsCollectionQuery()
+    {
+        return new ExportAlarmsCollectionQueryBase
+        {
+            DocumentType = ExportDocumentType.Excel,
+            WorkStationId = WorkstationId ?? 0,
+            Suggest = _tagNameFilter,
+            DateTimeStart = _from,
+            DateTimeEnd = _to,
+            State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
+            Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
+            ItemsOnPage = int.MaxValue
+        };
     }
 }

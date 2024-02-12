@@ -16,29 +16,29 @@ public class ExportService : IExportService
         _apiBroker = apiBroker;
     }
 
-    public async Task<byte[]> ExportIncomingAlarms(ExportIncomingAlarmsByDatesQuery query)
+    public async Task<byte[]> ExportIncomingAlarms(ExportAlarmsCollectionQueryBase queryBase)
     {
-        return await _apiBroker.GetFile($"{URL}/ExportIncomingAlarms", query);
+        return await _apiBroker.GetFile($"{URL}/ExportIncomingAlarms", queryBase);
     }
 
-    public async Task<byte[]> ExportActiveAlarms(ExportIncomingAlarmsByDatesQuery query)
+    public async Task<byte[]> ExportActiveAlarms(ExportAlarmsCollectionQueryBase queryBase)
     {
-        return await _apiBroker.GetFile($"{URL}/ExportActiveAlarms", query);
+        return await _apiBroker.GetFile($"{URL}/ExportActiveAlarms", queryBase);
     }
 
-    public async Task<byte[]> ExportImitatedAlarms(ExportIncomingAlarmsByDatesQuery query)
+    public async Task<byte[]> ExportImitatedAlarms(ExportAlarmsCollectionQueryBase queryBase)
     {
-        return await _apiBroker.GetFile($"{URL}/ExportImitatedAlarms", query);
+        return await _apiBroker.GetFile($"{URL}/ExportImitatedAlarms", queryBase);
     }
 
-    public async Task<byte[]> ExportSuppressedAlarms(ExportIncomingAlarmsByDatesQuery query)
+    public async Task<byte[]> ExportSuppressedAlarms(ExportAlarmsCollectionQueryBase queryBase)
     {
-        return await _apiBroker.GetFile($"{URL}/ExportSuppressedAlarms", query);
+        return await _apiBroker.GetFile($"{URL}/ExportSuppressedAlarms", queryBase);
     }
 
-    public async Task<byte[]> ExportActiveAlarmsReport(ExportIncomingAlarmsByDatesQuery query)
+    public async Task<byte[]> ExportActiveAlarmsReport(ExportAlarmsCollectionQueryBase queryBase)
     {
-        return await _apiBroker.GetFile($"{URL}/ExportActiveAlarmsReport", query);
+        return await _apiBroker.GetFile($"{URL}/ExportActiveAlarmsReport", queryBase);
     }
     
     public async Task<byte[]> ExportTags(ExportTagsQuery query)
