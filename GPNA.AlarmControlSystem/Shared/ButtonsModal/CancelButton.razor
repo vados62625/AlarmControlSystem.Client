@@ -1,4 +1,4 @@
-﻿<button @onclick="Click" class="button-modal cancel @TypeModal">
+﻿<button @onclick="ClickEvent" class="button-modal cancel @TypeModal" type="button" title="cancel">
 	<svg>
 		<use href="/img/icons/icons.svg#tag-modal-cancel"></use>
 	</svg>
@@ -6,11 +6,11 @@
 </button>
 
 @code {
-    [Parameter] public EventCallback<bool> ClickEvent { get; set; } 
+    [Parameter] public EventCallback ClickEvent { get; set; } 
     [Parameter] public string TypeModal { get; set; }
 
     private async Task Click()
     {
-        await ClickEvent.InvokeAsync(true);
+        await ClickEvent.InvokeAsync();
     }
 }

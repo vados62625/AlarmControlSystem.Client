@@ -84,7 +84,7 @@
 			</div>
 			<div class="tag-table__modal-button-container">
 				<SaveButton />
-				<CancelButton ClickEvent="Cancel"/>
+				<CancelButton ClickEvent="async () => await Cancel()"/>
 			</div>
 		</div>
 	</div>
@@ -96,6 +96,7 @@
 
 @code {
 	[CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;
+	[CascadingParameter] public IModalService Modal { get; set; } = default!;
 	
 	[Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
 	[Inject] protected ITagService TagService { get; set; } = default!;
@@ -139,8 +140,18 @@
 		}
 	}
 
-	void Cancel()
+	private async Task Cancel()
 	{
-		ModalInstance.CancelAsync();
+		var deleteModal = Modal.Show<CancelChangeTagModal>("");
+		var result = await deleteModal.Result;
+
+		if (result.Confirmed)
+		{
+			await ModalInstance.CancelAsync();
+			// SpinnerService.Show();
+			// await TagService.Delete(Tag.Id);
+			// SpinnerService.Hide();
+			// await OnTagDeleted.InvokeAsync(Tag);
+		}
 	}
 }
