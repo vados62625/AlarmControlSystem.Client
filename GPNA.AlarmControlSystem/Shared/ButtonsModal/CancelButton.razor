@@ -8,9 +8,4 @@
 @code {
     [Parameter] public EventCallback ClickEvent { get; set; } 
     [Parameter] public string TypeModal { get; set; }
-
-    private async Task Click()
-    {
-        await ClickEvent.InvokeAsync();
-    }
 }

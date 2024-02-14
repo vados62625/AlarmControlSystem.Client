@@ -1,5 +1,5 @@
 ﻿<div class="button-modal-container">
-    <button @onclick="Click" class="button-modal close">
+    <button @onclick="ClickEvent" class="button-modal close" type="button">
 	    <svg>
 		    <use href="/img/icons/icons.svg#tag-modal-close"></use>
 	    </svg>	
@@ -7,10 +7,5 @@
 </div>
 
 @code {
-    [Parameter] public EventCallback<bool> ClickEvent { get; set; }    
-
-    private async Task Click()
-    {
-        await ClickEvent.InvokeAsync(true);
-    }
+    [Parameter] public EventCallback ClickEvent { get; set; }
 }

@@ -19,49 +19,53 @@
     overflow-y: auto;
     outline: 0;
 }
-    .tag-table__modal-bg.add, .tag-table__modal-bg.edit {
-        height: 664px;
-    }
 
-    .tag-table__modal-bg.correct {
-        width: 1250px;
-    }
-    .tag-table__modal-bg.delete, .tag-table__modal-bg.send-alarm {
-        width: 371px;        
-        min-height: 200px;
-        background: linear-gradient(0deg, rgba(226, 87, 87, 0.1), rgba(226, 87, 87, 0.1)), #FFFFFF;
-        box-shadow: 0px 2px 5px rgba(0, 32, 51, 0.2);
-        padding: 30px;
-        gap: 10px;
-    }
-    .tag-table__modal-bg.save-tag {
-        width: 670px;
-        min-height: 340px;        
-        padding: 30px;
-        gap: 10px;
-    }
-    .tag-table__modal-bg.save-tag.small {       
-        min-height: 74px;
-        padding: 30px;       
-    }
+.tag-table__modal-bg.add, .tag-table__modal-bg.edit {
+    height: 664px;
+}
 
-    .tag-table__modal-bg.send-tag-journal {
-        width: 415px;
-        min-height: 242px;
-        padding: 30px;
-        gap: 10px;
-    }
+.tag-table__modal-bg.correct {
+    width: 1250px;
+}
 
-    .tag-table__modal-bg.cancel-change-tag {
-        width: 365px;
-        min-height: 182px;
-        padding: 30px;
-        gap: 10px;
-    }
+.tag-table__modal-bg.delete, .tag-table__modal-bg.send-alarm {
+    width: 371px;
+    min-height: 200px;
+    background: linear-gradient(0deg, rgba(226, 87, 87, 0.1), rgba(226, 87, 87, 0.1)), #FFFFFF;
+    box-shadow: 0px 2px 5px rgba(0, 32, 51, 0.2);
+    padding: 30px;
+    gap: 10px;
+}
 
-    .tag-table__modal-bg.send-alarm {
-        background: #FFFFFF;
-    }
+.tag-table__modal-bg.save-tag {
+    width: 670px;
+    min-height: 340px;
+    padding: 30px;
+    gap: 10px;
+}
+
+.tag-table__modal-bg.save-tag.small {
+    min-height: 74px;
+    padding: 30px;
+}
+
+.tag-table__modal-bg.send-tag-journal {
+    width: 415px;
+    min-height: 242px;
+    padding: 30px;
+    gap: 10px;
+}
+
+.tag-table__modal-bg.cancel-change-tag {
+    width: 365px;
+    min-height: 182px;
+    padding: 30px;
+    gap: 10px;
+}
+
+.tag-table__modal-bg.send-alarm {
+    background: #FFFFFF;
+}
 
 .tag-table__modal-title {
     color: #002033;
@@ -94,39 +98,39 @@
     flex-direction: column;
 }
 
-    .tag-table__modal-item-container p {
-        margin-bottom: 2px;
-        margin-left: 6px;
-        margin-top: 3px;
-    }
+.tag-table__modal-item-container p {
+    margin-bottom: 2px;
+    margin-left: 6px;
+    margin-top: 3px;
+}
 
-    .tag-table__modal-item-container.tagname input {        
-        font-weight: 700;
-    }
+.tag-table__modal-item-container.tagname input {
+    font-weight: 700;
+}
 
 
-    .tag-table__modal-item-container.red input, .tag-table__modal-item-container.red textarea, 
-    .tag-table__modal-item-container.red .tag-table__modal-text-container {
-        border: 1px solid #E25757;
-        color: #E25757;
-    }
+.tag-table__modal-item-container.red input, .tag-table__modal-item-container.red textarea,
+.tag-table__modal-item-container.red .tag-table__modal-text-container {
+    border: 1px solid #E25757;
+    color: #E25757;
+}
 
-    .tag-table__modal-item-container.red p {
-        color: #E25757;
-    }
+.tag-table__modal-item-container.red p {
+    color: #E25757;
+}
 
-    .tag-table__modal-item-container input:focus-visible, .tag-table__modal-item-container textarea:focus-visible, .tag-table__modal-item-container select:focus-visible {
-        outline: 1px solid rgba(0, 32, 51, 0.1);
-    }
-    .tag-table__modal-item-container.red input:focus-visible, .tag-table__modal-item-container.red textarea:focus-visible {
-        outline: 1px solid #E25757;
-    }
+.tag-table__modal-item-container input:focus-visible, .tag-table__modal-item-container textarea:focus-visible, .tag-table__modal-item-container select:focus-visible {
+    outline: 1px solid rgba(0, 32, 51, 0.1);
+}
 
-    .tag-table__modal-item-container input::placeholder, .tag-table__modal-item-container textarea::placeholder {
-        color: rgba(0, 32, 51, 0.25);
-    }
+.tag-table__modal-item-container.red input:focus-visible, .tag-table__modal-item-container.red textarea:focus-visible {
+    outline: 1px solid #E25757;
+}
 
-    
+.tag-table__modal-item-container input::placeholder, .tag-table__modal-item-container textarea::placeholder {
+    color: rgba(0, 32, 51, 0.25);
+}
+
 
 .tag-table__modal-item-input, .tag-table__modal-item-textarea, .tag-table__modal-item-select {
     background: #FFFFFF;
@@ -139,20 +143,21 @@
     padding-left: 6px;
 }
 
-    .tag-table__modal-item-input.big, .tag-table__modal-item-textarea.big {
-        min-width: 555px;
-    }
+.tag-table__modal-item-input.big, .tag-table__modal-item-textarea.big {
+    min-width: 555px;
+}
 
-    .tag-table__modal-item-input.small {
-        min-width: 265px;
-    }
-    .tag-table__modal-item-input.smaller, .tag-table__modal-item-select.smaller {
-        min-width: 260px;
-    }
+.tag-table__modal-item-input.small {
+    min-width: 265px;
+}
 
-    .tag-table__modal-bg.save-tag .tag-table__modal-item-input {
-        max-width: 148px;
-    }
+.tag-table__modal-item-input.smaller, .tag-table__modal-item-select.smaller {
+    min-width: 260px;
+}
+
+.tag-table__modal-bg.save-tag .tag-table__modal-item-input {
+    max-width: 148px;
+}
 
 .tag-table__modal-item-textarea {
     min-height: 40px;
@@ -162,15 +167,15 @@
 .tag-table__modal-item-select {
     appearance: none;
     min-width: 265px;
-    color: rgba(0, 32, 51, 0.25);
 }
-    .tag-table__modal-item-select option {
-        color: #002033;
-    }
 
-    .tag-table__modal-item-select > option:checked {
-        background-color: rgba(204, 217, 224, 0.15);
-    }
+.tag-table__modal-item-select option {
+    color: #002033;
+}
+
+.tag-table__modal-item-select > option:checked {
+    background-color: rgba(204, 217, 224, 0.15);
+}
 
 .tag-table__modal-text-container {
     background: #FFFFFF;
@@ -180,17 +185,18 @@
     padding: 3px 6px 2px 6px;
 }
 
-    .tag-table__modal-text-container p {
-        line-height: 120%;
-        font-weight: 400;
-        font-size: 12px;
-        color: rgba(0, 32, 51, 0.25);        
-        margin: 0px;
-    }
+.tag-table__modal-text-container p {
+    line-height: 120%;
+    font-weight: 400;
+    font-size: 12px;
+    color: rgba(0, 32, 51, 0.25);
+    margin: 0px;
+}
 
 .item-container__text-ps {
     font-size: 10px;
 }
+
 .tag-table__modal-bg.save-tag .tag-table__modal-text-container {
     min-width: 295px;
 }
@@ -208,20 +214,20 @@
     position: relative;
 }
 
-    .tag-table__modal-custom-select::after {
-        --size: 3px;
-        position: absolute;
-        content: "";
-        right: 9px;
-        pointer-events: none;
-    }
+.tag-table__modal-custom-select::after {
+    --size: 3px;
+    position: absolute;
+    content: "";
+    right: 9px;
+    pointer-events: none;
+}
 
-    .tag-table__modal-custom-select::after {
-        border-left: var(--size) solid transparent;
-        border-right: var(--size) solid transparent;
-        border-top: var(--size) solid rgba(0, 32, 51, 0.3);
-        top: 45%;
-    }
+.tag-table__modal-custom-select::after {
+    border-left: var(--size) solid transparent;
+    border-right: var(--size) solid transparent;
+    border-top: var(--size) solid rgba(0, 32, 51, 0.3);
+    top: 45%;
+}
 
 .tag-table__modal-button-container {
     display: flex;
@@ -249,20 +255,20 @@
     justify-content: center;
 }
 
-    .button-adressee-add:hover {
-        background: #E8E8E8;
-    }
+.button-adressee-add:hover {
+    background: #E8E8E8;
+}
 
-    .button-adressee-add svg {
-        width: 11px;
-        height: 11px;
-    }
+.button-adressee-add svg {
+    width: 11px;
+    height: 11px;
+}
 
-    .button-adressee-add p {
-        font-weight: 400;
-        font-size: 12px;
-        margin-left: 8px;
-    }
+.button-adressee-add p {
+    font-weight: 400;
+    font-size: 12px;
+    margin-left: 8px;
+}
 
 .tag-table__modal-info {
     width: 595px;
@@ -277,13 +283,15 @@
     color: rgba(0, 32, 51, 0.6);
 }
 
-    .tag-table__modal-info .title {
-        margin-bottom: 7px;
-    }
+.tag-table__modal-info .title {
+    margin-bottom: 7px;
+}
 
-    .tag-table__modal-info.big {
-        width: 100%;
-        min-height: 230px;
-    }
+.tag-table__modal-info.big {
+    width: 100%;
+    min-height: 230px;
+}
 
-
+.modal-backdrop.modal-backdrop-level-2.show {
+    z-index: 1055;
+}
