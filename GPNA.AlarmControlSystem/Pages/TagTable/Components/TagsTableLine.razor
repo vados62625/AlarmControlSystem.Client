@@ -5,6 +5,7 @@
 @using GPNA.AlarmControlSystem.Pages.TagTable.Components
 @using GPNA.AlarmControlSystem.Pages.TagTable.Modals
 @using GPNA.AlarmControlSystem.Services
+@using Blazored.Toast.Services
 
 <tr class="tag-table-line @Tag.Validate.ToString()">
     <td @onclick="ShowMoreAttributes">                
@@ -88,6 +89,7 @@
     [CascadingParameter] public IModalService Modal { get; set; } = default!;
     
     [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
+    [Inject] protected IToastService? ToastService { get; set; }
     [Inject] protected ITagService TagService { get; set; } = default!;
     
     [Parameter] public TagDto Tag { get; set; } = new TagDto();
@@ -139,7 +141,9 @@
         if (result.Confirmed)
         {
             SpinnerService.Show();
-            await TagService.Delete(Tag.Id);
+            var deleteResult = await TagService.Delete(Tag.Id);
+            if (!deleteResult.Success)
+                ToastService?.ShowError(deleteResult.Error);
             SpinnerService.Hide();
             await OnTagDeleted.InvokeAsync(Tag);
         }
