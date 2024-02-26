@@ -34,10 +34,6 @@
     <AdditionalFiles Include="Pages\Main\Components\Charts\DoughnutChart.razor" />
     <AdditionalFiles Include="Pages\Reports\GeneralReport\Charts\Chart1.razor" />
     <AdditionalFiles Include="Pages\Reports\GeneralReport\Charts\Chart2.razor" />
-    <AdditionalFiles Include="Pages\TagTable\Modals\AddTagModal.razor" />
-    <AdditionalFiles Include="Pages\TagTable\Modals\CorrectTagModal.razor" />
-    <AdditionalFiles Include="Pages\TagTable\Modals\DeleteTagModal.razor" />
-    <AdditionalFiles Include="Pages\TagTable\Modals\EditTagModal.razor" />
   </ItemGroup>
 
   <ItemGroup>

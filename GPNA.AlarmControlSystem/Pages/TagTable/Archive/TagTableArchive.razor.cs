@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
 
-namespace GPNA.AlarmControlSystem.Pages.TagTable
+namespace GPNA.AlarmControlSystem.Pages.TagTable.Archive
 {
     public partial class TagTableArchive : ComponentBase
     {

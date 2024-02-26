@@ -3,9 +3,7 @@
 @using GPNA.AlarmControlSystem.Interfaces
 @using GPNA.AlarmControlSystem.Models.Dto.Tag
 @using GPNA.AlarmControlSystem.Models.Enums
-@using GPNA.AlarmControlSystem.Pages.TagTable.Components
 @using GPNA.AlarmControlSystem.Extensions
-@using GPNA.AlarmControlSystem.Pages.TagTable.Modals
 
 <EditForm Model="@_command" OnValidSubmit="HandleValidSubmit">
 	<DataAnnotationsValidator />
@@ -132,7 +130,7 @@
 				</div>
 			</div>				
 			<div class="tag-table__modal-button-container justify-content-between">
-				<button type="submit" @onclick="Click" class="button-modal send-tag-journal">
+				<button type="submit" @onclick="SendToJournal" class="button-modal send-tag-journal">
 					<svg>
 						<use href="/img/icons/icons.svg#tag-modal-send-to-journal"></use>
 					</svg>
@@ -159,7 +157,7 @@
 	[Inject] protected ITagService TagService { get; set; } = default!;
 
 	[Parameter] public TagDto Tag { get; set; } = new TagDto();
-
+	
 	private UpdateTagCommand _command = new();
 	private string _error  = "";
 
@@ -205,16 +203,8 @@
 		}
 	}
 
-	SaveTagModal? saveTagModal;
-	SendTagToJournalModal? sendTagToJournalModal;
-	CancelChangeTagModal? cancelChangeTagModal;
-	SendTagsToJournalModal? sendTagsToJournalModal;
-
-	[Parameter] public EventCallback<bool> ClickEvent { get; set; }
-
-	private async Task Click()
+	private async Task SendToJournal()
 	{
-		await ClickEvent.InvokeAsync(true);
+		
 	}
-
 }

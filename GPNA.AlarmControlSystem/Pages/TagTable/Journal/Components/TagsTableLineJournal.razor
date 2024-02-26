@@ -3,7 +3,6 @@
 @using GPNA.AlarmControlSystem.Extensions
 @using GPNA.AlarmControlSystem.Interfaces
 @using GPNA.AlarmControlSystem.Pages.TagTable.Components
-@using GPNA.AlarmControlSystem.Pages.TagTable.Modals
 @using GPNA.AlarmControlSystem.Services
 @using GPNA.AlarmControlSystem.Application.Dto.TagChange
 
@@ -113,10 +112,10 @@
     </tr>
     <TagTableInfo Title="Позиция по ГП" Description="@Tag.Position"/>
     <TagTableInfo Title="Потенциальные последствия" Description="@Tag.Consequence"/>
-    <TagTableInfo Title="Действия Полевого оператора" Description="@Tag.ActionFieldOperator"></TagTableInfo>
-    <TagTableInfo Title="Действия Оператора APM" Description="@Tag.ActionArmOperator"></TagTableInfo>
-    <TagTableInfo Title="Условия усиления" Description="@Tag.Inform"></TagTableInfo>
-    <TagTableInfo Title="Время на реакцию" Description="@Tag.ReactionTime"></TagTableInfo>
+    <TagTableInfo Title="Действия Полевого оператора" Description="@Tag.ActionFieldOperator"/>
+    <TagTableInfo Title="Действия Оператора APM" Description="@Tag.ActionArmOperator"/>
+    <TagTableInfo Title="Условия усиления" Description="@Tag.Inform"/>
+    <TagTableInfo Title="Время на реакцию" Description="@Tag.ReactionTime"/>
 }
 
 @code {

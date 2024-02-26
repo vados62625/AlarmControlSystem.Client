@@ -1,27 +1,27 @@
-﻿using Blazored.Modal.Services;
+﻿using Blazored.Modal;
+using Blazored.Modal.Services;
 using GPNA.AlarmControlSystem.Application.Dto.Tag;
-using GPNA.AlarmControlSystem.Application.Dto.TagChange;
 using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto.Field;
 using GPNA.AlarmControlSystem.Models.Dto.Queries;
 using GPNA.AlarmControlSystem.Models.Dto.Tag;
-using GPNA.AlarmControlSystem.Models.Dto.TagChange;
 using GPNA.AlarmControlSystem.Models.Dto.Workstation;
 using GPNA.AlarmControlSystem.Models.Enums;
 using GPNA.AlarmControlSystem.Options;
 using GPNA.AlarmControlSystem.Services;
+using GPNA.AlarmControlSystem.Pages.TagTable.TagTable.Modals;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
 
-namespace GPNA.AlarmControlSystem.Pages.TagTable
+namespace GPNA.AlarmControlSystem.Pages.TagTable.TagTable
 {
-    public partial class TagTableJournal : ComponentBase
+    public partial class TagTable : ComponentBase
     {
         [CascadingParameter] public IModalService Modal { get; set; } = default!;
         [Inject] protected IJSRuntime JS { get; set; } = default!;
         [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
-        [Inject] protected ITagChangesService TagChangesService { get; set; } = default!;
+        [Inject] protected ITagService TagService { get; set; } = default!;
         [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
         [Inject] private IFieldService? FieldService { get; set; }
         [Inject] private IExportService? ExportService { get; set; }
@@ -35,8 +35,8 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
         private IDictionary<string, string>? _fieldLinksDictionary;
         private IDictionary<string, string>? _workstationLinksDictionary;
 
-        private GetTagChangesListQuery _query = new();
-        private TagChangesCollection _tagChangesCollection = new();
+        private GetTagsListQuery _query = new();
+        private TagsCollection _tags = new();
 
         protected override async Task OnParametersSetAsync()
         {
@@ -87,17 +87,29 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
                     workStation => $"/tag-table/?fieldId={FieldId}&workstationId={workStation.Id}");
             }
         }
+        
+        public async Task AddTag()
+        {
+            var parameters = new ModalParameters { { "Tag", new TagDto{ WorkStationId = WorkstationId ?? 1 } } };
+            var createModal = Modal.Show<AddTagModal>("", parameters);
+            var result = await createModal.Result;
+
+            if (result.Confirmed)
+            {
+                await SpinnerService.Load(GetTags);
+            }
+        }
 
         private async Task GetTags()
         {
             _query.WorkStationId = WorkstationId ?? 1;
             _query.ItemsOnPage = 15;
             _query.Page ??= 1;
-            var result = await TagChangesService.GetTagChangesCollection(_query);
+            var result = await TagService.GetTagsCollection(_query);
             
             if (result.Success)
             {
-                _tagChangesCollection = result.Payload;
+                _tags = result.Payload;
                 StateHasChanged();
             }
         }
@@ -144,7 +156,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
 
         private async Task DropFilters()
         {
-            _query = new GetTagChangesListQuery
+            _query = new GetTagsListQuery
             {
                 Page = 1
             };
@@ -158,6 +170,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable
             {
                 DocumentType = ExportDocumentType.Excel,
                 WorkStationId = WorkstationId ?? 0,
+                TagName = _query.TagName,
                 Suggest = _query.Suggest,
                 State = _query.State,
                 Priority = _query.Priority,

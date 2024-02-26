@@ -3,7 +3,6 @@
 @using GPNA.AlarmControlSystem.Extensions
 @using GPNA.AlarmControlSystem.Interfaces
 @using GPNA.AlarmControlSystem.Pages.TagTable.Components
-@using GPNA.AlarmControlSystem.Pages.TagTable.Modals
 @using GPNA.AlarmControlSystem.Services
 
 <tr class="tag-table-line @Tag.Validate.ToString()">
@@ -44,8 +43,8 @@
         <td colspan="3"></td>
     </tr>
     
-    <TagTableLineInfoArchive></TagTableLineInfoArchive>
-    <TagTableLineInfoArchive></TagTableLineInfoArchive>
+    <TagTableLineInfoArchive/>
+    <TagTableLineInfoArchive/>
 }
 
 @code {

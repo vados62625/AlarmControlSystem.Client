@@ -1,8 +1,6 @@
 ﻿@using GPNA.AlarmControlSystem.Shared.ButtonsModal
-@using GPNA.AlarmControlSystem.Models.Dto.Tag
 
 <div class="modal-backdrop modal-backdrop-level-2 show"></div>
-
 <div class="tag-table__modal-bg cancel-change-tag">
 	<div class="d-flex align-items-center gap-3">
 		<svg style="width: 15px; height: 14px; margin-bottom: 3px;">
@@ -10,30 +8,27 @@
 		</svg>
 		<p class="tag-table__modal-title">ОТМЕНИТЬ ИЗМЕНЕНИЯ</p>
 	</div>
-
 	<div class="w-100 h-100 p-0 d-flex flex-column gap-2 justify-content-between">
-		<p class="modal-delete-text mt-2">Все внесенные вами изменения будут удалены.<br />Вы уверены, что хотите удалить изменения?</p>			
+		<p class="modal-delete-text mt-2">Все внесенные вами изменения будут удалены.<br />Вы уверены, что хотите отменить изменения?</p>			
 
 		<div class="tag-table__modal-button-container">
-			<DeleteButton ClickEvent="ConfirmAndClose" TypeModal="cancel-change-tag"></DeleteButton>
+			<CancelButton ClickEvent="ConfirmAndClose" TypeModal="cancel-change-tag"/>
 			<ReturnButton ClickEvent="Cancel" />
 		</div>
 	</div>
-
 </div>
 
 @code {
-	[CascadingParameter] BlazoredModalInstance ModalInstanceCancelChangeTagModal { get; set; } = default!;
+	[CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;
 
 	void Cancel()
 	{
-		ModalInstanceCancelChangeTagModal.CancelAsync();
+		ModalInstance.CancelAsync();
 	}
 	
 	private async Task ConfirmAndClose() 
 	{
-		await ModalInstanceCancelChangeTagModal.CloseAsync(ModalResult.Ok());
+		await ModalInstance.CloseAsync(ModalResult.Ok());
 	}
-
 
 }
