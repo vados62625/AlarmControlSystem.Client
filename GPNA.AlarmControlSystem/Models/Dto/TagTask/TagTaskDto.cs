@@ -23,6 +23,11 @@ namespace GPNA.AlarmControlSystem.Models.Dto.TagTask
         /// В архиве
         /// </summary>
         public bool Archived { get; set; }
+        
+        /// <summary>
+        /// Событие последней сигнализации тега на момент создания задачи
+        /// </summary>
+        public AlarmType EventAlarm { get; set; }
 
         /// <summary>
         /// Связанные пользователи

@@ -1,12 +1,16 @@
-﻿<button type="submit" @onclick="Click" class="button-modal delete">
-	<svg>
-		<use href="/img/icons/icons.svg#tag-modal-delete"></use>
-	</svg>
+﻿<button type="submit" @onclick="Click" class="button-modal delete @TypeModal">
+	@if (TypeModal == null)
+    {
+        <svg>
+            <use href="/img/icons/icons.svg#tag-modal-delete"></use>
+        </svg>
+    }   
 	<p>Удалить</p>
 </button>
 
 @code {
-    [Parameter] public EventCallback<bool> ClickEvent { get; set; }    
+    [Parameter] public EventCallback<bool> ClickEvent { get; set; }
+    [Parameter] public string TypeModal { get; set; }
 
     private async Task Click()
     {

@@ -1,0 +1,70 @@
+﻿.tag-table-search-container {
+    display: flex;
+    align-items: center;
+    
+    justify-content: space-between;
+    
+}
+
+.tagname-filter-title {
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.tag-table-button-add {
+    /*margin-left: auto;*/
+    border: none;
+    outline: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 180px;
+    height: 24px;
+    background: #006FBA;
+    border: 1px solid #006FBA;
+    border-radius: 4px;
+    padding-left: 40px;
+    padding-right: 30px;
+}
+
+    .tag-table-button-add:hover {
+        box-shadow: 0px -1px 1px rgba(0, 32, 51, 0.07), 0px 2px 2px rgba(0, 32, 51, 0.07), 0px 1px 1px rgba(0, 32, 51, 0.07), 0px 8px 16px rgba(0, 32, 51, 0.07);
+    }
+
+.tag-table-button-add svg {
+    width: 13px;
+    height: 13px;
+}
+
+.tag-table-button-add p {
+    font-weight: 400;
+    font-size: 14px;
+    color: #FFFFFF;
+}
+
+.tag-table-button-link {
+    border: none;
+    outline: none;
+    background: rgba(102, 136, 157, 0.75);
+    border-radius: 4px;
+    height: 24px;
+    padding: 0 12px;
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 12px;
+    color: #FFFFFF;
+    line-height: 200%;
+}
+
+    .tag-table-button-link:hover {
+        background: #6D8EA2;
+    }
+
+.tag-table-button-send {
+    background: #006FBA;
+}
+
+    .tag-table-button-send:hover {
+        background: #0065A9;
+    }
+

@@ -37,11 +37,6 @@ public class UpdateTagCommand
     public string? Unit { get; set; }
 
     /// <summary>
-    /// Состояние
-    /// </summary>
-    public StateType State { get; set; }
-
-    /// <summary>
     /// Приоритет
     /// </summary>
     public PriorityType Priority { get; set; }

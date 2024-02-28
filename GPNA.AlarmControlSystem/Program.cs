@@ -43,6 +43,7 @@ builder.Services
     .AddScoped<IWorkStationService, WorkStationService>()
     .AddScoped<IUserService, UserService>()
     .AddScoped<ITagService, TagService>()
+    .AddScoped<ITagChangesService, TagChangesService>()
     .AddScoped<ITagTaskService, TagTaskService>()
     .AddScoped<IEmailService, EmailService>()
     .AddScoped<IExportService, ExportService>()

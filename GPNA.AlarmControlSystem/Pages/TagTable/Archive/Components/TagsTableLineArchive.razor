@@ -1,0 +1,81 @@
+﻿@using GPNA.AlarmControlSystem.Pages.Monitoring.Components
+@using GPNA.AlarmControlSystem.Models.Dto.Tag
+@using GPNA.AlarmControlSystem.Extensions
+@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Pages.TagTable.Components
+@using GPNA.AlarmControlSystem.Services
+
+<tr class="tag-table-line @Tag.Validate.ToString()">
+           
+    <td @onclick="ShowMoreAttributes">
+		<p>@Tag.TagName</p>
+    </td>           
+    <td @onclick="ShowMoreAttributes" colspan="3"> 
+        <p class="tag-table-description-title">@Tag.Description</p>
+    </td>
+    <td @onclick="ShowMoreAttributes"> 
+        <MonitoringTableStatus Title="@Tag.Priority.GetDescription()" Priority="@Tag.Priority" />
+    </td>
+    <td @onclick="ShowMoreAttributes">
+        <p>@(Tag.AlarmLimit ?? "N/A")</p>
+    </td>
+    <td @onclick="ShowMoreAttributes">
+        <svg class="tag-table-icon-reglament @(_attentionReglament ? "red" : "")">
+            <use href="/img/icons/icons.svg#tag-table-reglament"></use>
+        </svg>
+    </td>    
+</tr>
+@if (_displayArchive)
+{
+    <tr class="tag-table-archive-line">
+        <td class="tag-table-archive-title" colspan="8"><p>АРХИВ ИЗМЕНЕНИЙ АСУ ТП</p></td>
+    </tr>
+    <tr class="tag-table-archive-line head">
+        <td colspan="2">
+            <p>Дата</p>
+        </td>
+        <td>
+            <p>Инициатор (Технолог)</p>
+        </td>
+        <td>
+            <p>Исполнитель (Инженер АСУ ТП)</p>
+        </td>
+        <td colspan="3"></td>
+    </tr>
+    
+    <TagTableLineInfoArchive/>
+    <TagTableLineInfoArchive/>
+}
+
+@code {
+    [CascadingParameter] public IModalService Modal { get; set; } = default!;
+
+    [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
+    [Inject] protected ITagService TagService { get; set; } = default!;
+
+    [Parameter] public TagDto Tag { get; set; } = new TagDto();
+    [Parameter] public EventCallback<TagDto> OnTagDeleted { get; set; }
+
+    private bool _attentionReglament = false;
+
+    bool _displayArchive = false;    
+
+    void ShowMoreAttributes()
+    {
+        _displayArchive = !_displayArchive;
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (Tag.ModelState.Count > 0)
+        {
+            foreach (var obj in Tag.ModelState)
+            {
+                if (obj.Key is "Position" or "Consequence" or "ActionFieldOperator" or "ActionArmOperator" or "Inform" or "ReactionTime")
+                {
+                    _attentionReglament = true;
+                }
+            }
+        }
+    }
+}

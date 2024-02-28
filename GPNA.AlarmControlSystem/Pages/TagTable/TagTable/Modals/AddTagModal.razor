@@ -26,13 +26,7 @@
 				<div class="tag-table__modal-item-container">
 					<p>Состояние</p>
 					<div class="tag-table__modal-custom-select">
-						<select class="tag-table__modal-item-select" style="color:rgba(0, 32, 51, 0.25)" @bind="_command.State">
-							<option disabled selected hidden>Выберите состояние</option>
-							@foreach (StateType stateType in Enum.GetValues(typeof(StateType)))
-							{
-								<option value="@stateType">@stateType.GetDescription()</option>
-							}
-						</select>
+						<input class="tag-table__modal-item-input smaller" type="text" value="@Tag.State" disabledQ/>
 					</div>
 				</div>
 				<div class="tag-table__modal-item-container">
@@ -84,7 +78,13 @@
 			</div>
 			<div class="tag-table__modal-button-container">
 				<SaveButton />
-				<CancelButton ClickEvent="Cancel"/>
+				@* <CancelButton ClickEvent="async () => await Cancel()"/> *@
+				<div @onclick="Cancel" class="button-modal cancel" type="button" title="cancel">
+                	<svg>
+                		<use href="/img/icons/icons.svg#tag-modal-cancel"></use>
+                	</svg>
+                	<p>Отменить</p>
+                </div>
 			</div>
 		</div>
 	</div>
@@ -96,6 +96,7 @@
 
 @code {
 	[CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;
+	[CascadingParameter] public IModalService Modal { get; set; } = default!;
 	
 	[Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
 	[Inject] protected ITagService TagService { get; set; } = default!;
@@ -115,7 +116,6 @@
 			TagName = Tag.TagName,
 			Description = Tag.Description,
 			Unit = Tag.Unit,
-			State = Tag.State,
 			Priority = Tag.Priority,
 			AlarmLimit = Tag.AlarmLimit,
 			Scale = Tag.Scale,
@@ -139,8 +139,18 @@
 		}
 	}
 
-	void Cancel()
+	private async Task Cancel()
 	{
-		ModalInstance.CancelAsync();
+		var deleteModal = Modal.Show<CancelChangeTagModal>("");
+		var result = await deleteModal.Result;
+
+		if (result.Confirmed)
+		{
+			await ModalInstance.CancelAsync();
+			// SpinnerService.Show();
+			// await TagService.Delete(Tag.Id);
+			// SpinnerService.Hide();
+			// await OnTagDeleted.InvokeAsync(Tag);
+		}
 	}
 }

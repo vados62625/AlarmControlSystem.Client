@@ -32,6 +32,13 @@
     .tag-table-head-line th:not(.bg-tag-table-button) {
         text-align: start;
     }
+    .tag-table-head-line th:last-child {
+        display: flex;
+        /*text-align: center;*/
+        justify-content: center;
+        padding: 0;
+        align-items: center;
+    }
 
 .tag-table-indicator {
     width: 9px;

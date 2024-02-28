@@ -1,0 +1,47 @@
+﻿@page "/tag-table-journal"
+
+@using GPNA.AlarmControlSystem.Pages.TagTable.Journal.Components
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Components
+@using GPNA.AlarmControlSystem.Shared.Pagination
+
+<div class="page-main">
+    <div class="page-header justify-content-center position-relative">
+        <div class="d-flex">
+            <p>ЖУРНАЛ ИЗМЕНЕНИЙ АСУ ТП <b>@_fieldName М/Р</b></p>
+            <SelectObject Object="dto" LinksDictionary="_fieldLinksDictionary"/>
+            <p style="margin-left:15px;">
+                <b>@_workstationName</b>
+            </p>
+            <SelectObject LinksDictionary="_workstationLinksDictionary"/>
+        </div>
+        <div class="d-flex gap-2 position-absolute" style="right: 0;">
+            @if (_query is not {Page: 1})
+            {
+                <TitleBarButton Title="Фильтрация" FunctionButton="filtration" Action="DropFilters"/>
+            }
+            <TitleBarButton Title="Экспорт" FunctionButton="export" Action="DownloadFileFromStream"/>
+        </div>
+    </div>
+
+    <div class="priority-alarm-container">        
+        <TagStatusOnHead Title="Некорректное описание" Value="@(_tagChangesCollection.IncorrectDescription)"/>
+        <TagStatusOnHead Title="Некорректный приоритет" Value="@(_tagChangesCollection.IncorrectPriority)"/>
+        <TagStatusOnHead Title="Некорректная уставка" Value="@(_tagChangesCollection.IncorrectAlarmLimit)"/>        
+    </div>
+
+    <div class="tag-table-search-container">        
+        <InputSearch OnChange="SearchTag" MinWidth="382"/>
+        <div class="d-flex gap-2">
+            <a class="tag-table-button-link" href="@($"/tag-table-archive/?fieldId={FieldId}&workstationId={WorkstationId}")">Архив изменений АСУ ТП</a>
+            <a class="tag-table-button-link" href="@($"/tag-table/?fieldId={FieldId}&workstationId={WorkstationId}")">Таблица переменных</a>
+        </div>
+    </div>
+
+    <TagsTableJournal Tags="_tagChangesCollection.Items?.ToList()"
+               OnStateFilterChanged="SetStateFilter"
+               OnPriorityFilterChanged="SetPriorityFilter"
+               OnOrderingChanged="OnOrderingChanged"
+               OnTagDeleted="GetTags"/>
+
+    <Pagination CurrentPage="@(_query.Page ?? 1)" PagesCount="_tagChangesCollection.PagesCount" OnPageClick="OnPageChanged"/>
+</div>

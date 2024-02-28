@@ -1,0 +1,163 @@
+﻿@using GPNA.AlarmControlSystem.Pages.Monitoring.Components
+@using GPNA.AlarmControlSystem.Models.Dto.Tag
+@using GPNA.AlarmControlSystem.Extensions
+@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Pages.TagTable.Components
+@using GPNA.AlarmControlSystem.Services
+@using GPNA.AlarmControlSystem.Application.Dto.TagChange
+
+<tr class="tag-table-line @Tag.Validate.ToString()">
+    <td @onclick="ShowMoreAttributes">                
+        <div class="tag-table-indicator @Tag.Validate.ToString()"></div>                               
+    </td>           
+    <td @onclick="ShowMoreAttributes">
+        @Tag.TagName
+    </td>           
+    <td class="tag-table-attention" @onclick="ShowMoreAttributes">      
+        @if (Tag.ModelState.TryGetValue("Description", out var errorDesc)) 
+        {
+        <div class="tag-table-attention-border @_attentionBorder description" >
+            <svg class="tag-table-icon-attention">
+                    <use href="/img/icons/icons.svg#tag-table-attention"></use>
+				</svg>
+                <p>@Tag.Description</p>
+            </div>
+        } else
+        {
+            <p class="tag-table-description-title">@Tag.Description</p>
+        }         
+    </td>
+    <td @onclick="ShowMoreAttributes">
+        <p>@(TagChange.Initiator?.Login ?? "-")</p>
+    </td>
+    <td @onclick="ShowMoreAttributes">
+        <p>@(TagChange.Executor?.Login ?? "-")</p>
+    </td>
+    <td class="tag-table-attention" @onclick="ShowMoreAttributes">        
+        @if (Tag.ModelState.TryGetValue("Priority", out var errorPriority))
+        {
+            <div class="tag-table-attention-border @_attentionBorder">
+                <div class="position-relative">
+                    <div class="tag-table-container-attention priority">
+                        <svg class="tag-table-icon-attention">
+                            <use href="/img/icons/icons.svg#tag-table-attention"></use>
+                        </svg>
+                    </div>
+                </div>
+                <MonitoringTableStatus Title="@Tag.Priority.GetDescription()" Priority="@Tag.Priority" />
+            </div>
+        } else
+        {
+            <MonitoringTableStatus Title="@Tag.Priority.GetDescription()" Priority="@Tag.Priority" />
+        }   
+    </td>
+    <td class="tag-table-attention" @onclick="ShowMoreAttributes">
+        @if (Tag.ModelState.TryGetValue("AlarmLimit", out var errorAlarmLimit))
+        {
+            <div class=" tag-table-attention-border @_attentionBorder">                
+                <p>@(Tag.AlarmLimit ?? "N/A")</p>
+            </div>
+            <div class="position-relative">
+                <div class="tag-table-container-attention">
+                    <svg class="tag-table-icon-attention">
+                        <use href="/img/icons/icons.svg#tag-table-attention"></use>
+                    </svg>
+                </div>
+            </div>            
+        } else
+        {
+            <p>@(Tag.AlarmLimit ?? "N/A")</p>
+        }                   
+    </td>
+    <td @onclick="ShowMoreAttributes">
+        <svg class="tag-table-icon-reglament @(_attentionReglament ? "red" : "")">
+            <use href="/img/icons/icons.svg#tag-table-reglament"></use>
+        </svg>
+    </td>    
+</tr>
+<tr class="tag-table-comment-line text">
+    <td colspan="8">
+        <div class="tag-table-journal-comment">
+            <p>Текст комментария текст комментария текст комментария</p>
+        </div>
+    </td>
+</tr>
+@if (_displayComment)
+{   
+    <tr class="tag-table-comment-line">
+        <td class="tag-table-comment-title" colspan="8"><p>КОНФИГУРАЦИЮ АСУ ТП ИЗМЕНИТЬ НА:</p></td>        
+    </tr>
+    <tr class="tag-table-comment-line">
+        <td colspan="2"/>
+        <td>
+            <div class="tag-table-attention-border grey description">
+                <p>Сепаратор нефтегазовый</p>
+            </div>
+        </td>
+        <td colspan="2"/>
+        <td >
+            <div class="tag-table-attention-border grey">
+				<MonitoringTableStatus Title="@Tag.Priority.GetDescription()" Priority="@Tag.Priority" />
+            </div>            
+        </td>
+        <td>
+            <div class="tag-table-attention-border grey">
+				<p>@(Tag.AlarmLimit ?? "N/A")</p>
+            </div>            
+        </td>
+        <td/>
+    </tr>
+    <tr>
+        <td class="tag-table-comment-title" colspan="8"><p>РЕГЛАМЕНТ</p></td>
+    </tr>
+    <TagTableInfo Title="Позиция по ГП" Description="@Tag.Position"/>
+    <TagTableInfo Title="Потенциальные последствия" Description="@Tag.Consequence"/>
+    <TagTableInfo Title="Действия Полевого оператора" Description="@Tag.ActionFieldOperator"/>
+    <TagTableInfo Title="Действия Оператора APM" Description="@Tag.ActionArmOperator"/>
+    <TagTableInfo Title="Условия усиления" Description="@Tag.Inform"/>
+    <TagTableInfo Title="Время на реакцию" Description="@Tag.ReactionTime"/>
+}
+
+@code {
+    [CascadingParameter] public IModalService Modal { get; set; } = default!;
+
+    [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
+    [Inject] protected ITagService TagService { get; set; } = default!;
+
+    [Parameter] public TagChangeDto TagChange { get; set; } = new TagChangeDto();
+
+    private TagDto Tag = new TagDto();
+    private bool _attentionReglament = false;
+
+    bool _displayComment = false;
+    string _attentionBorder = "";
+
+    void ShowMoreAttributes()
+    {
+        _displayComment = !_displayComment;
+
+        if (_displayComment)
+        {
+            _attentionBorder = "red";
+        } else
+        {
+            _attentionBorder = "";
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (TagChange?.Tag?.ModelState.Count > 0)
+        {
+            foreach (var obj in TagChange.Tag.ModelState)
+            {
+                if (obj.Key is "Position" or "Consequence" or "ActionFieldOperator" or "ActionArmOperator" or "Inform" or "ReactionTime")
+                {
+                    _attentionReglament = true;
+                }
+            }
+        }
+
+        Tag = TagChange?.Tag ?? new TagDto();
+    }
+}

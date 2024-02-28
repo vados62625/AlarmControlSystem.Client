@@ -1,0 +1,107 @@
+﻿@using GPNA.AlarmControlSystem.Models.Dto.IncomingAlarm
+@using GPNA.AlarmControlSystem.Models.Dto.Tag
+@using GPNA.AlarmControlSystem.Models.Enums
+@using GPNA.AlarmControlSystem.Pages.Monitoring.Components
+
+<table class="bg-tag-table ">
+    <thead>
+    <tr class="tag-table-head-line">
+        @*<th class="bg-tag-table-button" style="width: 48px;">
+            <div class="indicator-container">
+                <div class="tag-table-indicator new"></div>                
+                <button>
+                    <svg>
+                        <use href="/img/icons/icons.svg#sorting"></use>
+                    </svg>
+                </button>
+            </div>
+        </th>   *@     
+        <th style="min-width: 230px;">
+            <p>TagName</p>  
+        </th>        
+        <th style="min-width: 1253px;" colspan="3">
+            <p>Описание</p>
+        </th>
+        @*<th style="min-width: 230px;">
+            <p>Инициатор (Технолог)</p>
+        </th>
+        <th class="bg-tag-table-button" style="min-width: 230px;">
+            <div>
+                <p>Исполнитель (Инженер АСУ ТП)</p>
+                <div>
+                    <button data-bs-toggle="modal" data-bs-target="#priorityFilterModal">
+                        <svg>
+                            <use href="/img/icons/icons.svg#filter"></use>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </th>*@
+        <th class="bg-tag-table-button" style="min-width: 165px;">
+            <div>
+                <p>Приоритет</p>
+                <div>
+                    <button data-bs-toggle="modal" data-bs-target="#priorityFilterModal">
+                        <svg>
+                            <use href="/img/icons/icons.svg#filter"></use>
+                        </svg>
+                    </button>                    
+                </div>
+            </div>
+        </th>
+        <th style="min-width: 106px;">
+            <p>Уставка</p>
+        </th>
+        <th class="bg-tag-table-button" style="min-width: 130px;">
+            <div>
+                <p>Регламент</p>
+                <div>
+                    <button data-bs-toggle="modal" data-bs-target="#priorityFilterModal">
+                        <svg>
+                            <use href="/img/icons/icons.svg#filter"></use>
+                        </svg>
+                    </button>                    
+                </div>
+            </div>
+        </th>        
+    </tr>
+    </thead>
+    <tbody>
+    @if (Tags is {Count: > 0 })
+    {
+        @foreach (var tag in Tags)
+        {
+            <TagsTableLineArchive Tag="tag" OnTagDeleted="OnTagDeleted"/>
+        }
+    }  
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public List<TagDto>? Tags { get; set; }
+
+    [CascadingParameter(Name = nameof(StateFilter))]
+    public StateType? StateFilter { get; set; }
+
+    [CascadingParameter(Name = nameof(PriorityFilter))]
+    public PriorityType? PriorityFilter { get; set; }
+
+    [Parameter]
+    public EventCallback<StateType?> OnStateFilterChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<PriorityType?> OnPriorityFilterChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnOrderingChanged { get; set; }
+
+    [Parameter] 
+    public EventCallback<TagDto> OnTagDeleted { get; set; }
+    
+    private async Task SetStateFilter(StateType? state)
+    {
+        await OnStateFilterChanged.InvokeAsync(state);
+    }
+
+}

@@ -17,11 +17,20 @@
     font-weight: 400;
     font-size: 12px;
     margin-left: 13px;
+    margin-top: 1px;
 }
 
     .button-modal.edit p {
         margin-left: 8px;
         margin-right: 2px;
+    }
+
+    .button-modal.not-send p {
+        margin-left: 9px;
+    }
+
+    .button-modal.return p, .button-modal.delete.cancel-change-tag p {
+        margin-left: 0;
     }
 
     .button-modal.save, .button-modal.send {
@@ -32,11 +41,12 @@
         background: #D0EDFD;
     }
 
-    .button-modal.cancel {
+    .button-modal.cancel, .button-modal.not-send, .button-modal.return {
         background: #F0F2F3;
     }
 
-    .button-modal.cancel:hover, .button-modal.cancel.delete:hover {
+    .button-modal.cancel:hover, .button-modal.cancel.delete:hover, .button-modal.not-send:hover, 
+    .button-modal.send-tag-journal:hover, .button-modal.return:hover {
         background: #E8E8E8;
     }
 
@@ -50,6 +60,13 @@
 
     .button-modal.delete:hover {
         background: #D75353;
+    }
+
+    .button-modal.delete.cancel-change-tag {
+        background: #FCEEEE;
+    }
+    .button-modal.delete.cancel-change-tag:hover {
+        background: #FFDADA;
     }
 
 .button-modal-container {
@@ -76,3 +93,15 @@
     width: 8px;
     height: 8px;
 }
+
+.button-modal.send-tag-journal {
+    width: 308px;
+    background: #F0F2F3;
+}
+
+    .button-modal.send-tag-journal svg {
+        width: 15px;
+        height: 16px;
+    }
+
+

@@ -3,7 +3,6 @@
 @using GPNA.AlarmControlSystem.Interfaces
 @using GPNA.AlarmControlSystem.Models.Dto.Tag
 @using GPNA.AlarmControlSystem.Models.Enums
-@using GPNA.AlarmControlSystem.Pages.TagTable.Components
 @using GPNA.AlarmControlSystem.Extensions
 
 <EditForm Model="@_command" OnValidSubmit="HandleValidSubmit">
@@ -18,28 +17,22 @@
 					<p class="tag-table__modal-title">Регламентная информация</p>
 					<div class="w-100 h-100 p-0 d-flex flex-column gap-2 justify-content-between">
 						<div class="d-flex justify-content-between">
-							<div class="tag-table__modal-item-container">
+							<div class="tag-table__modal-item-container tagname">
 								<p>TagName</p>
-								<input class="tag-table__modal-item-input smaller" type="text" @bind="@_command.TagName">
+								<input class="tag-table__modal-item-input smaller" type="text" value="@Tag.TagName" disabled>
 							</div>
-							<div class="tag-table__modal-item-container @(Tag.ModelState.TryGetValue("State", out var errorState) ? "red" : "")">
+							<div class="tag-table__modal-item-container @(Tag.ModelState.TryGetValue("State", out _) ? "red" : "")">
 								<p>Состояние</p>
-								<div class="tag-table__modal-custom-select">
-									<select class="tag-table__modal-item-select" style="color:rgba(0, 32, 51, 0.25)" @bind="_command.State">
-										<option disabled selected hidden>Выберите состояние</option>
-										@foreach (StateType stateType in Enum.GetValues(typeof(StateType)))
-										{
-											<option value="@stateType">@stateType.GetDescription()</option>
-										}
-									</select>
+								<div class="tag-table__modal-item-container">
+									<input class="tag-table__modal-item-input smaller" type="text" value="@Tag.State" disabled/>
 								</div>
 							</div>
 						</div>
 						<div class="d-flex justify-content-between">
-							<div class="tag-table__modal-item-container @(Tag.ModelState.TryGetValue("Priority", out var errorPriority) ? "red" : "")">
+							<div class="tag-table__modal-item-container @(Tag.ModelState.TryGetValue("Priority", out _) ? "red" : "")">
 								<p>Приоритет</p>
 								<div class="tag-table__modal-custom-select">
-									<select class="tag-table__modal-item-select" style="color:rgba(0, 32, 51, 0.25)" @bind="_command.Priority">
+									<select class="tag-table__modal-item-select" @bind="_command.Priority">
 										<option disabled selected hidden>Выберите приоритет</option>
 										@foreach (PriorityType priority in Enum.GetValues(typeof(PriorityType)))
 										{
@@ -48,12 +41,12 @@
 									</select>
 								</div>
 							</div>
-							<div class="tag-table__modal-item-container @(Tag.ModelState.TryGetValue("AlarmLimit", out var errorAlarmLimit) ? "red" : "")">
+							<div class="tag-table__modal-item-container @(Tag.ModelState.TryGetValue("AlarmLimit", out _) ? "red" : "")">
 								<p>Уставка</p>
 								<input class="tag-table__modal-item-input small" type="text" placeholder="Введите уставку" @bind="@_command.AlarmLimit">
 							</div>
 						</div>
-						<div class="tag-table__modal-item-container @(Tag.ModelState.TryGetValue("Description", out var errorDescription) ? "red" : "")">
+						<div class="tag-table__modal-item-container @(Tag.ModelState.TryGetValue("Description", out _) ? "red" : "")">
 							<p>Описание</p>
 							<input class="tag-table__modal-item-input" type="text" placeholder="Введите описание" @bind="@_command.Description">
 						</div>
@@ -63,7 +56,7 @@
 					<p class="tag-table__modal-title">ИНФОРМАЦИЯ С ПОЛЯ</p>
 					<div class="w-100 h-100 p-0 d-flex flex-column gap-2 justify-content-between">
 						<div class="d-flex justify-content-between">
-							<div class="tag-table__modal-item-container">
+							<div class="tag-table__modal-item-container tagname">
 								<p>TagName</p>
 								<input class="tag-table__modal-item-input smaller" 
 								       value="@(Tag.LastBufferAlarm?.TagName ?? "")" 
@@ -136,9 +129,18 @@
 					</div>
 				</div>
 			</div>				
-			<div class="tag-table__modal-button-container">					
-				<SaveButton/>
-				<CancelButton ClickEvent="Cancel"/>					
+			<div class="tag-table__modal-button-container justify-content-between">
+				<button type="submit" @onclick="SendToJournal" class="button-modal send-tag-journal">
+					<svg>
+						<use href="/img/icons/icons.svg#tag-modal-send-to-journal"></use>
+					</svg>
+					<p>Отправить в журнал изменений АСУ ТП</p>
+				</button>
+				<div class="tag-table__modal-button-container mt-0">
+					<SaveButton ClickEvent="HandleValidSubmit" />
+					<CancelButton ClickEvent="Cancel" />
+				</div>
+				
 			</div>			
 		</div>
 	</div> 
@@ -149,12 +151,13 @@
 
 @code {
 	[CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;
-	
+	[CascadingParameter] public IModalService Modal { get; set; } = default!;
+
 	[Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
 	[Inject] protected ITagService TagService { get; set; } = default!;
-	
-	[Parameter] public TagDto Tag { get; set; } = new TagDto();
 
+	[Parameter] public TagDto Tag { get; set; } = new TagDto();
+	
 	private UpdateTagCommand _command = new();
 	private string _error  = "";
 
@@ -162,13 +165,10 @@
 	{
 		_command = new UpdateTagCommand()
 		{
-			WorkStationId = Tag.WorkStationId,
 			Id = Tag.Id,
 			Position = Tag.Position,
-			TagName = Tag.TagName,
 			Description = Tag.Description,
 			Unit = Tag.Unit,
-			State = Tag.State,
 			Priority = Tag.Priority,
 			AlarmLimit = Tag.AlarmLimit,
 			Scale = Tag.Scale,
@@ -177,10 +177,10 @@
 			ActionArmOperator = Tag.ActionArmOperator,
 			Inform = Tag.Inform,
 			ReactionTime = Tag.ReactionTime,
-			Validate = Tag.Validate
+			Validate = Tag.Validate,
 		};
 	}
-	
+
 	private async void HandleValidSubmit() 
 	{
 		SpinnerService.Show();
@@ -192,8 +192,19 @@
 		}
 	}
 
-	void Cancel()
+	private async Task Cancel()
 	{
-		ModalInstance.CancelAsync();
+		var deleteModal = Modal.Show<CancelChangeTagModal>("");
+		var result = await deleteModal.Result;
+	
+		if (result.Confirmed)
+		{
+			await ModalInstance.CancelAsync();
+		}
+	}
+
+	private async Task SendToJournal()
+	{
+		
 	}
 }

@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazored.Modal" Version="7.1.0" />
+    <PackageReference Include="Blazored.Modal" Version="7.2.0" />
     <PackageReference Include="Blazored.Toast" Version="4.1.0" />
     <PackageReference Include="GPNA.RestClient" Version="1.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.22" />
@@ -34,10 +34,6 @@
     <AdditionalFiles Include="Pages\Main\Components\Charts\DoughnutChart.razor" />
     <AdditionalFiles Include="Pages\Reports\GeneralReport\Charts\Chart1.razor" />
     <AdditionalFiles Include="Pages\Reports\GeneralReport\Charts\Chart2.razor" />
-    <AdditionalFiles Include="Pages\TagTable\Modals\AddTagModal.razor" />
-    <AdditionalFiles Include="Pages\TagTable\Modals\CorrectTagModal.razor" />
-    <AdditionalFiles Include="Pages\TagTable\Modals\DeleteTagModal.razor" />
-    <AdditionalFiles Include="Pages\TagTable\Modals\EditTagModal.razor" />
   </ItemGroup>
 
   <ItemGroup>
