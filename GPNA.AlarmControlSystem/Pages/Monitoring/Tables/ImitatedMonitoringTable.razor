@@ -48,45 +48,11 @@
                 </button>
             </div>
         </th>
-        <th class="bg-monitoring-table-button" style="min-width: 120px;">
-            <div>
-                <p>Статус</p>
-                <div>
-                    <button data-bs-toggle="modal" data-bs-target="#stateFilterModal">
-                        <svg>
-                            <use href="/img/icons/icons.svg#filter"></use>
-                        </svg>
-                    </button>
-                    <button onclick="@(async () => await OnOrderingChanged.InvokeAsync(nameof(ActiveAlarmDto.State)))">
-                        <svg>
-                            <use href="/img/icons/icons.svg#sorting"></use>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </th>
         <th style="min-width: 860px;">
             <p>Описание</p>
         </th>
-        <th class="bg-monitoring-table-button" style="min-width: 140px;">
-            <div>
-                <p>Приоритет</p>
-                <div>
-                    <button data-bs-toggle="modal" data-bs-target="#priorityFilterModal">
-                        <svg>
-                            <use href="/img/icons/icons.svg#filter"></use>
-                        </svg>
-                    </button>
-                    <button onclick="@(async () => await OnOrderingChanged.InvokeAsync(nameof(ActiveAlarmDto.Priority)))">
-                        <svg>
-                            <use href="/img/icons/icons.svg#sorting"></use>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </th>
         <th style="min-width: 150px;">
-            <p>Уставка/значение</p>
+            <p>Значение</p>
         </th>
         <th class="bg-monitoring-table-button" style="min-width: 90px;">
             <div>
@@ -117,70 +83,6 @@
         <p>Нет данных</p>
     </div>
 }
-
-<div id="filterModals">
-
-    <div class="modal fade" id="stateFilterModal">
-        <div class="modal-dialog modal-sm modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-
-                    @* <div class="form-check"> *@
-                    @*     <input class="form-check-input" type="checkbox" name="stateFilterRadio" id="stateFilterRadio-1" checked="@(StateFilter?.All(c => c.Value) ?? true)" onchange="@(async () => await SetStateFilter(null))"> *@
-                    @*     <label class="form-check-label" for="stateFilterRadio-1"> *@
-                    @*         Все *@
-                    @*     </label> *@
-                    @* </div> *@
-
-                    @foreach (var state in Enum.GetValues<StateType>())
-                    {
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="stateFilterRadio" id="stateFilterRadio@((int)state)" checked="@(StateFilter?[state])" onchange="@(async () => await SetStateFilter(state))">
-                            <label class="form-check-label" for="stateFilterRadio@((int)state)">
-                                @state.ToString()
-                            </label>
-                        </div>
-                    }
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="priorityFilterModal">
-        <div class="modal-dialog modal-sm modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-
-                    @* <div class="form-check"> *@
-                    @*     <input class="form-check-input" type="checkbox" name="priorityFilterRadio" id="priorityFilterRadio-1" checked="@(PriorityFilter?.All(c => c.Value) ?? true)" onchange="@(async () => await OnPriorityFilterChanged.InvokeAsync(null))"> *@
-                    @*     <label class="form-check-label" for="priorityFilterRadio-1"> *@
-                    @*         Все *@
-                    @*     </label> *@
-                    @* </div> *@
-
-                    @foreach (var priority in Enum.GetValues<PriorityType>())
-                    {
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="priorityFilterRadio" id="priorityFilterRadio@((int)priority)" checked="@(PriorityFilter?[priority])" onchange="@(async () => await OnPriorityFilterChanged.InvokeAsync(priority))">
-                            <label class="form-check-label" for="priorityFilterRadio@((int)priority)">
-                                @priority.ToString()
-                            </label>
-                        </div>
-                    }
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
 
 @code {
 

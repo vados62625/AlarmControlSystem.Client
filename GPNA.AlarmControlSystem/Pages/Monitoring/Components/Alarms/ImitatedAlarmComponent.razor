@@ -22,17 +22,9 @@
 
         <td @onclick="ShowMoreAttributes">@(Alarm.TagName)</td>
         
-        <td @onclick="ShowMoreAttributes">
-            <MonitoringTableStatus Title="@Alarm.State.GetDescription()" Status="@Alarm.State"/>
-        </td>
-        
         <td @onclick="ShowMoreAttributes"> @(Alarm.Description ?? "N/A") </td>
         
-        <td @onclick="ShowMoreAttributes">
-            <MonitoringTableStatus Title="@Alarm.Priority.GetDescription()" Priority="@Alarm.Priority"/>
-        </td>
-        
-        <td @onclick="ShowMoreAttributes">@(Alarm.AlarmLimit ?? "N/A") / @(Alarm.Value ?? "N/A")</td>              
+        <td @onclick="ShowMoreAttributes">@(Alarm.Value ?? "N/A")</td>              
 
         <td class="item-table__checkbox" @onclick="SendToTasks">
             <input class="item-table__checkbox-input" 
