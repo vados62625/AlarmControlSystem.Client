@@ -127,10 +127,22 @@
                 </div>
                 <div class="modal-body">
 
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="stateFilterRadio" id="stateFilterRadio-1"
+                               disabled="@(StateFilter?.All(c => c.Value) ?? true)"
+                               checked="@(StateFilter?.All(c => c.Value) ?? true)" 
+                               onchange="@(async () => await OnStateFilterChanged.InvokeAsync(null))">
+                        <label class="form-check-label" for="stateFilterRadio-1">
+                            Все
+                        </label>
+                    </div>
+                    
                     @foreach (var state in Enum.GetValues<StateType>())
                     {
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="stateFilterRadio" id="stateFilterRadio@((int)state)" checked="@(StateFilter?[state])" onchange="@(async () => await SetStateFilter(state))">
+                            <input class="form-check-input" type="checkbox" name="stateFilterRadio" id="stateFilterRadio@((int)state)" 
+                                   checked="@(StateFilter?[state])" 
+                                   onchange="@(async () => await OnStateFilterChanged.InvokeAsync(state))">
                             <label class="form-check-label" for="stateFilterRadio@((int)state)">
                                 @state.ToString()
                             </label>
@@ -149,11 +161,23 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="priorityFilterRadio" id="priorityFilterRadio-1"
+                               disabled="@(PriorityFilter?.All(c => c.Value) ?? true)"
+                               checked="@(PriorityFilter?.All(c => c.Value) ?? true)" 
+                               onchange="@(async () => await OnPriorityFilterChanged.InvokeAsync(null))">
+                        <label class="form-check-label" for="priorityFilterRadio-1">
+                            Все
+                        </label>
+                    </div>
 
                     @foreach (var priority in Enum.GetValues<PriorityType>())
                     {
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="priorityFilterRadio" id="priorityFilterRadio@((int)priority)" checked="@(PriorityFilter?[priority])" onchange="@(async () => await OnPriorityFilterChanged.InvokeAsync(priority))">
+                            <input class="form-check-input" type="checkbox" name="priorityFilterRadio" id="priorityFilterRadio@((int)priority)" 
+                                   checked="@(PriorityFilter?[priority])" 
+                                   onchange="@(async () => await OnPriorityFilterChanged.InvokeAsync(priority))">
                             <label class="form-check-label" for="priorityFilterRadio@((int)priority)">
                                 @priority.ToString()
                             </label>
