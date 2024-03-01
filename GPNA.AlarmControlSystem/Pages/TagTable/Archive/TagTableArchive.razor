@@ -31,11 +31,11 @@
         </div>
     </div>
 
-    <TagsTableArchive Tags="_tags.Items?.ToList()"
+    <TagsTableArchive Tags="_tagsChanges.Items?.ToList()"
                OnStateFilterChanged="SetStateFilter"
                OnPriorityFilterChanged="SetPriorityFilter"
                OnOrderingChanged="OnOrderingChanged"
-               OnTagDeleted="GetTags"/>
+               OnTagDeleted="GetTagChanges"/>
 
-    <Pagination CurrentPage="@(_query.Page ?? 1)" PagesCount="_tags.PagesCount" OnPageClick="OnPageChanged"/>
+    <Pagination CurrentPage="@(_query.Page ?? 1)" PagesCount="_tagsChanges.PagesCount" OnPageClick="OnPageChanged"/>
 </div>
