@@ -193,6 +193,27 @@
 			<path d="M4 0L7.4641 6H0.535898L4 0Z" fill="#002033" fill-opacity="0.2"/>
 		</symbol>
 
+		<symbol id="tag-not-selected" viewBox="0 0 12 12" fill="none">
+			<rect width="12" height="12" rx="4" fill="white"/>
+			<rect x="0.5" y="0.5" width="11" height="11" rx="3.5" stroke="#004269" stroke-opacity="0.28"/>
+		</symbol>
+
+		<symbol id="tag-sent" viewBox="0 0 12 12" fill="none">
+			<rect width="12" height="12" rx="4" fill="#004269" fill-opacity="0.07"/>
+			<rect x="0.5" y="0.5" width="11" height="11" rx="3.5" stroke="#004269" stroke-opacity="0.28"/>
+			<path d="M3.33684 5.64615L2.36963 6.81018L5.55247 9.43262L10.3505 3.65823L9.19837 2.70898L5.36758 7.31934L3.33684 5.64615Z" fill="#00395C" fill-opacity="0.8"/>
+			<path d="M5.04963 7.70523L5.43393 8.02186L5.75215 7.63889L9.26472 3.4115L9.64503 3.72486L5.48612 8.7301L3.07507 6.74356L3.40318 6.34867L5.04963 7.70523Z" stroke="#004269" stroke-opacity="0.28"/>
+		</symbol>
+
+		<symbol id="tag-selected" viewBox="0 0 12 12" fill="none">
+			<rect width="12" height="12" fill="white"/>
+			<rect x="0.5" y="0.5" width="11" height="11" rx="3.5" fill="#0078D2" stroke="#0078D2"/>
+			<path d="M3.33684 5.64615L2.36963 6.81018L5.55247 9.43262L10.3505 3.65823L9.19837 2.70898L5.36758 7.31934L3.33684 5.64615Z" fill="white"/>
+		</symbol>
+
+
+
+
 
 	</defs>
 </svg>

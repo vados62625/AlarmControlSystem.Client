@@ -25,10 +25,10 @@
             text-align: center;
         }
 
-    .tag-table-line:not(:has(+ .tag-table-info)) {
+    .tag-table-line:not(:has(+ .tag-table-comment-title)) {
         border-bottom: 0.5px solid rgba(0, 32, 51, 0.15);
     }
-
+   
     .bg-tag-table .indicator-container {
         justify-content: end;
     }
@@ -127,10 +127,27 @@
 
 .tag-table-icon-reglament {
     width: 17px;
-    height: 15px;
-    /*margin-left: 27px;*/
+    height: 15px;    
     color: #A8B3B9;
 }
     .tag-table-icon-reglament.red {
         color: #EB5757;
     }
+
+.tag-table-comment-title {
+    text-align: center;
+}
+
+.tag-table-comment-title p {
+    font-weight: 400;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #002033;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.tag-table-comment-bottom-line {
+    height: 10px;
+    border-bottom: 0.5px solid rgba(0, 32, 51, 0.15);
+}

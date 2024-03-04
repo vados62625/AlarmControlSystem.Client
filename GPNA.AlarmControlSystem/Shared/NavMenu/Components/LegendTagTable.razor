@@ -1,20 +1,93 @@
-﻿<div class="legend-tag-table">
-	<div class="legend-tag-table-container">
-		<div class="legend-tag-table-indicator new"></div>
-		<p class="legend-tag-table-transcript">Новый</p>
-	</div>
-	<div class="legend-tag-table-container">
-		<div class="legend-tag-table-indicator unverified"></div>
-		<p class="legend-tag-table-transcript">Непроверенный</p>
-	</div>
-	<div class="legend-tag-table-container">
-		<div class="legend-tag-table-indicator incorrect"></div>
-		<p class="legend-tag-table-transcript">Некорректный</p>
-	</div>
-	<div class="legend-tag-table-container">
-		<div class="legend-tag-table-indicator norma"></div>
-		<p class="legend-tag-table-transcript">Все в норме</p>
-	</div>
+﻿<div class="legend">
+	<section class="legend-section-container">
+		<p class="legend-section-title">СТАТУС ТАГА</p>
+		<div class="d-flex align-items-center">
+			<div class="tag-status-bg new">
+				<div class="tag-status-indicator new"></div>
+				<p>20_1_TT_34_BLKKKEY</p>
+			</div>			
+			<p class="legend-transcript">новый с поля</p>
+		</div>
+		<div class="d-flex align-items-center">
+			<div class="tag-status-bg incorrect">
+				<div class="tag-status-indicator incorrect"></div>
+				<p>20_1_TT_34_BLKKKEY</p>
+			</div>
+			<p class="legend-transcript">имеются несовпадения</p>
+		</div>
+		<div class="d-flex align-items-center">
+			<div class="tag-status-bg norma">
+				<div class="tag-status-indicator norma"></div>
+				<p>20_1_TT_34_BLKKKEY</p>
+			</div>
+			<p class="legend-transcript">все в норме</p>
+		</div>		
+	</section>
+
+	<section class="legend-section-container">
+		<p class="legend-section-title">НАЛИЧИЕ НЕСОВПАДЕНИЙ</p>
+		<div class="d-flex align-items-center">
+			<svg class="tag-icon-attention">
+				<use href="/img/icons/icons.svg#tag-table-attention"></use>
+			</svg>
+			<p class="legend-transcript attention">имеется несовпадение в данном разделе</p>
+		</div>		
+	</section>
+
+	<section class="legend-section-container">
+		<p class="legend-section-title">СТАТУС РЕГЛАМЕНТА</p>
+		<div class="d-flex align-items-center">
+			<svg class="tag-icon-reglament">
+				<use href="/img/icons/icons.svg#tag-table-reglament"></use>
+			</svg>
+			<p class="legend-transcript reglament">регламент заполнен (оценка последствий)</p>
+		</div>
+		<div class="d-flex align-items-center">
+			<svg class="tag-icon-reglament red">
+				<use href="/img/icons/icons.svg#tag-table-reglament"></use>
+			</svg>
+			<p class="legend-transcript reglament">регламент не заполнен (нет оценки последствий)</p>
+		</div>
+	</section>
+
+	<section class="legend-section-container">
+		<p class="legend-section-title">ДЕЙСТВИЯ С ТАГОМ</p>
+		<div class="d-flex align-items-center">
+			<svg class="tag-icon-action">
+				<use href="/img/icons/icons.svg#tag-table-edit"></use>
+			</svg>
+			<p class="legend-transcript action">редактировать</p>
+		</div>
+		<div class="d-flex align-items-center">
+			<svg class="tag-icon-action">
+				<use href="/img/icons/icons.svg#tag-table-delete"></use>
+			</svg>
+			<p class="legend-transcript action">удалить</p>
+		</div>
+	</section>
+
+	<section class="legend-section-container">
+		<p class="legend-section-title">ОТПРАВКА В ЖУРНАЛ ИЗМЕНЕНИЙ АСУ ТП</p>
+		<div class="d-flex align-items-center">
+			<svg class="tag-icon-checkbox">
+				<use href="/img/icons/icons.svg#tag-not-selected"></use>
+			</svg>
+			<p class="legend-transcript checkbox">таг не выбран</p>
+		</div>
+		<div class="d-flex align-items-center">
+			<svg class="tag-icon-checkbox">
+				<use href="/img/icons/icons.svg#tag-sent"></use>
+			</svg>
+			<p class="legend-transcript checkbox">отправлен в журнал изменений АСУ ТП</p>
+		</div>
+		<div class="d-flex align-items-center">
+			<svg class="tag-icon-checkbox">
+				<use href="/img/icons/icons.svg#tag-selected"></use>
+			</svg>
+			<p class="legend-transcript checkbox">выбран для отправки в журнал изменений АСУ ТП</p>
+		</div>
+	</section>
+	
 </div>
 
 @code {

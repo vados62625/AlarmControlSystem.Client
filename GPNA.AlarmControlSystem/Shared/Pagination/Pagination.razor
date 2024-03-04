@@ -1,7 +1,7 @@
 ﻿@using GPNA.AlarmControlSystem.Shared.Pagination.Components
 
 <nav aria-label="Page navigation example">
-    <ul class="pagination py-3 justify-content-center">
+    <ul class="pagination pt-3 justify-content-center">
         <PaginationComponent Text="&laquo;" PageIndex="@(CurrentPage-1)" Active="false" Disabled="@(CurrentPage == 1)" OnPageClick="@(async () => await OnPageChanged(CurrentPage - 1))"></PaginationComponent>
         @if (PagesToShow != default)
         {

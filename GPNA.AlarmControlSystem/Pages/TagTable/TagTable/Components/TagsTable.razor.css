@@ -33,8 +33,7 @@
         text-align: start;
     }
     .tag-table-head-line th:last-child {
-        display: flex;
-        /*text-align: center;*/
+        display: flex;        
         justify-content: center;
         padding: 0;
         align-items: center;
@@ -87,6 +86,29 @@
     }
 
 .bg-tag-table-button svg:not(.tag-table-status-icon) {
+    width: 10px;
+    height: 8px;
+}
+
+.bg-monitoring-table-button div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bg-monitoring-table-button button {
+    border: none;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    padding: 0;
+}
+
+    .bg-monitoring-table-button button:nth-child(2) {
+        margin-left: 10px;
+    }
+
+.bg-monitoring-table-button svg {
     width: 10px;
     height: 8px;
 }

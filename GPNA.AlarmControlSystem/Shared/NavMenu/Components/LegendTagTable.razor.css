@@ -1,20 +1,53 @@
-﻿.legend-tag-table {
+﻿.legend {
     width: 100%;
     height: 100%;
-    padding: 25px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: start;
-    gap: 8px;
-}
-.legend-tag-table-container {
-    display: flex;
-    align-items: center;
+    gap: 20px;
     font-family: 'Inter';
     font-weight: 400;
     font-size: 12px;
 }
-.legend-tag-table-indicator {
+.legend-section-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: start;
+}
+
+.legend-section-title {
+    text-transform: uppercase;
+    color: rgba(0, 32, 51, 0.5);
+    margin-bottom: 4px;
+}
+
+
+.tag-status-bg {
+    min-width: 170px;
+    height: 32px;
+    padding: 0 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .tag-status-bg.new {
+        background: rgba(186, 143, 219, 0.2);
+    }
+    .tag-status-bg.incorrect {
+        background: rgba(235, 87, 87, 0.1);
+    }
+    .tag-status-bg.norma {
+        border: 1px solid #B0C1CB;
+    }
+
+.tag-status-bg p {
+    color: rgba(0, 32, 51, 0.8);
+}
+
+.tag-status-indicator {
     width: 9px;
     height: 9px;
     border: 1px solid #B0C1CB;
@@ -22,28 +55,58 @@
     margin-right: 20px;
 }
 
-    .legend-tag-table-indicator.new {
+    .tag-status-indicator.new {
         background: #BA8FDB;
         border-color: #BA8FDB;
     }
-
-    .legend-tag-table-indicator.norma {
+    .tag-status-indicator.norma {
         background: transparent;
         border-color: #B0C1CB;
     }
-
-    .legend-tag-table-indicator.unverified {
-        background: #F2C94C;
-        border-color: #F2C94C;
-    }
-
-    .legend-tag-table-indicator.incorrect {
+    .tag-status-indicator.incorrect {
         background: #EB5757;
         border-color: #EB5757;
     }
 
-.legend-tag-table-transcript {
-    color: rgba(0, 32, 51, 0.8);
-    white-space: nowrap;
+.tag-icon-attention {
+    width: 10px;
+    height: 10px;
 }
 
+.tag-icon-reglament {
+    width: 17px;
+    height: 15px;
+    color: #A8B3B9;
+}
+
+    .tag-icon-reglament.red {
+        color: #EB5757;
+    }
+
+.tag-icon-action {
+    width: 14px;
+    height: 14px;
+}
+
+.tag-icon-checkbox {
+    width: 12px;
+    height: 12px;
+}
+
+.legend-transcript {
+    color: rgba(0, 32, 51, 0.8);
+    white-space: nowrap;
+    margin-left: 15px;
+}
+    .legend-transcript.attention {    
+        margin-left: 18px;
+    }
+    .legend-transcript.reglament {
+        margin-left: 11px;
+    }
+    .legend-transcript.action {
+        margin-left: 15px;
+    }
+    .legend-transcript.checkbox {
+        margin-left: 18px;
+    }
