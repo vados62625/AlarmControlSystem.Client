@@ -354,20 +354,42 @@ public partial class Monitoring : ComponentBase
 
     private async Task ToggleStateFilter(StateType? state)
     {
-        if (state == default || _stateFilter == default) return;
+        if (_stateFilter == default) return;
 
-        _stateFilter[state.Value] = !_stateFilter[state.Value];
-        _currentPage = 1;
+        if (state == null)
+        {
+            var enableAll = _stateFilter.Any(c => !c.Value);
+            foreach (var key in _stateFilter.Keys)
+            {
+                _stateFilter[key] = enableAll;
+            }
+        }
+        else
+        {
+            _stateFilter[state.Value] = !_stateFilter[state.Value];
+            _currentPage = 1;
+        }
 
         await InitializePageAsync();
     }
 
     private async Task TogglePriorityFilter(PriorityType? priority)
     {
-        if (priority == default || _priorityFilter == default) return;
-
-        _priorityFilter[priority.Value] = !_priorityFilter[priority.Value];
-        _currentPage = 1;
+        if (_priorityFilter == default) return;
+        
+        if (priority == null)
+        {
+            var enableAll = _priorityFilter.Any(c => !c.Value);
+            foreach (var key in _priorityFilter.Keys)
+            {
+                _priorityFilter[key] = enableAll;
+            }
+        }
+        else
+        {
+            _priorityFilter[priority.Value] = !_priorityFilter[priority.Value];
+            _currentPage = 1;
+        }
 
         await InitializePageAsync();
     }

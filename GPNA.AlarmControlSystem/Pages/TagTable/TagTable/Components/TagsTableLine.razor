@@ -20,6 +20,9 @@
         <MonitoringTableStatus />
     </td>
     <td @onclick="ShowMoreAttributes">
+        <MonitoringTableStatus Title="@Tag.State.GetDescription()" Status="@Tag.State"/>
+    </td>
+    <td @onclick="ShowMoreAttributes">
         <div class=" d-flex gap-2 align-items-center">
             @if (Tag.ModelState.TryGetValue("Description", out var errorDesc)) 
             {                    

@@ -2,6 +2,7 @@
 @using GPNA.AlarmControlSystem.Models.Dto.Tag
 @using GPNA.AlarmControlSystem.Models.Enums
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
+@using GPNA.AlarmControlSystem.Application.Dto.TagChange
 
 <table class="bg-tag-table ">
     <thead>
@@ -18,6 +19,9 @@
         </th>   *@     
         <th style="min-width: 230px;">
             <p>TagName</p>  
+        </th> 
+        <th style="min-width: 230px;">
+            <p>Статус</p>  
         </th>        
         <th style="min-width: 1253px;" colspan="3">
             <p>Описание</p>
@@ -71,7 +75,7 @@
     {
         @foreach (var tag in Tags)
         {
-            <TagsTableLineArchive Tag="tag" OnTagDeleted="OnTagDeleted"/>
+            <TagsTableLineArchive TagChange="tag"/>
         }
     }  
     </tbody>
@@ -79,7 +83,7 @@
 
 @code {
     [Parameter]
-    public List<TagDto>? Tags { get; set; }
+    public List<TagChangeDto>? Tags { get; set; }
 
     [CascadingParameter(Name = nameof(StateFilter))]
     public StateType? StateFilter { get; set; }
@@ -95,9 +99,6 @@
 
     [Parameter]
     public EventCallback<string> OnOrderingChanged { get; set; }
-
-    [Parameter] 
-    public EventCallback<TagDto> OnTagDeleted { get; set; }
     
     private async Task SetStateFilter(StateType? state)
     {

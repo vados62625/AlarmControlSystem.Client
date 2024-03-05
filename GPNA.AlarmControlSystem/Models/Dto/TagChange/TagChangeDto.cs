@@ -14,7 +14,7 @@ namespace GPNA.AlarmControlSystem.Application.Dto.TagChange
         /// </summary>
         public int TagId { get; set; }
         
-        public TagDto? Tag { get; set; }
+        public TagDto Tag { get; set; } = new ();
 
         /// <summary>
         /// Id инициатора

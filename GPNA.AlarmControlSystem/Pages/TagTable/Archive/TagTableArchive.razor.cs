@@ -4,6 +4,7 @@ using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto.Field;
 using GPNA.AlarmControlSystem.Models.Dto.Queries;
 using GPNA.AlarmControlSystem.Models.Dto.Tag;
+using GPNA.AlarmControlSystem.Models.Dto.TagChange;
 using GPNA.AlarmControlSystem.Models.Dto.Workstation;
 using GPNA.AlarmControlSystem.Models.Enums;
 using GPNA.AlarmControlSystem.Options;
@@ -14,88 +15,33 @@ using Microsoft.JSInterop;
 
 namespace GPNA.AlarmControlSystem.Pages.TagTable.Archive
 {
-    public partial class TagTableArchive : ComponentBase
+    public partial class TagTableArchive : AcsPageBase
     {
         [CascadingParameter] public IModalService Modal { get; set; } = default!;
         [Inject] protected IJSRuntime JS { get; set; } = default!;
-        [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
-        [Inject] protected ITagService TagService { get; set; } = default!;
+        [Inject] protected ITagChangesService TagChangesService { get; set; } = default!;
+        
         [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
-        [Inject] private IFieldService? FieldService { get; set; }
         [Inject] private IExportService? ExportService { get; set; }
-        [Inject] private IWorkStationService? WorkStationService { get; set; }
-        [Parameter][SupplyParameterFromQuery] public int? WorkstationId { get; set; }
-        [Parameter][SupplyParameterFromQuery] public int? FieldId { get; set; }
         
-        private string? _workstationName, _fieldName;
-        private WorkStationDto[]? _workstations;
-        private FieldDto[]? _fields;
-        private IDictionary<string, string>? _fieldLinksDictionary;
-        private IDictionary<string, string>? _workstationLinksDictionary;
-        
-        private GetTagsListQuery _query = new();
-        private TagsCollection _tags = new();
-        
-        protected override async Task OnParametersSetAsync()
+        private GetTagChangesListQuery _query = new();
+        private TagChangesCollection _tagsChanges = new();
+
+        protected override async Task LoadPage()
         {
-            await SetFieldWithWorkstation();
-            await SpinnerService.Load(GetTags);
-        }
-        
-        private async Task SetFieldWithWorkstation()
-        {
-            if (FieldService != null)
-            {
-                var fields = await FieldService.GetList();
-                if (fields.Success)
-                    _fields = fields.Payload.ToArray();
-            }
-        
-            if (WorkStationService != null)
-            {
-                var workstations = await WorkStationService.GetList(new { FieldId = FieldId });
-                if (workstations.Success)
-                    _workstations = workstations.Payload.ToArray();
-            }
-        
-            FieldId ??= _fields?.FirstOrDefault()?.Id;
-            _fieldName = _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name;
-        
-            WorkstationId ??= _workstations?.FirstOrDefault()?.Id;
-            _workstationName = _workstations?.FirstOrDefault(ws => ws.Id == WorkstationId)?.Name;
-        
-            StateHasChanged();
-        
-            FillLinks();
-        }
-        
-        private void FillLinks()
-        {
-            if (_fields != null)
-            {
-                _fieldLinksDictionary = _fields.ToDictionary(field =>
-                        field.Name,
-                    field => $"/tag-table/?fieldId={field.Id}");
-            }
-        
-            if (_workstations != null)
-            {
-                _workstationLinksDictionary = _workstations.ToDictionary(workStation =>
-                        workStation.Name ?? Guid.NewGuid().ToString(),
-                    workStation => $"/tag-table/?fieldId={FieldId}&workstationId={workStation.Id}");
-            }
+            await SpinnerService.Load(GetTagChanges);
         }
 
-        private async Task GetTags()
+        private async Task GetTagChanges()
         {
             _query.WorkStationId = WorkstationId ?? 1;
             _query.ItemsOnPage = 15;
             _query.Page ??= 1;
-            var result = await TagService.GetTagsCollection(_query);
+            var result = await TagChangesService.GetTagChangesCollection(_query);
         
             if (result.Success)
             {
-                _tags = result.Payload;
+                _tagsChanges = result.Payload;
                 StateHasChanged();
             }
         }
@@ -105,7 +51,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable.Archive
             _query.State = state;
             _query.Page = 1;
         
-            await SpinnerService.Load(GetTags);
+            await LoadPage();
         }
         
         private async Task SetPriorityFilter(PriorityType? priority)
@@ -113,7 +59,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable.Archive
             _query.Priority = priority;
             _query.Page = 1;
         
-            await SpinnerService.Load(GetTags);
+            await LoadPage();
         }
         
         private async Task OnOrderingChanged(string orderBy)
@@ -124,30 +70,30 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable.Archive
             _query.OrderPropertyName = orderBy;
             _query.Page = 1;
         
-            await SpinnerService.Load(GetTags);
+            await LoadPage();
         }
         
         private async Task OnPageChanged(int page)
         {
             _query.Page = page;
-            await SpinnerService.Load(GetTags);
+            await LoadPage();
         }
         
         private async Task SearchTag(string tagName)
         {
             _query.Suggest = tagName;
             _query.Page = 1;
-            await SpinnerService.Load(GetTags);
+            await LoadPage();
         }
         
         private async Task DropFilters()
         {
-            _query = new GetTagsListQuery
+            _query = new GetTagChangesListQuery
             {
                 Page = 1
             };
         
-            await SpinnerService.Load(GetTags);
+            await LoadPage();
         }
         
         private async Task<Stream?> GetFileStream()
@@ -156,7 +102,6 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable.Archive
             {
                 DocumentType = ExportDocumentType.Excel,
                 WorkStationId = WorkstationId ?? 0,
-                TagName = _query.TagName,
                 Suggest = _query.Suggest,
                 State = _query.State,
                 Priority = _query.Priority,
@@ -167,13 +112,13 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable.Archive
         
         private async Task DownloadFileFromStream()
         {
-            SpinnerService?.Show();
+            SpinnerService.Show();
         
             var fileStream = await GetFileStream();
         
             if (fileStream == null) return;
         
-            var fileName = "Теги.xlsx";
+            var fileName = "Архив изменений АСУ ТП.xlsx";
         
             using var streamRef = new DotNetStreamReference(stream: fileStream);
         

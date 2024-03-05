@@ -4,20 +4,24 @@
 @using GPNA.AlarmControlSystem.Interfaces
 @using GPNA.AlarmControlSystem.Pages.TagTable.Components
 @using GPNA.AlarmControlSystem.Services
+@using GPNA.AlarmControlSystem.Application.Dto.TagChange
 
-<tr class="tag-table-line @Tag.Validate.ToString()">
+<tr class="tag-table-line">
            
     <td @onclick="ShowMoreAttributes">
-		<p>@Tag.TagName</p>
+		<p>@TagChange.Tag?.TagName</p>
     </td>           
+    <td @onclick="ShowMoreAttributes"> 
+        <MonitoringTableStatus Title="@TagChange.Tag?.State.GetDescription()" Status="@TagChange.Tag?.State" />
+    </td>
     <td @onclick="ShowMoreAttributes" colspan="3"> 
-        <p class="tag-table-description-title">@Tag.Description</p>
+        <p class="tag-table-description-title">@TagChange.Description</p>
     </td>
     <td @onclick="ShowMoreAttributes"> 
-        <MonitoringTableStatus Title="@Tag.Priority.GetDescription()" Priority="@Tag.Priority" />
+        <MonitoringTableStatus Title="@TagChange.Tag?.Priority.GetDescription()" Priority="@TagChange.Tag?.Priority" />
     </td>
     <td @onclick="ShowMoreAttributes">
-        <p>@(Tag.AlarmLimit ?? "N/A")</p>
+        <p>@(TagChange.AlarmLimit ?? "N/A")</p>
     </td>
     <td @onclick="ShowMoreAttributes">
         <svg class="tag-table-icon-reglament @(_attentionReglament ? "red" : "")">
@@ -51,10 +55,9 @@
     [CascadingParameter] public IModalService Modal { get; set; } = default!;
 
     [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
-    [Inject] protected ITagService TagService { get; set; } = default!;
+    [Inject] protected ITagChangesService TagChangesService { get; set; } = default!;
 
-    [Parameter] public TagDto Tag { get; set; } = new TagDto();
-    [Parameter] public EventCallback<TagDto> OnTagDeleted { get; set; }
+    [Parameter] public TagChangeDto TagChange { get; set; } = new ();
 
     private bool _attentionReglament = false;
 
@@ -67,15 +70,5 @@
 
     protected override void OnParametersSet()
     {
-        if (Tag.ModelState.Count > 0)
-        {
-            foreach (var obj in Tag.ModelState)
-            {
-                if (obj.Key is "Position" or "Consequence" or "ActionFieldOperator" or "ActionArmOperator" or "Inform" or "ReactionTime")
-                {
-                    _attentionReglament = true;
-                }
-            }
-        }
     }
 }
