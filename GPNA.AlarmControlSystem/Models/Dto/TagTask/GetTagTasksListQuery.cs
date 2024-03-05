@@ -6,6 +6,11 @@ namespace GPNA.AlarmControlSystem.Models.Dto.TagTask
     public class GetTagTasksListQuery : EntityQueryBase
     {
         /// <summary>
+        /// Id
+        /// </summary>
+        public int? Id { get; set; }
+        
+        /// <summary>
         /// В архиве
         /// </summary>
         public bool Archived { get; set; }

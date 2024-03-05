@@ -54,7 +54,7 @@
             align-items: center;
             justify-content: center;            
         }
-        .message-body button p {
+        .message-body button span {
             font-weight: 400;
             font-size: 12px;
             margin-left: 17px;
@@ -162,3 +162,11 @@
         color: var(--text-button-navigation-grey);
         line-height: 120%;
     }
+
+.recipient-name{
+    transition: .4s;
+}
+
+.recipient-selector:has(> .form-check .form-check-input:checked) .recipient-name{
+    border-color: #0078d2 !important;
+}

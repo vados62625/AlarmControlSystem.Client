@@ -1,5 +1,8 @@
-﻿@page "/tasks/task-number"
-@using GPNA.AlarmControlSystem.Pages.Tasks.Components
+﻿@page "/tasks/{taskId:int}"
+@inherits AcsPageBase
+@using GPNA.AlarmControlSystem.Models.Dto.TagTask
+@using GPNA.AlarmControlSystem.Pages.Tasks.Modals
+@using GPNA.AlarmControlSystem.Interfaces
 
 <div class="page-main">
     <div class="page-header ">       
@@ -7,9 +10,10 @@
             <svg>
                 <use href="/img/icons/icons.svg#arrow-left"></use>
             </svg>
-            <p>К списку задач</p>
+            <span>К списку задач</span>
         </a>
-            <p>ЗАДАЧА <b># @TaskNumber</b></p>
+        
+        <p>ЗАДАЧА <b># @TagTask?.Number</b></p>
             
         <div class="d-flex gap-2">
             @*@if (FiltersOn)
@@ -21,35 +25,103 @@
 
     </div>
     <div class="d-flex flex-column overflow-auto gap-2">
-        @* <TasksTable Border="border-none"></TasksTable> *@
         <div class="mesage-container w-100">
             <div class=" mesage-container flex-column">
                 <div class="bg-message message-correspondents">
                     <p>Кому:</p>
-                    <form>
-                        <label><input type="checkbox" />Технолог (промысел)</label>
-                        <label><input type="checkbox" />Технолог (офис)</label>
-                        <label><input type="checkbox" />Инженер АСУТП (промысел)</label>
-                        <label><input type="checkbox" />Инженер АСУТП (офис)</label>
-                        <label><input type="checkbox" />Начальник смены</label>
-                        <label><input type="checkbox" />Начальник цеха</label>
-                    </form>                     
+                    <div>
+                        <div class="recipient-selector d-flex justify-content-between pb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkTradeTechnologist"/>
+                                <label class="form-check-label" for="checkTradeTechnologist">
+                                    Технолог (промысел)
+                                </label>
+                            </div>
+                            <div class="recipient-name w-50 border p-1">
+                                <p>Смирнов Алексей Иванович</p>
+                            </div>
+                        </div>
+                        <div class="recipient-selector d-flex justify-content-between pb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkOfficeTechnologist"/>
+                                <label class="form-check-label" for="checkOfficeTechnologist">
+                                    Технолог (офис)
+                                </label>
+                            </div>
+                            <div class="recipient-name w-50 border p-1">
+                                <p>Смирнов Алексей Иванович</p>
+                            </div>
+                        </div>
+                        <div class="recipient-selector d-flex justify-content-between pb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkTradeEngineer"/>
+                                <label class="form-check-label" for="checkTradeEngineer">
+                                    Инженер АСУТП (промысел)
+                                </label>
+                            </div>
+                            <div class="recipient-name w-50 border p-1">
+                                <p>Смирнов Алексей Иванович</p>
+                            </div>
+                        </div>
+                        <div class="recipient-selector d-flex justify-content-between pb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkOfficeEngineer"/>
+                                <label class="form-check-label" for="checkOfficeEngineer">
+                                    Инженер АСУТП (офис)
+                                </label>
+                            </div>
+                            <div class="recipient-name w-50 border p-1">
+                                <p>Смирнов Алексей Иванович</p>
+                            </div>
+                        </div>
+                        <div class="recipient-selector d-flex justify-content-between pb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkShiftSupervisor"/>
+                                <label class="form-check-label" for="checkShiftSupervisor">
+                                    Начальник смены
+                                </label>
+                            </div>
+                            <div class="recipient-name w-50 border p-1">
+                                <p>Смирнов Алексей Иванович</p>
+                            </div>
+                        </div>
+                        <div class="recipient-selector d-flex justify-content-between pb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkWorkstationSupervisor"/>
+                                <label class="form-check-label" for="checkWorkstationSupervisor">
+                                    Начальник цеха
+                                </label>
+                            </div>
+                            <div class="recipient-name w-50 border p-1">
+                                <p>Смирнов Алексей Иванович</p>
+                            </div>
+                        </div>
+                    </div>                     
                 </div>
                 <div class="bg-message message-body">
                     <p> Тело письма:</p>
-                    <textarea type="text" placeholder="Текст письма" />
-                    <div class="d-flex align-self-end gap-2">
-                        <button>
+                    <textarea type="text" placeholder="Текст письма"></textarea>
+                    <div class="d-flex align-self-end gap-2 w-100 justify-content-end">
+                        @if (TagTask is {Archived: false })
+                        {
+                            <button class="me-auto" @onclick="ArchiveTask">
+                                <svg>
+                                    <use href="/img/icons/icons.svg#archive"></use>
+                                </svg>
+                                <span>В архив</span>
+                            </button>
+                        }
+                        <button @onclick="Cancel">
                             <svg>
                                 <use href="/img/icons/icons.svg#task-message-cancel"></use>
                             </svg>
-                            <p>Отменить</p>
+                            <span>Отменить</span>
                         </button>
                         <button>
                             <svg>
                                 <use href="/img/icons/icons.svg#task-message-send"></use>
                             </svg>
-                            <p>Разослать</p>
+                            <span>Разослать</span>
                         </button>
                     </div>
                 </div>
@@ -85,10 +157,6 @@
             
         </div>
     </div>
-    @*<div style="border-radius: 6px;">
-        <TasksTable></TasksTable>
-        @*<Pagination CurrentPage="CurrentPage" PagesCount="PagesCount" OnPageClick="OnPageChanged"></Pagination>
-        </div>*@
 </div>
 
 
@@ -96,7 +164,55 @@
 
 
 @code {
+    [Inject]
+    ITagTaskService? TagTaskService { get; set; }
+    
+    [Parameter]
+    public int TaskId { get; set; }
 
-    [SupplyParameterFromQuery][Parameter] public int TaskNumber { get; set; }
+    [CascadingParameter]
+    public IModalService? Modal { get; set; }
 
+    public TagTaskDto? TagTask { get; set; }
+
+    protected override async Task LoadPage()
+    {
+        await GetTagTask();
+    }
+
+    private async Task ArchiveTask()
+    {
+        if (TagTask is {Archived: false } && Modal != default)
+        {
+            var parameters = new ModalParameters { { "TaskNumber", TagTask.Number.ToString() } };
+            var modal = Modal.Show<ArchiveTaskModal>("", parameters);
+            var modalResult = await modal.Result;
+            if (modalResult.Confirmed)
+            {
+                var result = await TagTaskService?.UpdateTagTask(new UpdateTagTaskCommand { Id = TagTask.Id, Archived = true })!;
+
+                if (result.Success)
+                {
+                    Cancel();
+                }
+            }
+        }
+    }
+
+    private async Task GetTagTask()
+    {
+        if (TagTaskService == default) return;
+        
+        var result = await TagTaskService.GetTagTasksCollection(new GetTagTasksListQuery { Id = TaskId });
+
+        if (result.Success && result.Payload.Items.Any())
+        {
+            TagTask = result.Payload.Items.First();
+        }
+    }
+
+    private void Cancel()
+    {
+        NavigationManager?.NavigateTo("/tasks");
+    }
 }

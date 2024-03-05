@@ -15,24 +15,13 @@ using Microsoft.JSInterop;
 
 namespace GPNA.AlarmControlSystem.Pages.Tasks
 {
-    public partial class Tasks : ComponentBase
+    public partial class Tasks : AcsPageBase
     {
         [CascadingParameter] public IModalService Modal { get; set; } = default!;
-        [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
         [Inject] protected ITagTaskService TagTaskService { get; set; } = default!;
         [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
-        [Inject] private IFieldService? FieldService { get; set; }
-        [Inject] private IWorkStationService? WorkStationService { get; set; }
         [Inject] private IExportService? ExportService { get; set; }
-        [Parameter] [SupplyParameterFromQuery] public int? WorkstationId { get; set; }
-        [Parameter] [SupplyParameterFromQuery] public int? FieldId { get; set; }
         [Parameter] [SupplyParameterFromQuery] public int CurrentTab { get; set; } = 0;
-
-        private string? _workstationName, _fieldName;
-        private WorkStationDto[]? _workstations;
-        private FieldDto[]? _fields;
-        private IDictionary<string, string>? _fieldLinksDictionary;
-        private IDictionary<string, string>? _workstationLinksDictionary;
         
         private Dictionary<StateType, bool>? _stateFilter;
         private Dictionary<PriorityType, bool>? _priorityFilter;
@@ -48,60 +37,15 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
 
         private bool _orderByDesc = true;
         
-        protected override async Task OnInitializedAsync()
+        protected override Task OnInitializedAsync()
         {
-            await SetFieldWithWorkstation();
             InitFilters();
-            await SpinnerService.Load(GetTasks);
+            return Task.CompletedTask;
         }
 
-        protected override async Task OnParametersSetAsync()
+        protected override async Task LoadPage()
         {
             await GetTasks();
-        }
-
-        private async Task SetFieldWithWorkstation()
-        {
-            if (FieldService != null)
-            {
-                var fields = await FieldService.GetList();
-                if (fields.Success)
-                    _fields = fields.Payload.ToArray();
-            }
-
-            if (WorkStationService != null)
-            {
-                var workstations = await WorkStationService.GetList(new { FieldId });
-                if (workstations.Success)
-                    _workstations = workstations.Payload.ToArray();
-            }
-
-            FieldId ??= _fields?.FirstOrDefault()?.Id;
-            _fieldName = _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name;
-
-            WorkstationId ??= _workstations?.FirstOrDefault()?.Id;
-            _workstationName = _workstations?.FirstOrDefault(ws => ws.Id == WorkstationId)?.Name;
-
-            StateHasChanged();
-
-            FillLinks();
-        }
-
-        private void FillLinks()
-        {
-            if (_fields != null)
-            {
-                _fieldLinksDictionary = _fields.ToDictionary(field =>
-                        field.Name,
-                    field => $"/tasks/?fieldId={field.Id}");
-            }
-
-            if (_workstations != null)
-            {
-                _workstationLinksDictionary = _workstations.ToDictionary(workStation =>
-                        workStation.Name ?? Guid.NewGuid().ToString(),
-                    workStation => $"/tasks/?fieldId={FieldId}&workstationId={workStation.Id}");
-            }
         }
 
         private async Task GetTasks()
