@@ -1,5 +1,7 @@
 ﻿@page "/tasks"
 
+@inherits AcsPageBase
+
 @using GPNA.AlarmControlSystem.Pages.Tasks.Components
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
 @using GPNA.AlarmControlSystem.Shared.Pagination
@@ -14,12 +16,12 @@
             Placeholder="Поиск по Tag"/>
 
         <div class="d-flex">
-            <p>ЗАДАЧИ <b>@_fieldName М/Р</b></p>
-            <SelectObject Object="dto" LinksDictionary="_fieldLinksDictionary"/>
+            <p>ЗАДАЧИ <b>@FieldName М/Р</b></p>
+            <SelectObject Object="dto" LinksDictionary="FieldLinksDictionary"/>
             <p style="margin-left:15px;">
-                <b>@_workstationName</b>
+                <b>@WorkstationName</b>
             </p>
-            <SelectObject LinksDictionary="_workstationLinksDictionary"/>
+            <SelectObject LinksDictionary="WorkstationLinksDictionary"/>
         </div>
         <div class="d-flex gap-2">
             @if (false)

@@ -23,6 +23,9 @@
         <td @onclick="GoToDetails">@Task.Number</td>
         <td @onclick="GoToDetails">@Task.CreatedAt.Date</td>
         <td @onclick="GoToDetails">@Task.CreatedAt.LocalDateTime</td>
+        <td @onclick="GoToDetails">-</td>
+        <td @onclick="GoToDetails">-</td>
+        <td @onclick="GoToDetails">@Task.EventAlarm.GetDescription()</td>
         <td @onclick="GoToDetails">@Task?.Tag?.TagName</td>
         <td @onclick="GoToDetails">
             <MonitoringTableStatus
@@ -35,18 +38,18 @@
                 Title="@Task?.Tag?.Priority.GetDescription()"
                 Priority="@Task?.Tag?.Priority"/>
         </td>
-        <td @onclick="GoToDetails">@Task?.Tag?.AlarmLimit</td>
-        <td>
-            @if (Task is {Archived: false })
-            {
-                <button class="btn button-modal button-archive save" @onclick="ArchiveTask">
-                    <svg>
-                        <use href="/img/icons/icons.svg#archive"></use>
-                    </svg>
-                    В архив
-                </button>
-            }
-        </td>
+        <td @onclick="GoToDetails">@(Task?.Tag?.AlarmLimit ?? "N/A")/@(Task?.Tag?.LastBufferAlarm?.Value ?? "N/A")</td>
+        @* <td> *@
+        @*     @if (Task is {Archived: false }) *@
+        @*     { *@
+        @*         <button class="btn button-modal button-archive save" @onclick="ArchiveTask"> *@
+        @*             <svg> *@
+        @*                 <use href="/img/icons/icons.svg#archive"></use> *@
+        @*             </svg> *@
+        @*             В архив *@
+        @*         </button> *@
+        @*     } *@
+        @* </td> *@
     </tr>
     @* <tr class="task-table-comment"> *@
     @*     <td colspan="10"> *@
@@ -81,7 +84,7 @@
 
     private void GoToDetails()
     {
-        NavigationManager?.NavigateTo($"/tasks/task-number?taskNumber={Task.Number}");
+        NavigationManager?.NavigateTo($"/tasks/{Task?.Id}");
     }
 
     private async Task ArchiveTask()
