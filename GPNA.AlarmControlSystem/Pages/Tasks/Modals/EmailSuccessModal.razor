@@ -1,4 +1,6 @@
-﻿<div class="modal-backdrop show"></div>
+﻿@using GPNA.AlarmControlSystem.Shared.ButtonsModal
+
+<div class="modal-backdrop show"></div>
 
 <div class="tag-table__modal-bg send-alarm">
     <CloseButton ClickEvent="Cancel"/>
@@ -6,3 +8,13 @@
 			
     <p class="align-self-start">Письмо успешно отправлено всем участникам рассылки.</p>
 </div>
+
+@code
+{
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;
+
+    void Cancel()
+    {
+        ModalInstance.CancelAsync();
+    }
+}

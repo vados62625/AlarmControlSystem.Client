@@ -1,4 +1,5 @@
-﻿using GPNA.AlarmControlSystem.Models.Dto.Email;
+﻿using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
+using GPNA.AlarmControlSystem.Models.Dto.Email;
 using GPNA.AlarmControlSystem.Models.Dto.Tag;
 using GPNA.AlarmControlSystem.Models.Enums;
 
@@ -13,6 +14,11 @@ namespace GPNA.AlarmControlSystem.Models.Dto.TagTask
         /// Тег
         /// </summary>
         public TagDto? Tag { get; set; }
+        
+        /// <summary>
+        /// Связанная сигнализация
+        /// </summary>
+        public virtual BufferAlarmDto? BufferAlarm { get; set; }
         
         /// <summary>
         /// Номер

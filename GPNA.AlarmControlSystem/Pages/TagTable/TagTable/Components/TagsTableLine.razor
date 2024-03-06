@@ -17,9 +17,6 @@
         @Tag.TagName
     </td>
     <td @onclick="ShowMoreAttributes">
-        <MonitoringTableStatus />
-    </td>
-    <td @onclick="ShowMoreAttributes">
         <MonitoringTableStatus Title="@Tag.State.GetDescription()" Status="@Tag.State"/>
     </td>
     <td @onclick="ShowMoreAttributes">

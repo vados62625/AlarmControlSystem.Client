@@ -1,4 +1,5 @@
 ﻿@page "/monitoring"
+@inherits AcsPageBase
 
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Tables
@@ -38,10 +39,10 @@
                                     }
                                 </div>
                                 <div class="d-flex">
-                                    <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ <b>@_fieldName М/Р</b></p>
+                                    <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ <b>@FieldName М/Р</b></p>
                                     <SelectObject Object="dto" LinksDictionary="_fieldLinksDictionary"/>
                                     <p style="margin-left:15px;">
-                                        <b>@_workstationName</b>
+                                        <b>@WorkstationName</b>
                                     </p>
                                     <SelectObject LinksDictionary="_workstationLinksDictionary"/>
                                 </div>

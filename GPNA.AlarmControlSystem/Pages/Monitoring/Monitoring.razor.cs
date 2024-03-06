@@ -17,7 +17,7 @@ using Microsoft.JSInterop;
 
 namespace GPNA.AlarmControlSystem.Pages.Monitoring;
 
-public partial class Monitoring : ComponentBase
+public partial class Monitoring : AcsPageBase
 {
     [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
     [Inject] private IIncomingAlarmService? IncomingAlarmService { get; set; }
@@ -25,14 +25,9 @@ public partial class Monitoring : ComponentBase
 
     [Inject] private IImitatedAlarmService? ImitatedAlarmService { get; set; }
     [Inject] private ISuppressedAlarmService? SuppressedAlarmService { get; set; }
-    [Inject] private IFieldService? FieldService { get; set; }
-    [Inject] private IWorkStationService? WorkStationService { get; set; }
     [Inject] private IExportService? ExportService { get; set; }
-    [Inject] private ISpinnerService SpinnerService { get; set; } = default!;
 
     [Inject] private MonitoringSettingsService? MonitoringSettingsService { get; set; }
-    [Parameter] [SupplyParameterFromQuery] public int? WorkstationId { get; set; }
-    [Parameter] [SupplyParameterFromQuery] public int? FieldId { get; set; }
 
     [Parameter]
     [SupplyParameterFromQuery]
@@ -47,12 +42,6 @@ public partial class Monitoring : ComponentBase
     }
 
     private int _alarmType = 1;
-    
-    
-    private string? _workstationName, _fieldName;
-
-    private WorkStationDto[]? _workstations;
-    private FieldDto[]? _fields;
 
     private DateTimeOffset _from, _to;
 
@@ -91,44 +80,16 @@ public partial class Monitoring : ComponentBase
 
     private MonitoringSettingsDto? _monitoringSettings;
     
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         SetDates();
         InitFilters();
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        await SetFieldWithWorkstation();
         _monitoringSettings = await GetSettings();
-        await InitializePageAsync();
     }
 
-    private async Task SetFieldWithWorkstation()
+    protected override async Task LoadPage()
     {
-        if (FieldService != null)
-        {
-            var fields = await FieldService.GetList();
-            if (fields.Success)
-                _fields = fields.Payload.ToArray();
-        }
-
-        if (WorkStationService != null)
-        {
-            var workstations = await WorkStationService.GetList(new { FieldId = FieldId });
-            if (workstations.Success)
-                _workstations = workstations.Payload.ToArray();
-        }
-
-        FieldId ??= _fields?.FirstOrDefault()?.Id;
-        _fieldName = _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name;
-
-        WorkstationId ??= _workstations?.FirstOrDefault()?.Id;
-        _workstationName = _workstations?.FirstOrDefault(ws => ws.Id == WorkstationId)?.Name;
-
-        StateHasChanged();
-
-        FillLinks();
+        await InitializePageAsync();
     }
 
     private void SetAlarmsCounts<T>(AlarmsCollection<T> alarms)
@@ -145,24 +106,6 @@ public partial class Monitoring : ComponentBase
         _tabAlarmsCount[AlarmTypeEnum.Incoming] = alarms.IncomingAlarmsCount;
         _tabAlarmsCount[AlarmTypeEnum.Simulation] = alarms.ImitationParamsCount;
         _tabAlarmsCount[AlarmTypeEnum.Suppressed] = alarms.SuppressedAlarmsCount;
-    }
-
-    private void FillLinks()
-    {
-        if (_fields != null)
-        {
-            _fieldLinksDictionary = _fields.ToDictionary(field =>
-                    field.Name,
-                field => $"/monitoring/?alarmType={(int)AlarmType}&fieldId={field.Id}");
-        }
-
-        if (_workstations != null)
-        {
-            _workstationLinksDictionary = _workstations.ToDictionary(workStation =>
-                    workStation.Name ?? Guid.NewGuid().ToString(),
-                workStation =>
-                    $"/monitoring/?alarmType={(int)AlarmType}&fieldId={FieldId}&workstationId={workStation.Id}");
-        }
     }
 
     private void InitFilters()

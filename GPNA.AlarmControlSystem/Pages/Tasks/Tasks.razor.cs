@@ -21,7 +21,7 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
         [Inject] protected ITagTaskService TagTaskService { get; set; } = default!;
         [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
         [Inject] private IExportService? ExportService { get; set; }
-        [Parameter] [SupplyParameterFromQuery] public int CurrentTab { get; set; } = 0;
+        [Parameter] [SupplyParameterFromQuery] public int CurrentTab { get; set; }
         
         private Dictionary<StateType, bool>? _stateFilter;
         private Dictionary<PriorityType, bool>? _priorityFilter;
@@ -30,7 +30,7 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
 
         private TagTasksCollection? _tasks;
         
-        private int _pagesCount, _totalCount;
+        private int _pagesCount;
         private int _currentPage = 1;
         
         private string _orderBy = string.Empty;
@@ -63,17 +63,6 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
 
             if (result.Success)
             {
-                // switch (CurrentTab)
-                // {
-                //     case 0:
-                //         _tasks = result.Payload;
-                //         _pagesCount = _tasks.PagesCount;
-                //         break;
-                //     case 1:
-                //         _archive = result.Payload;
-                //         _pagesCount = _archive.PagesCount;
-                //         break;
-                // }
                 _tasks = result.Payload;
                 _pagesCount = _tasks.PagesCount;
 
@@ -174,7 +163,7 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
 
         private async Task<Stream?> GetFileStream()
         {
-            var result = await ExportService.ExportTagTasks(new ExportTagTasksQuery
+            var query = new ExportTagTasksQuery
             {
                 DocumentType = ExportDocumentType.Excel,
                 Archived = CurrentTab == 1,
@@ -182,7 +171,9 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
                 Suggest = _query.Suggest,
                 State = _stateFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
                 Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
-            });
+            };
+            
+            var result = await ExportService!.ExportTagTasks(query);
 
             return new MemoryStream(result);
         }

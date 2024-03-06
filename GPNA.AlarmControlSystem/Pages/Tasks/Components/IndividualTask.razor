@@ -117,7 +117,7 @@
                             </svg>
                             <span>Отменить</span>
                         </button>
-                        <button>
+                        <button @onclick="SendEmails">
                             <svg>
                                 <use href="/img/icons/icons.svg#task-message-send"></use>
                             </svg>
@@ -209,6 +209,11 @@
         {
             TagTask = result.Payload.Items.First();
         }
+    }
+
+    private async Task SendEmails()
+    {
+        var modal = Modal!.Show<EmailSuccessModal>();
     }
 
     private void Cancel()
