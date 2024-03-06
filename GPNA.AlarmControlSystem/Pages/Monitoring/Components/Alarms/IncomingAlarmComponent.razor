@@ -46,11 +46,12 @@
         
         <td @onclick="ShowMoreAttributes">@(Alarm.AlarmLimit ?? "N/A") / @(Alarm.Value ?? "N/A")</td>              
 
-        <td class="item-table__checkbox" @onclick="SendToTasks">
+        <td class="item-table__checkbox">
             <input class="item-table__checkbox-input" 
                    type="checkbox" 
+                   @onchange="async() => await OnAlarmChecked.InvokeAsync(Alarm.Id)"
                    checked="@(Alarm.StatusAlarm == StatusAlarmType.InWork)"
-                   readonly="@(Alarm.StatusAlarm == StatusAlarmType.InWork)"/>
+                   disabled="@(Alarm.StatusAlarm == StatusAlarmType.InWork)"/>
         </td>
     </tr>
     
@@ -91,6 +92,7 @@ else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
     [Parameter] public IncomingAlarmDto? Alarm { get; set; }
     [Parameter] public bool IsChildren { get; set; }
     [Parameter] public int? Kpi { get; set; }
+    [Parameter] public EventCallback<int> OnAlarmChecked { get; set; }
     
     const string? ButtonArrow = "arrow-down";
 

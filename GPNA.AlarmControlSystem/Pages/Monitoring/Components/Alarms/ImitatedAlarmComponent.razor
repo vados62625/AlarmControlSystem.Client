@@ -26,9 +26,10 @@
         
         <td @onclick="ShowMoreAttributes">@(Alarm.Value ?? "N/A")</td>              
 
-        <td class="item-table__checkbox" @onclick="SendToTasks">
+        <td class="item-table__checkbox">
             <input class="item-table__checkbox-input" 
                    type="checkbox" 
+                   @onchange="async() => await OnAlarmChecked.InvokeAsync(Alarm.Id)"
                    checked="@(Alarm.StatusAlarm == StatusAlarmType.InWork)"
                    disabled="@(Alarm.StatusAlarm == StatusAlarmType.InWork)"/>
         </td>
@@ -61,6 +62,9 @@ else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
     
     [Parameter] public ImitatedAlarmDto? Alarm { get; set; }
     [Parameter] public int? Kpi { get; set; }
+    
+    [Parameter]
+    public EventCallback<int> OnAlarmChecked { get; set; }
     
     bool _displayComment;
 

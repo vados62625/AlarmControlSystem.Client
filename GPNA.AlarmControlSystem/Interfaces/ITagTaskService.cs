@@ -8,6 +8,7 @@ namespace GPNA.AlarmControlSystem.Interfaces;
 public interface ITagTaskService : ICrudBase<TagTaskDto>
 {
     Task<Result<TagTaskDto>> CreateTagTask(int alarmId);
+    Task<Result<TagTaskDto[]>> CreateTagTasks(int[] alarmIds);
     Task<Result<TagTaskDto>> UpdateTagTask(UpdateTagTaskCommand command);
     Task<Result<TagTasksCollection>> GetTagTasksCollection(GetTagTasksListQuery query);
 }

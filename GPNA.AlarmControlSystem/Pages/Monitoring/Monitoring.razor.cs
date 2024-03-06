@@ -1,4 +1,7 @@
-﻿using GPNA.AlarmControlSystem.Extensions;
+﻿using Blazored.Modal;
+using Blazored.Modal.Services;
+using GPNA.AlarmControlSystem.Data;
+using GPNA.AlarmControlSystem.Extensions;
 using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto.ActiveAlarm;
 using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
@@ -10,6 +13,7 @@ using GPNA.AlarmControlSystem.Models.Dto.SuppressedAlarm;
 using GPNA.AlarmControlSystem.Models.Dto.Workstation;
 using GPNA.AlarmControlSystem.Models.Enums;
 using GPNA.AlarmControlSystem.Options;
+using GPNA.AlarmControlSystem.Pages.Monitoring.Modals;
 using GPNA.AlarmControlSystem.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Options;
@@ -22,13 +26,13 @@ public partial class Monitoring : AcsPageBase
     [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
     [Inject] private IIncomingAlarmService? IncomingAlarmService { get; set; }
     [Inject] private IActiveAlarmService? ActiveAlarmService { get; set; }
-
     [Inject] private IImitatedAlarmService? ImitatedAlarmService { get; set; }
     [Inject] private ISuppressedAlarmService? SuppressedAlarmService { get; set; }
     [Inject] private IExportService? ExportService { get; set; }
-
     [Inject] private MonitoringSettingsService? MonitoringSettingsService { get; set; }
-
+    [Inject] ITagTaskService TagTaskService { get; set; } = null!;
+    
+    [CascadingParameter] public IModalService Modal { get; set; } = default!;
     [Parameter]
     [SupplyParameterFromQuery]
     public int AlarmType
@@ -62,10 +66,6 @@ public partial class Monitoring : AcsPageBase
     private AlarmsCollection<SuppressedAlarmDto>? _suppressedAlarmsCollection;
     private AlarmsCollection<ImitatedAlarmDto>? _imitatedAlarmsCollection;
 
-    private IDictionary<string, string>? _fieldLinksDictionary;
-
-    private IDictionary<string, string>? _workstationLinksDictionary;
-
     private Dictionary<PriorityType, int>? _countByPriority;
 
     private Dictionary<StateType, int>? _countByState;
@@ -79,6 +79,8 @@ public partial class Monitoring : AcsPageBase
     private Dictionary<AlarmTypeEnum, int> _tabAlarmsCount = new();
 
     private MonitoringSettingsDto? _monitoringSettings;
+
+    private Dictionary<int, bool> SelectedAlarms = new();
     
     protected override async Task OnInitializedAsync()
     {
@@ -403,5 +405,31 @@ public partial class Monitoring : AcsPageBase
             Priority = _priorityFilter?.Where(c => c.Value).Select(c => c.Key).ToList(),
             ItemsOnPage = int.MaxValue
         };
+    }
+
+
+    private void OnAlarmSelect(int alarmId)
+    {
+        SelectedAlarms.TryGetValue(alarmId, out var alarmSelected);
+
+        SelectedAlarms[alarmId] = !alarmSelected;
+    }
+    
+    private async Task SendToTasks()
+    {
+        var alarmIds = SelectedAlarms
+            .Where(c => c.Value)
+            .Select(c => c.Key)
+            .ToArray();
+        
+        var parameters = new ModalParameters { { "TagName", "" } };
+        var modal = Modal.Show<SendAlarmOnTasksModal>("", parameters);
+        var result = await modal.Result;
+        if (result.Confirmed)
+        {
+            await TagTaskService.CreateTagTasks(alarmIds);
+            await JS.InvokeVoidAsync("saveComment", "snackbar", $"Сигнализации отправлены в задачи");
+        }
+        
     }
 }

@@ -104,7 +104,7 @@
     {
         foreach (var alarmArray in Alarms)
         {
-            <IncomingAlarmComponent Alarm="alarmArray.Last()" List="@alarmArray" Kpi="MonitoringSettings?.RepeatCount"/>
+            <IncomingAlarmComponent Alarm="alarmArray.Last()" List="@alarmArray" Kpi="MonitoringSettings?.RepeatCount" OnAlarmChecked="OnAlarmChecked"/>
         }
     }
     </tbody>
@@ -213,6 +213,9 @@
 
     [Parameter]
     public EventCallback<string> OnOrderingChanged { get; set; }
+    
+    [Parameter]
+    public EventCallback<int> OnAlarmChecked { get; set; }
     
     private string StateFilterSelectAllLabel => !StateFilter?.All(c => c.Value) ?? true ? "Выбрать все" : "Снять все";
     private string PriorityFilterSelectAllLabel => !PriorityFilter?.All(c => c.Value) ?? true ? "Выбрать все" : "Снять все";

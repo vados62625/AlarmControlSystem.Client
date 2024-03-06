@@ -40,11 +40,11 @@
                                 </div>
                                 <div class="d-flex">
                                     <p>МОНИТОРИНГ СИГНАЛИЗАЦИЙ <b>@FieldName М/Р</b></p>
-                                    <SelectObject Object="dto" LinksDictionary="_fieldLinksDictionary"/>
+                                    <SelectObject Object="dto" LinksDictionary="FieldLinksDictionary"/>
                                     <p style="margin-left:15px;">
                                         <b>@WorkstationName</b>
                                     </p>
-                                    <SelectObject LinksDictionary="_workstationLinksDictionary"/>
+                                    <SelectObject LinksDictionary="WorkstationLinksDictionary"/>
                                 </div>
                                 <div class="d-flex gap-2">
                                     @if (FiltersOn)
@@ -131,6 +131,8 @@
                                                   IsActive="@((int)alarmType == AlarmType)"
                                                   Href=@($"/monitoring/?alarmType={(int)alarmType}&fieldId={FieldId}&workstationId={WorkstationId}")/>
                                     }
+                                    
+                                    <button class="tag-table-button-link tag-table-button-send" @onclick="SendToTasks">Отправить в задачи</button>
                                 </div>
                                 @switch ((AlarmTypeEnum)AlarmType)
                                 {
@@ -140,7 +142,8 @@
                                             Alarms="_activeAlarmsCollection?.Items" 
                                             OnStateFilterChanged="ToggleStateFilter" 
                                             OnPriorityFilterChanged="TogglePriorityFilter" 
-                                            OnOrderingChanged="OnOrderingChanged"/>
+                                            OnOrderingChanged="OnOrderingChanged"
+                                            OnAlarmChecked="OnAlarmSelect"/>
                                         break;
                                     }
                                     case AlarmTypeEnum.Incoming:
@@ -149,7 +152,8 @@
                                             Alarms="@_incomingAlarmsCollection?.Items" 
                                             OnStateFilterChanged="ToggleStateFilter" 
                                             OnPriorityFilterChanged="TogglePriorityFilter" 
-                                            OnOrderingChanged="OnOrderingChanged"/>
+                                            OnOrderingChanged="OnOrderingChanged"
+                                            OnAlarmChecked="OnAlarmSelect"/>
                                         break;
                                     }
                                     case AlarmTypeEnum.Suppressed:
