@@ -49,5 +49,10 @@ namespace GPNA.AlarmControlSystem.Application.Dto.TagChange
         /// Новая уставка
         /// </summary>
         public string? AlarmLimit { get; set; }
+        
+        /// <summary>
+        /// Комментарий
+        /// </summary>
+        public string? Comment { get; set; }
     }
 }

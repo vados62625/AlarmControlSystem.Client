@@ -22,7 +22,7 @@ public class TagTaskService : CrudBase<TagTaskDto>, ITagTaskService
     
     public async Task<Result<TagTaskDto[]>> CreateTagTasks(int[] alarmIds)
     {
-        return await _apiBroker.Post<TagTaskDto[]>($"{URL}/CreateManyTasks", new { bufferAlarmIds = alarmIds });
+        return await _apiBroker.Post<TagTaskDto[]>($"{URL}/CreateMany", new { bufferAlarmIds = alarmIds });
     }
 
     public async Task<Result<TagTaskDto>> UpdateTagTask(UpdateTagTaskCommand command)
