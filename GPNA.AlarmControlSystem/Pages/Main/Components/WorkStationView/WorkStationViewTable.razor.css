@@ -4,26 +4,30 @@
     line-height: 110%;
     color: var(--text-grey);
     font-weight: 400;
-    font-size: 10px;
+    font-size: 12px;
     border: none;
     min-width: 336px;
 }
 
 .bg-table-priority {
-    min-width: 72px;
+    min-width: 87px;
     text-align: left;
 }
 
 .bg-table caption {
     text-align: center;
     caption-side: top;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 190%;
     color: var(--white);
     background: var(--bg-grey);
     border-bottom: 0.5px solid var(--white);
     height: 19px;
     padding: 0;
+}
+
+.table-date p{
+    font-weight: 500;
 }
 
 .bg-table thead tr th {
@@ -64,7 +68,7 @@
 
 .bg-table thead {
     background: var(--bg-grey);
-    font-weight: 700;
+    font-weight: 500;
     color: var(--white);
 }
 
@@ -90,7 +94,7 @@
 
 .bg-table tbody tr td:first-child {
     background: var(--bg-grey);
-    font-weight: 700;
+    font-weight: 500;
     color: var(--white);
     border-top: 0.5px solid var(--white);
     border-right: 0.5px solid var(--white);

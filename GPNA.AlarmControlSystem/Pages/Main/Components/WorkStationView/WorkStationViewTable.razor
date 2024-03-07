@@ -24,10 +24,10 @@
 <table class="bg-table">
     <caption>@Title</caption>
     <thead>
-    <tr>
+    <tr class="table-date">
         @foreach (var date in AlarmsCount.Keys)
         {
-            <th>@date.ToString("dd.MM")</th>
+				<th><p>@date.ToString("dd.MM")</p></th>
         }
     </tr>
     </thead>
@@ -36,7 +36,7 @@
         @foreach (var count in AlarmsCount.Values)
         {
             var value = count?.First(c => c.Priority == PriorityType.Low)?.CountDayPriority ?? 0;
-            <td class="@(JournalSettings?.LowPriority < value ? "kpi-warning-low" : "")">@value</td>
+            <td class="@(JournalSettings?.LowPriority < value ? "kpi-warning-low" : "")"><p>@value</p></td>
         }
     </tr>
     <tr>

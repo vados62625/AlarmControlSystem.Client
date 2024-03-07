@@ -11,12 +11,16 @@
 			<div class="legend-content">
 				@switch (ActivePageName)
 				{
+					case "/":
+						<LegendMain/>
+						break;
 					case "/tasks" or "/tasks/":
 						<LegendTask />
 						break;
 					case "/tag-table" or "/tag-table/":
 						<LegendTagTable />
 						break;
+					
 				}
 			</div>
 		}
@@ -29,7 +33,7 @@
 
 	protected override void OnParametersSet()
 	{
-		if (ActivePageName is "/tasks" or "/tasks/" or "/tag-table" or "/tag-table/")
+		if (ActivePageName is "/" or "/tasks" or "/tasks/" or "/tag-table" or "/tag-table/")
 			_isVisible = true;
 	}
 
