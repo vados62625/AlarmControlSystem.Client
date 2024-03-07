@@ -71,7 +71,7 @@
     {
         foreach (var alarm in Alarms)
         {
-            <ImitatedAlarmComponent Alarm="alarm" Kpi="MonitoringSettings?.ImitationParams"/>
+            <ImitatedAlarmComponent Alarm="alarm" Kpi="MonitoringSettings?.ImitationParams" OnAlarmChecked="OnAlarmChecked"/>
         }
     }
     </tbody>
@@ -112,6 +112,9 @@
 
     [Parameter]
     public EventCallback<string> OnOrderingChanged { get; set; }
+    
+    [Parameter]
+    public EventCallback<int> OnAlarmChecked { get; set; }
 
     private async Task SetStateFilter(StateType? state)
     {

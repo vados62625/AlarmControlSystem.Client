@@ -1,0 +1,17 @@
+﻿.send-to-tasks-button {
+    border: none;
+    outline: none;
+    background: #006FBA;
+    border-radius: 4px;
+    height: 24px;
+    padding: 0 12px;
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 12px;
+    color: #fff;
+    line-height: 200%;
+}
+
+.send-to-tasks-button:hover {
+    background: #0065A9;
+}
