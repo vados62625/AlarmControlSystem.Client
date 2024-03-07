@@ -12,7 +12,7 @@
             <DoughnutChart Id="@Guid.NewGuid().ToString()" Data1="AllAlarmsCount" CenterText="@_centerText"/>
         </div>
 
-        <div class="d-flex flex-column justify-content-between ps-3">
+        <div class="d-flex flex-column justify-content-end gap-1 ps-3">
             <div class="pie-chart-stat @(JournalSettings?.LowPriority < (CountAlarms?[PriorityType.Low] ?? 0) ? "kpi-warning-low" : "")">
                 <div class="d-flex align-items-center">
                     <div class="pie-chart-stat-priority low"></div>

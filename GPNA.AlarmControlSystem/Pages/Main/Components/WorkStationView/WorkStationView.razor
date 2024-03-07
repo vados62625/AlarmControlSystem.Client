@@ -12,9 +12,10 @@
                 <p>@Workstation.Name</p>
                 <WorkStationViewIconContainer Fire="@Workstation.Fire" Gas="@Workstation.Gas"/>
             </div>
-            <WorkStationViewPieChart Title="Общее количество за" CountAlarms="_countAlarms" DateTime="Workstation.CountIncomingAlarms.Keys.Max()"/>
-            <WorkStationViewPieChart Title="Уникальные" CountAlarms="_countUniqueAlarms" DateTime="Workstation.CountIncomingAlarms.Keys.Max()"/>
-
+            <div class="bg-pie-container">
+                <WorkStationViewPieChart Title="Общее количество за" CountAlarms="_countAlarms" DateTime="Workstation.CountIncomingAlarms.Keys.Max()"/>
+                <WorkStationViewPieChart Title="Уникальные" CountAlarms="_countUniqueAlarms" DateTime="Workstation.CountIncomingAlarms.Keys.Max()"/>
+            </div> 
             <div class="bg-table-container">
                 <WorkStationViewTable AlarmsCount="Workstation.CountIncomingAlarms" VisibleTablePriority="true" Title="ВХОДЯЩИЕ СИГНАЛИЗАЦИИ"/>
                 <WorkStationViewTable AlarmsCount="Workstation.CountActiveAlarms" Title="АКТИВНЫЕ СИГНАЛИЗАЦИИ"/>
