@@ -1,55 +1,90 @@
 ﻿@using GPNA.AlarmControlSystem.Shared.ButtonsModal
-@using GPNA.AlarmControlSystem.Models.Dto.Tag
+@using GPNA.AlarmControlSystem.Services
+@using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto
+@using GPNA.AlarmControlSystem.Models.Dto.TagChange
 
+<div class="modal-backdrop show"></div>
 
-@if (displaySendTagsToJournalModal)
-{
-	<div class="modal-backdrop show"></div>
-
-	<div class="tag-table__modal-bg send-tag-journal">
-		<div class="d-flex align-items-center gap-3">
-			<svg style="width: 15px; height: 14px; margin-bottom: 3px;">
-				<use href="/img/icons/icons.svg#tag-modal-attention"></use>
-			</svg>
-			<p class="tag-table__modal-title">ОТПРАВИТЬ ЗАДАЧИ В ЖУРНАЛ ИЗМЕНЕНИЙ АСУ ТП?</p>
-		</div>
-
-		<div class="w-100 h-100 p-0 d-flex flex-column gap-2 justify-content-between">
-			<p class="modal-delete-text mt-2">Выдать задания на изменение конфигурации АСУ ТП<br /> (Отправить в журнал изменений АСУ ТП)?</p>
-
-			<div class="tag-table__modal-item-container">
-				<p>Специалист АСУ ТП</p>
-				<div class="small tag-table__modal-custom-select">
-					<select class="tag-table__modal-item-select" onchange="this.style.color='#002033'">
-						<option disabled selected hidden>Выберите специалиста АСУ ТП</option>
-						<option>Специалист АСУ ТП 1</option>
-						<option>Специалист АСУ ТП 2</option>
-						<option>Специалист АСУ ТП 3</option>
-					</select>
-				</div>
-			</div>
-			<div class="tag-table__modal-item-container">
-				<p>Комментарий<sup>*</sup></p>
-				<textarea class="tag-table__modal-item-textarea" type="text" placeholder="Введите комментарий"></textarea>
-				<p class="item-container__text-ps"><sup>*</sup>Комментарий будет добавлен ко всем выбранным задачам</p>
-			</div>
-			
-
-			<div class="tag-table__modal-button-container">
-				<SendButton />
-				<NotSendButton ClickEvent="Cancel" />
-			</div>
-		</div>
-
+<div class="tag-table__modal-bg send-tag-journal">
+	<div class="d-flex align-items-center gap-3">
+		<svg style="width: 15px; height: 14px; margin-bottom: 3px;">
+			<use href="/img/icons/icons.svg#tag-modal-attention"></use>
+		</svg>
+		<p class="tag-table__modal-title">ОТПРАВИТЬ ЗАДАЧИ В ЖУРНАЛ ИЗМЕНЕНИЙ АСУ ТП?</p>
 	</div>
-}
+
+	<div class="w-100 h-100 p-0 d-flex flex-column gap-2 justify-content-between">
+		<p class="modal-delete-text mt-2">Выдать задания на изменение конфигурации АСУ ТП<br /> (Отправить в журнал изменений АСУ ТП)?</p>
+
+		<div class="tag-table__modal-item-container">
+			<p>Специалист АСУ ТП</p>
+			<div class="small tag-table__modal-custom-select">
+				<select @bind="_command.ExecutorUserId"
+				        class="tag-table__modal-item-select">
+					<option selected>Выберите специалиста АСУ ТП</option>
+					@foreach (var user in _users)
+					{
+						<option value="@user.Id">@user.Login</option>
+					}
+				</select>
+			</div>
+		</div>
+		<div class="tag-table__modal-item-container">
+			<p>Комментарий<sup>*</sup></p>
+			<textarea class="tag-table__modal-item-textarea" type="text" placeholder="Введите комментарий" @bind="@_command.Comment"></textarea>
+			<p class="item-container__text-ps"><sup>*</sup>Комментарий будет добавлен ко всем выбранным задачам</p>
+		</div>
+
+		<div class="tag-table__modal-button-container">
+			<SendButton ClickEvent="SendToJournal"/>
+			<NotSendButton ClickEvent="Cancel" />
+		</div>
+	</div>
+</div>
+
 
 
 @code {
+	[Inject] protected ITagChangesService TagChangesService { get; set; } = default!;
+	[Inject] protected IUserService UserService { get; set; } = default!;
+	[Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
+	
 	[CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = default!;	
 
-	bool displaySendTagsToJournalModal = false;
+	[Parameter] public List<int> TagIds { get; set; } = new();
+		
+	private AddTagChangeListCommand _command = new();
+	private List<UserDto> _users = new();
 
+	protected override void OnInitialized()
+	{
+		SpinnerService.Load(GetUsers);
+
+		_command.InitiatorUserId = 1;
+		
+		//TODO Заполнить, когда появятся юсеры.
+		//_command.InitiatorUserId = Инициатор Задачи
+		//_command.ExecutorUserId = Исполнитель
+	}
+
+	private async Task GetUsers()
+	{
+		var result = await UserService.GetList();
+		if (result.Success)
+			_users = result.Payload.ToList();
+		StateHasChanged();
+	}
+
+	private async Task SendToJournal()
+	{
+		_command.TagIds = TagIds.ToArray();
+		
+		var result = await TagChangesService.CreateTagChanges(_command);
+		if (result.Success)
+			await ModalInstance.CloseAsync(ModalResult.Ok());
+	}
+	
 	void Cancel()
 	{
 		ModalInstance.CancelAsync();

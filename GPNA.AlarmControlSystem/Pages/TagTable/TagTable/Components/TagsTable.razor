@@ -80,7 +80,10 @@
     {
         @foreach (var tag in Tags)
         {
-            <TagsTableLine Tag="tag" OnTagDeleted="OnTagDeleted"/>
+            <TagsTableLine Tag="tag" 
+                           OnTagDeleted="OnTagDeleted" 
+                           AddTagToTagChangeListCallback="AddTagToTagChangeListCallback" 
+                           DeleteTagInTagChangeListCallback="DeleteTagInTagChangeListCallback"/>
         }
     }
     
@@ -96,29 +99,18 @@
 </table>
 
 @code {
-    [Parameter]
-    public List<TagDto>? Tags { get; set; }
+    [Parameter] public List<TagDto>? Tags { get; set; }
+    [Parameter] public ActiveAlarmDto[]? Alarms { get; set; }
 
-    [Parameter]
-    public ActiveAlarmDto[]? Alarms { get; set; }
+    [CascadingParameter(Name = nameof(StateFilter))] public StateType? StateFilter { get; set; }
+    [CascadingParameter(Name = nameof(PriorityFilter))] public PriorityType? PriorityFilter { get; set; }
 
-    [CascadingParameter(Name = nameof(StateFilter))]
-    public StateType? StateFilter { get; set; }
-
-    [CascadingParameter(Name = nameof(PriorityFilter))]
-    public PriorityType? PriorityFilter { get; set; }
-
-    [Parameter]
-    public EventCallback<StateType?> OnStateFilterChanged { get; set; }
-
-    [Parameter]
-    public EventCallback<PriorityType?> OnPriorityFilterChanged { get; set; }
-
-    [Parameter]
-    public EventCallback<string> OnOrderingChanged { get; set; }
-
-    [Parameter] 
-    public EventCallback<TagDto> OnTagDeleted { get; set; }
+    [Parameter] public EventCallback<StateType?> OnStateFilterChanged { get; set; }
+    [Parameter] public EventCallback<PriorityType?> OnPriorityFilterChanged { get; set; }
+    [Parameter] public EventCallback<string> OnOrderingChanged { get; set; }
+    [Parameter] public EventCallback<TagDto> OnTagDeleted { get; set; }
+    [Parameter] public EventCallback<TagDto> AddTagToTagChangeListCallback { get; set; }
+    [Parameter] public EventCallback<TagDto> DeleteTagInTagChangeListCallback { get; set; }
     
     private async Task SetStateFilter(StateType? state)
     {

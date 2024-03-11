@@ -16,14 +16,14 @@ public class TagChangesService : CrudBase<TagChangeDto>, ITagChangesService
         _apiBroker = broker;
     }
     
-    public async Task<Result<TagChangeDto[]>> CreateTagChange(int tagId, int initiatorId, int executorId, string? comment = null)
+    public async Task<Result<TagChangeDto[]>> CreateTagChange(AddTagChangeCommand command)
     {
-        return await _apiBroker.Post<TagChangeDto[]>(URL, new { tagId, initiatorId, executorId, comment });
+        return await _apiBroker.Post<TagChangeDto[]>(URL, command);
     }
     
-    public async Task<Result<TagChangeDto[]>> CreateTagChanges(int[] tagIds, int initiatorId, int executorId, string? comment = null)
+    public async Task<Result<TagChangeDto[]>> CreateTagChanges(AddTagChangeListCommand command)
     {
-        return await _apiBroker.Post<TagChangeDto[]>($"{URL}/CreateMany", new { tagIds, initiatorId, executorId, comment });
+        return await _apiBroker.Post<TagChangeDto[]>($"{URL}/CreateMany", command);
     }
 
     public async Task<Result<TagChangesCollection>> GetTagChangesCollection(GetTagChangesListQuery query)

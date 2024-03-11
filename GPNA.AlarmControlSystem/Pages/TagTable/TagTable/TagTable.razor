@@ -46,7 +46,14 @@
         <div class="d-flex gap-2">
             <a class="tag-table-button-link" href="@($"/tag-table-archive/?fieldId={FieldId}&workstationId={WorkstationId}")">Архив изменений АСУ ТП</a>
             <a class="tag-table-button-link" href="@($"/tag-table-journal/?fieldId={FieldId}&workstationId={WorkstationId}")">Журнал изменений АСУ ТП</a>
-            <button class="tag-table-button-link tag-table-button-send">Отправить в журнал изменений АСУ ТП</button>
+            
+            @if (_tagIdsToChange.Count > 0)
+            {
+                <button class="tag-table-button-link tag-table-button-send"
+                        @onclick="SendTagListToJournal">
+                    Отправить в журнал изменений АСУ ТП
+                </button>
+            }
         </div>
 
         
@@ -57,7 +64,9 @@
                OnStateFilterChanged="SetStateFilter"
                OnPriorityFilterChanged="SetPriorityFilter"
                OnOrderingChanged="OnOrderingChanged"
-               OnTagDeleted="GetTags"/>
+               OnTagDeleted="GetTags"
+               AddTagToTagChangeListCallback="AddTagToTagChangeList"
+               DeleteTagInTagChangeListCallback="DeleteTagInTagChangeList"/>
 
     <Pagination CurrentPage="@(_query.Page ?? 1)" PagesCount="_tags.PagesCount" OnPageClick="OnPageChanged"/>
 </div>

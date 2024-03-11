@@ -5,6 +5,7 @@ using GPNA.AlarmControlSystem.Interfaces;
 using GPNA.AlarmControlSystem.Models.Dto.Field;
 using GPNA.AlarmControlSystem.Models.Dto.Queries;
 using GPNA.AlarmControlSystem.Models.Dto.Tag;
+using GPNA.AlarmControlSystem.Models.Dto.TagChange;
 using GPNA.AlarmControlSystem.Models.Dto.Workstation;
 using GPNA.AlarmControlSystem.Models.Enums;
 using GPNA.AlarmControlSystem.Options;
@@ -37,6 +38,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable.TagTable
 
         private GetTagsListQuery _query = new();
         private TagsCollection _tags = new();
+        private List<int> _tagIdsToChange = new();
 
         protected override async Task OnParametersSetAsync()
         {
@@ -112,6 +114,30 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable.TagTable
                 _tags = result.Payload;
                 StateHasChanged();
             }
+        }
+
+        public async Task SendTagListToJournal()
+        {
+            var parameters = new ModalParameters { { "TagIds", _tagIdsToChange } };
+            var modal = Modal.Show<SendTagsToJournalModal>("", parameters);
+            var result = await modal.Result;
+
+            if (result.Confirmed)
+            {
+                await SpinnerService.Load(GetTags);
+            }
+        }
+        
+        private void AddTagToTagChangeList(TagDto tag)
+        {
+            _tagIdsToChange.Add(tag.Id);
+            StateHasChanged();
+        }
+        
+        private void DeleteTagInTagChangeList(TagDto tag)
+        {
+            _tagIdsToChange.Remove(tag.Id);
+            StateHasChanged();
         }
         
         private async Task SetStateFilter(StateType? state)

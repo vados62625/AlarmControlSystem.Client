@@ -205,6 +205,13 @@
 
 	private async Task SendToJournal()
 	{
-		
+		var parameters = new ModalParameters { { "Tag", Tag } };
+		var sendToJournalModal = Modal.Show<SendTagToJournalModal>("", parameters);
+		var result = await sendToJournalModal.Result;
+	
+		if (result.Confirmed)
+		{
+			await ModalInstance.CancelAsync();
+		}
 	}
 }

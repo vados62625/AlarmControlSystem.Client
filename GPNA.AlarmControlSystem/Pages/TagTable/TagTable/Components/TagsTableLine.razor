@@ -80,7 +80,7 @@
         </div>
     </td>
     <td>
-        <input type="checkbox"/>
+        <input checked="@isChecked" @oninput="CheckboxChanged" type="checkbox"/>
     </td>
 </tr>
 @if (_displayComment)
@@ -108,15 +108,17 @@
     
     [Parameter] public TagDto Tag { get; set; } = new TagDto();
     [Parameter] public EventCallback<TagDto> OnTagDeleted { get; set; }
+    [Parameter] public EventCallback<TagDto> AddTagToTagChangeListCallback { get; set; }
+    [Parameter] public EventCallback<TagDto> DeleteTagInTagChangeListCallback { get; set; }
     
-   private bool _attentionReglament = false;
+    [Parameter]
+    public bool IsChecked { get; set; } = true;
+    private bool isChecked;
+    
+    private bool _attentionReglament = false;
 
     bool _displayComment = false;
-
-    void ShowMoreAttributes()
-    {
-        _displayComment = !_displayComment;
-    }
+    
 
     protected override void OnParametersSet()
     {
@@ -160,6 +162,23 @@
                 ToastService?.ShowError(deleteResult.Error);
             SpinnerService.Hide();
             await OnTagDeleted.InvokeAsync(Tag);
+        }
+    }
+
+    void ShowMoreAttributes()
+    {
+        _displayComment = !_displayComment;
+    }
+    
+    private async void CheckboxChanged(ChangeEventArgs e)
+    {
+        if (e.Value!=null & (bool)e.Value!)
+        {
+            await AddTagToTagChangeListCallback.InvokeAsync(Tag);
+        } 
+        else
+        {
+            await DeleteTagInTagChangeListCallback.InvokeAsync(Tag);
         }
     }
 

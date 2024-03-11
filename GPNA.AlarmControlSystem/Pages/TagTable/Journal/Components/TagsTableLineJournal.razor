@@ -12,7 +12,10 @@
     </td>           
     <td @onclick="ShowMoreAttributes">
         @Tag.TagName
-    </td>           
+    </td>
+    <td @onclick="ShowMoreAttributes">
+        <MonitoringTableStatus Title="@Tag.State.GetDescription()" Status="@Tag.State"/>
+    </td>
     <td class="tag-table-attention" @onclick="ShowMoreAttributes">      
         @if (Tag.ModelState.TryGetValue("Description", out var errorDesc)) 
         {
@@ -76,9 +79,9 @@
     </td>    
 </tr>
 <tr class="tag-table-comment-line text">
-    <td colspan="8">
+    <td colspan="9">
         <div class="tag-table-journal-comment">
-            <p>Текст комментария текст комментария текст комментария</p>
+            <p>@TagChange.Comment</p>
         </div>
     </td>
 </tr>
@@ -88,14 +91,14 @@
         <td class="tag-table-comment-title" colspan="8"><p>КОНФИГУРАЦИЮ АСУ ТП ИЗМЕНИТЬ НА:</p></td>        
     </tr>
     <tr class="tag-table-comment-line">
-        <td colspan="2"/>
+        <td colspan="3"/>
         <td>
             <div class="tag-table-attention-border grey description">
                 <p>Сепаратор нефтегазовый</p>
             </div>
         </td>
         <td colspan="2"/>
-        <td >
+        <td>
             <div class="tag-table-attention-border grey">
 				<MonitoringTableStatus Title="@Tag.Priority.GetDescription()" Priority="@Tag.Priority" />
             </div>            
@@ -108,7 +111,7 @@
         <td/>
     </tr>
     <tr>
-        <td class="tag-table-comment-title" colspan="8"><p>РЕГЛАМЕНТ</p></td>
+        <td class="tag-table-comment-title" colspan="9"><p>РЕГЛАМЕНТ</p></td>
     </tr>
     <TagTableInfo Title="Позиция по ГП" Description="@Tag.Position"/>
     <TagTableInfo Title="Потенциальные последствия" Description="@Tag.Consequence"/>
