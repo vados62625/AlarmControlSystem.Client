@@ -80,7 +80,7 @@
         </div>
     </td>
     <td>
-        <input checked="@isChecked" @oninput="CheckboxChanged" type="checkbox"/>
+        <input checked="@_isChecked" @oninput="CheckboxChanged" type="checkbox" disabled="@_isDisable"/>
     </td>
 </tr>
 @if (_displayComment)
@@ -113,12 +113,19 @@
     
     [Parameter]
     public bool IsChecked { get; set; } = true;
-    private bool isChecked;
+    private bool _isChecked;
+    private bool _isDisable;
     
     private bool _attentionReglament = false;
 
     bool _displayComment = false;
-    
+
+
+    protected override void OnInitialized()
+    {
+        _isChecked = Tag.HasActiveJournalRecord;
+        _isDisable = Tag.HasActiveJournalRecord;
+    }
 
     protected override void OnParametersSet()
     {
