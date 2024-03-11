@@ -6,8 +6,7 @@
     box-shadow: 0px 2px 5px 0px var(--shadow-grey);
     border-radius: 8px;
     display: flex;
-    padding: 10px;
-    gap: 14px;
+    padding: 10px;   
     justify-content: space-between;
     user-select: none;
     overflow-x: auto;
@@ -21,12 +20,17 @@
     justify-content: space-between;
     padding-top: 10px;
     height: 100%;
+    margin-right: 13px;
 }
 
 .bg-fire-container p {
     font-weight: 600;
     font-size: 16px;
     color: #002033;
+}
+.bg-pie-container {
+    display: flex;
+    gap: 22px;    
 }
 
 .bg-table-container {
@@ -35,4 +39,5 @@
     border: 0.5px solid var(--border-grey);
     border-radius: 4px;
     height: 100%;
+    margin-left: 33px;
 }

@@ -123,7 +123,7 @@
                                 Placeholder="Поиск по Tag"/>
                         
                             <div style="border-radius: 6px;">
-                                <div class="d-flex">
+                                <div class="d-flex align-items-center">
                                     @foreach (AlarmTypeEnum alarmType in Enum.GetValues(typeof(AlarmTypeEnum)))
                                     {
                                         <ItemTabs Title="@alarmType.GetDescription()"
@@ -132,7 +132,7 @@
                                                   Href=@($"/monitoring/?alarmType={(int)alarmType}&fieldId={FieldId}&workstationId={WorkstationId}")/>
                                     }
                                     
-                                    <button class="tag-table-button-link tag-table-button-send" @onclick="SendToTasks">Отправить в задачи</button>
+                                    <button class="send-to-tasks-button ms-auto@(SelectedAlarms.Any(c => c.Value) ? "" : " d-none")" @onclick="SendToTasks">Отправить в задачи</button>
                                 </div>
                                 @switch ((AlarmTypeEnum)AlarmType)
                                 {
@@ -162,7 +162,8 @@
                                             Alarms="_suppressedAlarmsCollection?.Items" 
                                             OnStateFilterChanged="ToggleStateFilter" 
                                             OnPriorityFilterChanged="TogglePriorityFilter" 
-                                            OnOrderingChanged="OnOrderingChanged"/>
+                                            OnOrderingChanged="OnOrderingChanged"
+                                            OnAlarmChecked="OnAlarmSelect"/>
                                         break;
                                     }
                                     case AlarmTypeEnum.Simulation:
@@ -171,7 +172,8 @@
                                             Alarms="_imitatedAlarmsCollection?.Items" 
                                             OnStateFilterChanged="ToggleStateFilter" 
                                             OnPriorityFilterChanged="TogglePriorityFilter" 
-                                            OnOrderingChanged="OnOrderingChanged"/>
+                                            OnOrderingChanged="OnOrderingChanged"
+                                            OnAlarmChecked="OnAlarmSelect"/>
                                         break;
                                     }
                                 }

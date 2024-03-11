@@ -428,7 +428,9 @@ public partial class Monitoring : AcsPageBase
         if (result.Confirmed)
         {
             await TagTaskService.CreateTagTasks(alarmIds);
+            SelectedAlarms.Clear();
             await JS.InvokeVoidAsync("saveComment", "snackbar", $"Сигнализации отправлены в задачи");
+            await LoadPage();
         }
         
     }
