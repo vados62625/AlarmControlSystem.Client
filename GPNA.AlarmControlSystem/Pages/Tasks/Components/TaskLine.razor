@@ -23,8 +23,8 @@
         <td @onclick="GoToDetails">@Task.Number</td>
         <td @onclick="GoToDetails">@Task.CreatedAt.Date</td>
         <td @onclick="GoToDetails">@Task.CreatedAt.LocalDateTime</td>
-        <td @onclick="GoToDetails">-</td>
-        <td @onclick="GoToDetails">-</td>
+        <td @onclick="GoToDetails">@(Task.EventAlarm is AlarmType.Normalization or AlarmType.ImitationRelease or AlarmType.SuppressionRelease ? "N/A" : "-")</td>
+        <td @onclick="GoToDetails">@(Task.EventAlarm is AlarmType.Activation or AlarmType.Imitation or AlarmType.Suppression ? Task.Duration?.TotalHours.ToString("0") ?? "N/A" : "-")</td>
         <td @onclick="GoToDetails">@Task.EventAlarm.GetDescription()</td>
         <td @onclick="GoToDetails">@Task?.Tag?.TagName</td>
         <td @onclick="GoToDetails">

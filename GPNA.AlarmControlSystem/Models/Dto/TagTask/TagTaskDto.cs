@@ -44,5 +44,10 @@ namespace GPNA.AlarmControlSystem.Models.Dto.TagTask
         /// Связанные сообщения
         /// </summary>
         public virtual ICollection<EmailMessageDto> EmailMessages { get; set; } = new List<EmailMessageDto>();
+        
+        /// <summary>
+        /// Длительность
+        /// </summary>
+        public TimeSpan? Duration => DateTimeOffset.Now - BufferAlarm?.DateTimeStart;
     }
 }
