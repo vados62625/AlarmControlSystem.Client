@@ -93,5 +93,10 @@ namespace GPNA.AlarmControlSystem.Models.Dto.Tag
         /// Валидность последней сигнализации 
         /// </summary>
         public Dictionary<string, object?> ModelState { get; set; } = new();
+        
+        /// <summary>
+        /// Есть активная запись в журнале
+        /// </summary>
+        public bool HasActiveJournalRecord { get; set; }
     }
 }
