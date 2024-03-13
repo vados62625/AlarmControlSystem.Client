@@ -16,9 +16,9 @@ public class TagChangesService : CrudBase<TagChangeDto>, ITagChangesService
         _apiBroker = broker;
     }
     
-    public async Task<Result<TagChangeDto[]>> CreateTagChange(AddTagChangeCommand command)
+    public async Task<Result<TagChangeDto>> CreateTagChange(AddTagChangeCommand command)
     {
-        return await _apiBroker.Post<TagChangeDto[]>(URL, command);
+        return await _apiBroker.Post<TagChangeDto>(URL, command);
     }
     
     public async Task<Result<TagChangeDto[]>> CreateTagChanges(AddTagChangeListCommand command)

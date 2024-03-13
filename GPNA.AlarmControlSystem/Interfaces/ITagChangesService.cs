@@ -8,7 +8,7 @@ namespace GPNA.AlarmControlSystem.Interfaces;
 
 public interface ITagChangesService : ICrudBase<TagChangeDto>
 {
-    Task<Result<TagChangeDto[]>> CreateTagChange(AddTagChangeCommand command);
+    Task<Result<TagChangeDto>> CreateTagChange(AddTagChangeCommand command);
     Task<Result<TagChangeDto[]>> CreateTagChanges(AddTagChangeListCommand command);
     Task<Result<TagChangesCollection>> GetTagChangesCollection(GetTagChangesListQuery query);
 }
