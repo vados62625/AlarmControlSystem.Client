@@ -123,8 +123,17 @@
 
     protected override void OnInitialized()
     {
+        _isDisable = true;
+        if (Tag.ModelState.TryGetValue("AlarmLimit", out var errorAlarmLimit)
+                     || Tag.ModelState.TryGetValue("Priority", out var errorPriority)
+                     || Tag.ModelState.TryGetValue("Description", out var errorDesc))
+        {
+            _isDisable = false;
+        }
+
         _isChecked = Tag.HasActiveJournalRecord;
         _isDisable = Tag.HasActiveJournalRecord;
+        StateHasChanged();
     }
 
     protected override void OnParametersSet()
