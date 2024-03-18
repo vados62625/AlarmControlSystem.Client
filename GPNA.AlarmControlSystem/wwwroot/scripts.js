@@ -19,3 +19,9 @@ window.downloadFileFromStream = async (fileName, contentStreamReference) => {
     anchorElement.remove();
     URL.revokeObjectURL(url);
 }
+
+window.scrollChatToBottom = () => {
+    var objDiv = document.getElementById("message-story-container");
+    objDiv.scrollTop = objDiv.scrollHeight;
+    // objDiv.scrollIntoView(false);
+}

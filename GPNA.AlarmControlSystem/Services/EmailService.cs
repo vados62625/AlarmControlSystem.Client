@@ -16,7 +16,12 @@ public class EmailService : IEmailService
 
     public async Task<bool> SendMessage(SendEmailQuery query)
     {
-        var message = await _apiBroker.Post<object>(URL, query);
+        var message = await _apiBroker.Post<object>($"{URL}/SendMessage", query);
+        return message.Success;
+    }
+    public async Task<bool> SendTaskMessage(SendTaskMessageCommand command)
+    {
+        var message = await _apiBroker.Post<object>($"{URL}/SendTaskMessage", command);
         return message.Success;
     }
 }

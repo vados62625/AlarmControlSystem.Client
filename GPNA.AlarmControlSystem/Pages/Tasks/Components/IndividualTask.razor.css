@@ -104,7 +104,7 @@
     flex-direction: column;
     gap: 10px;
     align-items: baseline;
-    overflow-y: auto;
+    overflow-y: scroll;
 }
 
 .message-story-item {
@@ -121,10 +121,10 @@
     max-width: 903px;
 }
 
-    .message-story-item:last-child {
-        background: rgba(0, 120, 210, 0.12);
-        align-self: end;
-    }   
+    /*.message-story-item:last-child {*/
+    /*    background: rgba(0, 120, 210, 0.12);*/
+    /*    align-self: end;*/
+    /*}   */
 
 .message-story-item p {
     margin:0;
@@ -168,5 +168,8 @@
 }
 
 .recipient-selector:has(> .form-check .form-check-input:checked) .recipient-name{
+    border-color: #0078d2 !important;
+}
+.recipient-name input{
     border-color: #0078d2 !important;
 }

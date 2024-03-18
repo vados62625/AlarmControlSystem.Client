@@ -3,181 +3,263 @@
 @using GPNA.AlarmControlSystem.Models.Dto.TagTask
 @using GPNA.AlarmControlSystem.Pages.Tasks.Modals
 @using GPNA.AlarmControlSystem.Interfaces
+@using GPNA.AlarmControlSystem.Models.Dto.Email
+@using Blazored.Toast.Services
 
 <div class="page-main">
-    <div class="page-header ">       
-        <a href="/tasks" class="bg-navigation">
-            <svg>
-                <use href="/img/icons/icons.svg#arrow-left"></use>
-            </svg>
-            <span>К списку задач</span>
-        </a>
-        
-        <p>ЗАДАЧА <b># @TagTask?.Number</b></p>
-            
-        <div class="d-flex gap-2">
-            @*@if (FiltersOn)
-            {
-                <TitleBarButton Title="Фильтрация" FunctionButton="filtration" Action="DropFilters" />
-            }
-            <TitleBarButton Title="Экспорт" FunctionButton="export" Action="DownloadFileFromStream" />
-        *@</div>
+<div class="page-header ">
+    <a href="/tasks" class="bg-navigation">
+        <svg>
+            <use href="/img/icons/icons.svg#arrow-left"></use>
+        </svg>
+        <span>К списку задач</span>
+    </a>
 
-    </div>
-    <div class="d-flex flex-column overflow-auto gap-2">
-        <div class="mesage-container w-100">
-            <div class=" mesage-container flex-column">
-                <div class="bg-message message-correspondents">
-                    <p>Кому:</p>
+    <p>ЗАДАЧА <b># @TagTask?.Number</b></p>
+
+    <div class="d-flex gap-2"></div>
+
+</div>
+<div class="d-flex flex-column overflow-auto gap-2">
+    <div class="mesage-container w-100">
+        <div class=" mesage-container flex-column">
+            @* <div class="bg-message message-correspondents"> *@
+            @*     <p>Кому:</p> *@
+            @*     <div> *@
+            @*         <div class="recipient-selector d-flex justify-content-between pb-2"> *@
+            @*             <div class="form-check"> *@
+            @*                 <input class="form-check-input" type="checkbox" id="checkTradeTechnologist"/> *@
+            @*                 <label class="form-check-label" for="checkTradeTechnologist"> *@
+            @*                     Технолог (промысел) *@
+            @*                 </label> *@
+            @*             </div> *@
+            @*             <div class="recipient-name w-50 border p-1"> *@
+            @*                 <p>Смирнов Алексей Иванович</p> *@
+            @*             </div> *@
+            @*         </div> *@
+            @*         <div class="recipient-selector d-flex justify-content-between pb-2"> *@
+            @*             <div class="form-check"> *@
+            @*                 <input class="form-check-input" type="checkbox" id="checkOfficeTechnologist"/> *@
+            @*                 <label class="form-check-label" for="checkOfficeTechnologist"> *@
+            @*                     Технолог (офис) *@
+            @*                 </label> *@
+            @*             </div> *@
+            @*             <div class="recipient-name w-50 border p-1"> *@
+            @*                 <p>Смирнов Алексей Иванович</p> *@
+            @*             </div> *@
+            @*         </div> *@
+            @*         <div class="recipient-selector d-flex justify-content-between pb-2"> *@
+            @*             <div class="form-check"> *@
+            @*                 <input class="form-check-input" type="checkbox" id="checkTradeEngineer"/> *@
+            @*                 <label class="form-check-label" for="checkTradeEngineer"> *@
+            @*                     Инженер АСУТП (промысел) *@
+            @*                 </label> *@
+            @*             </div> *@
+            @*             <div class="recipient-name w-50 border p-1"> *@
+            @*                 <p>Смирнов Алексей Иванович</p> *@
+            @*             </div> *@
+            @*         </div> *@
+            @*         <div class="recipient-selector d-flex justify-content-between pb-2"> *@
+            @*             <div class="form-check"> *@
+            @*                 <input class="form-check-input" type="checkbox" id="checkOfficeEngineer"/> *@
+            @*                 <label class="form-check-label" for="checkOfficeEngineer"> *@
+            @*                     Инженер АСУТП (офис) *@
+            @*                 </label> *@
+            @*             </div> *@
+            @*             <div class="recipient-name w-50 border p-1"> *@
+            @*                 <p>Смирнов Алексей Иванович</p> *@
+            @*             </div> *@
+            @*         </div> *@
+            @*         <div class="recipient-selector d-flex justify-content-between pb-2"> *@
+            @*             <div class="form-check"> *@
+            @*                 <input class="form-check-input" type="checkbox" id="checkShiftSupervisor"/> *@
+            @*                 <label class="form-check-label" for="checkShiftSupervisor"> *@
+            @*                     Начальник смены *@
+            @*                 </label> *@
+            @*             </div> *@
+            @*             <div class="recipient-name w-50 border p-1"> *@
+            @*                 <p>Смирнов Алексей Иванович</p> *@
+            @*             </div> *@
+            @*         </div> *@
+            @*         <div class="recipient-selector d-flex justify-content-between pb-2"> *@
+            @*             <div class="form-check"> *@
+            @*                 <input class="form-check-input" type="checkbox" id="checkWorkstationSupervisor"/> *@
+            @*                 <label class="form-check-label" for="checkWorkstationSupervisor"> *@
+            @*                     Начальник цеха *@
+            @*                 </label> *@
+            @*             </div> *@
+            @*             <div class="recipient-name w-50 border p-1"> *@
+            @*                 <p>Смирнов Алексей Иванович</p> *@
+            @*             </div> *@
+            @*         </div> *@
+            @*     </div>                      *@
+            @* </div> *@
+            <div class="bg-message message-correspondents">
+                <p>От кого:</p>
+                <div class="d-flex justify-content-between">
                     <div>
                         <div class="recipient-selector d-flex justify-content-between pb-2">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="checkTradeTechnologist"/>
+                                <input class="form-check-input" type="radio" id="checkTradeTechnologist" name="message-sender-radio"
+                                       checked="@(SenderPosition == "Технолог (промысел)")"
+                                       onchange="@(() => ChangeSenderPosition("Технолог (промысел)"))"/>
                                 <label class="form-check-label" for="checkTradeTechnologist">
                                     Технолог (промысел)
                                 </label>
                             </div>
-                            <div class="recipient-name w-50 border p-1">
-                                <p>Смирнов Алексей Иванович</p>
-                            </div>
                         </div>
                         <div class="recipient-selector d-flex justify-content-between pb-2">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="checkOfficeTechnologist"/>
+                                <input class="form-check-input" type="radio" id="checkOfficeTechnologist" name="message-sender-radio"
+                                       checked="@(SenderPosition == "Технолог (офис)")"
+                                       onchange="@(() => ChangeSenderPosition("Технолог (офис)"))"/>
                                 <label class="form-check-label" for="checkOfficeTechnologist">
                                     Технолог (офис)
                                 </label>
                             </div>
-                            <div class="recipient-name w-50 border p-1">
-                                <p>Смирнов Алексей Иванович</p>
-                            </div>
                         </div>
                         <div class="recipient-selector d-flex justify-content-between pb-2">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="checkTradeEngineer"/>
+                                <input class="form-check-input" type="radio" id="checkTradeEngineer" name="message-sender-radio"
+                                       checked="@(SenderPosition == "Инженер АСУТП (промысел)")"
+                                       onchange="@(() => ChangeSenderPosition("Инженер АСУТП (промысел)"))"/>
                                 <label class="form-check-label" for="checkTradeEngineer">
                                     Инженер АСУТП (промысел)
                                 </label>
                             </div>
-                            <div class="recipient-name w-50 border p-1">
-                                <p>Смирнов Алексей Иванович</p>
-                            </div>
                         </div>
                         <div class="recipient-selector d-flex justify-content-between pb-2">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="checkOfficeEngineer"/>
+                                <input class="form-check-input" type="radio" id="checkOfficeEngineer" name="message-sender-radio"
+                                       checked="@(SenderPosition == "Инженер АСУТП (офис)")"
+                                       onchange="@(() => ChangeSenderPosition("Инженер АСУТП (офис)"))"/>
                                 <label class="form-check-label" for="checkOfficeEngineer">
                                     Инженер АСУТП (офис)
                                 </label>
                             </div>
-                            <div class="recipient-name w-50 border p-1">
-                                <p>Смирнов Алексей Иванович</p>
-                            </div>
                         </div>
                         <div class="recipient-selector d-flex justify-content-between pb-2">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="checkShiftSupervisor"/>
+                                <input class="form-check-input" type="radio" id="checkShiftSupervisor" name="message-sender-radio"
+                                       checked="@(SenderPosition == "Начальник смены")"
+                                       onchange="@(() => ChangeSenderPosition("Начальник смены"))"/>
                                 <label class="form-check-label" for="checkShiftSupervisor">
                                     Начальник смены
                                 </label>
                             </div>
-                            <div class="recipient-name w-50 border p-1">
-                                <p>Смирнов Алексей Иванович</p>
-                            </div>
                         </div>
                         <div class="recipient-selector d-flex justify-content-between pb-2">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="checkWorkstationSupervisor"/>
+                                <input class="form-check-input" type="radio" id="checkWorkstationSupervisor" name="message-sender-radio"
+                                       checked="@(SenderPosition == "Начальник цеха")"
+                                       onchange="@(() => ChangeSenderPosition("Начальник цеха"))"/>
                                 <label class="form-check-label" for="checkWorkstationSupervisor">
                                     Начальник цеха
                                 </label>
                             </div>
-                            <div class="recipient-name w-50 border p-1">
-                                <p>Смирнов Алексей Иванович</p>
-                            </div>
                         </div>
-                    </div>                     
-                </div>
-                <div class="bg-message message-body">
-                    <p> Тело письма:</p>
-                    <textarea type="text" placeholder="Текст письма"></textarea>
-                    <div class="d-flex align-self-end gap-2 w-100 justify-content-end">
-                        @if (TagTask is {Archived: false })
-                        {
-                            <button class="me-auto" @onclick="ArchiveTask">
-                                <svg>
-                                    <use href="/img/icons/icons.svg#archive"></use>
-                                </svg>
-                                <span>В архив</span>
-                            </button>
-                        }
-                        <button @onclick="Cancel">
-                            <svg>
-                                <use href="/img/icons/icons.svg#task-message-cancel"></use>
-                            </svg>
-                            <span>Отменить</span>
-                        </button>
-                        <button @onclick="SendEmails">
-                            <svg>
-                                <use href="/img/icons/icons.svg#task-message-send"></use>
-                            </svg>
-                            <span>Разослать</span>
-                        </button>
+                    </div>
+                    <div class="recipient-name w-50 p-1 input-group d-flex align-items-center">
+                        <input class="border" style="outline: none" type="text" placeholder="ФИО" @bind="SenderName"/>
                     </div>
                 </div>
             </div>
-            <div class="bg-message message-story">
-                <p>История</p>
-                <div class="message-story-container">                    
-                    <div class="message-story-item">
-                        <div class="d-flex gap-2 align-items-center">
-                            <p>Технолог</p>
+            <div class="bg-message message-body">
+                <p> Тело письма:</p>
+                <textarea type="text" placeholder="Текст письма" @bind="MessageInputText" @bind:event="oninput"></textarea>
+                <div class="d-flex align-self-end gap-2 w-100 justify-content-end">
+                    @if (TagTask is {Archived: false })
+                    {
+                        <button class="me-auto" @onclick="ArchiveTask">
                             <svg>
-                                <use href="/img/icons/icons.svg#task-message-arrow-right"></use>
+                                <use href="/img/icons/icons.svg#archive"></use>
                             </svg>
-                            <p>Инженер</p>
-                        </div>
-                        <p>Текст сообщения Текст сообщения Текст сообщения Текст сообщения Текст сообщения Текст сообщения Текст сообщения Текст сообщения</p>
-                        <p class="message-story-item-date">04.06.2023 14:15</p>
-                    </div>
-
-                    <div class="message-story-item">
-                        <div class="d-flex gap-2 align-items-center">
-                            <p>Технолог</p>
-                            <svg>
-                                <use href="/img/icons/icons.svg#task-message-arrow-right"></use>
-                            </svg>
-                            <p>Инженер</p>
-                        </div>
-                        <p>Текст сообщения Текст сообщения Текст сообщения Текст сообщения Текст сообщения</p>
-                        <p class="message-story-item-date">04.06.2023 14:15</p>
-                    </div>
+                            <span>В архив</span>
+                        </button>
+                    }
+                    <button @onclick="Cancel">
+                        <svg>
+                            <use href="/img/icons/icons.svg#task-message-cancel"></use>
+                        </svg>
+                        <span>Отменить</span>
+                    </button>
+                    <button disabled="@string.IsNullOrWhiteSpace(MessageInputText)" @onclick="SendEmails">
+                        <svg>
+                            <use href="/img/icons/icons.svg#task-message-send"></use>
+                        </svg>
+                        <span>Разослать</span>
+                    </button>
                 </div>
             </div>
-            
         </div>
+        <div class="bg-message message-story">
+            <p>История</p>
+            <div class="message-story-container" id="message-story-container">
+                @foreach (var message in TagTask!.EmailMessages)
+                {
+                    <div class="message-story-item">
+                        <div class="d-flex gap-2 align-items-center">
+                            <p>@message.Producer</p>
+                        </div>
+                        <p>@message.Message</p>
+                        <p class="message-story-item-date">@message.DateTimeSent.ToString("dd.MM.yyyy hh:mm")</p>
+                    </div>
+                }
+
+                @* <div class="message-story-item"> *@
+                @*     <div class="d-flex gap-2 align-items-center"> *@
+                @*         <p>Технолог</p> *@
+                @*         <svg> *@
+                @*             <use href="/img/icons/icons.svg#task-message-arrow-right"></use> *@
+                @*         </svg> *@
+                @*         <p>Инженер</p> *@
+                @*     </div> *@
+                @*     <p>Текст сообщения Текст сообщения Текст сообщения Текст сообщения Текст сообщения</p> *@
+                @*     <p class="message-story-item-date">04.06.2023 14:15</p> *@
+                @* </div> *@
+            </div>
+        </div>
+
     </div>
+</div>
 </div>
 
 
-
-
-
 @code {
+
+    [Inject]
+    IToastService? ToastService { get; set; }
+    
+    [Inject]
+    IJSRuntime? JsRuntime { get; set; }
+    
     [Inject]
     ITagTaskService? TagTaskService { get; set; }
-    
+
+    [Inject]
+    IEmailService? EmailService { get; set; }
+
     [Parameter]
     public int TaskId { get; set; }
 
     [CascadingParameter]
     public IModalService? Modal { get; set; }
 
-    public TagTaskDto? TagTask { get; set; }
+    public TagTaskDto TagTask { get; set; } = new();
+
+    private string MessageInputText { get; set; } = string.Empty;
+    private string SenderName { get; set; } = string.Empty;
+    private string SenderPosition { get; set; } = "Технолог (промысел)";
 
     protected override async Task LoadPage()
     {
         await GetTagTask();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await Task.Delay(500); 
+        await JsRuntime.InvokeVoidAsync("scrollChatToBottom"); 
     }
 
     private async Task ArchiveTask()
@@ -202,7 +284,7 @@
     private async Task GetTagTask()
     {
         if (TagTaskService == default) return;
-        
+
         var result = await TagTaskService.GetTagTasksCollection(new GetTagTasksListQuery { Id = TaskId });
 
         if (result.Success && result.Payload.Items.Any())
@@ -213,11 +295,33 @@
 
     private async Task SendEmails()
     {
-        var modal = Modal!.Show<EmailSuccessModal>();
+        var command = new SendTaskMessageCommand
+        {
+            TagTaskId = TaskId,
+            Sender = $"{SenderName} ({SenderPosition})",
+            MessageText = MessageInputText
+        };
+
+        var messageSent = await EmailService.SendTaskMessage(command);
+
+        if (!messageSent)
+        {
+            ToastService?.ShowError("Ошибка отправки сообщения");
+            return;
+        }
+
+        // var modal = Modal!.Show<EmailSuccessModal>();
+        await LoadPage();
     }
 
     private void Cancel()
     {
         NavigationManager?.NavigateTo("/tasks");
     }
+
+    private void ChangeSenderPosition(string position)
+    {
+        SenderPosition = position;
+    }
+
 }
