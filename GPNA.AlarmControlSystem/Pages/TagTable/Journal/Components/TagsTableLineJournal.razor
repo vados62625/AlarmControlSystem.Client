@@ -57,7 +57,7 @@
     <td class="tag-table-attention" @onclick="ShowMoreAttributes">
         @if (Tag.ModelState.TryGetValue("AlarmLimit", out var errorAlarmLimit))
         {
-            <div class=" tag-table-attention-border @_attentionBorder">                
+            <div class=" tag-table-attention-border @_attentionBorder)">                
                 <p>@(Tag.AlarmLimit ?? "N/A")</p>
             </div>
             <div class="position-relative">
@@ -92,21 +92,32 @@
     </tr>
     <tr class="tag-table-comment-line">
         <td colspan="3"/>
+        
         <td>
-            <div class="tag-table-attention-border grey description">
-                <p>Сепаратор нефтегазовый</p>
-            </div>
+            @if (Tag.ModelState.TryGetValue("Description", out var errorDesc2))
+            {
+                <div class="tag-table-attention-border grey description">
+                    <p>@Tag.Description</p>
+                </div>
+            }
         </td>
         <td colspan="2"/>
+        
         <td>
-            <div class="tag-table-attention-border grey">
-				<MonitoringTableStatus Title="@Tag.Priority.GetDescription()" Priority="@Tag.Priority" />
-            </div>            
+            @if (Tag.ModelState.TryGetValue("Priority", out var errorPriority2))
+            {
+                <div class="tag-table-attention-border grey">
+                    <MonitoringTableStatus Title="@Tag.Priority.GetDescription()" Priority="@Tag.Priority"/>
+                </div>
+            }
         </td>
         <td>
-            <div class="tag-table-attention-border grey">
-				<p>@(Tag.AlarmLimit ?? "N/A")</p>
-            </div>            
+            @if (Tag.ModelState.TryGetValue("AlarmLimit", out var errorAlarmLimit2))
+            {
+                <div class="tag-table-attention-border grey">
+                    <p>@(Tag.AlarmLimit ?? "N/A")</p>
+                </div>
+            }
         </td>
         <td/>
     </tr>
@@ -139,13 +150,7 @@
     {
         _displayComment = !_displayComment;
 
-        if (_displayComment)
-        {
-            _attentionBorder = "red";
-        } else
-        {
-            _attentionBorder = "";
-        }
+        _attentionBorder = _displayComment ? "red" : "";
     }
 
     protected override void OnParametersSet()

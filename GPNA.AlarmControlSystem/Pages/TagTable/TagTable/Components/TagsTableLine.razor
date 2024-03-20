@@ -90,10 +90,10 @@
     </tr>
     <TagTableInfo Title="Позиция по ГП" Description="@Tag.Position"/>
     <TagTableInfo Title="Потенциальные последствия" Description="@Tag.Consequence"/>
-    <TagTableInfo Title="Действия Полевого оператора" Description="@Tag.ActionFieldOperator"></TagTableInfo>
-    <TagTableInfo Title="Действия Оператора APM" Description="@Tag.ActionArmOperator"></TagTableInfo>
-    <TagTableInfo Title="Условия усиления" Description="@Tag.Inform"></TagTableInfo>
-    <TagTableInfo Title="Время на реакцию" Description="@Tag.ReactionTime"></TagTableInfo>
+    <TagTableInfo Title="Действия Полевого оператора" Description="@Tag.ActionFieldOperator"/>
+    <TagTableInfo Title="Действия Оператора APM" Description="@Tag.ActionArmOperator"/>
+    <TagTableInfo Title="Условия усиления" Description="@Tag.Inform"/>
+    <TagTableInfo Title="Время на реакцию" Description="@Tag.ReactionTime"/>
     <tr class="tag-table-comment-bottom-line"></tr>
 }
 
@@ -119,25 +119,23 @@
     private bool _attentionReglament = false;
 
     bool _displayComment = false;
+    
 
-
-    protected override void OnInitialized()
+    protected override void OnParametersSet()
     {
         _isDisable = true;
+        
         if (Tag.ModelState.TryGetValue("AlarmLimit", out var errorAlarmLimit)
-                     || Tag.ModelState.TryGetValue("Priority", out var errorPriority)
-                     || Tag.ModelState.TryGetValue("Description", out var errorDesc))
+            || Tag.ModelState.TryGetValue("Priority", out var errorPriority)
+            || Tag.ModelState.TryGetValue("Description", out var errorDesc))
         {
             _isDisable = false;
         }
 
         _isChecked = Tag.HasActiveJournalRecord;
-        _isDisable = Tag.HasActiveJournalRecord;
-        StateHasChanged();
-    }
-
-    protected override void OnParametersSet()
-    {
+        if (_isChecked)
+            _isDisable = true;
+        
         if (Tag.ModelState.Count > 0)
         {
             foreach (var obj in Tag.ModelState)
