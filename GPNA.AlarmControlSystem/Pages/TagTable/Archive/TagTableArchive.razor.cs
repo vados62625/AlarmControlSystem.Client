@@ -27,7 +27,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable.Archive
         private GetTagChangesListQuery _query = new();
         private TagChangesCollection _tagsChanges = new();
 
-        protected override async Task LoadPage()
+        protected override async Task LoadPageAsync()
         {
             await SpinnerService.Load(GetTagChanges);
         }
@@ -51,7 +51,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable.Archive
             _query.State = state;
             _query.Page = 1;
         
-            await LoadPage();
+            await LoadPageAsync();
         }
         
         private async Task SetPriorityFilter(PriorityType? priority)
@@ -59,7 +59,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable.Archive
             _query.Priority = priority;
             _query.Page = 1;
         
-            await LoadPage();
+            await LoadPageAsync();
         }
         
         private async Task OnOrderingChanged(string orderBy)
@@ -70,20 +70,20 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable.Archive
             _query.OrderPropertyName = orderBy;
             _query.Page = 1;
         
-            await LoadPage();
+            await LoadPageAsync();
         }
         
         private async Task OnPageChanged(int page)
         {
             _query.Page = page;
-            await LoadPage();
+            await LoadPageAsync();
         }
         
         private async Task SearchTag(string tagName)
         {
             _query.Suggest = tagName;
             _query.Page = 1;
-            await LoadPage();
+            await LoadPageAsync();
         }
         
         private async Task DropFilters()
@@ -93,7 +93,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable.Archive
                 Page = 1
             };
         
-            await LoadPage();
+            await LoadPageAsync();
         }
         
         private async Task<Stream?> GetFileStream()

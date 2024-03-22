@@ -52,14 +52,6 @@
         </tr>
     }
 }
-else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
-{
-    <tr class="monitoring-table-shift">
-        <td>@Alarm.DateTimeStart.ToString("d")</td>
-        <td>@Alarm.DateTimeStart.ToString("t")</td>
-        <td colspan=7>@Alarm.Description</td>
-    </tr>
-}
 
 @code
 {
@@ -91,23 +83,16 @@ else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
     {
         if (Alarm != null && Alarm.StatusAlarm!=StatusAlarmType.InWork)
         {
-            Alarm.StatusAlarm = Alarm is {StatusAlarm: StatusAlarmType.Undefined } ? StatusAlarmType.InWork : StatusAlarmType.Undefined;
-            
             ArgumentNullException.ThrowIfNull(Alarm.Id);
             var parameters = new ModalParameters { { "TagName", Alarm.TagName } };
             var modal = Modal.Show<SendAlarmOnTasksModal>("", parameters);
             var result = await modal.Result;
             if (result.Confirmed)
             {
-                await TagTaskService.CreateTagTask(Alarm.TagId);
+                Alarm.StatusAlarm = StatusAlarmType.InWork;
+                await TagTaskService.CreateTagTask(Alarm.Id);
                 await JSRuntime.InvokeVoidAsync("saveComment", "snackbar", $"Сигнализация {Alarm.TagName} отправлена в задачи");
             }
-        }
-        else if (Alarm is {StatusAlarm: StatusAlarmType.InWork })
-        {
-            // Alarm.StatusAlarm = StatusAlarmType.Undefined;
-            // await AlarmService.ChangeStatus(new ChangeStatusAlarmCommand {Id = Alarm.Id, StatusAlarm = Alarm.StatusAlarm});
-            // await JSRuntime.InvokeVoidAsync("saveComment", "snackbar", $"Сигнализация {Alarm.TagName} удалена из задач");
         }
     }
 

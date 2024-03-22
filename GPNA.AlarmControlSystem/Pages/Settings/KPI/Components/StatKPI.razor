@@ -1,6 +1,6 @@
 ﻿<div class="d-flex flex-column">
     <p class="stat-title">@Title</p>
-    <input name="@InputName" type="text" class="stat-bg-value" @bind="@Value" disabled="@(!Enabled)"/>
+    <input name="@InputName" type="text" class="stat-bg-value" @bind="@Value" @bind:event="oninput" disabled="@(!Enabled)"/>
 </div>
 
 @code {

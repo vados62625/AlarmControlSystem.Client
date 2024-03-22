@@ -23,141 +23,24 @@
 <div class="d-flex flex-column overflow-auto gap-2">
     <div class="mesage-container w-100">
         <div class=" mesage-container flex-column">
-            @* <div class="bg-message message-correspondents"> *@
-            @*     <p>Кому:</p> *@
-            @*     <div> *@
-            @*         <div class="recipient-selector d-flex justify-content-between pb-2"> *@
-            @*             <div class="form-check"> *@
-            @*                 <input class="form-check-input" type="checkbox" id="checkTradeTechnologist"/> *@
-            @*                 <label class="form-check-label" for="checkTradeTechnologist"> *@
-            @*                     Технолог (промысел) *@
-            @*                 </label> *@
-            @*             </div> *@
-            @*             <div class="recipient-name w-50 border p-1"> *@
-            @*                 <p>Смирнов Алексей Иванович</p> *@
-            @*             </div> *@
-            @*         </div> *@
-            @*         <div class="recipient-selector d-flex justify-content-between pb-2"> *@
-            @*             <div class="form-check"> *@
-            @*                 <input class="form-check-input" type="checkbox" id="checkOfficeTechnologist"/> *@
-            @*                 <label class="form-check-label" for="checkOfficeTechnologist"> *@
-            @*                     Технолог (офис) *@
-            @*                 </label> *@
-            @*             </div> *@
-            @*             <div class="recipient-name w-50 border p-1"> *@
-            @*                 <p>Смирнов Алексей Иванович</p> *@
-            @*             </div> *@
-            @*         </div> *@
-            @*         <div class="recipient-selector d-flex justify-content-between pb-2"> *@
-            @*             <div class="form-check"> *@
-            @*                 <input class="form-check-input" type="checkbox" id="checkTradeEngineer"/> *@
-            @*                 <label class="form-check-label" for="checkTradeEngineer"> *@
-            @*                     Инженер АСУТП (промысел) *@
-            @*                 </label> *@
-            @*             </div> *@
-            @*             <div class="recipient-name w-50 border p-1"> *@
-            @*                 <p>Смирнов Алексей Иванович</p> *@
-            @*             </div> *@
-            @*         </div> *@
-            @*         <div class="recipient-selector d-flex justify-content-between pb-2"> *@
-            @*             <div class="form-check"> *@
-            @*                 <input class="form-check-input" type="checkbox" id="checkOfficeEngineer"/> *@
-            @*                 <label class="form-check-label" for="checkOfficeEngineer"> *@
-            @*                     Инженер АСУТП (офис) *@
-            @*                 </label> *@
-            @*             </div> *@
-            @*             <div class="recipient-name w-50 border p-1"> *@
-            @*                 <p>Смирнов Алексей Иванович</p> *@
-            @*             </div> *@
-            @*         </div> *@
-            @*         <div class="recipient-selector d-flex justify-content-between pb-2"> *@
-            @*             <div class="form-check"> *@
-            @*                 <input class="form-check-input" type="checkbox" id="checkShiftSupervisor"/> *@
-            @*                 <label class="form-check-label" for="checkShiftSupervisor"> *@
-            @*                     Начальник смены *@
-            @*                 </label> *@
-            @*             </div> *@
-            @*             <div class="recipient-name w-50 border p-1"> *@
-            @*                 <p>Смирнов Алексей Иванович</p> *@
-            @*             </div> *@
-            @*         </div> *@
-            @*         <div class="recipient-selector d-flex justify-content-between pb-2"> *@
-            @*             <div class="form-check"> *@
-            @*                 <input class="form-check-input" type="checkbox" id="checkWorkstationSupervisor"/> *@
-            @*                 <label class="form-check-label" for="checkWorkstationSupervisor"> *@
-            @*                     Начальник цеха *@
-            @*                 </label> *@
-            @*             </div> *@
-            @*             <div class="recipient-name w-50 border p-1"> *@
-            @*                 <p>Смирнов Алексей Иванович</p> *@
-            @*             </div> *@
-            @*         </div> *@
-            @*     </div>                      *@
-            @* </div> *@
             <div class="bg-message message-correspondents">
                 <p>От кого:</p>
                 <div class="d-flex justify-content-between">
                     <div>
-                        <div class="recipient-selector d-flex justify-content-between pb-2">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="checkTradeTechnologist" name="message-sender-radio"
-                                       checked="@(SenderPosition == "Технолог (промысел)")"
-                                       onchange="@(() => ChangeSenderPosition("Технолог (промысел)"))"/>
-                                <label class="form-check-label" for="checkTradeTechnologist">
-                                    Технолог (промысел)
-                                </label>
+                        @foreach (var senderPosition in SenderPositions)
+                        {
+                            var senderHash = senderPosition.GetHashCode().ToString();
+                            <div class="recipient-selector d-flex justify-content-between pb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="radio-@senderHash" name="message-sender-radio"
+                                           checked="@(SenderPosition == senderPosition)"
+                                           onchange="@(() => ChangeSenderPosition(senderPosition))"/>
+                                    <label class="form-check-label" for="radio-@senderHash">
+                                        @senderPosition
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="recipient-selector d-flex justify-content-between pb-2">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="checkOfficeTechnologist" name="message-sender-radio"
-                                       checked="@(SenderPosition == "Технолог (офис)")"
-                                       onchange="@(() => ChangeSenderPosition("Технолог (офис)"))"/>
-                                <label class="form-check-label" for="checkOfficeTechnologist">
-                                    Технолог (офис)
-                                </label>
-                            </div>
-                        </div>
-                        <div class="recipient-selector d-flex justify-content-between pb-2">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="checkTradeEngineer" name="message-sender-radio"
-                                       checked="@(SenderPosition == "Инженер АСУТП (промысел)")"
-                                       onchange="@(() => ChangeSenderPosition("Инженер АСУТП (промысел)"))"/>
-                                <label class="form-check-label" for="checkTradeEngineer">
-                                    Инженер АСУТП (промысел)
-                                </label>
-                            </div>
-                        </div>
-                        <div class="recipient-selector d-flex justify-content-between pb-2">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="checkOfficeEngineer" name="message-sender-radio"
-                                       checked="@(SenderPosition == "Инженер АСУТП (офис)")"
-                                       onchange="@(() => ChangeSenderPosition("Инженер АСУТП (офис)"))"/>
-                                <label class="form-check-label" for="checkOfficeEngineer">
-                                    Инженер АСУТП (офис)
-                                </label>
-                            </div>
-                        </div>
-                        <div class="recipient-selector d-flex justify-content-between pb-2">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="checkShiftSupervisor" name="message-sender-radio"
-                                       checked="@(SenderPosition == "Начальник смены")"
-                                       onchange="@(() => ChangeSenderPosition("Начальник смены"))"/>
-                                <label class="form-check-label" for="checkShiftSupervisor">
-                                    Начальник смены
-                                </label>
-                            </div>
-                        </div>
-                        <div class="recipient-selector d-flex justify-content-between pb-2">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" id="checkWorkstationSupervisor" name="message-sender-radio"
-                                       checked="@(SenderPosition == "Начальник цеха")"
-                                       onchange="@(() => ChangeSenderPosition("Начальник цеха"))"/>
-                                <label class="form-check-label" for="checkWorkstationSupervisor">
-                                    Начальник цеха
-                                </label>
-                            </div>
-                        </div>
+                        }
                     </div>
                     <div class="recipient-name w-50 p-1 input-group d-flex align-items-center">
                         <input class="border" style="outline: none" type="text" placeholder="ФИО" @bind="SenderName"/>
@@ -202,21 +85,9 @@
                             <p>@message.Producer</p>
                         </div>
                         <p>@message.Message</p>
-                        <p class="message-story-item-date">@message.DateTimeSent.ToString("dd.MM.yyyy hh:mm")</p>
+                        <p class="message-story-item-date">@message.DateTimeSent.ToString("dd.MM.yyyy HH:mm")</p>
                     </div>
                 }
-
-                @* <div class="message-story-item"> *@
-                @*     <div class="d-flex gap-2 align-items-center"> *@
-                @*         <p>Технолог</p> *@
-                @*         <svg> *@
-                @*             <use href="/img/icons/icons.svg#task-message-arrow-right"></use> *@
-                @*         </svg> *@
-                @*         <p>Инженер</p> *@
-                @*     </div> *@
-                @*     <p>Текст сообщения Текст сообщения Текст сообщения Текст сообщения Текст сообщения</p> *@
-                @*     <p class="message-story-item-date">04.06.2023 14:15</p> *@
-                @* </div> *@
             </div>
         </div>
 
@@ -245,13 +116,24 @@
     [CascadingParameter]
     public IModalService? Modal { get; set; }
 
-    public TagTaskDto TagTask { get; set; } = new();
+    private TagTaskDto TagTask { get; set; } = new();
+
+    private static readonly string[] SenderPositions = 
+    {
+        "Технолог (промысел)",
+        "Технолог (офис)",
+        "Инженер АСУТП (промысел)",
+        "Инженер АСУТП (офис)",
+        "Начальник смены",
+        "Начальник цеха",
+    };
 
     private string MessageInputText { get; set; } = string.Empty;
     private string SenderName { get; set; } = string.Empty;
-    private string SenderPosition { get; set; } = "Технолог (промысел)";
+    private string SenderPosition { get; set; } = SenderPositions[0];
+    
 
-    protected override async Task LoadPage()
+    protected override async Task LoadPageAsync()
     {
         await GetTagTask();
     }
@@ -311,7 +193,7 @@
         }
 
         // var modal = Modal!.Show<EmailSuccessModal>();
-        await LoadPage();
+        await LoadPageAsync();
     }
 
     private void Cancel()
