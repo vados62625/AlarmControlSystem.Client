@@ -196,10 +196,10 @@
 
 				var saveModal = Modal.Show<SaveTagModal>("", parameters);
 				var result = await saveModal.Result;
-				if (!result.Cancelled)
-				{
+				// if (!result.Cancelled)
+				// {
 					await ModalInstance.CloseAsync(ModalResult.Ok(updatedTag.Payload));
-				}
+				// }
 			}
 			else
 			{
