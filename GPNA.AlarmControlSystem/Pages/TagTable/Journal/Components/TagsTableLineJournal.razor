@@ -17,13 +17,13 @@
         <MonitoringTableStatus Title="@Tag.State.GetDescription()" Status="@Tag.State"/>
     </td>
     <td class="tag-table-attention" @onclick="ShowMoreAttributes">      
-        @if (Tag.ModelState.TryGetValue("Description", out var errorDesc)) 
+        @if (TagChange.Description != null) 
         {
         <div class="tag-table-attention-border @_attentionBorder description" >
             <svg class="tag-table-icon-attention">
                     <use href="/img/icons/icons.svg#tag-table-attention"></use>
 				</svg>
-                <p>@Tag.Description</p>
+                <p>@TagChange.Description</p>
             </div>
         } else
         {
@@ -37,7 +37,7 @@
         <p>@(TagChange.Executor?.Login ?? "-")</p>
     </td>
     <td class="tag-table-attention" @onclick="ShowMoreAttributes">        
-        @if (Tag.ModelState.TryGetValue("Priority", out var errorPriority))
+        @if (TagChange.Priority != null)
         {
             <div class="tag-table-attention-border @_attentionBorder">
                 <div class="position-relative">
@@ -47,7 +47,7 @@
                         </svg>
                     </div>
                 </div>
-                <MonitoringTableStatus Title="@Tag.Priority.GetDescription()" Priority="@Tag.Priority" />
+                <MonitoringTableStatus Title="@TagChange.Priority?.GetDescription()" Priority="@TagChange.Priority" />
             </div>
         } else
         {
@@ -73,7 +73,7 @@
         }                   
     </td>
     <td @onclick="ShowMoreAttributes">
-        <svg class="tag-table-icon-reglament @(_attentionReglament ? "red" : "")">
+        <svg class="tag-table-icon-reglament@(_attentionReglament ? " red" : "")">
             <use href="/img/icons/icons.svg#tag-table-reglament"></use>
         </svg>
     </td>    
@@ -94,30 +94,21 @@
         <td colspan="3"/>
         
         <td>
-            @if (Tag.ModelState.TryGetValue("Description", out var errorDesc2))
-            {
-                <div class="tag-table-attention-border grey description">
-                    <p>@Tag.Description</p>
-                </div>
-            }
+            <div class="tag-table-attention-border description@(TagChange.Description != null ? " red" : " grey")">
+                <p>@TagChange.Description</p>
+            </div>
         </td>
         <td colspan="2"/>
         
         <td>
-            @if (Tag.ModelState.TryGetValue("Priority", out var errorPriority2))
-            {
-                <div class="tag-table-attention-border grey">
-                    <MonitoringTableStatus Title="@Tag.Priority.GetDescription()" Priority="@Tag.Priority"/>
-                </div>
-            }
+            <div class="tag-table-attention-border@(TagChange.Priority != null ? " red" : " grey")">
+                <MonitoringTableStatus Title="@TagChange.Priority?.GetDescription()" Priority="@TagChange.Priority"/>
+            </div>
         </td>
         <td>
-            @if (Tag.ModelState.TryGetValue("AlarmLimit", out var errorAlarmLimit2))
-            {
-                <div class="tag-table-attention-border grey">
-                    <p>@(Tag.AlarmLimit ?? "N/A")</p>
-                </div>
-            }
+            <div class="tag-table-attention-border@(TagChange.AlarmLimit != null ? " red" : " grey")">
+                <p>@(TagChange.AlarmLimit)</p>
+            </div>
         </td>
         <td/>
     </tr>
