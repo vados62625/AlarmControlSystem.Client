@@ -94,19 +94,19 @@
         <td colspan="3"/>
         
         <td>
-            <div class="tag-table-attention-border description@(TagChange.Description != null ? " red" : " grey")">
+            <div class="tag-table-attention-border description@(TagChange.Description != null ? " red" : "")">
                 <p>@TagChange.Description</p>
             </div>
         </td>
         <td colspan="2"/>
         
         <td>
-            <div class="tag-table-attention-border@(TagChange.Priority != null ? " red" : " grey")">
+            <div class="tag-table-attention-border@(TagChange.Priority != null ? " red" : "")">
                 <MonitoringTableStatus Title="@TagChange.Priority?.GetDescription()" Priority="@TagChange.Priority"/>
             </div>
         </td>
         <td>
-            <div class="tag-table-attention-border@(TagChange.AlarmLimit != null ? " red" : " grey")">
+            <div class="tag-table-attention-border@(TagChange.AlarmLimit != null ? " red" : "")">
                 <p>@(TagChange.AlarmLimit)</p>
             </div>
         </td>
