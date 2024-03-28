@@ -23,7 +23,7 @@
         <td @onclick="GoToDetails">@Task.Number</td>
         <td @onclick="GoToDetails">@Task.CreatedAt.Date</td>
         <td @onclick="GoToDetails">@Task.CreatedAt.LocalDateTime</td>
-        <td @onclick="GoToDetails">@(Task.EventAlarm is AlarmType.Normalization or AlarmType.ImitationRelease or AlarmType.SuppressionRelease ? "N/A" : "-")</td>
+        <td @onclick="GoToDetails">@(Task.EventAlarm is AlarmType.Normalization or AlarmType.ImitationRelease or AlarmType.SuppressionRelease ? Task.Count.ToString() ?? "N/A" : "-")</td>
         <td @onclick="GoToDetails">@(Task.EventAlarm is AlarmType.Activation or AlarmType.Imitation or AlarmType.Suppression ? Task.Duration?.TotalHours.ToString("0") ?? "N/A" : "-")</td>
         <td @onclick="GoToDetails">@(GetTaskTab() ?? "N/A")</td>
         <td @onclick="GoToDetails">@Task?.Tag?.TagName</td>
@@ -77,9 +77,13 @@
             AlarmType.Activation => AlarmTypeEnum.Active.GetDescription(),
             AlarmType.Imitation => AlarmTypeEnum.Simulation.GetDescription(),
             AlarmType.Suppression => AlarmTypeEnum.Suppressed.GetDescription(),
-            AlarmType.Incoming => AlarmTypeEnum.Incoming.GetDescription(),
-            _ => "N/A"
+            _ => AlarmTypeEnum.Incoming.GetDescription(),
         };
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
     }
 
     private void GoToDetails()
