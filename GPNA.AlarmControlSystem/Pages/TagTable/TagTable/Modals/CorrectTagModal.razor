@@ -130,13 +130,19 @@
 				</div>
 			</div>				
 			<div class="tag-table__modal-button-container justify-content-between">
-				<button type="submit" @onclick="SendToJournal" class="button-modal send-tag-journal">
-					<svg>
-						<use href="/img/icons/icons.svg#tag-modal-send-to-journal"></use>
-					</svg>
-					<p>Отправить в журнал изменений АСУ ТП</p>
-				</button>
-				<div class="tag-table__modal-button-container mt-0">
+				@if ((Tag.LastBufferAlarm?.Priority != _command.Priority 
+                			    || Tag.LastBufferAlarm?.AlarmLimit != _command.AlarmLimit
+                			    || Tag.LastBufferAlarm?.Description != _command.Description )
+			                    && !Tag.HasActiveJournalRecord)
+				{
+					<button type="submit" @onclick="SendToJournal" class="button-modal send-tag-journal">
+						<svg>
+							<use href="/img/icons/icons.svg#tag-modal-send-to-journal"></use>
+						</svg>
+						<p>Отправить в журнал изменений АСУ ТП</p>
+					</button>
+				}
+				<div class="tag-table__modal-button-container ms-auto mt-0">
 					<SaveButton ClickEvent="HandleValidSubmit" />
 					<CancelButton ClickEvent="Cancel" />
 				</div>
