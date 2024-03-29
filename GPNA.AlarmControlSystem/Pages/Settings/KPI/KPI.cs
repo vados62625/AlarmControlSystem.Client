@@ -261,6 +261,7 @@ public partial class KPI : ComponentBase
 
             if (result.Success)
             {
+                _journalSettings = result.Payload;
                 ShowSuccess();
                 _editJournalSettingsButtonShow = !_editJournalSettingsButtonShow;
                 _enabledEditJournalSettings = false;
@@ -277,6 +278,7 @@ public partial class KPI : ComponentBase
 
             if (result.Success)
             {
+                _monitoringSettings = result.Payload;
                 ShowSuccess();
                 _editMonitoringSettingsButtonShow = !_editMonitoringSettingsButtonShow;
                 _enabledEditMonitoringSettings = false;
@@ -292,6 +294,7 @@ public partial class KPI : ComponentBase
 
             if (result.Success)
             {
+                _reportSettings = result.Payload;
                 ShowSuccess();
                 _editReportSettingsButtonShow = !_editReportSettingsButtonShow;
                 _enabledEditReportSettings = false;
@@ -307,6 +310,7 @@ public partial class KPI : ComponentBase
 
             if (result.Success)
             {
+                _tagTableSettings = result.Payload;
                 ShowSuccess();
                 _editTagTableSettingsButtonShow = !_editTagTableSettingsButtonShow;
                 _enabledEditTagTableSettings = false;
@@ -322,6 +326,7 @@ public partial class KPI : ComponentBase
 
             if (result.Success)
             {
+                _taskSettings = result.Payload;
                 ShowSuccess();
                 _editTaskSettingsButtonShow = !_editTaskSettingsButtonShow;
                 _enabledEditTaskSettings = false;

@@ -105,7 +105,7 @@
     {
         foreach (var alarm in Alarms)
         {
-            <SuppressedAlarmComponent Alarm="alarm" Kpi="MonitoringSettings?.ImitationParams" OnAlarmChecked="OnAlarmChecked"/>
+            <SuppressedAlarmComponent Alarm="alarm" Kpi="MonitoringSettings?.SuppressedAlarms" OnAlarmChecked="OnAlarmChecked"/>
         }
     }
     </tbody>

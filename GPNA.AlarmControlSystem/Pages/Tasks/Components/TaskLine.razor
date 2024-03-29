@@ -23,9 +23,9 @@
         <td @onclick="GoToDetails">@Task.Number</td>
         <td @onclick="GoToDetails">@Task.CreatedAt.Date</td>
         <td @onclick="GoToDetails">@Task.CreatedAt.LocalDateTime</td>
-        <td @onclick="GoToDetails">@(Task.EventAlarm is AlarmType.Normalization or AlarmType.ImitationRelease or AlarmType.SuppressionRelease ? "N/A" : "-")</td>
+        <td @onclick="GoToDetails">@(Task.EventAlarm is AlarmType.Normalization or AlarmType.ImitationRelease or AlarmType.SuppressionRelease ? Task.Count.ToString() ?? "N/A" : "-")</td>
         <td @onclick="GoToDetails">@(Task.EventAlarm is AlarmType.Activation or AlarmType.Imitation or AlarmType.Suppression ? Task.Duration?.TotalHours.ToString("0") ?? "N/A" : "-")</td>
-        <td @onclick="GoToDetails">@Task.EventAlarm.GetDescription()</td>
+        <td @onclick="GoToDetails">@(GetTaskTab() ?? "N/A")</td>
         <td @onclick="GoToDetails">@Task?.Tag?.TagName</td>
         <td @onclick="GoToDetails">
             <MonitoringTableStatus
@@ -38,27 +38,19 @@
                 Title="@Task?.Tag?.Priority.GetDescription()"
                 Priority="@Task?.Tag?.Priority"/>
         </td>
-        <td @onclick="GoToDetails">@(Task?.Tag?.AlarmLimit ?? "N/A")/@(Task?.Tag?.LastBufferAlarm?.Value ?? "N/A")</td>
-        @* <td> *@
-        @*     @if (Task is {Archived: false }) *@
-        @*     { *@
-        @*         <button class="btn button-modal button-archive save" @onclick="ArchiveTask"> *@
-        @*             <svg> *@
-        @*                 <use href="/img/icons/icons.svg#archive"></use> *@
-        @*             </svg> *@
-        @*             В архив *@
-        @*         </button> *@
-        @*     } *@
-        @* </td> *@
+        <td @onclick="GoToDetails">@(Task?.Tag?.AlarmLimit ?? "-")/@(Task?.Tag?.LastBufferAlarm?.Value ?? "-")</td>
     </tr>
-    @* <tr class="task-table-comment"> *@
-    @*     <td colspan="10"> *@
-    @*         $1$ <input type="text" placeholder="Текст комментария" /> #1# *@
-    @*         <div> *@
-    @*             $1$ <p>@_taskLast.Comment</p> #1# *@
-    @*         </div> *@
-    @*     </td> *@
-    @* </tr> *@
+
+    if (!string.IsNullOrEmpty(Task?.BufferAlarm?.Comment))
+    {
+        <tr class="task-table-comment">
+            <td colspan="12">
+                <div>
+                    <p>@Task?.BufferAlarm?.Comment</p>
+                </div>
+            </td>
+        </tr>
+    }
 }
 
 
@@ -77,9 +69,21 @@
     public TagTaskDto? Task { get; set; }
 
     private string? _taskStatus = "new";
-
-    protected override void OnInitialized()
+    
+    private string? GetTaskTab()
     {
+        return Task?.EventAlarm switch
+        {
+            AlarmType.Activation => AlarmTypeEnum.Active.GetDescription(),
+            AlarmType.Imitation => AlarmTypeEnum.Simulation.GetDescription(),
+            AlarmType.Suppression => AlarmTypeEnum.Suppressed.GetDescription(),
+            _ => AlarmTypeEnum.Incoming.GetDescription(),
+        };
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
     }
 
     private void GoToDetails()

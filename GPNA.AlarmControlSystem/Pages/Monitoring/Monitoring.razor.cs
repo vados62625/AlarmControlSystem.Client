@@ -86,12 +86,12 @@ public partial class Monitoring : AcsPageBase
     {
         SetDates();
         InitFilters();
-        _monitoringSettings = await GetSettings();
     }
 
-    protected override async Task LoadPage()
+    protected override async Task LoadPageAsync()
     {
-        await InitializePageAsync();
+        _monitoringSettings = await GetSettings();
+        await LoadAlarmsAsync();
     }
 
     private void SetAlarmsCounts<T>(AlarmsCollection<T> alarms)
@@ -118,7 +118,7 @@ public partial class Monitoring : AcsPageBase
         _priorityFilter[PriorityType.Information] = false;
     }
 
-    private async Task InitializePageAsync()
+    private async Task LoadAlarmsAsync()
     {
         switch ((AlarmTypeEnum)AlarmType)
         {
@@ -226,7 +226,7 @@ public partial class Monitoring : AcsPageBase
         if (_suppressedAlarmsCollection != null) SetAlarmsCounts(_suppressedAlarmsCollection);
     }
 
-    private Task DropFilters()
+    private async Task DropFilters()
     {
         _tagNameFilter = string.Empty;
 
@@ -242,7 +242,7 @@ public partial class Monitoring : AcsPageBase
             _priorityFilter[priority] = true;
         }
 
-        return InitializePageAsync();
+        await LoadPageAsync();
     }
 
     private async Task<Stream?> GetIncomingExportStream()
@@ -315,7 +315,7 @@ public partial class Monitoring : AcsPageBase
             _currentPage = 1;
         }
 
-        await InitializePageAsync();
+        await LoadPageAsync();
     }
 
     private async Task TogglePriorityFilter(PriorityType? priority)
@@ -336,7 +336,7 @@ public partial class Monitoring : AcsPageBase
             _currentPage = 1;
         }
 
-        await InitializePageAsync();
+        await LoadPageAsync();
     }
 
     private async Task RefreshBySpinner()
@@ -344,7 +344,7 @@ public partial class Monitoring : AcsPageBase
         _spinnerClass = " active";
         _currentPage = 1;
 
-        await InitializePageAsync();
+        await LoadPageAsync();
 
         _spinnerClass = string.Empty;
     }
@@ -356,20 +356,20 @@ public partial class Monitoring : AcsPageBase
         _orderBy = orderBy;
         _currentPage = 1;
 
-        await InitializePageAsync();
+        await LoadPageAsync();
     }
 
     private async Task OnPageChanged(int page)
     {
         _currentPage = page;
-        await InitializePageAsync();
+        await LoadPageAsync();
     }
 
     private async Task Search(string tagname)
     {
         _tagNameFilter = tagname;
         _currentPage = 1;
-        await InitializePageAsync();
+        await LoadPageAsync();
     }
 
     private GetAlarmsCollectionQueryBase GetAlarmsCollectionQuery()
@@ -430,7 +430,7 @@ public partial class Monitoring : AcsPageBase
             await TagTaskService.CreateTagTasks(alarmIds);
             SelectedAlarms.Clear();
             await JS.InvokeVoidAsync("saveComment", "snackbar", $"Сигнализации отправлены в задачи");
-            await LoadPage();
+            await LoadPageAsync();
         }
         
     }

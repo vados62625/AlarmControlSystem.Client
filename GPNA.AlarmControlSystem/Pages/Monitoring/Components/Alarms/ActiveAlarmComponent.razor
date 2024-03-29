@@ -100,10 +100,6 @@ else if (Alarm is {Description: "ПЕРЕДАЧА СМЕНЫ" })
                 await JSRuntime.InvokeVoidAsync("saveComment", "snackbar", $"Сигнализация {Alarm.TagName} отправлена в задачи");
             }
         }
-        else
-        {
-            
-        }
     }
 
     void ShowMoreAttributes()

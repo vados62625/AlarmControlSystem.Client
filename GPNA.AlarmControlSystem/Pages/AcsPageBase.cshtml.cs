@@ -24,10 +24,10 @@ public class AcsPageBase : ComponentBase
     protected override async Task OnParametersSetAsync()
     {
         await SetFieldWithWorkstation();
-        await LoadPage();
+        await LoadPageAsync();
     }
 
-    protected virtual async Task LoadPage()
+    protected virtual async Task LoadPageAsync()
     {
         
     }

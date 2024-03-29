@@ -43,7 +43,7 @@ namespace GPNA.AlarmControlSystem.Pages.Tasks
             return Task.CompletedTask;
         }
 
-        protected override async Task LoadPage()
+        protected override async Task LoadPageAsync()
         {
             await GetTasks();
         }
