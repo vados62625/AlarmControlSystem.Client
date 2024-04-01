@@ -1,0 +1,56 @@
+﻿<tr style="height: 28px;">
+    <td class="settings-position-container">
+        @if (Enabled)
+        { 
+            <SettingsDeleteButton/>
+        }
+        <input class="settings-stat-input" type="text" placeholder="Введите ФИО" disabled="@(!Enabled)"/>
+    </td>
+    <td>
+        <input class="settings-stat-input" type="text" placeholder="Введите ФИО" disabled="@(!Enabled)" />
+    </td>
+    <td>
+        <input class="settings-stat-input" type="text" placeholder="Введите ФИО" disabled="@(!Enabled)" />
+    </td>
+    <td>
+        <div class="settings-stat-checkbox">
+            <input type="checkbox" disabled="@(!Enabled)"/>
+        </div>
+    </td>
+    <td>
+        <div class="settings-stat-checkbox">
+            <input type="checkbox" disabled="@(!Enabled)"/>
+        </div>
+    </td>
+    <td>
+        <div class="settings-stat-checkbox">
+            <input type="checkbox" disabled="@(!Enabled)"/>
+        </div>
+    </td>
+    <td>
+        <div class="settings-stat-checkbox">
+            <input type="checkbox" disabled="@(!Enabled)"/>
+        </div>
+    </td>
+    <td>
+        <div class="settings-stat-checkbox">
+            <input type="checkbox" disabled="@(!Enabled)"/>
+        </div>
+    </td>
+    <td>
+        <div class="settings-stat-checkbox">
+            <input type="checkbox" disabled="@(!Enabled)"/>
+        </div>
+    </td>
+</tr>
+
+@code {
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public bool SettingsEdit { get; set; } = false;
+
+    [Parameter]
+    public bool Enabled { get; set; } = false;
+}
