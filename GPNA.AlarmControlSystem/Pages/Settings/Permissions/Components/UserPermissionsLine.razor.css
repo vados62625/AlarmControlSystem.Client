@@ -1,0 +1,37 @@
+﻿.settings-position-container {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    height: inherit;
+}
+
+.settings-stat-input {
+    border: 1px solid rgba(0, 32, 51, 0.1);
+    border-radius: 2px;
+    font-weight: 400;
+    font-size: 13px;
+    color: #002033;
+    padding-right: 15px;
+    margin-right: 15px;
+    background: rgba(221, 241, 252, 0.5);    
+}
+
+    .settings-stat-input:disabled {
+        background: #FFFFFF;
+    }
+
+    input::placeholder {
+        color: rgba(0, 32, 51, 0.25);
+    }
+    input:focus-visible {
+        outline: 1px solid rgba(0, 32, 51, 0.1);
+    }
+
+.settings-stat-checkbox
+{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    height: inherit;
+}
+

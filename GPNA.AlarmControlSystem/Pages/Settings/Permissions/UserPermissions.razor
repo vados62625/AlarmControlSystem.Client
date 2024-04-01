@@ -18,62 +18,89 @@
             <SelectObject LinksDictionary="WorkstationLinksDictionary"/>*@
         </div>
     </div>
-    <section class="setting-admin-dg">
-
-    </section>
-    <UserRermissionTable></UserRermissionTable>
-
-    <div class="settings-container">
-
-        <div class="settings-bg">            
-            <p class="settings-title">Права доступа. Коментарии</p>                
-            
-            <UserPermissionsItem Title="Технолог (промысел)" Enabled="_enabledComments" />
-            <UserPermissionsItem Title="Технолог (офис)" Enabled="_enabledComments" />
-            <UserPermissionsItem Title="Инженер АСУ ТП (промысел)" Enabled="_enabledComments" />
-            <UserPermissionsItem Title="Инженер АСУ ТП (офис)" Enabled="_enabledComments" />
-            <UserPermissionsItem Title="Начальник смены" Enabled="_enabledComments" />
-            <UserPermissionsItem Title="Начальник цеха" Enabled="_enabledComments" />
-
-			<div class="settings-buttons-container">
-                @if (_editCommentsButtonShow)
-                {
-                    <EditButton ClickEvent="EditComments" />
-                }
-                else
-                {
-                    <SaveButton ClickEvent="SaveEditComments" />
-                    <CancelButton ClickEvent="CancelEditComments" />
-                }
-			</div>
-            
-        </div>
-
-        <div class="settings-bg">           
-            <p class="settings-title">Права доступа. Задачи</p>
-                
-            <UserPermissionsItem Title="Технолог (промысел)" Enabled="_enabledTasks" />
-            <UserPermissionsItem Title="Технолог (офис)" Enabled="_enabledTasks" />
-            <UserPermissionsItem Title="Инженер АСУ ТП (промысел)" Enabled="_enabledTasks" />
-            <UserPermissionsItem Title="Инженер АСУ ТП (офис)" Enabled="_enabledTasks" />
-            <UserPermissionsItem Title="Начальник смены" Enabled="_enabledTasks" />
-            <UserPermissionsItem Title="Начальник цеха" Enabled="_enabledTasks" />
-
-            <div class="settings-buttons-container">
-                @if (_editTasksButtonShow)
-                {
-                    <EditButton ClickEvent="EditTasks" />  
-                }
-                else
-                {
-                    <SaveButton ClickEvent="SaveEditTasks" />
-                    <CancelButton ClickEvent="CancelEditTasks" />
-                }
-            </div>
-
-        </div>
-
+    <table>
+        <caption class="table-title">АДМИНИСТРАТОР (СУПЕРПОЛЬЗОВАТЕЛЬ)</caption>
+        <thead>
+        <tr class="table-head-line">
+            <th class="table-head-user"><p>Должность</p></th>
+    		
+            <th class="table-head-user"><p>ФИО</p></th>
+    		
+            <th class="table-head-user"><p>Почта</p></th>
+    		
+            <th class="table-head-access"><p>Комментарии<br />мониторинг</p></th>
+    		
+            <th class="table-head-access"><p>Задачи</p></th>
+    		
+            <th class="table-head-access"><p>Таблица переменных</p></th>
+    		
+            <th class="table-head-access"><p>Изменние KPI</p></th>
+    		
+            <th class="table-head-access"><p>Комментарии журнал<br />изменений АСУ ТП</p></th>
+    		
+            <th class="table-head-access"><p>Назначать<br />ответственных</p></th>
+        </tr>
+        </thead>
+        <tbody>
+        <UserPermissionsLine Enabled="_enabledComments"/>
+        @if(_enabledComments)
+        {
+            <tr>
+                <td colspan="9">
+                    <SettingsAddButton/>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <table>
+        <caption class="table-title">пользователи системы</caption>
+        <thead>
+        <tr class="table-head-line">
+            <th class="table-head-user"><p>Должность</p></th>
+        		
+            <th class="table-head-user"><p>ФИО</p></th>
+        		
+            <th class="table-head-user"><p>Почта</p></th>
+        		
+            <th class="table-head-access"><p>Комментарии<br />мониторинг</p></th>
+        		
+            <th class="table-head-access"><p>Задачи</p></th>
+        		
+            <th class="table-head-access"><p>Таблица переменных</p></th>
+        		
+            <th class="table-head-access"><p>Изменние KPI</p></th>
+        		
+            <th class="table-head-access"><p>Комментарии журнал<br />изменений АСУ ТП</p></th>
+        		
+            <th class="table-head-access"><p>Назначать<br />ответственных</p></th>
+        </tr>
+        </thead>
+        <tbody>
+        <UserPermissionsLine Enabled="_enabledComments"/>
+        @if(_enabledComments)
+        {
+            <tr>
+                <td colspan="9">
+                    <SettingsAddButton/>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <div class="settings-buttons-container">
+        @if (_editCommentsButtonShow)
+        {
+            <EditButton ClickEvent="EditComments" />
+        }
+        else
+        {
+            <SaveButton ClickEvent="SaveEditComments" />
+            <CancelButton ClickEvent="CancelEditComments" />
+        }
     </div>
+    
+    
 </div>
 
 @code {
