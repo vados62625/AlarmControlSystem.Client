@@ -1,4 +1,5 @@
 ﻿@page "/reports/back-alarms"
+@inherits AcsPageBase
 
 @using GPNA.AlarmControlSystem.Pages.Reports.ReportBackAlarms.Components;
 @using GPNA.AlarmControlSystem.Models.Enums
@@ -7,15 +8,17 @@
 <div class="page-main">
     <div class="page-header justify-content-center">        
         <div class="d-flex align-items-center">
-            <p>ОТЧЕТ О КОЛИЧЕСТВЕ ПРОСРОЧЕННЫХ СИГНАЛИЗАЦИЙ  <b>@(_fields?.FirstOrDefault(f => f.Id == FieldId)?.Name ?? "N/A") М/Р</b></p>
-            <SelectObject Object="dto" LinksDictionary="WorkstationLinksDictionary"/>
+            <p>ОТЧЕТ О КОЛИЧЕСТВЕ ПРОСРОЧЕННЫХ СИГНАЛИЗАЦИЙ  <b>@(Fields?.FirstOrDefault(f => f.Id == FieldId)?.Name ?? "N/A") М/Р</b></p>
+            <SelectObject Object="dto" LinksDictionary="FieldLinksDictionary"/>
             <p class="ms-2"><b>НА @DateTimeEnd.ToString("dd MMMM")</b></p>
         </div>
     </div>
-    <TableBackAlarms ExpiredAlarmsCount="_expiredAlarmsCount" WorkStations="_workstations"></TableBackAlarms>
+    <TableBackAlarms ExpiredAlarmsCount="_expiredAlarmsCount" WorkStations="Workstations"></TableBackAlarms>
     <div class="d-flex justify-content-center">
         <p><b>@(((AlarmType)(AlarmType ?? 0)).GetDescription())</b></p>
         <SelectObject Object="alarmType" LinksDictionary="AlarmTypeLinksDictionary"/>
+        <p class="ms-4"><b>@(Workstations?.FirstOrDefault(f => f.Id == WorkstationId)?.Name ?? "N/A")</b></p>
+        <SelectObject Object="workstation" LinksDictionary="WorkstationLinksDictionary"/>
     </div>
     <BarChart IsEnableRenderChart="_isEnableRenderChart" FieldId="FieldId" ExpiredAlarms="_expiredAlarmsCountChart" AlarmType="@((AlarmType)(AlarmType ?? 0))"/>
 </div>

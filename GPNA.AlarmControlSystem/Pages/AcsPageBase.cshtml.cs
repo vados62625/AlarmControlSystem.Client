@@ -27,9 +27,9 @@ public class AcsPageBase : ComponentBase
         await LoadPageAsync();
     }
 
-    protected virtual async Task LoadPageAsync()
+    protected virtual Task LoadPageAsync()
     {
-        
+        return Task.CompletedTask;
     }
     
     private async Task SetFieldWithWorkstation()
@@ -59,7 +59,7 @@ public class AcsPageBase : ComponentBase
         FillLinks();
     }
         
-    private void FillLinks()
+    protected virtual void FillLinks()
     {
         if (Fields != null)
         {
@@ -76,7 +76,7 @@ public class AcsPageBase : ComponentBase
         }
     }
     
-    private string GetPageFromUrl()
+    protected string GetPageFromUrl()
     {
         return new Uri(NavigationManager?.Uri ?? "/").GetLeftPart(UriPartial.Path);
     }
