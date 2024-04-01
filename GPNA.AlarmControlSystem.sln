@@ -5,6 +5,12 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GPNA.AlarmControlSystem", "GPNA.AlarmControlSystem\GPNA.AlarmControlSystem.csproj", "{14B32542-C700-44C0-A028-1F0651F15E8C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFolder", "SolutionFolder", "{B1370F44-E678-460E-AEDC-4430287FEE92}"
+	ProjectSection(SolutionItems) = preProject
+		nuget.config = nuget.config
+		CI\Jenkinsfile-build = CI\Jenkinsfile-build
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

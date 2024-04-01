@@ -1,0 +1,7 @@
+#!groovy
+
+// Подключение библиотек
+@Library(["dsoLibrary", "gpnaLibrary"]) _
+
+// сборка .net сервиса в zip архив и публикация как Jenkins артифакт
+serviceBuildPipeline()  
