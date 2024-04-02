@@ -7,92 +7,160 @@
 @using Blazored.Toast.Services
 
 <div class="page-main">
-<div class="page-header ">
-    <a href="/tasks" class="bg-navigation">
-        <svg>
-            <use href="/img/icons/icons.svg#arrow-left"></use>
-        </svg>
-        <span>К списку задач</span>
-    </a>
+    <div class="page-header ">
+        <a href="/tasks" class="bg-navigation">
+            <svg>
+                <use href="/img/icons/icons.svg#arrow-left"></use>
+            </svg>
+            <span>К списку задач</span>
+        </a>
 
-    <p>ЗАДАЧА <b># @TagTask?.Number</b></p>
+        <p>ЗАДАЧА <b># @TagTask?.Number</b></p>
 
-    <div class="d-flex gap-2"></div>
-
-</div>
-<div class="d-flex flex-column overflow-auto gap-2">
-    <div class="mesage-container w-100">
-        <div class=" mesage-container flex-column">
-            <div class="bg-message message-correspondents">
-                <p>От кого:</p>
-                <div class="d-flex justify-content-between">
-                    <div>
-                        @foreach (var senderPosition in SenderPositions)
-                        {
-                            var senderHash = senderPosition.GetHashCode().ToString();
-                            <div class="recipient-selector d-flex justify-content-between pb-2">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" id="radio-@senderHash" name="message-sender-radio"
-                                           checked="@(SenderPosition == senderPosition)"
-                                           onchange="@(() => ChangeSenderPosition(senderPosition))"/>
-                                    <label class="form-check-label" for="radio-@senderHash">
-                                        @senderPosition
-                                    </label>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                    <div class="recipient-name w-50 p-1 input-group d-flex align-items-center">
-                        <input class="border" style="outline: none" type="text" placeholder="ФИО" @bind="SenderName"/>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-message message-body">
-                <p> Тело письма:</p>
-                <textarea type="text" placeholder="Текст письма" @bind="MessageInputText" @bind:event="oninput"></textarea>
-                <div class="d-flex align-self-end gap-2 w-100 justify-content-end">
-                    @if (TagTask is {Archived: false })
-                    {
-                        <button class="me-auto" @onclick="ArchiveTask">
-                            <svg>
-                                <use href="/img/icons/icons.svg#archive"></use>
-                            </svg>
-                            <span>В архив</span>
-                        </button>
-                    }
-                    <button @onclick="Cancel">
-                        <svg>
-                            <use href="/img/icons/icons.svg#task-message-cancel"></use>
-                        </svg>
-                        <span>Отменить</span>
-                    </button>
-                    <button disabled="@string.IsNullOrWhiteSpace(MessageInputText)" @onclick="SendEmails">
-                        <svg>
-                            <use href="/img/icons/icons.svg#task-message-send"></use>
-                        </svg>
-                        <span>Разослать</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="bg-message message-story">
-            <p>История</p>
-            <div class="message-story-container" id="message-story-container">
-                @foreach (var message in TagTask!.EmailMessages)
-                {
-                    <div class="message-story-item">
-                        <div class="d-flex gap-2 align-items-center">
-                            <p>@message.Producer</p>
-                        </div>
-                        <p>@message.Message</p>
-                        <p class="message-story-item-date">@message.DateTimeSent.ToString("dd.MM.yyyy HH:mm")</p>
-                    </div>
-                }
-            </div>
-        </div>
-
+        <div class="d-flex gap-2"></div>
     </div>
-</div>
+
+    <table class="bg-task-table">
+        <thead>
+        <tr>
+            <th class="bg-task-table-button" style="min-width: 60px;">
+                <div>
+                    <svg class="task-table-status-icon">
+                        <use href="/img/icons/icons.svg#task-process"></use>
+                    </svg>
+                </div>
+            </th>
+            <th class="bg-task-table-button">
+                <div>
+                    <p>Задача</p>
+                </div>
+            </th>
+            <th class="bg-task-table-button" style="min-width: 90px;">
+                <div>
+                    <p>Дата</p>
+                </div>
+            </th>
+            <th class="bg-task-table-button" style="min-width: 90px;">
+                <div>
+                    <p>Время</p>
+                </div>
+            </th>
+            <th class="bg-task-table-button" style="min-width: 90px;">
+                <div>
+                    <p>Повторений</p>
+                </div>
+            </th>
+            <th class="bg-task-table-button" style="min-width: 90px;">
+                <div>
+                    <p>Длительность</p>
+                </div>
+            </th>
+            <th class="bg-task-table-button" style="min-width: 90px;">
+                <div>
+                    <p>Журнал</p>
+                </div>
+            </th>
+            <th class="bg-task-table-button">
+                <div>
+                    <p>Таг</p>
+                </div>
+            </th>
+            <th class="bg-task-table-button" style="min-width: 120px;">
+                <div>
+                    <p>Статус</p>
+                </div>
+            </th>
+            <th>
+                <p>Описание</p>
+            </th>
+            <th class="bg-task-table-button" style="min-width: 120px;">
+                <div>
+                    <p>Приоритет</p>
+                </div>
+            </th>
+            <th style="min-width: 150px;">
+                <p>Уставка/значение</p>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <TaskLine NoActions="true" Task="@TagTask"/>
+        </tbody>
+    </table>
+
+    <div class="d-flex flex-column overflow-auto gap-2">
+        <div class="mesage-container w-100">
+            <div class=" mesage-container flex-column">
+                <div class="bg-message message-correspondents">
+                    <p>От кого:</p>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            @foreach (var senderPosition in SenderPositions)
+                            {
+                                var senderHash = senderPosition.GetHashCode().ToString();
+                                <div class="recipient-selector d-flex justify-content-between pb-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="radio-@senderHash" name="message-sender-radio"
+                                               checked="@(SenderPosition == senderPosition)"
+                                               onchange="@(() => ChangeSenderPosition(senderPosition))"/>
+                                        <label class="form-check-label" for="radio-@senderHash">
+                                            @senderPosition
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="recipient-name w-50 p-1 input-group d-flex align-items-center">
+                            <input class="border" style="outline: none" type="text" placeholder="ФИО" @bind="SenderName"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-message message-body">
+                    <p> Тело письма:</p>
+                    <textarea type="text" placeholder="Текст письма" @bind="MessageInputText" @bind:event="oninput"></textarea>
+                    <div class="d-flex align-self-end gap-2 w-100 justify-content-end">
+                        @if (TagTask is {Archived: false })
+                        {
+                            <button class="me-auto" @onclick="ArchiveTask">
+                                <svg>
+                                    <use href="/img/icons/icons.svg#archive"></use>
+                                </svg>
+                                <span>В архив</span>
+                            </button>
+                        }
+                        <button @onclick="Cancel">
+                            <svg>
+                                <use href="/img/icons/icons.svg#task-message-cancel"></use>
+                            </svg>
+                            <span>Отменить</span>
+                        </button>
+                        <button disabled="@string.IsNullOrWhiteSpace(MessageInputText)" @onclick="SendEmails">
+                            <svg>
+                                <use href="/img/icons/icons.svg#task-message-send"></use>
+                            </svg>
+                            <span>Разослать</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-message message-story">
+                <p>История</p>
+                <div class="message-story-container" id="message-story-container">
+                    @foreach (var message in TagTask!.EmailMessages)
+                    {
+                        <div class="message-story-item">
+                            <div class="d-flex gap-2 align-items-center">
+                                <p>@message.Producer</p>
+                            </div>
+                            <p>@message.Message</p>
+                            <p class="message-story-item-date">@message.DateTimeSent.ToString("dd.MM.yyyy HH:mm")</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
 
 
@@ -100,10 +168,10 @@
 
     [Inject]
     IToastService? ToastService { get; set; }
-    
+
     [Inject]
     IJSRuntime? JsRuntime { get; set; }
-    
+
     [Inject]
     ITagTaskService? TagTaskService { get; set; }
 
@@ -118,7 +186,7 @@
 
     private TagTaskDto TagTask { get; set; } = new();
 
-    private static readonly string[] SenderPositions = 
+    private static readonly string[] SenderPositions =
     {
         "Технолог (промысел)",
         "Технолог (офис)",
@@ -131,17 +199,17 @@
     private string MessageInputText { get; set; } = string.Empty;
     private string SenderName { get; set; } = string.Empty;
     private string SenderPosition { get; set; } = SenderPositions[0];
-    
+
 
     protected override async Task LoadPageAsync()
     {
-        await GetTagTask();
+        await SpinnerService.Load(GetTagTask);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await Task.Delay(500); 
-        await JsRuntime.InvokeVoidAsync("scrollChatToBottom"); 
+        await Task.Delay(500);
+        await JsRuntime.InvokeVoidAsync("scrollChatToBottom");
     }
 
     private async Task ArchiveTask()
@@ -192,7 +260,7 @@
             return;
         }
 
-        // var modal = Modal!.Show<EmailSuccessModal>();
+    // var modal = Modal!.Show<EmailSuccessModal>();
         await LoadPageAsync();
     }
 
