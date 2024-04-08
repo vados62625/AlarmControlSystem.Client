@@ -1,16 +1,18 @@
-﻿<tr style="height: 28px;">
+﻿@using GPNA.AlarmControlSystem.Models.Dto
+@using GPNA.AlarmControlSystem.Models.Dto.User
+<tr style="height: 28px;">
     <td class="settings-position-container">
         @if (Enabled)
         { 
-            <SettingsDeleteButton/>
+            <SettingsDeleteButton LineRemoved="LineRemoved"/>
         }
-        <input class="settings-stat-input" type="text" placeholder="Введите ФИО" disabled="@(!Enabled)"/>
+        <input class="settings-stat-input" type="text" placeholder="Введите ФИО" @bind="_user.Login" disabled="@(!Enabled)"/>
     </td>
     <td>
-        <input class="settings-stat-input" type="text" placeholder="Введите ФИО" disabled="@(!Enabled)" />
+        <input class="settings-stat-input" type="text" placeholder="Введите ФИО" @bind="_user.Login" disabled="@(!Enabled)" />
     </td>
     <td>
-        <input class="settings-stat-input" type="text" placeholder="Введите ФИО" disabled="@(!Enabled)" />
+        <input class="settings-stat-input" type="text" placeholder="Введите ФИО" @bind="_user.Login" disabled="@(!Enabled)" />
     </td>
     <td>
         <div class="settings-stat-checkbox">
@@ -49,8 +51,28 @@
     public string? Title { get; set; }
 
     [Parameter]
-    public bool SettingsEdit { get; set; } = false;
+    public bool SettingsEdit { get; set; }
 
     [Parameter]
-    public bool Enabled { get; set; } = false;
+    public bool Enabled { get; set; }
+
+    private UserDto _user;
+
+    [Parameter]
+    public UserDto User
+    {
+        get => _user;
+        set
+        {
+            if (_user == value) return;
+            _user = value;
+            UserChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<UserDto> UserChanged { get; set; }
+    
+    [Parameter]
+    public EventCallback LineRemoved { get; set; }
 }

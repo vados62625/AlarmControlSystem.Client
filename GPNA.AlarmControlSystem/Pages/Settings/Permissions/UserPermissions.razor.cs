@@ -1,113 +1,104 @@
 using Blazored.Toast.Services;
+using GPNA.AlarmControlSystem.Extensions;
 using GPNA.AlarmControlSystem.Interfaces;
-using GPNA.AlarmControlSystem.Models.Dto.Field;
-using GPNA.AlarmControlSystem.Models.Dto.KpiSettings;
-using GPNA.AlarmControlSystem.Models.Dto.Workstation;
-using GPNA.AlarmControlSystem.Services;
+using GPNA.AlarmControlSystem.Models.Dto;
+using GPNA.AlarmControlSystem.Models.Dto.User;
+using GPNA.AlarmControlSystem.Models.Enums;
 using Microsoft.AspNetCore.Components;
+using AccessType = GPNA.AlarmControlSystem.Domain.Enums.AccessType;
 
 namespace GPNA.AlarmControlSystem.Pages.Settings.Permissions;
 
-public partial class UserPermissions : ComponentBase
+public partial class UserPermissions : AcsPageBase
 {
-    [Parameter] public int Value { get; set; } = 256;
+    private bool _editMode;
 
-    [Parameter] [SupplyParameterFromQuery] public int? WorkstationId { get; set; }
+    private List<UserDto> Admins { get; set; } = new();
+    private List<UserDto> AdminModels { get; set; } = new();
+    private List<UserDto> Users { get; set; } = new();
+    private List<UserDto> UserModels { get; set; } = new();
 
-    [Parameter] [SupplyParameterFromQuery] public int? FieldId { get; set; }
-
-    [Inject] private IToastService? ToastService { get; set; }
-
-    [Inject] private IFieldService? FieldService { get; set; }
-
-    [Inject] private IWorkStationService? WorkStationService { get; set; }
-
-    [Inject] private AlarmJournalSettingsService? AlarmJournalSettingsService { get; set; }
-    [Inject] private MonitoringSettingsService? MonitoringSettingsService { get; set; }
-    [Inject] private ReportSettingsService? ReportSettingsService { get; set; }
-    [Inject] private TagTableSettingsService? TagTableSettingsService { get; set; }
-    [Inject] private TaskSettingsService? TaskSettingsService { get; set; }
-
-    private string? FieldName { get; set; } = "N/A";
-    private string? WorkstationName { get; set; } = "N/A";
-
-    private FieldDto[]? _fields;
-
-    private WorkStationDto[]? _workstations;
-
-    private AlarmJournalSettingsDto? _journalSettings;
-    private MonitoringSettingsDto? _monitoringSettings;
-    private ReportSettingsDto? _reportSettings;
-    private TagTableSettingsDto? _tagTableSettings;
-    private TaskSettingsDto? _taskSettings;
-
-    private IDictionary<string, string>? FieldLinksDictionary { get; set; }
-
-    private IDictionary<string, string>? WorkstationLinksDictionary { get; set; }
+    [Inject] private IToastService ToastService { get; set; } = null!;
+    [Inject] private IUserService UserService { get; set; } = null!;
 
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task LoadPageAsync()
     {
-        await SetFieldWithWorkstation();
-
-        await InitializePageAsync();
-
-        await base.OnParametersSetAsync();
+        await SpinnerService.Load(GetUsers);
     }
 
-    private async Task InitializePageAsync()
+    private async Task GetUsers()
     {
+        var result = await UserService.GetList();
+
+        if (!result.Success) return;
+
+        var users = result.Payload
+            .GroupBy(c => c.Access is AccessType.Admin or AccessType.SuperAdmin)
+            .ToHashSet();
+
+        Admins = users
+            .Where(c => c.Key)
+            .SelectMany(c => c)
+            .ToList();
+
+        Users = users
+            .Where(c => !c.Key)
+            .SelectMany(c => c)
+            .ToList();
+
+        AdminModels = Admins.Select(c => c.Copy()).ToList();
+
+        UserModels = Users.Select(c => c.Copy()).ToList();
     }
 
-    private async Task SetFieldWithWorkstation()
+    private void OnCancelClick()
     {
-        if (FieldService != null)
+        _editMode = false;
+
+        AdminModels = Admins.Select(c => c.Copy()).ToList();
+
+        UserModels = Users.Select(c => c.Copy()).ToList();
+
+        StateHasChanged();
+    }
+
+    private async Task OnSaveClick()
+    {
+        var usersToCreateOrUpdate = UserModels.Where(userModel => {
+            var user = Users.FirstOrDefault(u => u.Id == userModel.Id);
+            return !userModel.Equals(user);
+        }).ToList();
+
+        await CreateOrUpdateUsers(usersToCreateOrUpdate);
+
+        _editMode = false;
+    }
+
+    private async Task CreateOrUpdateUsers(IEnumerable<UserDto> models)
+    {
+        using var adminsEnumerator = models.GetEnumerator();
+        while (adminsEnumerator.MoveNext())
         {
-            var fields = await FieldService.GetList();
-
-            if (fields.Success)
+            var model = adminsEnumerator.Current;
+            switch (model.Id == default)
             {
-                _fields = fields.Payload.ToArray();
+                case true:
+                {
+                    await UserService.Create(model);
+                    break;
+                }
+                case false:
+                {
+                    var result =
+                        await UserService.Update(new UpdateUserCommand { Id = model.Id, Access = model.Access });
+                    if (result.Success)
+                        model = result.Payload;
+                    break;
+                }
             }
         }
-
-        if (WorkStationService != null)
-        {
-            var workstations = await WorkStationService.GetList(new { FieldId });
-
-            if (workstations.Success)
-            {
-                _workstations = workstations.Payload.ToArray();
-            }
-        }
-
-        FieldId ??= _fields?.FirstOrDefault()?.Id;
-
-        FieldName = _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name;
-
-        WorkstationId ??= _workstations?.FirstOrDefault()?.Id;
-
-        WorkstationName = _workstations?.FirstOrDefault(ws => ws.Id == WorkstationId)?.Name;
-
-        FillLinks();
     }
 
-    private void FillLinks()
-    {
-        if (_fields != null)
-        {
-            FieldLinksDictionary = _fields.ToDictionary(field =>
-                    field.Name,
-                field => $"/settings/permissions/?fieldId={field.Id}");
-        }
-
-        if (_workstations != null)
-        {
-            WorkstationLinksDictionary = _workstations.ToDictionary(workStation =>
-                    workStation.Name ?? Guid.NewGuid().ToString(),
-                workStation => $"/settings/permissions/?fieldId={FieldId}&workstationId={workStation.Id}");
-        }
-    }
-
-    private void ShowSuccess() => ToastService?.ShowSuccess("Данные сохранены");
+    private void ShowSuccess() => ToastService.ShowSuccess("Данные сохранены");
 }

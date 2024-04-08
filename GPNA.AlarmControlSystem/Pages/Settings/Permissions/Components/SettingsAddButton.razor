@@ -1,5 +1,11 @@
-﻿<button class="settings-stat-button">
+﻿<button class="settings-stat-button" @onclick="OnClick">
     <svg>
         <use href="/img/icons/icons.svg#settings-add-line"></use>
     </svg>
 </button>
+
+@code
+{
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+}

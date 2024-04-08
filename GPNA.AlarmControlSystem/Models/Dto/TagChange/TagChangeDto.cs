@@ -1,5 +1,6 @@
 ﻿using GPNA.AlarmControlSystem.Models.Dto;
 using GPNA.AlarmControlSystem.Models.Dto.Tag;
+using GPNA.AlarmControlSystem.Models.Dto.User;
 using GPNA.AlarmControlSystem.Models.Enums;
 
 namespace GPNA.AlarmControlSystem.Application.Dto.TagChange

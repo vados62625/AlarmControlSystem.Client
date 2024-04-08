@@ -1,6 +1,7 @@
 ﻿using GPNA.AlarmControlSystem.Models.Dto.BufferAlarms;
 using GPNA.AlarmControlSystem.Models.Dto.Email;
 using GPNA.AlarmControlSystem.Models.Dto.Tag;
+using GPNA.AlarmControlSystem.Models.Dto.User;
 using GPNA.AlarmControlSystem.Models.Enums;
 
 namespace GPNA.AlarmControlSystem.Models.Dto.TagTask

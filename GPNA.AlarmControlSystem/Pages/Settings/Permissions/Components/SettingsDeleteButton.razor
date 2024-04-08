@@ -1,5 +1,11 @@
-﻿<button class="settings-stat-button">
+﻿<button @onclick="LineRemoved" class="settings-stat-button">
     <svg>
         <use href="/img/icons/icons.svg#settings-delete-line"></use>
     </svg>
 </button>
+
+@code
+{
+    [Parameter]
+    public EventCallback LineRemoved { get; set; }
+}

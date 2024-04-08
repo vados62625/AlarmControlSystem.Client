@@ -1,6 +1,9 @@
 ﻿@page "/settings/permissions"
+@inherits AcsPageBase
 @using GPNA.AlarmControlSystem.Pages.Settings.Permissions.Components
 @using GPNA.AlarmControlSystem.Shared.ButtonsModal
+@using GPNA.AlarmControlSystem.Models.Dto
+@using GPNA.AlarmControlSystem.Models.Dto.User
 @inject IJSRuntime JsRuntime
 
 
@@ -8,14 +11,8 @@
     <div class="page-header justify-content-center">
         <div class="d-flex align-items-center">
             <p>
-                Настройка ответственных @*<b>@FieldName</b>*@
+                Настройка ответственных
             </p>
-            @*<SelectObject LinksDictionary="FieldLinksDictionary"/>
-
-            <p class="ms-2">
-                ЦЕХА <b>@WorkstationName</b>
-            </p>
-            <SelectObject LinksDictionary="WorkstationLinksDictionary"/>*@
         </div>
     </div>
     <table>
@@ -42,12 +39,19 @@
         </tr>
         </thead>
         <tbody>
-        <UserPermissionsLine Enabled="_enabledComments"/>
-        @if(_enabledComments)
+        @{
+            using var adminsEnumerator = AdminModels.GetEnumerator();
+            while (adminsEnumerator.MoveNext())
+            {
+                var user = adminsEnumerator.Current;
+                <UserPermissionsLine @bind-User="user" Enabled="_editMode" LineRemoved="() => AdminModels.Remove(user)"/>
+            }
+        }
+        @if (_editMode)
         {
             <tr>
                 <td colspan="9">
-                    <SettingsAddButton/>
+                    <SettingsAddButton OnClick="() => Users.Add(new UserDto())"/>
                 </td>
             </tr>
         }
@@ -57,93 +61,64 @@
         <caption class="table-title">пользователи системы</caption>
         <thead>
         <tr class="table-head-line">
-            <th class="table-head-user"><p>Должность</p></th>
-        		
-            <th class="table-head-user"><p>ФИО</p></th>
-        		
-            <th class="table-head-user"><p>Почта</p></th>
-        		
-            <th class="table-head-access"><p>Комментарии<br />мониторинг</p></th>
-        		
-            <th class="table-head-access"><p>Задачи</p></th>
-        		
-            <th class="table-head-access"><p>Таблица переменных</p></th>
-        		
-            <th class="table-head-access"><p>Изменние KPI</p></th>
-        		
-            <th class="table-head-access"><p>Комментарии журнал<br />изменений АСУ ТП</p></th>
-        		
-            <th class="table-head-access"><p>Назначать<br />ответственных</p></th>
+            <th class="table-head-user">
+                <p>Должность</p></th>
+
+            <th class="table-head-user">
+                <p>ФИО</p></th>
+
+            <th class="table-head-user">
+                <p>Почта</p></th>
+
+            <th class="table-head-access">
+                <p>Комментарии<br/>мониторинг</p></th>
+
+            <th class="table-head-access">
+                <p>Задачи</p></th>
+
+            <th class="table-head-access">
+                <p>Таблица переменных</p></th>
+
+            <th class="table-head-access">
+                <p>Изменние KPI</p></th>
+
+            <th class="table-head-access">
+                <p>Комментарии журнал<br/>изменений АСУ ТП</p></th>
+
+            <th class="table-head-access">
+                <p>Назначать<br/>ответственных</p></th>
         </tr>
         </thead>
         <tbody>
-        <UserPermissionsLine Enabled="_enabledComments"/>
-        @if(_enabledComments)
-        {
-            <tr>
-                <td colspan="9">
-                    <SettingsAddButton/>
-                </td>
-            </tr>
-        }
+            @{
+                using var usersEnumerator = UserModels.GetEnumerator();
+                while (usersEnumerator.MoveNext())
+                {
+                    var user = usersEnumerator.Current;
+                    <UserPermissionsLine @bind-User="user" Enabled="_editMode" LineRemoved="() => UserModels.Remove(user)"/>
+                }
+            }
+            @if (_editMode)
+            {
+                <tr>
+                    <td colspan="9">
+                        <SettingsAddButton OnClick="() => Users.Add(new UserDto())"/>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
     <div class="settings-buttons-container">
-        @if (_editCommentsButtonShow)
+        @if (!_editMode)
         {
-            <EditButton ClickEvent="EditComments" />
+            <EditButton ClickEvent="@(() => _editMode = true)" />
         }
         else
         {
-            <SaveButton ClickEvent="SaveEditComments" />
-            <CancelButton ClickEvent="CancelEditComments" />
+            <SaveButton ClickEvent="OnSaveClick" />
+            <CancelButton ClickEvent="OnCancelClick" />
         }
     </div>
     
     
 </div>
-
-@code {
-    
-    private bool _editCommentsButtonShow = true;
-    private bool _editTasksButtonShow = true;
-    
-    private bool _enabledComments;
-    private bool _enabledTasks;
-
-    void EditComments()
-    {
-        _editCommentsButtonShow = !_editCommentsButtonShow;        
-        _enabledComments = true;
-    }
-
-    void CancelEditComments()
-    {
-        _editCommentsButtonShow = !_editCommentsButtonShow;
-        _enabledComments = false;
-    }
-
-    void SaveEditComments()
-    {
-        _editCommentsButtonShow = !_editCommentsButtonShow;
-        _enabledComments = false;
-    }
-
-    void EditTasks()
-    {
-        _editTasksButtonShow = !_editTasksButtonShow;
-        _enabledTasks = true;
-    }
-
-    void CancelEditTasks()
-    {
-        _editTasksButtonShow = !_editTasksButtonShow;
-        _enabledTasks = false;
-    }
-
-    void SaveEditTasks()
-    {
-        _editTasksButtonShow = !_editTasksButtonShow;
-        _enabledTasks = false;
-    }
-}
