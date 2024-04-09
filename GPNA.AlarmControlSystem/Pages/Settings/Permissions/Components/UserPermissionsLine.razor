@@ -1,12 +1,19 @@
 ﻿@using GPNA.AlarmControlSystem.Models.Dto
 @using GPNA.AlarmControlSystem.Models.Dto.User
+@using GPNA.AlarmControlSystem.Domain.Enums
+@using GPNA.AlarmControlSystem.Extensions
 <tr style="height: 28px;">
     <td class="settings-position-container">
         @if (Enabled)
         { 
             <SettingsDeleteButton LineRemoved="LineRemoved"/>
         }
-        <input class="settings-stat-input" type="text" placeholder="Введите ФИО" @bind="_user.Login" disabled="@(!Enabled)"/>
+        <select class="settings-stat-input" type="text" placeholder="Введите ФИО" @bind="_user.Access" disabled="@(!Enabled)">
+            @foreach (var access in Enum.GetValues<AccessType>())
+            {
+                <option value="@access">@access.GetDescription()</option>
+            }
+        </select>
     </td>
     <td>
         <input class="settings-stat-input" type="text" placeholder="Введите ФИО" @bind="_user.Login" disabled="@(!Enabled)" />

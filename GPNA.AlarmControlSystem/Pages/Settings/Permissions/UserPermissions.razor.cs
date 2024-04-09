@@ -40,11 +40,15 @@ public partial class UserPermissions : AcsPageBase
         Admins = users
             .Where(c => c.Key)
             .SelectMany(c => c)
+            .OrderBy(c => c.Access)
+            .ThenBy(c => c.Login)
             .ToList();
 
         Users = users
             .Where(c => !c.Key)
             .SelectMany(c => c)
+            .OrderBy(c => c.Access)
+            .ThenBy(c => c.Login)
             .ToList();
 
         AdminModels = Admins.Select(c => c.Copy()).ToList();
@@ -65,14 +69,49 @@ public partial class UserPermissions : AcsPageBase
 
     private async Task OnSaveClick()
     {
-        var usersToCreateOrUpdate = UserModels.Where(userModel => {
+        var adminsToCreateOrUpdate = AdminModels.Where(adminModel =>
+        {
+            var admin = Admins.FirstOrDefault(u => u.Id == adminModel.Id);
+            return !adminModel.Equals(admin);
+        }).ToList();
+
+        var usersToCreateOrUpdate = UserModels.Where(userModel =>
+        {
             var user = Users.FirstOrDefault(u => u.Id == userModel.Id);
             return !userModel.Equals(user);
         }).ToList();
 
-        await CreateOrUpdateUsers(usersToCreateOrUpdate);
+        var adminIdsToDelete = Admins
+            .Where(admin => AdminModels.All(u => u.Id != admin.Id))
+            .Select(c => c.Id)
+            .ToList();
+        var userIdsToDelete = Users
+            .Where(user => UserModels.All(u => u.Id != user.Id))
+            .Select(c => c.Id)
+            .ToList();
+
+
+        await SpinnerService.Load(async () =>
+        {
+            await CreateOrUpdateUsers(adminsToCreateOrUpdate);
+            await CreateOrUpdateUsers(usersToCreateOrUpdate);
+            await DeleteUsers(adminIdsToDelete);
+            await DeleteUsers(userIdsToDelete);
+        });
+
+        await LoadPageAsync();
+
+        ShowSuccess();
 
         _editMode = false;
+    }
+
+    private async Task DeleteUsers(IEnumerable<int> ids)
+    {
+        foreach (var id in ids)
+        {
+            await UserService.Delete(id);
+        }
     }
 
     private async Task CreateOrUpdateUsers(IEnumerable<UserDto> models)
@@ -90,10 +129,8 @@ public partial class UserPermissions : AcsPageBase
                 }
                 case false:
                 {
-                    var result =
-                        await UserService.Update(new UpdateUserCommand { Id = model.Id, Access = model.Access });
-                    if (result.Success)
-                        model = result.Payload;
+                    await UserService.Update(new UpdateUserCommand
+                        { Id = model.Id, Access = model.Access, Login = model.Login });
                     break;
                 }
             }

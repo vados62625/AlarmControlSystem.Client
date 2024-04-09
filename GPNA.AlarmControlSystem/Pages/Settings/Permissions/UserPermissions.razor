@@ -2,7 +2,6 @@
 @inherits AcsPageBase
 @using GPNA.AlarmControlSystem.Pages.Settings.Permissions.Components
 @using GPNA.AlarmControlSystem.Shared.ButtonsModal
-@using GPNA.AlarmControlSystem.Models.Dto
 @using GPNA.AlarmControlSystem.Models.Dto.User
 @inject IJSRuntime JsRuntime
 
@@ -51,7 +50,7 @@
         {
             <tr>
                 <td colspan="9">
-                    <SettingsAddButton OnClick="() => Users.Add(new UserDto())"/>
+                    <SettingsAddButton OnClick="() => AdminModels.Add(new UserDto())"/>
                 </td>
             </tr>
         }
@@ -102,7 +101,7 @@
             {
                 <tr>
                     <td colspan="9">
-                        <SettingsAddButton OnClick="() => Users.Add(new UserDto())"/>
+                        <SettingsAddButton OnClick="() => UserModels.Add(new UserDto())"/>
                     </td>
                 </tr>
             }

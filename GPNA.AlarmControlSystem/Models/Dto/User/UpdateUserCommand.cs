@@ -14,4 +14,9 @@ public class UpdateUserCommand
     /// Права доступа
     /// </summary>
     public AccessType Access { get; set; }
+    
+    /// <summary>
+    /// Права доступа
+    /// </summary>
+    public string Login { get; set; }
 }
