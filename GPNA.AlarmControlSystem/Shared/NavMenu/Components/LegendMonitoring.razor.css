@@ -1,0 +1,136 @@
+﻿.legend {
+    width: 100%;
+    height: 850px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 20px;
+    font-family: 'Inter';
+    font-weight: 400;
+    font-size: 12px;
+    min-width: 373px;
+    overflow-x: auto;
+}
+.legend-section-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: start;
+    pointer-events: none;
+}
+
+.legend-section-title {
+    text-transform: uppercase;
+    color: rgba(0, 32, 51, 0.5);
+    margin-bottom: 4px;
+}
+
+.alarm-excess-bg {
+    min-width: 90px;
+    height: 32px;
+    padding: 0 9px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #FFDFDF;
+    position: relative;
+}
+
+    .alarm-excess-bg.time p {
+        color: #EB5757;
+    }
+.alarm-excess-arrow {
+    width: 10px;
+    height: 6px;
+    position: absolute;
+    top: 13px;
+    left: 62px;
+}
+
+.alarm-icon-checkbox {
+    width: 12px;
+    height: 12px;
+}
+
+.alarm-priority-bg, .alarm-status-bg {
+    width: 90px;
+    height: 22px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .alarm-priority-bg.critical {
+        background: var(--bg-red);
+    }
+    .alarm-priority-bg.high {
+        background: var(--bg-orange);
+    }
+    .alarm-priority-bg.low {
+        background: var(--bg-blue-status);
+    }
+    .alarm-priority-bg.info {
+        background: var(--bg-grey-status);
+    }
+    .alarm-priority-bg.none-priority {
+        background: var(--bg-purple);
+    }
+
+.alarm-priority-bg p {
+    text-transform: uppercase;
+    font-size: 11px;
+    color: var(--white);
+}
+
+.alarm-status-bg {
+    background: var(--white);
+}
+
+.alarm-status-bg p {
+    font-size: 11px;
+}
+
+    .alarm-status-bg.hh-ll {
+        border: 0.5px solid var(--border-red);
+    }
+        .alarm-status-bg.hh-ll p {
+            color: var(--text-red);
+        }
+
+    .alarm-status-bg.h-l {
+        border: 0.5px solid var(--border-orange);
+    }
+        .alarm-status-bg.h-l p {
+            color: var(--text-orange);
+        }
+
+    .alarm-status-bg.discr {
+        border: 0.5px solid var(--border-black);
+    }
+        .alarm-status-bg.discr p {
+            color: var(--text-black);
+        }
+
+    .alarm-status-bg.rshi, .alarm-status-bg.rslo, .alarm-status-bg.none-state {
+        border: 0.5px solid var(--border-light-grey);
+    }
+        .alarm-status-bg.rshi p, .alarm-status-bg.rslo p, .alarm-status-bg.none-state p {
+            color: var(--border-light-grey);
+        }
+
+
+.filter-icon, .alarm-icon {
+    width: 70px;
+    height: 40px;
+}
+
+.legend-transcript {
+    color: rgba(0, 32, 51, 0.8);
+    white-space: nowrap;
+    margin-left: 15px;
+}    
+    .legend-transcript.checkbox {
+        margin-left: 18px;
+    }

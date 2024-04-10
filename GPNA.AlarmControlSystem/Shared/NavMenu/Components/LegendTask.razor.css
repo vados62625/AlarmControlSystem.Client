@@ -6,6 +6,7 @@
     flex-direction: column;
     align-items: start;
     gap: 8px;
+    pointer-events: none;
 }
 
 .legend-task-container {
@@ -27,7 +28,7 @@
     min-width: 40px;
 }
     .legend-task-comment.new {
-        color: var(--text-red);
+        color: #F2994A;
     }
 
     .legend-task-comment.process {
@@ -35,11 +36,11 @@
     }
 
     .legend-task-comment.wait {
-        color: var(--text-orange);
+        color: #EB5757;
     }
 
     .legend-task-comment.ready {
-        color: var(--text-green);
+        color: #22C38E;
     }
 
 .legend-task-transcript {

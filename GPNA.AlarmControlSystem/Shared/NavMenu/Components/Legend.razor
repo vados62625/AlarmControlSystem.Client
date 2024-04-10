@@ -20,6 +20,24 @@
 					case "/tag-table" or "/tag-table/":
 						<LegendTagTable />
 						break;
+					case "/monitoring" or "/monitoring/":
+						<LegendMonitoring />
+						break;
+					case "/reports/back-alarms" or "/reports/back-alarms/":
+						<LegendReportsBackAlarms />
+						break;
+					case "/reports/execute-tasks" or "/reports/execute-tasks/":
+						<LegendReportsExecuteTasks />
+						break;
+					case "/tag-table-archive" or "/tag-table-archive/":
+						<LegendTagTableArchive />
+						break;
+					case "/settings/kpi" or "/settings/kpi/":
+						<LegendSettingKPI />
+						break;
+					case "/settings/permissions" or "/settings/permissions/":
+						<LegendSettingPermissions />
+						break;
 					
 				}
 			</div>
@@ -33,7 +51,10 @@
 
 	protected override void OnParametersSet()
 	{
-		if (ActivePageName is "/" or "/tasks" or "/tasks/" or "/tag-table" or "/tag-table/")
+		if (ActivePageName is "/" or "/tasks" or "/tasks/" or "/tag-table" or "/tag-table/" or "/monitoring" 
+							or "/monitoring/" or "/reports/back-alarms" or "/reports/back-alarms/" or "/reports/execute-tasks" 
+							or "/reports/execute-tasks/" or "/tag-table-archive" or "/tag-table-archive/"
+							or "/settings/kpi" or "/settings/kpi/" or "/settings/permissions" or "/settings/permissions/")
 			_isVisible = true;
 	}
 
