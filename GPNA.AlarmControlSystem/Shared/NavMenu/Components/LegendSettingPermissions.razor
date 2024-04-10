@@ -1,0 +1,62 @@
+﻿@using GPNA.AlarmControlSystem.Shared.ButtonsModal
+@using GPNA.AlarmControlSystem.Pages.Settings.Permissions.Components
+
+<div class="legend">
+	<section class="legend-section-container">
+		<p class="legend-section-title">НАСТРОЙКА ПАРАМЕТРА KPI</p>		
+		<div class="d-flex align-items-center">			
+			<EditButton />
+			<p class="legend-transcript">для настройки необходимо <br /> войти в режим редактирования</p>
+		</div>		
+	</section>
+
+	<section class="legend-section-container">
+		<p class="legend-section-title">ДОБАВЛЕНИЕ/УДАЛЕНИЕ ОТВЕТСТВЕННЫХ</p>
+		<div class="d-flex align-items-center">
+			<SettingsAddButton />
+			<p class="legend-transcript">добавить участника</p>
+		</div>
+		<div class="d-flex align-items-center">
+			<SettingsDeleteButton />
+			<p class="legend-transcript">удалить участника</p>
+		</div>
+	</section>
+
+	<section class="legend-section-container">
+		<p class="legend-section-title">ВВОД ДАННЫХ УЧАСТНИКА</p>
+		<div class="d-flex align-items-center">
+			<div class="data-input-bg">
+				<p>Введите ФИО</p>
+			</div>
+			<p class="legend-transcript">введение данных вручную</p>
+		</div>		
+	</section>
+
+	<section class="legend-section-container">
+		<p class="legend-section-title">УСТАНОВКА РАЗРЕШЕНИЙ УЧАСТНИКА</p>
+		<div class="d-flex align-items-center">
+			<svg class="tag-icon-checkbox">
+				<use href="/img/icons/icons.svg#unit-selected"></use>
+			</svg>
+			<p class="legend-transcript checkbox">разрешение поставлено</p>
+		</div>
+		<div class="d-flex align-items-center">
+			<svg class="tag-icon-checkbox">
+				<use href="/img/icons/icons.svg#unit-not-selected"></use>
+			</svg>
+			<p class="legend-transcript checkbox">разрешение не поставлено</p>
+		</div>
+	</section>
+
+	<section class="legend-section-container">
+		<p class="legend-section-title">СОХРАНЕНИЕ ДАННЫХ</p>
+		<div class="d-flex align-items-center">
+			<SaveButton />
+			<p class="legend-transcript">сохранить внесенные изменения</p>
+		</div>
+		<div class="d-flex align-items-center">
+			<CancelButton />
+			<p class="legend-transcript">отменить внесенные изменения</p>
+		</div>
+	</section>	
+</div>
