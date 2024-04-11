@@ -5,6 +5,7 @@
 @using GPNA.AlarmControlSystem.Interfaces
 @using GPNA.AlarmControlSystem.Models.Dto.Email
 @using Blazored.Toast.Services
+@using Microsoft.VisualBasic
 
 <div class="page-main">
     <div class="page-header ">
@@ -115,6 +116,30 @@
                         </div>
                     </div>
                 </div>
+                <div class="bg-message message-correspondents">
+                    <p>Кому:</p>
+                    <div>
+                        @foreach (var senderPosition in SenderPositions)
+                        {
+                            var senderHash = senderPosition.GetHashCode().ToString();
+                            <div class="recipient-selector d-flex justify-content-between pb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="checkbox-@senderHash"
+                                           @bind="@(RecipientPositionsMap[Array.IndexOf(SenderPositions, senderPosition)])"
+                                           />
+                                           @* checked="@(RecipientPositionsMap[Array.IndexOf(SenderPositions, senderPosition)])" *@
+                                           @* onchange="@(() => OnRecipientChecked(senderPosition))" *@
+                                    <label class="form-check-label" for="checkbox-@senderHash">
+                                        @senderPosition
+                                    </label>
+                                </div>
+                                @* <div class="recipient-name w-50 p-1 input-group d-flex align-items-center"> *@
+                                @*     <input class="border" style="outline: none" type="text" placeholder="ФИО" @bind="SenderName"/> *@
+                                @* </div> *@
+                            </div>
+                        }
+                    </div>
+                </div>
                 <div class="bg-message message-body">
                     <p> Тело письма:</p>
                     <textarea type="text" placeholder="Текст письма" @bind="MessageInputText" @bind:event="oninput"></textarea>
@@ -151,6 +176,13 @@
                         <div class="message-story-item">
                             <div class="d-flex gap-2 align-items-center">
                                 <p>@message.Producer</p>
+                                @if (!string.IsNullOrEmpty(message.Consumer))
+                                {
+                                    <svg>
+                                        <use href="/img/icons/icons.svg#task-message-arrow-right"></use>
+                                    </svg>
+                                    <p>@message.Consumer</p>
+                                }
                             </div>
                             <p>@message.Message</p>
                             <p class="message-story-item-date">@message.DateTimeSent.ToString("dd.MM.yyyy HH:mm")</p>
@@ -167,16 +199,16 @@
 @code {
 
     [Inject]
-    IToastService? ToastService { get; set; }
+    IToastService ToastService { get; set; } = null!;
 
     [Inject]
-    IJSRuntime? JsRuntime { get; set; }
+    IJSRuntime JsRuntime { get; set; } = null!;
 
     [Inject]
-    ITagTaskService? TagTaskService { get; set; }
+    ITagTaskService TagTaskService { get; set; } = null!;
 
     [Inject]
-    IEmailService? EmailService { get; set; }
+    IEmailService EmailService { get; set; } = null!;
 
     [Parameter]
     public int TaskId { get; set; }
@@ -196,10 +228,16 @@
         "Начальник цеха",
     };
 
+    private Dictionary<int, bool> RecipientPositionsMap = SenderPositions
+        .Select((item, index) => new
+        {
+            Position = item,
+            Index = index
+        }).ToDictionary(c => c.Index, _ => false);
+
     private string MessageInputText { get; set; } = string.Empty;
     private string SenderName { get; set; } = string.Empty;
     private string SenderPosition { get; set; } = SenderPositions[0];
-
 
     protected override async Task LoadPageAsync()
     {
@@ -233,8 +271,6 @@
 
     private async Task GetTagTask()
     {
-        if (TagTaskService == default) return;
-
         var result = await TagTaskService.GetTagTasksCollection(new GetTagTasksListQuery { Id = TaskId });
 
         if (result.Success && result.Payload.Items.Any())
@@ -245,10 +281,25 @@
 
     private async Task SendEmails()
     {
+        var recipientsChecked = RecipientPositionsMap
+            .Where(c => c.Value)
+            .Select(c => c.Key);
+        
+        var recipient = string.Join("; ", SenderPositions
+            .Select((item, index) => new
+            {
+                Position = item,
+                Index = index
+            })
+            .Where(c => recipientsChecked.Contains(c.Index))
+            .Select(c => c.Position)
+            .ToArray());
+        
         var command = new SendTaskMessageCommand
         {
             TagTaskId = TaskId,
             Sender = $"{SenderName} ({SenderPosition})",
+            Recipient = recipient,
             MessageText = MessageInputText
         };
 
@@ -256,7 +307,7 @@
 
         if (!messageSent)
         {
-            ToastService?.ShowError("Ошибка отправки сообщения");
+            ToastService.ShowError("Ошибка отправки сообщения");
             return;
         }
 
@@ -272,6 +323,18 @@
     private void ChangeSenderPosition(string position)
     {
         SenderPosition = position;
+    }
+
+    private void FillRecipientsMap()
+    {
+    }
+
+    private void OnRecipientChecked(int positionIndex, bool checkedVal)
+    {
+        if (RecipientPositionsMap.ContainsKey(positionIndex))
+        {
+            RecipientPositionsMap[positionIndex] = checkedVal;
+        }
     }
 
 }

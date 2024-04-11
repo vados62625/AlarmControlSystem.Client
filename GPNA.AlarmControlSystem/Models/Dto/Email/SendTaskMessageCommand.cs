@@ -15,6 +15,11 @@ public class SendTaskMessageCommand
     /// </summary>
     [Required]
     public string Sender { get; set; }
+    
+    /// <summary>
+    /// Получатель
+    /// </summary>
+    public string? Recipient { get; set; }
 
     /// <summary>
     /// Id сигнализации
