@@ -3,24 +3,50 @@ using GPNA.AlarmControlSystem.Models.Dto.Field;
 using GPNA.AlarmControlSystem.Models.Dto.Workstation;
 using GPNA.AlarmControlSystem.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 namespace GPNA.AlarmControlSystem.Pages;
 
 public class AcsPageBase : ComponentBase
 {
-    [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
-    [Inject] protected NavigationManager? NavigationManager { get; set; }
-    [Inject] protected IFieldService? FieldService { get; set; }
-    [Inject] protected IWorkStationService? WorkStationService { get; set; }
-    [Parameter][SupplyParameterFromQuery] public int? WorkstationId { get; set; }
-    [Parameter][SupplyParameterFromQuery] public int? FieldId { get; set; }
+    [Inject] private ProtectedSessionStorage ProtectedSessionStore { get; set; } = null!;
+    [Inject] protected ISpinnerService SpinnerService { get; set; } = null!;
+    [Inject] protected NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] protected IFieldService FieldService { get; set; } = null!;
+    [Inject] protected IWorkStationService WorkStationService { get; set; } = null!;
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int? WorkstationId
+    {
+        get => _workstationId;
+        set
+        {
+            _workstationId = value;
+            ProtectedSessionStore.SetAsync("workstationId", value);
+        }
+    }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int? FieldId
+    {
+        get => _fieldId;
+        set
+        {
+            _fieldId = value;
+            ProtectedSessionStore.SetAsync("fieldId", value);
+        }
+    }
 
     protected string? WorkstationName, FieldName;
     protected WorkStationDto[]? Workstations;
     protected FieldDto[]? Fields;
     protected IDictionary<string, string>? FieldLinksDictionary;
     protected IDictionary<string, string>? WorkstationLinksDictionary;
-    
+    private int? _workstationId;
+    private int? _fieldId;
+
     protected override async Task OnParametersSetAsync()
     {
         await SetFieldWithWorkstation();
