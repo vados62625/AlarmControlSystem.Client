@@ -16,7 +16,12 @@ public class UpdateUserCommand
     public AccessType Access { get; set; }
     
     /// <summary>
-    /// Права доступа
+    /// Почта
     /// </summary>
     public string Login { get; set; }
+    
+    /// <summary>
+    /// ФИО
+    /// </summary>
+    public string Name { get; set; }
 }

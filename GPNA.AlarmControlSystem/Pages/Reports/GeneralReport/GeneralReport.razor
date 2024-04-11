@@ -1,18 +1,18 @@
 ﻿@page "/reports/general"
-@page "/reports"
+@inherits AcsPageBase
 @using GPNA.AlarmControlSystem.Pages.Reports.GeneralReport.Charts
 @using GPNA.AlarmControlSystem.Pages.Monitoring.Components
 
 <div class="page-header">
     <div class="d-flex date-period-select" style="z-index: 1;">
         <div>
-            <input type="datetime-local" @bind="From" @bind:event="oninput">
+            <input type="datetime-local" @bind="_from" @bind:event="oninput">
             <svg>
                 <use href="/img/icons/icons.svg#calendar"></use>
             </svg>
         </div>
         <div>
-            <input type="datetime-local" @bind="To" @bind:event="oninput">
+            <input type="datetime-local" @bind="_to" @bind:event="oninput">
             <svg>
                 <use href="/img/icons/icons.svg#calendar"></use>
             </svg>
@@ -37,9 +37,9 @@
     <div class="priority-alarm-container">
         <PriorityAlarm Title="Общее кол-во сигнализаций" Value="@_generalCount" Priority="total"/>
         <PriorityAlarm Title="Среднее кол-во критичных" Value="@_averageUrgent" Priority="critical"/>
-        @if (IncomingAlarms != default && _workstations != null)
+        @if (IncomingAlarms != default && Workstations != null)
         {
-            foreach (var workstation in _workstations)
+            foreach (var workstation in Workstations)
             {
                 <PriorityAlarm Title="@workstation.Name" Value="@(IncomingAlarms.TryGetValue(workstation.Name ?? string.Empty, out var alarms) ? alarms.Sum(c => c.Value.Length) : 0)" Priority="total"/>
             }

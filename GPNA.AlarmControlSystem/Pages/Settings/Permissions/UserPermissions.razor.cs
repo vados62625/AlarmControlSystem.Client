@@ -130,7 +130,7 @@ public partial class UserPermissions : AcsPageBase
                 case false:
                 {
                     await UserService.Update(new UpdateUserCommand
-                        { Id = model.Id, Access = model.Access, Login = model.Login });
+                        { Id = model.Id, Access = model.Access, Login = model.Login, Name = model.Name });
                     break;
                 }
             }

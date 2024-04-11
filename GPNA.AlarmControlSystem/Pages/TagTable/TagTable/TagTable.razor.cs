@@ -17,80 +17,24 @@ using Microsoft.JSInterop;
 
 namespace GPNA.AlarmControlSystem.Pages.TagTable.TagTable
 {
-    public partial class TagTable : ComponentBase
+    public partial class TagTable : AcsPageBase
     {
         [CascadingParameter] public IModalService Modal { get; set; } = default!;
         [Inject] protected IJSRuntime JS { get; set; } = default!;
-        [Inject] protected ISpinnerService SpinnerService { get; set; } = default!;
         [Inject] protected ITagService TagService { get; set; } = default!;
-        [Inject] private IOptions<AcsModuleOptions>? Options { get; set; }
-        [Inject] private IFieldService? FieldService { get; set; }
-        [Inject] private IExportService? ExportService { get; set; }
-        [Inject] private IWorkStationService? WorkStationService { get; set; }
-        [Parameter] [SupplyParameterFromQuery] public int? WorkstationId { get; set; }
-        [Parameter] [SupplyParameterFromQuery] public int? FieldId { get; set; }
-        
-        private string? _workstationName, _fieldName;
-        private WorkStationDto[]? _workstations;
-        private FieldDto[]? _fields;
-        private IDictionary<string, string>? _fieldLinksDictionary;
-        private IDictionary<string, string>? _workstationLinksDictionary;
+        [Inject] private IOptions<AcsModuleOptions> Options { get; set; } = null!;
+        [Inject] private IExportService ExportService { get; set; } = null!;
 
         private GetTagsListQuery _query = new();
         private TagsCollection _tags = new();
         private List<int> _tagIdsToChange = new();
 
-        protected override async Task OnParametersSetAsync()
+        protected override async Task LoadPageAsync()
         {
-            await SetFieldWithWorkstation();
             await SpinnerService.Load(GetTags);
         }
 
-        private async Task SetFieldWithWorkstation()
-        {
-            if (FieldService != null)
-            {
-                var fields = await FieldService.GetList();
-                if (fields.Success)
-                    _fields = fields.Payload.ToArray();
-            }
-
-            if (WorkStationService != null)
-            {
-                var workstations = await WorkStationService.GetList(new { FieldId = FieldId });
-                if (workstations.Success)
-                    _workstations = workstations.Payload.ToArray();
-            }
-
-            FieldId ??= _fields?.FirstOrDefault()?.Id;
-            _fieldName = _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name;
-        
-            WorkstationId ??= _workstations?.FirstOrDefault()?.Id;
-            _workstationName = _workstations?.FirstOrDefault(ws => ws.Id == WorkstationId)?.Name;
-        
-            StateHasChanged();
-        
-            FillLinks();
-        }
-        
-        private void FillLinks()
-        {
-            if (_fields != null)
-            {
-                _fieldLinksDictionary = _fields.ToDictionary(field => 
-                        field.Name, 
-                    field => $"/tag-table/?fieldId={field.Id}");
-            }
-        
-            if (_workstations != null)
-            {
-                _workstationLinksDictionary = _workstations.ToDictionary(workStation => 
-                        workStation.Name ?? Guid.NewGuid().ToString(), 
-                    workStation => $"/tag-table/?fieldId={FieldId}&workstationId={workStation.Id}");
-            }
-        }
-        
-        public async Task AddTag()
+        private async Task AddTag()
         {
             var parameters = new ModalParameters { { "Tag", new TagDto{ WorkStationId = WorkstationId ?? 1 } } };
             var createModal = Modal.Show<AddTagModal>("", parameters);
@@ -116,7 +60,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable.TagTable
             }
         }
 
-        public async Task SendTagListToJournal()
+        private async Task SendTagListToJournal()
         {
             var parameters = new ModalParameters { { "TagIds", _tagIdsToChange } };
             var modal = Modal.Show<SendTagsToJournalModal>("", parameters);
@@ -213,7 +157,7 @@ namespace GPNA.AlarmControlSystem.Pages.TagTable.TagTable
 
             if (fileStream == null) return;
 
-            var fileName = "Теги.xlsx";
+            const string fileName = "Теги.xlsx";
 
             using var streamRef = new DotNetStreamReference(stream: fileStream);
 

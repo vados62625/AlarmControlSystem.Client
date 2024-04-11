@@ -16,7 +16,7 @@ using Microsoft.JSInterop;
 
 namespace GPNA.AlarmControlSystem.Pages.TagTable.Journal
 {
-    public partial class TagTableJournal : ComponentBase
+    public partial class TagTableJournal : AcsPageBase
     {
         [CascadingParameter] public IModalService Modal { get; set; } = default!;
         [Inject] protected IJSRuntime JS { get; set; } = default!;

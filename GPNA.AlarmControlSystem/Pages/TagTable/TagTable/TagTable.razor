@@ -1,4 +1,5 @@
 ﻿@page "/tag-table"
+@inherits AcsPageBase
 
 @using GPNA.AlarmControlSystem.Pages.TagTable.TagTable.Components
 @using GPNA.AlarmControlSystem.Pages.TagTable.Components
@@ -8,12 +9,12 @@
 <div class="page-main">
     <div class="page-header justify-content-center position-relative">
         <div class="d-flex">
-            <p>ТАБЛИЦА ПЕРЕМЕННЫХ <b>@_fieldName М/Р</b></p>
-            <SelectObject Object="dto" LinksDictionary="_fieldLinksDictionary"/>
+            <p>ТАБЛИЦА ПЕРЕМЕННЫХ <b>@FieldName М/Р</b></p>
+            <SelectObject Object="dto" LinksDictionary="FieldLinksDictionary"/>
             <p style="margin-left:15px;">
-                <b>@_workstationName</b>
+                <b>@WorkstationName</b>
             </p>
-            <SelectObject LinksDictionary="_workstationLinksDictionary"/>
+            <SelectObject LinksDictionary="WorkstationLinksDictionary"/>
         </div>
         <div class="d-flex gap-2 position-absolute" style="right: 0;">
             @if (_query is not {Page: 1})

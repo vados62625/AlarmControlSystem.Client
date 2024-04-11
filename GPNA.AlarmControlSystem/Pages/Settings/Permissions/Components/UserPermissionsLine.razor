@@ -8,7 +8,7 @@
         { 
             <SettingsDeleteButton LineRemoved="LineRemoved"/>
         }
-        <select class="settings-stat-input" type="text" placeholder="Введите ФИО" @bind="_user.Access" disabled="@(!Enabled)">
+        <select class="settings-stat-input" type="text" placeholder="Выберите роль" @bind="_user.Access" disabled="@(!Enabled)">
             @foreach (var access in Enum.GetValues<AccessType>())
             {
                 <option value="@access">@access.GetDescription()</option>
@@ -16,40 +16,10 @@
         </select>
     </td>
     <td>
-        <input class="settings-stat-input" type="text" placeholder="Введите ФИО" @bind="_user.Login" disabled="@(!Enabled)" />
+        <input class="settings-stat-input" type="text" placeholder="Введите ФИО" @bind="_user.Name" disabled="@(!Enabled)" />
     </td>
     <td>
-        <input class="settings-stat-input" type="text" placeholder="Введите ФИО" @bind="_user.Login" disabled="@(!Enabled)" />
-    </td>
-    <td>
-        <div class="settings-stat-checkbox">
-            <input type="checkbox" disabled="@(!Enabled)"/>
-        </div>
-    </td>
-    <td>
-        <div class="settings-stat-checkbox">
-            <input type="checkbox" disabled="@(!Enabled)"/>
-        </div>
-    </td>
-    <td>
-        <div class="settings-stat-checkbox">
-            <input type="checkbox" disabled="@(!Enabled)"/>
-        </div>
-    </td>
-    <td>
-        <div class="settings-stat-checkbox">
-            <input type="checkbox" disabled="@(!Enabled)"/>
-        </div>
-    </td>
-    <td>
-        <div class="settings-stat-checkbox">
-            <input type="checkbox" disabled="@(!Enabled)"/>
-        </div>
-    </td>
-    <td>
-        <div class="settings-stat-checkbox">
-            <input type="checkbox" disabled="@(!Enabled)"/>
-        </div>
+        <input class="settings-stat-input" type="text" placeholder="Введите почту" @bind="_user.Login" disabled="@(!Enabled)" />
     </td>
 </tr>
 
@@ -63,7 +33,7 @@
     [Parameter]
     public bool Enabled { get; set; }
 
-    private UserDto _user;
+    private UserDto _user = new();
 
     [Parameter]
     public UserDto User
@@ -71,7 +41,7 @@
         get => _user;
         set
         {
-            if (_user == value) return;
+            if (_user.Equals(value)) return;
             _user = value;
             UserChanged.InvokeAsync(value);
         }

@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inherits AcsPageBase
 @using GPNA.AlarmControlSystem.Pages.Main.Components.WorkStationView
 
 <div class="page-main">
@@ -9,7 +10,7 @@
         }
         <div class="d-flex align-items-center">
             <p>ОТЧЕТ ПО СИГНАЛИЗАЦИЯМ ЗА @DateTimeEnd.ToString("dd MMMM") <b>@(_activeField?.Name ?? "N/A") М/Р</b></p>
-            <SelectObject Object="dto" LinksDictionary="WorkstationLinksDictionary"/>
+            <SelectObject Object="dto" LinksDictionary="FieldLinksDictionary"/>
         </div>
         @if (_nextField != null)
         {

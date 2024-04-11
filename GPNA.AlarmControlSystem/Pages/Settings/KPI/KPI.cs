@@ -8,54 +8,23 @@ using Microsoft.AspNetCore.Components;
 
 namespace GPNA.AlarmControlSystem.Pages.Settings.KPI;
 
-public partial class KPI : ComponentBase
+public partial class KPI : AcsPageBase
 {
     [Parameter] public int Value { get; set; } = 256;
-
-    [Parameter] [SupplyParameterFromQuery] public int? WorkstationId { get; set; }
-
-    [Parameter] [SupplyParameterFromQuery] public int? FieldId { get; set; }
-
     [Inject] private IToastService? ToastService { get; set; }
-
-    [Inject] private IFieldService? FieldService { get; set; }
-
-    [Inject] private IWorkStationService? WorkStationService { get; set; }
-
     [Inject] private AlarmJournalSettingsService? AlarmJournalSettingsService { get; set; }
     [Inject] private MonitoringSettingsService? MonitoringSettingsService { get; set; }
     [Inject] private ReportSettingsService? ReportSettingsService { get; set; }
     [Inject] private TagTableSettingsService? TagTableSettingsService { get; set; }
     [Inject] private TaskSettingsService? TaskSettingsService { get; set; }
 
-    private string? FieldName { get; set; } = "N/A";
-    private string? WorkstationName { get; set; } = "N/A";
-
-    private FieldDto[]? _fields;
-
-    private WorkStationDto[]? _workstations;
-
     private AlarmJournalSettingsDto _journalSettings = new();
     private MonitoringSettingsDto _monitoringSettings = new();
     private ReportSettingsDto _reportSettings = new();
     private TagTableSettingsDto _tagTableSettings = new();
     private TaskSettingsDto _taskSettings = new();
-
-    private IDictionary<string, string>? FieldLinksDictionary { get; set; }
-
-    private IDictionary<string, string>? WorkstationLinksDictionary { get; set; }
-
-
-    protected override async Task OnParametersSetAsync()
-    {
-        await SetFieldWithWorkstation();
-
-        await InitializePageAsync();
-
-        await base.OnParametersSetAsync();
-    }
-
-    private async Task InitializePageAsync()
+    
+    protected override async Task LoadPageAsync()
     {
         await SetSettings();
     }
@@ -133,57 +102,7 @@ public partial class KPI : ComponentBase
 
         return null;
     }
-
-    private async Task SetFieldWithWorkstation()
-    {
-        if (FieldService != null)
-        {
-            var fields = await FieldService.GetList();
-
-            if (fields.Success)
-            {
-                _fields = fields.Payload.ToArray();
-            }
-        }
-
-        if (WorkStationService != null)
-        {
-            var workstations = await WorkStationService.GetList(new { FieldId });
-
-            if (workstations.Success)
-            {
-                _workstations = workstations.Payload.ToArray();
-            }
-        }
-
-        FieldId ??= _fields?.FirstOrDefault()?.Id;
-
-        FieldName = _fields?.FirstOrDefault(field => field.Id == FieldId)?.Name;
-
-        WorkstationId ??= _workstations?.FirstOrDefault()?.Id;
-
-        WorkstationName = _workstations?.FirstOrDefault(ws => ws.Id == WorkstationId)?.Name;
-
-        FillLinks();
-    }
-
-    private void FillLinks()
-    {
-        if (_fields != null)
-        {
-            FieldLinksDictionary = _fields.ToDictionary(field =>
-                    field.Name,
-                field => $"/settings/KPI/?fieldId={field.Id}");
-        }
-
-        if (_workstations != null)
-        {
-            WorkstationLinksDictionary = _workstations.ToDictionary(workStation =>
-                    workStation.Name ?? Guid.NewGuid().ToString(),
-                workStation => $"/settings/KPI/?fieldId={FieldId}&workstationId={workStation.Id}");
-        }
-    }
-
+    
     private bool _editJournalSettingsButtonShow = true;
     private bool _editMonitoringSettingsButtonShow = true;
     private bool _editTaskSettingsButtonShow = true;

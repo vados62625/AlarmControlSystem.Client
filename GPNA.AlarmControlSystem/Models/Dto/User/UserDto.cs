@@ -11,6 +11,11 @@ namespace GPNA.AlarmControlSystem.Models.Dto.User
         /// Логин
         /// </summary>
         public string Login { get; set; }
+        
+        /// <summary>
+        /// ФИО
+        /// </summary>
+        public string Name { get; set; }
 
         /// <summary>
         /// Права доступа
@@ -19,7 +24,7 @@ namespace GPNA.AlarmControlSystem.Models.Dto.User
 
         public override bool Equals(object? obj)
         {
-            var value = (UserDto)obj;
+            var value = (UserDto?)obj;
             if (value == null)
             {
                 return false;
@@ -27,6 +32,7 @@ namespace GPNA.AlarmControlSystem.Models.Dto.User
 
             return Login == value.Login &&
                    Access == value.Access &&
+                   Name == value.Name &&
                    Id == value.Id;
         }
     }

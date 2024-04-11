@@ -9,7 +9,7 @@ namespace GPNA.AlarmControlSystem.Pages;
 
 public class AcsPageBase : ComponentBase
 {
-    [Inject] private ProtectedSessionStorage ProtectedSessionStore { get; set; } = null!;
+    [Inject] private ProtectedLocalStorage ProtectedLocalStore { get; set; } = null!;
     [Inject] protected ISpinnerService SpinnerService { get; set; } = null!;
     [Inject] protected NavigationManager NavigationManager { get; set; } = null!;
     [Inject] protected IFieldService FieldService { get; set; } = null!;
@@ -23,7 +23,10 @@ public class AcsPageBase : ComponentBase
         set
         {
             _workstationId = value;
-            ProtectedSessionStore.SetAsync("workstationId", value);
+            if (value.HasValue)
+            {
+                ProtectedLocalStore.SetAsync("workstationId", value.Value);
+            }
         }
     }
 
@@ -35,7 +38,10 @@ public class AcsPageBase : ComponentBase
         set
         {
             _fieldId = value;
-            ProtectedSessionStore.SetAsync("fieldId", value);
+            if (value.HasValue)
+            {
+                ProtectedLocalStore.SetAsync("fieldId", value.Value);
+            }
         }
     }
 
@@ -57,34 +63,35 @@ public class AcsPageBase : ComponentBase
     {
         return Task.CompletedTask;
     }
-    
+
     private async Task SetFieldWithWorkstation()
     {
-        if (FieldService != null)
-        {
-            var fields = await FieldService.GetList();
-            if (fields.Success)
-                Fields = fields.Payload.ToArray();
-        }
-        
-        if (WorkStationService != null)
-        {
-            var workstations = await WorkStationService.GetList(new { FieldId });
-            if (workstations.Success)
-                Workstations = workstations.Payload.ToArray();
-        }
-        
-        FieldId ??= Fields?.FirstOrDefault()?.Id;
+        var fields = await FieldService.GetList();
+        if (fields.Success)
+            Fields = fields.Payload.ToArray();
+
+        var workstations = await WorkStationService.GetList(new { FieldId });
+        if (workstations.Success)
+            Workstations = workstations.Payload.ToArray();
+
+        var fieldIdInLocalStorage = await ProtectedLocalStore.GetAsync<int?>("fieldId");
+        var workstationIdInLocalStorage = await ProtectedLocalStore.GetAsync<int?>("workstationId");
+
+        FieldId ??= fieldIdInLocalStorage is { Success: true, Value: not null }
+            ? fieldIdInLocalStorage.Value
+            : Fields?.FirstOrDefault()?.Id;
         FieldName = Fields?.FirstOrDefault(field => field.Id == FieldId)?.Name;
-        
-        WorkstationId ??= Workstations?.FirstOrDefault()?.Id;
+
+        WorkstationId ??= workstationIdInLocalStorage is { Success: true, Value: not null }
+            ? workstationIdInLocalStorage.Value
+            : Workstations?.FirstOrDefault()?.Id;
         WorkstationName = Workstations?.FirstOrDefault(ws => ws.Id == WorkstationId)?.Name;
-        
+
         StateHasChanged();
-        
+
         FillLinks();
     }
-        
+
     protected virtual void FillLinks()
     {
         if (Fields != null)
@@ -93,7 +100,7 @@ public class AcsPageBase : ComponentBase
                     field.Name,
                 field => $"{GetPageFromUrl()}?fieldId={field.Id}");
         }
-        
+
         if (Workstations != null)
         {
             WorkstationLinksDictionary = Workstations.ToDictionary(workStation =>
@@ -101,7 +108,7 @@ public class AcsPageBase : ComponentBase
                 workStation => $"{GetPageFromUrl()}?fieldId={FieldId}&workstationId={workStation.Id}");
         }
     }
-    
+
     protected string GetPageFromUrl()
     {
         return new Uri(NavigationManager?.Uri ?? "/").GetLeftPart(UriPartial.Path);
