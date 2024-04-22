@@ -1,5 +1,5 @@
 ﻿<li class="top-menu_item">
-    <NavLink class="top-menu_link" href="@Href" Match="@NavLinkMatch">
+    <NavLink class="top-menu_link" href="@(LinksDictionary?.Count == 1 ? Href : Href + LinksDictionary?.First().Value)" Match="@NavLinkMatch">
         <div>
             <span class="top-menu_link-title">
                 @Title
